@@ -99,3 +99,10 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+# JT
+*.swp
+.DS_Store
+__MACOSX/
+results/
+
