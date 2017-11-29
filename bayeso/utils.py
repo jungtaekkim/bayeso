@@ -64,6 +64,7 @@ def get_minimum(list_read, num_init):
     return mean_min, std_min
 
 def plot_gp(X_train, Y_train, X_test, mu, sigma, path_save, str_postfix):
+    plt.rc('pdf', fonttype=42)
     fig = plt.figure(figsize=(8, 6))
     ax = plt.gca()
     ax.plot(X_train.flatten(), Y_train.flatten(), 
@@ -81,13 +82,13 @@ def plot_gp(X_train, Y_train, X_test, mu, sigma, path_save, str_postfix):
         mu.flatten() + RANGE_SHADE * sigma.flatten(), 
         color=COLORS[1], 
         alpha=0.3)
-    ax.set_xlabel('X', fontsize=32)
-    ax.set_ylabel('Y', fontsize=32)
+    ax.set_xlabel('$x$', fontsize=32)
+    ax.set_ylabel('$y$', fontsize=32)
     ax.set_xlim([np.min(X_test), np.max(X_test)])
     ax.tick_params(labelsize=22)
     ax.spines['top'].set_color('none')
     ax.spines['right'].set_color('none')
-    ax.spines['bottom'].set_position('zero')
+#    ax.spines['bottom'].set_position('zero')
     str_figure = 'gp_' + str_postfix
     plt.savefig(os.path.join(path_save, str_figure + '.pdf'), format='pdf', transparent=True, bbox_inches='tight', frameon=False)
 
@@ -96,6 +97,7 @@ def plot_gp(X_train, Y_train, X_test, mu, sigma, path_save, str_postfix):
     plt.close('all')
 
 def plot_minimum(list_all, list_str_label, path_save, str_postfix, num_init, is_std, is_marker=True, is_legend=False):
+    plt.rc('pdf', fonttype=42)
     fig = plt.figure(figsize=(8, 6))
     ax = plt.gca()
     for ind_read, list_read in enumerate(list_all):
@@ -134,9 +136,9 @@ def plot_minimum(list_all, list_str_label, path_save, str_postfix, num_init, is_
     if is_legend:
         plt.legend(loc='upper right', fancybox=False, edgecolor='black', fontsize=24)
     if is_std:
-        str_figure = 'mean_std_' + str_postfix
+        str_figure = 'minimum_mean_std_' + str_postfix
     else:
-        str_figure = 'mean_only_' + str_postfix
+        str_figure = 'minimum_mean_only_' + str_postfix
     plt.savefig(path_save + str_figure + '.pdf', format='pdf', transparent=True, bbox_inches='tight', frameon=False)
 
     if not is_legend:
@@ -146,6 +148,80 @@ def plot_minimum(list_all, list_str_label, path_save, str_postfix, num_init, is_
     plt.ion()
     plt.pause(TIME_PAUSE)
     plt.close('all')
+
+def plot_bo_step(X_train, Y_train, X_test, Y_test, mean_test, std_test, path_save, str_postfix, num_init=None):
+    plt.rc('pdf', fonttype=42)
+    fig = plt.figure(figsize=(8, 6))
+    ax = plt.gca()
+    ax.spines['top'].set_color('none')
+    ax.spines['right'].set_color('none')
+#    ax.spines['bottom'].set_position('zero')
+    ax.plot(X_test, Y_test, 'g', linewidth=4)
+    ax.plot(X_test, mean_test, 'b', linewidth=4)
+    ax.fill_between(X_test.flatten(), 
+        mean_test.flatten() - RANGE_SHADE * std_test.flatten(), 
+        mean_test.flatten() + RANGE_SHADE * std_test.flatten(), 
+        color='blue', 
+        alpha=0.3)
+    if num_init is not None:
+        if X_train.shape[0] > num_init:
+            ax.plot(X_train[:num_init, :], Y_train[:num_init, :], 'x', c='saddlebrown', ms=14, markeredgewidth=6)
+            ax.plot(X_train[num_init:X_train.shape[0]-1, :], Y_train[num_init:X_train.shape[0]-1, :], 'rx', ms=14, markeredgewidth=6)
+            ax.plot(X_train[X_train.shape[0]-1, :], Y_train[X_train.shape[0]-1, :], c='orange', marker='+', ms=18, markeredgewidth=6)
+        else:
+            ax.plot(X_train, Y_train, 'x', c='saddlebrown', ms=14, markeredgewidth=6)
+    else:
+        ax.plot(X_train[:X_train.shape[0]-1, :], Y_train[:X_train.shape[0]-1, :], 'rx', ms=14, markeredgewidth=6)
+        ax.plot(X_train[X_train.shape[0]-1, :], Y_train[X_train.shape[0]-1, :], c='orange', marker='+', ms=18, markeredgewidth=6)
+
+    ax.set_xlabel('$x$', fontsize=32)
+    ax.set_ylabel('$y$', fontsize=32)
+    ax.set_xlim([np.min(X_test), np.max(X_test)])
+    ax.tick_params(labelsize=22)
+#    plt.legend(loc='upper right', fancybox=False, edgecolor='black', fontsize=24)
+    plt.savefig(os.path.join(path_save, 'bo_step_' + str_postfix + '.pdf'), format='pdf', transparent=True, bbox_inches='tight', frameon=False)
+    plt.ion()
+    plt.pause(TIME_PAUSE)
+    plt.close('all')
+
+def plot_bo_step_acq(X_train, Y_train, X_test, Y_test, mean_test, std_test, acq_test, path_save, str_postfix, num_init=None):
+    plt.rc('pdf', fonttype=42)
+    fig, (ax, ax2) = plt.subplots(2, 1, gridspec_kw = {'height_ratios':[3, 1]})
+    ax.spines['top'].set_color('none')
+    ax.spines['right'].set_color('none')
+#    ax.spines['bottom'].set_position('zero')
+    ax.plot(X_test, Y_test, 'g', linewidth=4)
+    ax.plot(X_test, mean_test, 'b', linewidth=4)
+    ax.fill_between(X_test.flatten(), 
+        mean_test.flatten() - RANGE_SHADE * std_test.flatten(), 
+        mean_test.flatten() + RANGE_SHADE * std_test.flatten(), 
+        color='blue', 
+        alpha=0.3)
+    if num_init is not None:
+        if X_train.shape[0] > num_init:
+            ax.plot(X_train[:num_init, :], Y_train[:num_init, :], 'x', c='saddlebrown', ms=14, markeredgewidth=6)
+            ax.plot(X_train[num_init:X_train.shape[0]-1, :], Y_train[num_init:X_train.shape[0]-1, :], 'rx', ms=14, markeredgewidth=6)
+            ax.plot(X_train[X_train.shape[0]-1, :], Y_train[X_train.shape[0]-1, :], c='orange', marker='+', ms=18, markeredgewidth=6)
+        else:
+            ax.plot(X_train, Y_train, 'x', c='saddlebrown', ms=14, markeredgewidth=6)
+    ax.set_ylabel('$y$', fontsize=32)
+    ax.set_xlim([np.min(X_test), np.max(X_test)])
+    ax.tick_params(labelsize=22)
+
+    ax2.plot(X_test, acq_test, 'b', linewidth=4)
+    ax2.set_xlabel('$x$', fontsize=32)
+    ax2.set_ylabel('Acq.', fontsize=32)
+    ax2.spines['top'].set_color('none')
+    ax2.spines['right'].set_color('none')
+    ax2.set_xlim([np.min(X_test), np.max(X_test)])
+    ax2.tick_params(labelsize=22)
+    ax2.tick_params('y', labelsize=14)
+#    plt.legend(loc='upper right', fancybox=False, edgecolor='black', fontsize=24)
+    plt.savefig(os.path.join(path_save, 'bo_step_acq_' + str_postfix + '.pdf'), format='pdf', transparent=True, bbox_inches='tight', frameon=False)
+    plt.ion()
+    plt.pause(TIME_PAUSE)
+    plt.close('all')
+
 
 if __name__ == '__main__':
     pass
