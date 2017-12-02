@@ -186,6 +186,10 @@ def plot_bo_step(X_train, Y_train, X_test, Y_test, mean_test, std_test, path_sav
 
 def plot_bo_step_acq(X_train, Y_train, X_test, Y_test, mean_test, std_test, acq_test, path_save, str_postfix, num_init=None):
     plt.rc('pdf', fonttype=42)
+#    plt.rcParams['ps.useafm'] = True
+#    plt.rcParams['pdf.use14corefonts'] = True
+#    plt.rcParams['text.usetex'] = True
+
     fig, (ax, ax2) = plt.subplots(2, 1, gridspec_kw = {'height_ratios':[3, 1]})
     ax.spines['top'].set_color('none')
     ax.spines['right'].set_color('none')

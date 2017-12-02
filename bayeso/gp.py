@@ -65,7 +65,7 @@ def get_prior_mu(prior_mu, X):
     if prior_mu is None:
         prior_mu_X = np.zeros((X.shape[0], 1))
     else:
-        raise NotImplemented('prior mean function is not yet implemented.')
+        prior_mu_X = prior_mu(X)
     return prior_mu_X
 
 def get_kernels(X_train, hyps, str_cov):
