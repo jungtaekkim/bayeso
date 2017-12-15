@@ -101,7 +101,7 @@ def optimize_many(model_bo, fun_target, X_train, num_iter):
         Y_train.append(fun_target(elem))
     Y_train = np.array(Y_train)
     Y_train = np.reshape(Y_train, (Y_train.shape[0], 1))
-    X_final, Y_final = optimize_many_(model_bo, fun_target, X_train, Y_train, num_ter)
+    X_final, Y_final = optimize_many_(model_bo, fun_target, X_train, Y_train, num_iter)
     return X_final, Y_final
 
 def optimize_many_with_random_init(model_bo, fun_target, num_init, num_iter, int_seed=None):

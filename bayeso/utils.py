@@ -143,7 +143,7 @@ def plot_minimum(list_all, list_str_label, path_save, str_postfix, num_init, is_
 
     if not is_legend:
         fig_legend = pylab.figure(figsize=(3, 2))
-        fig_legend.legend(lines, list_label, 'center', fancybox=False, edgecolor='black', fontsize=32)
+        fig_legend.legend(lines, list_str_label, 'center', fancybox=False, edgecolor='black', fontsize=32)
         fig_legend.savefig(path_save + 'legend_' + str_postfix + '.pdf', format='pdf', transparent=True, bbox_inches='tight', frameon=False)
     plt.ion()
     plt.pause(TIME_PAUSE)
