@@ -6,6 +6,7 @@ import acquisition
 import utils
 
 NUM_GRID = 50
+NUM_RANDOM = 1000
 
 class BO():
     def __init__(self, arr_range, str_cov='se', is_ard=True, str_acq='ei', prior_mu=None):
@@ -24,10 +25,52 @@ class BO():
         arr_initial = np.array(list_initial)
         return arr_initial
 
+    def _get_pseudo_latin(self, num_samples):
+        num_range = self.arr_range.shape[0]
+        num_samples_per_dim = int(num_samples / num_range)
+        arr_samples = None
+        for ind_elem, elem in enumerate(self.arr_range):
+            list_cur_samples = []
+            for ind_cur_elem, cur_elem in enumerate(self.arr_range):
+                if ind_cur_elem == ind_elem:
+                    list_cur_samples.append(np.linspace(elem[0], elem[1], num_samples_per_dim))
+                else:
+                    list_cur_samples.append(np.random.uniform(elem[0], elem[1], num_samples_per_dim))
+            list_cur_samples = np.array(list_cur_samples)
+            list_cur_samples = list_cur_samples.T
+            if arr_samples is None:
+                arr_samples = list_cur_samples
+            else:
+                arr_samples = np.vstack((arr_samples, list_cur_samples))
+        return arr_samples
+
+    '''
+    def _get_sobol_seq(self, num_samples):
+        num_range = self.arr_range.shape[0]
+        cur_seed = np.random.randint(0, 1000)
+        arr_samples = sobol_seq.i4_sobol_generate(num_range, num_samples, cur_seed)
+        arr_samples = arr_samples * (self.arr_range[:, 1].flatten() - self.arr_range[:, 0].flatten()) + self.arr_range[:, 0].flatten()
+        return arr_samples
+    '''
+
+    # TODO: is_grid is not appropriate expression
     def _get_initial(self, is_random=False, is_grid=False, fun_obj=None, int_seed=None):
-        if is_random:
+        if is_random and not is_grid:
             arr_initial = self._get_initial_random(int_seed)
-        elif is_grid:
+        elif is_random and is_grid:
+            if fun_obj is None:
+                print('WARNING: fun_obj is not given.')
+                arr_initial = self._get_initial_random(int_seed)
+            else:
+                arr_grid = self._get_pseudo_latin(NUM_RANDOM)
+                arr_initial = None
+                initial_best = np.inf
+                for cur_initial in arr_grid:
+                    cur_acq = fun_obj(cur_initial)
+                    if cur_acq < initial_best:
+                        initial_best = cur_acq
+                        arr_initial = cur_initial
+        elif not is_random and is_grid:
             if fun_obj is None:
                 print('WARNING: fun_obj is not given.')
                 arr_initial = self._get_initial_random(int_seed)
@@ -63,8 +106,21 @@ class BO():
         result_acq = fun_acq(pred_mean, pred_std, Y_train)
         return result_acq
 
-    def optimize(self, X_train, Y_train):
-        cov_X_X, inv_cov_X_X, hyps = gp.get_optimized_kernels(X_train, Y_train, self.prior_mu, self.str_cov)
+    def _optimize(self, fun_obj, is_grid_optimized=True, verbose=False):
+        list_bounds = []
+        for elem in self.arr_range:
+            list_bounds.append(tuple(elem))
+        if is_grid_optimized:
+            result_optimized = minimize(fun_obj, x0=self._get_initial(is_random=False, is_grid=True, fun_obj=fun_obj), bounds=list_bounds, method='L-BFGS-B', options={'disp': verbose})
+        else:
+            result_optimized = minimize(fun_obj, x0=self._get_initial(is_random=True, is_grid=True, fun_obj=fun_obj), bounds=list_bounds, method='L-BFGS-B', options={'disp': verbose})
+        if verbose:
+            print('INFORM: optimized result for acq. ', result_optimized.x)
+        result_optimized = result_optimized.x
+        return result_optimized
+
+    def optimize(self, X_train, Y_train, is_grid_optimized=False, verbose=False):
+        cov_X_X, inv_cov_X_X, hyps = gp.get_optimized_kernels(X_train, Y_train, self.prior_mu, self.str_cov, verbose=verbose)
 
         # NEED: to add acquisition function
         if self.str_acq == 'pi':
@@ -77,14 +133,8 @@ class BO():
             raise ValueError('acquisition function is not properly set.')
       
         fun_obj = lambda X_test: -1000.0 * self._optimize_objective(fun_acq, X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps)
-
-        list_bounds = []
-        for elem in self.arr_range:
-            list_bounds.append(tuple(elem))
-
-        result_optimized = minimize(fun_obj, x0=self._get_initial(False, True, fun_obj), bounds=list_bounds, method='L-BFGS-B', options={'disp': True})
-        print('INFORM: optimized result for acq. ', result_optimized.x)
-        return result_optimized.x, cov_X_X, inv_cov_X_X, hyps
+        result_optimized = self._optimize(fun_obj, is_grid_optimized, verbose)
+        return result_optimized, cov_X_X, inv_cov_X_X, hyps
 
 def optimize_many_(model_bo, fun_target, X_train, Y_train, num_iter):
     X_final = X_train
@@ -109,9 +159,9 @@ def optimize_many_with_random_init(model_bo, fun_target, num_init, num_iter, int
     for ind_init in range(0, num_init):
         if int_seed is None or int_seed == 0:
             print('REMIND: seed is None or 0.')
-            list_init.append(model_bo._get_initial(is_random=True))
+            list_init.append(model_bo._get_initial(is_random=True, is_grid=False))
         else:
-            list_init.append(model_bo._get_initial(is_random=True, int_seed=int_seed**2 * (ind_init+1)))
+            list_init.append(model_bo._get_initial(is_random=True, is_grid=False, int_seed=int_seed**2 * (ind_init+1)))
     X_init = np.array(list_init)
     X_final, Y_final = optimize_many(model_bo, fun_target, X_init, num_iter)
     return X_final, Y_final

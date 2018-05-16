@@ -11,6 +11,7 @@ def cov_main(str_cov, X, Xs, hyps, jitter=1e-5):
     num_Xs = Xs.shape[0]
     num_d_Xs = Xs.shape[1]
     if num_d_X != num_d_Xs:
+        print('ERROR: matrix dimensions: ', num_d_X, num_d_Xs)
         raise ValueError('matrix dimensions are different.')
 
     cov_ = np.zeros((num_X, num_Xs))
@@ -84,13 +85,14 @@ def log_ml(X_train, Y_train, hyps, str_cov, prior_mu_train):
     third_term = -float(X_train.shape[1]) / 2.0 * np.log(2.0 * np.pi)
     return first_term + second_term + third_term
 
-def get_optimized_kernels(X_train, Y_train, prior_mu, str_cov):
+def get_optimized_kernels(X_train, Y_train, prior_mu, str_cov, verbose=False):
     prior_mu_train = get_prior_mu(prior_mu, X_train)
     num_dim = X_train.shape[1]
     neg_log_ml = lambda hyps: -1.0 * log_ml(X_train, Y_train, hyps, str_cov, prior_mu_train)
     result_optimized = scipy.optimize.minimize(neg_log_ml, convert_hyps(str_cov, get_hyps(str_cov, num_dim)), method='L-BFGS-B')
     hyps = restore_hyps(str_cov, result_optimized.x)
-    print('INFORM: optimized result for gpr ', hyps)
+    if verbose:
+        print('INFORM: optimized result for gpr ', hyps)
     cov_X_X, inv_cov_X_X = get_kernels(X_train, hyps, str_cov)
     return cov_X_X, inv_cov_X_X, hyps
 
@@ -110,8 +112,8 @@ def predict_test(X_train, Y_train, X_test, hyps, str_cov='se', prior_mu=None):
     mu_Xs, sigma_Xs = predict_test_(X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps, str_cov, prior_mu)
     return mu_Xs, sigma_Xs
 
-def predict_optimized(X_train, Y_train, X_test, str_cov='se', prior_mu=None):
-    cov_X_X, inv_cov_X_X, hyps = get_optimized_kernels(X_train, Y_train, prior_mu, str_cov)
+def predict_optimized(X_train, Y_train, X_test, str_cov='se', prior_mu=None, verbose=False):
+    cov_X_X, inv_cov_X_X, hyps = get_optimized_kernels(X_train, Y_train, prior_mu, str_cov, verbose=verbose)
     mu_Xs, sigma_Xs = predict_test_(X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps, str_cov, prior_mu)
     return mu_Xs, sigma_Xs
 
