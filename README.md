@@ -5,7 +5,7 @@ Simple, but essential Bayesian optimization package.
 We recommend it should be installed in `virtualenv`.
 
 ```shell
-$ python setup.py install
+$ pip install .
 ```
 
 or if you would like to use development mode,

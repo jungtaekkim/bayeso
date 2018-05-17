@@ -11,7 +11,7 @@ with open('requirements.txt') as f:
 setup(
     name='bayeso',
     version='0.1.0',
-    author='Jungtaek Kim and Seungjin Choi',
+    author='Jungtaek Kim',
     author_email='jtkim@postech.ac.kr',
     url='https://github.com/jungtaekkim/bayeso',
     license='MIT',

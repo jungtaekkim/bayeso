@@ -100,7 +100,7 @@ ENV/
 # mypy
 .mypy_cache/
 
-# JT
+# Jungtaek
 *.swp
 .DS_Store
 __MACOSX/
