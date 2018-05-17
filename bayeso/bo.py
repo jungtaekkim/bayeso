@@ -1,9 +1,9 @@
 import numpy as np
 from scipy.optimize import minimize
 
-import gp
-import acquisition
-import utils
+from bayeso import gp
+from bayeso import acquisition
+from bayeso import utils
 
 NUM_GRID = 50
 NUM_RANDOM = 1000

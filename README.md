@@ -17,7 +17,7 @@ $ python setup.py develop
 ## Supported Python Version
 Higher than Python 2.
 
-## Authors
+## Author
 * [Jungtaek Kim](http://mlg.postech.ac.kr/~jtkim/) (POSTECH)
 * [Seungjin Choi](http://mlg.postech.ac.kr/~seungjin/) (POSTECH)
 

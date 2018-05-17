@@ -1,0 +1,5 @@
+[
+  "tests/test_import.py::test_import_bayeso",
+  "tests/test_import.py::test_import_bo",
+  "tests/test_import.py::test_import_gp"
+]

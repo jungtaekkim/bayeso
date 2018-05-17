@@ -1,0 +1,7 @@
+{
+  "examples/test_bo_ei.py": true,
+  "examples/test_bo_ei_ridge.py": true,
+  "examples/test_bo_ei_xgboost.py": true,
+  "examples/test_bo_pi.py": true,
+  "examples/test_bo_ucb.py": true
+}
