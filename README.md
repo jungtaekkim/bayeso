@@ -1,4 +1,6 @@
 # bayeso
+[![Build Status](https://travis-ci.org/jungtaekkim/bayeso.svg?branch=master)](https://travis-ci.org/jungtaekkim/bayeso)
+
 Simple, but essential Bayesian optimization package. 
 
 ## Installation
