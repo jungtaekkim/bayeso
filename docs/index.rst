@@ -23,4 +23,5 @@ Indices and tables
    :maxdepth: 2
    :caption: Contents:
 
+   self
    gpr_simple
