@@ -10,18 +10,10 @@ Welcome to bayeso's documentation!
 
 The code can be found in `our GitHub repository <https://github.com/jungtaekkim/bayeso>`_.
 
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
-
-
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
    self
    gpr_simple
+
