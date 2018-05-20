@@ -13,7 +13,6 @@ Indices and tables
 
 
 .. toctree::
-   :maxdepth: 1
-   :caption: Home:
+    :hidden:
 
-   index
+   self
