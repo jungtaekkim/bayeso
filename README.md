@@ -9,17 +9,23 @@ Simple, but essential Bayesian optimization package.
 * [Online documentation](http://bayeso.readthedocs.io)
 
 ## Installation
-We recommend it should be installed in `virtualenv`.
+We recommend it should be installed in `virtualenv`. \
+Command
 
 ```shell
 $ pip install .
 ```
-
 or if you would like to use development mode,
 
 ```shell
 $ pip install -r requirements.txt
 $ python setup.py develop
+```
+in the bayeso root. \
+If you would like to uninstall bayeso, command
+
+```shell
+$ pip uninstall bayeso
 ```
 
 ## Supported Python Version
