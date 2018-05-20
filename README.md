@@ -16,6 +16,7 @@ $ pip install .
 or if you would like to use development mode,
 
 ```shell
+$ pip install -r requirements.txt
 $ python setup.py develop
 ```
 
