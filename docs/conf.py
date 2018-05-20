@@ -24,9 +24,9 @@ copyright = '2018, Jungtaek Kim and Seungjin Choi'
 author = 'Jungtaek Kim and Seungjin Choi'
 
 # The short X.Y version
-version = ''
+version = '0.1.0'
 # The full version, including alpha/beta/rc tags
-release = ''
+release = 'alpha'
 
 
 # -- General configuration ---------------------------------------------------
