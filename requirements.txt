@@ -3,3 +3,5 @@ scipy
 matplotlib
 pytest
 python-coveralls
+sphinx
+sphinx-autobuild
