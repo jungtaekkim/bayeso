@@ -4,7 +4,9 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Documentation Status](https://readthedocs.org/projects/bayeso/badge/?version=latest)](http://bayeso.readthedocs.io/en/latest/?badge=latest)
 
-Simple, but essential Bayesian optimization package. 
+Simple, but essential Bayesian optimization package.
+
+* [Online documentation](http://bayeso.readthedocs.io)
 
 ## Installation
 We recommend it should be installed in `virtualenv`.

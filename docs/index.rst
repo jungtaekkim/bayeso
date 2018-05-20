@@ -6,15 +6,9 @@
 Welcome to bayeso's documentation!
 ==================================
 
-`bayeso <https://github.com/jungtaekkim/bayeso>`_ is a simple, but essential Bayesian optimization package, written in Python. It is developed by machine learnign group at POSTECH. This project is open source and has `the MIT license <https://opensource.org/licenses/MIT>`_.
+`bayeso <https://github.com/jungtaekkim/bayeso>`_ is a simple, but essential Bayesian optimization package, written in Python. It is developed by `machine learning group <http://mlg.postech.ac.kr>`_ at POSTECH. This project is licensed under `the MIT license <https://opensource.org/licenses/MIT>`_.
 
 The code can be found in `our GitHub repository <https://github.com/jungtaekkim/bayeso>`_.
-
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
-
-   gpr_simple
 
 
 Indices and tables
@@ -23,3 +17,10 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
+
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+   gpr_simple
