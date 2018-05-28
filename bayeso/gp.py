@@ -2,65 +2,6 @@ import numpy as np
 import scipy 
 import scipy.optimize
 
-def cov_se(x, xp, lengthscales, signal):
-    return signal**2 * np.exp(-0.5 * np.linalg.norm((x - xp)/lengthscales)**2)
-
-def cov_main(str_cov, X, Xs, hyps, jitter=1e-5):
-    num_X = X.shape[0]
-    num_d_X = X.shape[1]
-    num_Xs = Xs.shape[0]
-    num_d_Xs = Xs.shape[1]
-    if num_d_X != num_d_Xs:
-        print('ERROR: matrix dimensions: ', num_d_X, num_d_Xs)
-        raise ValueError('matrix dimensions are different.')
-
-    cov_ = np.zeros((num_X, num_Xs))
-    if num_X == num_Xs:
-        cov_ += np.eye(num_X) * jitter
-    if str_cov == 'se':
-        if hyps.get('lengthscales') is None or hyps.get('signal') is None:
-            raise ValueError('hyperparameters are insufficient.')
-        for ind_X in range(0, num_X):
-            for ind_Xs in range(0, num_Xs):
-                cov_[ind_X, ind_Xs] += cov_se(X[ind_X], Xs[ind_Xs], hyps['lengthscales'], hyps['signal'])
-    else:
-        raise ValueError('kernel is inappropriate.')
-    return cov_
-
-def get_hyps(str_cov, num_dim):
-    hyps = dict()
-    hyps['noise'] = 0.1
-    if str_cov == 'se':
-        hyps['signal'] = 1.0
-        hyps['lengthscales'] = np.zeros(num_dim) + 1.0
-    else:
-        raise ValueError('kernel is inappropriate.')
-    return hyps
-
-def convert_hyps(str_cov, hyps):
-    list_hyps = []
-    list_hyps.append(hyps['noise'])
-    if str_cov == 'se':
-        list_hyps.append(hyps['signal'])
-        for elem_lengthscale in hyps['lengthscales']:
-            list_hyps.append(elem_lengthscale)
-    else:
-        raise ValueError('kernel is inappropriate.')
-    return np.array(list_hyps)
-
-def restore_hyps(str_cov, hyps):
-    hyps = hyps.flatten()
-    dict_hyps = dict()
-    dict_hyps['noise'] = hyps[0]
-    if str_cov == 'se':
-        dict_hyps['signal'] = hyps[1]
-        list_lengthscales = []
-        for ind_elem in range(2, len(hyps)):
-            list_lengthscales.append(hyps[ind_elem])
-        dict_hyps['lengthscales'] = np.array(list_lengthscales)
-    else:
-        raise ValueError('kernel is inappropriate.')
-    return dict_hyps
 
 def get_prior_mu(prior_mu, X):
     if prior_mu is None:

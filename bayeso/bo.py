@@ -3,7 +3,8 @@ from scipy.optimize import minimize
 
 from bayeso import gp
 from bayeso import acquisition
-from bayeso import utils
+from bayeso.utils import utils_common
+
 
 NUM_GRID = 50
 NUM_RANDOM = 1000
