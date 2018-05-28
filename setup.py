@@ -16,7 +16,7 @@ setup(
     url='https://github.com/jungtaekkim/bayeso',
     license='MIT',
     description='Bayesian optimization package',
-    packages=['bayeso'],
+    packages=['bayeso', 'bayeso.utils'],
     python_requires='>=3',
     install_requires=required,
 )
