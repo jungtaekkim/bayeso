@@ -3,44 +3,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pylab
 
-TIME_PAUSE = 2.0
-RANGE_SHADE = 1.96
+from bayeso import constants
 
-COLORS = [
-    'red',
-    'blue',
-    'green',
-    'orange',
-    'purple',
-    'olive',
-    'darkred',
-    'deepskyblue',
-    'limegreen',
-    'lightsalmon',
-    'navy',
-    'aquamarine',
-    'rosybrown',
-    'darkslategray',
-    'darkkhaki',
-]
-
-MARKERS = [
-    '.',
-    'x',
-    '*',
-    '+',
-    '^',
-    'v',
-    '<',
-    '>',
-    'd',
-    ',',
-    '8',
-    'h',
-    '1',
-    '2',
-    '3',
-]
 
 def get_minimum(list_read, num_init):
     list_all = []
@@ -63,7 +27,14 @@ def get_minimum(list_read, num_init):
 #    print mean_min, std_min
     return mean_min, std_min
 
-def plot_gp(X_train, Y_train, X_test, mu, sigma, path_save=None, str_postfix=None, is_tex=False):
+def plot_gp(X_train, Y_train, X_test, mu, sigma,
+    path_save=None,
+    str_postfix=None,
+    is_tex=False,
+    time_pause=constants.TIME_PAUSE,
+    range_shade=constants.RANGE_SHADE,
+    colors=constants.COLORS,
+):
     if is_tex:
         plt.rc('text', usetex=True)
     else:
@@ -72,18 +43,18 @@ def plot_gp(X_train, Y_train, X_test, mu, sigma, path_save=None, str_postfix=Non
     ax = plt.gca()
     ax.plot(X_train.flatten(), Y_train.flatten(), 
         'x', 
-        c=COLORS[0], 
+        c=colors[0], 
         markersize=10, 
         mew=4)
     ax.plot(X_test.flatten(), mu.flatten(), 
-        c=COLORS[1], 
+        c=colors[1], 
         linewidth=4, 
         marker='None')
            
     ax.fill_between(X_test.flatten(), 
-        mu.flatten() - RANGE_SHADE * sigma.flatten(), 
-        mu.flatten() + RANGE_SHADE * sigma.flatten(), 
-        color=COLORS[1], 
+        mu.flatten() - range_shade * sigma.flatten(), 
+        mu.flatten() + range_shade * sigma.flatten(), 
+        color=colors[1], 
         alpha=0.3)
     ax.set_xlabel('$x$', fontsize=32)
     ax.set_ylabel('$y$', fontsize=32)
@@ -97,10 +68,20 @@ def plot_gp(X_train, Y_train, X_test, mu, sigma, path_save=None, str_postfix=Non
         plt.savefig(os.path.join(path_save, str_figure + '.pdf'), format='pdf', transparent=True, bbox_inches='tight', frameon=False)
 
     plt.ion()
-    plt.pause(TIME_PAUSE)
+    plt.pause(time_pause)
     plt.close('all')
 
-def plot_minimum(list_all, list_str_label, num_init, is_std, is_marker=True, is_legend=False, is_tex=False, path_save=None, str_postfix=None):
+def plot_minimum(list_all, list_str_label, num_init, is_std,
+    is_marker=True,
+    is_legend=False,
+    is_tex=False,
+    path_save=None,
+    str_postfix=None,
+    time_pause=constants.TIME_PAUSE,
+    range_shade=constants.RANGE_SHADE,
+    markers=constants.MARKERS,
+    colors=constants.COLORS,
+):
     if is_tex:
         plt.rc('text', usetex=True)
     else:
@@ -108,8 +89,8 @@ def plot_minimum(list_all, list_str_label, num_init, is_std, is_marker=True, is_
     fig = plt.figure(figsize=(8, 6))
     ax = plt.gca()
     for ind_read, list_read in enumerate(list_all):
-        ind_color = ind_read % len(COLORS)
-        ind_marker = ind_read % len(MARKERS)
+        ind_color = ind_read % len(colors)
+        ind_marker = ind_read % len(markers)
         mean_min, std_min = get_minimum(list_read, num_init)
         x_data = range(0, mean_min.shape[0])
         y_data = mean_min
@@ -117,23 +98,23 @@ def plot_minimum(list_all, list_str_label, num_init, is_std, is_marker=True, is_
         if is_marker:
             ax.plot(x_data, y_data, 
                 label=list_str_label[ind_read], 
-                c=COLORS[ind_color], 
+                c=colors[ind_color], 
                 linewidth=4, 
-                marker=MARKERS[ind_marker], 
+                marker=markers[ind_marker], 
                 markersize=10, 
                 mew=3)
         else:
             ax.plot(x_data, y_data, 
                 label=list_str_label[ind_read], 
-                c=COLORS[ind_color], 
+                c=colors[ind_color], 
                 linewidth=4,
                 marker='None')
            
         if is_std:
             ax.fill_between(x_data, 
-                y_data - RANGE_SHADE * std_data, 
-                y_data + RANGE_SHADE * std_data, 
-                color=COLORS[ind_color], 
+                y_data - range_shade * std_data, 
+                y_data + range_shade * std_data, 
+                color=colors[ind_color], 
                 alpha=0.3)
     lines, labels = ax.get_legend_handles_labels()
     ax.set_xlabel('Iteration', fontsize=27)
@@ -156,10 +137,17 @@ def plot_minimum(list_all, list_str_label, num_init, is_std, is_marker=True, is_
             fig_legend.legend(lines, list_str_label, 'center', fancybox=False, edgecolor='black', fontsize=32)
             fig_legend.savefig(os.path.join(path_save, 'legend_' + str_postfix + '.pdf'), format='pdf', transparent=True, bbox_inches='tight', frameon=False)
     plt.ion()
-    plt.pause(TIME_PAUSE)
+    plt.pause(time_pause)
     plt.close('all')
 
-def plot_bo_step(X_train, Y_train, X_test, Y_test, mean_test, std_test, path_save=None, str_postfix=None, num_init=None, is_tex=False):
+def plot_bo_step(X_train, Y_train, X_test, Y_test, mean_test, std_test,
+    path_save=None,
+    str_postfix=None,
+    num_init=None,
+    is_tex=False,
+    time_pause=constants.TIME_PAUSE,
+    range_shade=constants.RANGE_SHADE,
+):
     if is_tex:
         plt.rc('text', usetex=True)
     else:
@@ -172,8 +160,8 @@ def plot_bo_step(X_train, Y_train, X_test, Y_test, mean_test, std_test, path_sav
     ax.plot(X_test, Y_test, 'g', linewidth=4)
     ax.plot(X_test, mean_test, 'b', linewidth=4)
     ax.fill_between(X_test.flatten(), 
-        mean_test.flatten() - RANGE_SHADE * std_test.flatten(), 
-        mean_test.flatten() + RANGE_SHADE * std_test.flatten(), 
+        mean_test.flatten() - range_shade * std_test.flatten(), 
+        mean_test.flatten() + range_shade * std_test.flatten(), 
         color='blue', 
         alpha=0.3)
     if num_init is not None:
@@ -195,10 +183,17 @@ def plot_bo_step(X_train, Y_train, X_test, Y_test, mean_test, std_test, path_sav
     if path_save is not None and str_postfix is not None:
         plt.savefig(os.path.join(path_save, 'bo_step_' + str_postfix + '.pdf'), format='pdf', transparent=True, bbox_inches='tight', frameon=False)
     plt.ion()
-    plt.pause(TIME_PAUSE)
+    plt.pause(time_pause)
     plt.close('all')
 
-def plot_bo_step_acq(X_train, Y_train, X_test, Y_test, mean_test, std_test, acq_test, path_save=None, str_postfix=None, num_init=None, is_tex=False):
+def plot_bo_step_acq(X_train, Y_train, X_test, Y_test, mean_test, std_test, acq_test,
+    path_save=None,
+    str_postfix=None,
+    num_init=None,
+    is_tex=False,
+    time_pause=constants.TIME_PAUSE,
+    range_shade=constants.RANGE_SHADE,
+):
     if is_tex:
         plt.rc('text', usetex=True)
     else:
@@ -210,8 +205,8 @@ def plot_bo_step_acq(X_train, Y_train, X_test, Y_test, mean_test, std_test, acq_
     ax1.plot(X_test, Y_test, 'g', linewidth=4)
     ax1.plot(X_test, mean_test, 'b', linewidth=4)
     ax1.fill_between(X_test.flatten(), 
-        mean_test.flatten() - RANGE_SHADE * std_test.flatten(), 
-        mean_test.flatten() + RANGE_SHADE * std_test.flatten(), 
+        mean_test.flatten() - range_shade * std_test.flatten(), 
+        mean_test.flatten() + range_shade * std_test.flatten(), 
         color='blue', 
         alpha=0.3)
     if num_init is not None:
@@ -237,7 +232,7 @@ def plot_bo_step_acq(X_train, Y_train, X_test, Y_test, mean_test, std_test, acq_
     if path_save is not None and str_postfix is not None:
         plt.savefig(os.path.join(path_save, 'bo_step_acq_' + str_postfix + '.pdf'), format='pdf', transparent=True, bbox_inches='tight', frameon=False)
     plt.ion()
-    plt.pause(TIME_PAUSE)
+    plt.pause(time_pause)
     plt.close('all')
 
 
