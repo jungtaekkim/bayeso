@@ -15,3 +15,6 @@ def test_import_utils():
 
 def test_import_benchmarks():
     import bayeso.benchmarks
+
+def test_import_constants():
+    import bayeso.constants
