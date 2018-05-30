@@ -1,3 +1,7 @@
+# gp
+# author: Jungtaek Kim (jtkim@postech.ac.kr)
+# last updated: May 30, 2018
+
 import numpy as np
 import scipy 
 import scipy.optimize

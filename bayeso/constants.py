@@ -1,3 +1,7 @@
+# constants
+# author: Jungtaek Kim (jtkim@postech.ac.kr)
+# last updated: May 30, 2018
+
 JITTER_ACQ = 1e-5
 
 TIME_PAUSE = 2.0

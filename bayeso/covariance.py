@@ -1,3 +1,7 @@
+# covariance
+# author: Jungtaek Kim (jtkim@postech.ac.kr)
+# last updated: May 30, 2018
+
 import numpy as np
 
 

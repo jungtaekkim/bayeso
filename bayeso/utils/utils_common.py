@@ -1,3 +1,7 @@
+# utils_common
+# author: Jungtaek Kim (jtkim@postech.ac.kr)
+# last updated: May 30, 2018
+
 import os
 import numpy as np
 import matplotlib.pyplot as plt
