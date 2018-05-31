@@ -7,5 +7,6 @@ install:
 script:
   - pytest
 after_success:
-  - pip install python-coveralls
+  - pip install coveralls
+  - coverage run --source=bayeso setup.py test
   - coveralls

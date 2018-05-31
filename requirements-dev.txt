@@ -1,5 +1,5 @@
 pytest
-python-coveralls
+coveralls
 sphinx
 sphinx-autobuild
 sphinx_rtd_theme
