@@ -1,6 +1,6 @@
 # test_utils_covariance
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: May 30, 2018
+# last updated: Jun 01, 2018
 
 import pytest
 import numpy as np
@@ -21,6 +21,7 @@ def test_get_hyps():
     cur_hyps =  utils_covariance.get_hyps('se', 2)
     assert cur_hyps['noise'] == 0.1
     assert cur_hyps['signal'] == 1.0
+    assert len(cur_hyps['lengthscales'].shape) == 1
     assert (cur_hyps['lengthscales'] == np.array([1.0, 1.0])).all()
 
 def test_convert_hyps():
@@ -39,3 +40,20 @@ def test_convert_hyps():
     assert converted_hyps[1] == cur_hyps['signal']
     assert (converted_hyps[2:] == cur_hyps['lengthscales']).all()
 
+def test_restore_hyps():
+    with pytest.raises(AssertionError) as error:
+        utils_covariance.restore_hyps(1.2, 2.1)
+    with pytest.raises(AssertionError) as error:
+        utils_covariance.restore_hyps(1.2, np.array([1.0, 1.0]))
+    with pytest.raises(AssertionError) as error:
+        utils_covariance.restore_hyps('se', 2.1)
+    with pytest.raises(AssertionError) as error:
+        utils_covariance.restore_hyps('abc', 2.1)
+    with pytest.raises(AssertionError) as error:
+        utils_covariance.restore_hyps('se', np.array([[1.0, 1.0], [1.0, 1.0]]))
+
+    cur_hyps = np.array([0.1, 1.0, 1.0, 1.0, 1.0])
+    restored_hyps = utils_covariance.restore_hyps('se', cur_hyps)
+    assert restored_hyps['noise'] == cur_hyps[0]
+    assert restored_hyps['signal'] == cur_hyps[1]
+    assert (restored_hyps['lengthscales'] == cur_hyps[2:]).all()
