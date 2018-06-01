@@ -3,6 +3,7 @@
 # last updated: May 30, 2018
 
 JITTER_ACQ = 1e-5
+JITTER_COV = 1e-5
 
 TIME_PAUSE = 2.0
 RANGE_SHADE = 1.96

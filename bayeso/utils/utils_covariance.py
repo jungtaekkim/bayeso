@@ -1,6 +1,6 @@
 # utils_covariance
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: May 30, 2018
+# last updated: Jun 01, 2018
 
 import numpy as np
 
@@ -14,8 +14,10 @@ def get_hyps(str_cov, num_dim):
     if str_cov == 'se':
         hyps['signal'] = 1.0
         hyps['lengthscales'] = np.zeros(num_dim) + 1.0
+    elif str_cov == 'matern52' or str_cov == 'matern32':
+        raise NotImplementedError('get_hyps: matern52 or matern32.')
     else:
-        raise ValueError('get_hyps: str_cov is not defined.')
+        raise ValueError('get_hyps: missing condition for str_cov.')
     return hyps
 
 def convert_hyps(str_cov, hyps):
@@ -28,8 +30,10 @@ def convert_hyps(str_cov, hyps):
         list_hyps.append(hyps['signal'])
         for elem_lengthscale in hyps['lengthscales']:
             list_hyps.append(elem_lengthscale)
+    elif str_cov == 'matern52' or str_cov == 'matern32':
+        raise NotImplementedError('convert_hyps: matern52 or matern32.')
     else:
-        raise ValueError('convert_hyps: str_cov is not defined.')
+        raise ValueError('convert_hyps: missing condition for str_cov.')
     return np.array(list_hyps)
 
 def restore_hyps(str_cov, hyps):
@@ -45,6 +49,8 @@ def restore_hyps(str_cov, hyps):
         for ind_elem in range(2, len(hyps)):
             list_lengthscales.append(hyps[ind_elem])
         dict_hyps['lengthscales'] = np.array(list_lengthscales)
+    elif str_cov == 'matern52' or str_cov == 'matern32':
+        raise NotImplementedError('restore_hyps: matern52 or matern32.')
     else:
-        raise ValueError('restore_hyps: str_cov is not defined.')
+        raise ValueError('restore_hyps: missing condition for str_cov.')
     return dict_hyps
