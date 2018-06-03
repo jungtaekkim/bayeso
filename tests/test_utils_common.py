@@ -41,12 +41,12 @@ def test_get_minimum():
         [2.3, 4.9, 2.9, 8.2, 3.2, 4.2, 4.9],
         [0.8, 2.4, 5.4, 4.5, 0.3, 1.5, 2.3],
     ])
-    truth = np.array([
+    truth_all_data = np.array([
         [2.1, 2.0, 1.0, 1.0, 0.4],
         [2.3, 2.3, 2.3, 2.3, 2.3],
         [0.8, 0.8, 0.3, 0.3, 0.3],
     ])
     cur_minimum, cur_mean, cur_std = utils_common.get_minimum(all_data, num_init)
-    assert (cur_minimum == truth).all()
-    assert (cur_mean == np.mean(truth, axis=0)).all()
-    assert (cur_std == np.std(truth, axis=0)).all()
+    assert (cur_minimum == truth_all_data).all()
+    assert (cur_mean == np.mean(truth_all_data, axis=0)).all()
+    assert (cur_std == np.std(truth_all_data, axis=0)).all()
