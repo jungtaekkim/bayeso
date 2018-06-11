@@ -96,4 +96,5 @@ def test_log_ml():
     truth_log_ml = 65.14727922868668
     assert log_ml - truth_log_ml < TEST_EPSILON
 
-
+def test_get_optimized_kernels():
+    pass
