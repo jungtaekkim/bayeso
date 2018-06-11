@@ -108,7 +108,7 @@ class BO():
     def _optimize_objective(self, fun_acq, X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps):
         X_test = np.atleast_2d(X_test)
         pred_mean, pred_std = gp.predict_test_(X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps, self.str_cov, self.prior_mu)
-        result_acq = fun_acq(pred_mean, pred_std, Y_train)
+        result_acq = fun_acq(np.squeeze(pred_mean), np.squeeze(pred_std), Y_train)
         return result_acq
 
     def _optimize(self, fun_obj, is_grid_optimized=True, verbose=False):

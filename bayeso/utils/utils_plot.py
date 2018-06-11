@@ -48,17 +48,17 @@ def plot_gp(X_train, Y_train, X_test, mu, sigma,
 
     if Y_test_truth is not None:
         ax.plot(X_test.flatten(), Y_test_truth.flatten(),
-            c=colors[2],
+            c=colors[1],
             linewidth=4,
             marker='None')
     ax.plot(X_test.flatten(), mu.flatten(), 
-        c=colors[1], 
+        c=colors[2], 
         linewidth=4, 
         marker='None')
     ax.fill_between(X_test.flatten(), 
         mu.flatten() - range_shade * sigma.flatten(), 
         mu.flatten() + range_shade * sigma.flatten(), 
-        color=colors[1], 
+        color=colors[2], 
         alpha=0.3)
     ax.plot(X_train.flatten(), Y_train.flatten(), 
         'x', 
@@ -177,7 +177,7 @@ def plot_bo_step(X_train, Y_train, X_test, Y_test, mean_test, std_test,
     ax.fill_between(X_test.flatten(), 
         mean_test.flatten() - range_shade * std_test.flatten(), 
         mean_test.flatten() + range_shade * std_test.flatten(), 
-        color='blue', 
+        color='b', 
         alpha=0.3)
     if num_init is not None:
         if X_train.shape[0] > num_init:
@@ -190,7 +190,7 @@ def plot_bo_step(X_train, Y_train, X_test, Y_test, mean_test, std_test,
         ax.plot(X_train[:X_train.shape[0]-1, :], Y_train[:X_train.shape[0]-1, :], 'rx', ms=14, markeredgewidth=6)
         ax.plot(X_train[X_train.shape[0]-1, :], Y_train[X_train.shape[0]-1, :], c='orange', marker='+', ms=18, markeredgewidth=6)
 
-    ax.set_xlabel('$x$', fontsize=32)
+    ax.set_xlabel('$\mathbf{x}$', fontsize=32)
     ax.set_ylabel('$y$', fontsize=32)
     ax.set_xlim([np.min(X_test), np.max(X_test)])
     ax.tick_params(labelsize=22)
@@ -222,7 +222,7 @@ def plot_bo_step_acq(X_train, Y_train, X_test, Y_test, mean_test, std_test, acq_
     ax1.fill_between(X_test.flatten(), 
         mean_test.flatten() - range_shade * std_test.flatten(), 
         mean_test.flatten() + range_shade * std_test.flatten(), 
-        color='blue', 
+        color='b', 
         alpha=0.3)
     if num_init is not None:
         if X_train.shape[0] > num_init:
@@ -236,8 +236,8 @@ def plot_bo_step_acq(X_train, Y_train, X_test, Y_test, mean_test, std_test, acq_
     ax1.tick_params(labelsize=22)
 
     ax2.plot(X_test, acq_test, 'b', linewidth=4)
-    ax2.set_xlabel('$x$', fontsize=32)
-    ax2.set_ylabel('Acq.', fontsize=32)
+    ax2.set_xlabel('$\mathbf{x}$', fontsize=32)
+    ax2.set_ylabel('acq.', fontsize=32)
     ax2.spines['top'].set_color('none')
     ax2.spines['right'].set_color('none')
     ax2.set_xlim([np.min(X_test), np.max(X_test)])
