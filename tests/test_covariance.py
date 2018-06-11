@@ -13,13 +13,14 @@ TEST_EPSILON = 1e-5
 
 def test_cov_se():
     with pytest.raises(AssertionError) as error:
-        covariance.cov_se(np.zeros(2), np.zeros(2), 1.0, 0.1)
+        covariance.cov_se(np.zeros(2), np.zeros(2), np.array([1.0, 1.0, 1.0]), 0.1)
     with pytest.raises(AssertionError) as error:
         covariance.cov_se(np.zeros(2), np.zeros(3), np.array([1.0, 1.0]), 0.1)
     with pytest.raises(AssertionError) as error:
         covariance.cov_se(np.zeros(3), np.zeros(2), np.array([1.0, 1.0]), 0.1)
     with pytest.raises(AssertionError) as error:
         covariance.cov_se(np.zeros(2), np.zeros(2), np.array([1.0, 1.0]), 1)
+    assert covariance.cov_se(np.zeros(2), np.zeros(2), 1.0, 0.1) - 0.01 < TEST_EPSILON
 
     bx = np.array([1.0, 2.0, 0.0])
     bxp = np.array([2.0, 1.0, 1.0])

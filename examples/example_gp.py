@@ -12,7 +12,7 @@ def main():
         [1],
         [2],
     ])
-    Y_train = np.cos(X_train) + np.random.randn(X_train.shape[0], 1) * 0.2
+    Y_train = np.cos(X_train) + np.random.randn(X_train.shape[0], 1) * 0.1
     num_test = 200
     X_test = np.linspace(-3, 3, num_test)
     X_test = X_test.reshape((num_test, 1))
