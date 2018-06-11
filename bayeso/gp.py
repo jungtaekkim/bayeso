@@ -96,7 +96,7 @@ def predict_test_(X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps, str_cov=
     assert len(X_test.shape) == 2
     assert X_train.shape[0] == Y_train.shape[0]
     assert X_train.shape[1] == X_test.shape[1]
-    assert (cov_X_X.shape == inv_cov_X_X.shape).all()
+    assert (np.array(cov_X_X.shape) == np.array(inv_cov_X_X.shape)).all()
 
     prior_mu_train = get_prior_mu(prior_mu, X_train)
     prior_mu_test = get_prior_mu(prior_mu, X_test)
@@ -106,7 +106,7 @@ def predict_test_(X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps, str_cov=
 
     mu_Xs = np.dot(np.dot(cov_X_Xs.T, inv_cov_X_X), Y_train - prior_mu_train) + prior_mu_test
     Sigma_Xs = cov_Xs_Xs - np.dot(np.dot(cov_X_Xs.T, inv_cov_X_X), cov_X_Xs)
-    return mu_Xs, np.sqrt(np.maximum(np.diag(Sigma_Xs), 0.0))
+    return mu_Xs, np.expand_dims(np.sqrt(np.maximum(np.diag(Sigma_Xs), 0.0)), axis=1)
 
 def predict_test(X_train, Y_train, X_test, hyps, str_cov='se', prior_mu=None):
     assert isinstance(X_train, np.ndarray)

@@ -8,69 +8,80 @@ import matplotlib.pyplot as plt
 import pylab
 
 from bayeso import constants
+from bayeso.utils import utils_common
 
-
-def get_minimum(list_read, num_init):
-    list_all = []
-    for list_file in list_read:
-        cur_min = np.inf
-        list_min = []
-        for ind_cur in range(0, num_init):
-#            print list_file
-            if cur_min > float(list_file[ind_cur]):
-                cur_min = float(list_file[ind_cur])
-        list_min.append(float(cur_min))
-        for ind_cur in range(num_init, len(list_file)):
-            if cur_min > float(list_file[ind_cur]):
-                cur_min = float(list_file[ind_cur])
-            list_min.append(float(cur_min))
-        list_all.append(list_min)
-    list_all = np.array(list_all)
-    mean_min = np.mean(list_all, axis=0)
-    std_min = np.std(list_all, axis=0)
-#    print mean_min, std_min
-    return mean_min, std_min
 
 def plot_gp(X_train, Y_train, X_test, mu, sigma,
+    Y_test_truth=None,
     path_save=None,
     str_postfix=None,
     is_tex=False,
+    is_zero_axis=False,
     time_pause=constants.TIME_PAUSE,
     range_shade=constants.RANGE_SHADE,
     colors=constants.COLORS,
+    str_x_axis='$\mathbf{x}$',
+    str_y_axis='$y$',
 ):
+    assert len(X_train.shape) == 2
+    assert len(X_test.shape) == 2
+    assert len(Y_train.shape) == 2
+    assert len(mu.shape) == 2
+    assert len(sigma.shape) == 2
+    assert X_train.shape[1] == X_test.shape[1] == 1
+    assert Y_train.shape[1] == 1
+    assert X_train.shape[0] == Y_train.shape[0]
+    assert mu.shape[1] == 1
+    assert sigma.shape[1] == 1
+    assert X_test.shape[0] == mu.shape[0] == sigma.shape[0]
+    if Y_test_truth is not None:
+        assert len(Y_test_truth.shape) == 2
+        assert Y_test_truth.shape[1] == 1
+        assert X_test.shape[0] == Y_test_truth.shape[0]
+
     if is_tex:
         plt.rc('text', usetex=True)
     else:
         plt.rc('pdf', fonttype=42)
     fig = plt.figure(figsize=(8, 6))
     ax = plt.gca()
-    ax.plot(X_train.flatten(), Y_train.flatten(), 
-        'x', 
-        c=colors[0], 
-        markersize=10, 
-        mew=4)
+
+    if Y_test_truth is not None:
+        ax.plot(X_test.flatten(), Y_test_truth.flatten(),
+            c=colors[2],
+            linewidth=4,
+            marker='None')
     ax.plot(X_test.flatten(), mu.flatten(), 
         c=colors[1], 
         linewidth=4, 
         marker='None')
-           
     ax.fill_between(X_test.flatten(), 
         mu.flatten() - range_shade * sigma.flatten(), 
         mu.flatten() + range_shade * sigma.flatten(), 
         color=colors[1], 
         alpha=0.3)
-    ax.set_xlabel('$x$', fontsize=32)
-    ax.set_ylabel('$y$', fontsize=32)
+    ax.plot(X_train.flatten(), Y_train.flatten(), 
+        'x', 
+        c=colors[0], 
+        markersize=10, 
+        mew=4)
+    
+    ax.set_xlabel(str_x_axis, fontsize=32)
+    ax.set_ylabel(str_y_axis, fontsize=32)
     ax.set_xlim([np.min(X_test), np.max(X_test)])
     ax.tick_params(labelsize=22)
     ax.spines['top'].set_color('none')
     ax.spines['right'].set_color('none')
-#    ax.spines['bottom'].set_position('zero')
-    if path_save is not None and str_figure is not None:
+    if is_zero_axis:
+        ax.spines['bottom'].set_position('zero')
+    if path_save is not None and str_postfix is not None:
         str_figure = 'gp_' + str_postfix
-        plt.savefig(os.path.join(path_save, str_figure + '.pdf'), format='pdf', transparent=True, bbox_inches='tight', frameon=False)
-
+        plt.savefig(os.path.join(path_save, str_figure + '.pdf'),
+            format='pdf',
+            transparent=True,
+            bbox_inches='tight',
+            frameon=False
+        )
     plt.ion()
     plt.pause(time_pause)
     plt.close('all')
@@ -95,7 +106,7 @@ def plot_minimum(list_all, list_str_label, num_init, is_std,
     for ind_read, list_read in enumerate(list_all):
         ind_color = ind_read % len(colors)
         ind_marker = ind_read % len(markers)
-        mean_min, std_min = get_minimum(list_read, num_init)
+        mean_min, std_min = utils_common.get_minimum(list_read, num_init)
         x_data = range(0, mean_min.shape[0])
         y_data = mean_min
         std_data = std_min

@@ -9,9 +9,12 @@ from bayeso import constants
 def cov_se(bx, bxp, lengthscales, signal):
     assert isinstance(bx, np.ndarray)
     assert isinstance(bxp, np.ndarray)
-    assert isinstance(lengthscales, np.ndarray)
+    assert isinstance(lengthscales, np.ndarray) or isinstance(lengthscales, float)
     assert isinstance(signal, float)
-    assert bx.shape[0] == bxp.shape[0] == lengthscales.shape[0]
+    if isinstance(lengthscales, np.ndarray):
+        assert bx.shape[0] == bxp.shape[0] == lengthscales.shape[0]
+    else:
+        assert bx.shape[0] == bxp.shape[0]
 
     return signal**2 * np.exp(-0.5 * np.linalg.norm((bx - bxp) / lengthscales, ord=2)**2)
 
