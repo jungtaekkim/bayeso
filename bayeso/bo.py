@@ -125,7 +125,7 @@ class BO():
         return result_optimized
 
     def optimize(self, X_train, Y_train, is_grid_optimized=False, verbose=False):
-        cov_X_X, inv_cov_X_X, hyps = gp.get_optimized_kernels(X_train, Y_train, self.prior_mu, self.str_cov, verbose=verbose)
+        cov_X_X, inv_cov_X_X, hyps = gp.get_optimized_kernel(X_train, Y_train, self.prior_mu, self.str_cov, verbose=verbose)
 
         # NEED: to add acquisition function
         if self.str_acq == 'pi':

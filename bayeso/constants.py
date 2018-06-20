@@ -3,7 +3,7 @@
 # last updated: May 30, 2018
 
 JITTER_ACQ = 1e-5
-JITTER_COV = 1e-2
+JITTER_COV = 1e-5
 
 OPTIMIZER_METHOD = 'L-BFGS-B'
 

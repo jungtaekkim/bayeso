@@ -53,7 +53,7 @@ def log_ml(X_train, Y_train, hyps, str_cov, prior_mu_train):
     third_term = -float(X_train.shape[1]) / 2.0 * np.log(2.0 * np.pi)
     return np.squeeze(first_term + second_term + third_term)
 
-def get_optimized_kernels(X_train, Y_train, prior_mu, str_cov, str_optimizer_method=constants.OPTIMIZER_METHOD, verbose=False):
+def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov, str_optimizer_method=constants.OPTIMIZER_METHOD, verbose=False):
     assert isinstance(X_train, np.ndarray)
     assert isinstance(Y_train, np.ndarray)
     assert callable(prior_mu) or prior_mu is None
@@ -95,6 +95,8 @@ def predict_test_(X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps, str_cov=
     assert len(X_train.shape) == 2
     assert len(Y_train.shape) == 2
     assert len(X_test.shape) == 2
+    assert len(cov_X_X.shape) == 2
+    assert len(inv_cov_X_X.shape) == 2
     assert X_train.shape[0] == Y_train.shape[0]
     assert X_train.shape[1] == X_test.shape[1]
     assert (np.array(cov_X_X.shape) == np.array(inv_cov_X_X.shape)).all()
@@ -138,6 +140,6 @@ def predict_optimized(X_train, Y_train, X_test, str_cov='se', prior_mu=None, ver
     assert X_train.shape[0] == Y_train.shape[0]
     assert X_train.shape[1] == X_test.shape[1]
 
-    cov_X_X, inv_cov_X_X, hyps = get_optimized_kernels(X_train, Y_train, prior_mu, str_cov, verbose=verbose)
+    cov_X_X, inv_cov_X_X, hyps = get_optimized_kernel(X_train, Y_train, prior_mu, str_cov, verbose=verbose)
     mu_Xs, sigma_Xs = predict_test_(X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps, str_cov, prior_mu)
     return mu_Xs, sigma_Xs
