@@ -1,6 +1,6 @@
 # utils_common
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: Jun 01, 2018
+# last updated: June 01, 2018
 
 import numpy as np
 

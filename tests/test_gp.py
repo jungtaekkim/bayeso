@@ -7,7 +7,6 @@ import pytest
 
 from bayeso import gp
 from bayeso.utils import utils_covariance
-from bayeso import benchmarks
 
 
 TEST_EPSILON = 1e-5

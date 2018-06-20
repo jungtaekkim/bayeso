@@ -1,19 +1,23 @@
 # utils_covariance
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: Jun 01, 2018
+# last updated: June 20, 2018
 
 import numpy as np
 
 
-def get_hyps(str_cov, num_dim):
+def get_hyps(str_cov, num_dim, is_ard=True):
     assert isinstance(str_cov, str)
     assert isinstance(num_dim, int)
+    assert isinstance(is_ard, bool)
 
     hyps = dict()
     hyps['noise'] = 0.1
     if str_cov == 'se':
         hyps['signal'] = 1.0
-        hyps['lengthscales'] = np.zeros(num_dim) + 1.0
+        if is_ard:
+            hyps['lengthscales'] = np.zeros(num_dim) + 1.0
+        else:
+            hyps['lengthscales'] = 1.0
     elif str_cov == 'matern52' or str_cov == 'matern32':
         raise NotImplementedError('get_hyps: matern52 or matern32.')
     else:

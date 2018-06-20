@@ -4,6 +4,7 @@
 
 import numpy as np
 from scipy.optimize import minimize
+import sobol_seq
 
 from bayeso import gp
 from bayeso import acquisition
@@ -12,7 +13,21 @@ from bayeso import constants
 
 
 class BO():
-    def __init__(self, arr_range, str_cov=constants.STR_GP_COV, is_ard=True, str_acq=constants.STR_BO_ACQ, prior_mu=None):
+    def __init__(self, arr_range,
+        str_cov=constants.STR_GP_COV,
+        str_acq=constants.STR_BO_ACQ,
+        is_ard=True,
+        prior_mu=None,
+    ):
+        # TODO: use is_ard
+        assert isinstance(arr_range, np.ndarray)
+        assert isinstance(str_cov, str)
+        assert isinstance(str_acq, str)
+        assert isinstance(is_ard, bool)
+        assert callable(prior_mu) or prior_mu is None
+        assert len(arr_range.shape) == 2
+        assert arr_range.shape[1] == 2
+
         self.arr_range = arr_range
         self.str_cov = str_cov
         self.str_acq = str_acq
@@ -28,33 +43,12 @@ class BO():
         arr_initial = np.array(list_initial)
         return arr_initial
 
-    def _get_pseudo_latin(self, num_samples):
-        num_range = self.arr_range.shape[0]
-        num_samples_per_dim = int(num_samples / num_range)
-        arr_samples = None
-        for ind_elem, elem in enumerate(self.arr_range):
-            list_cur_samples = []
-            for ind_cur_elem, cur_elem in enumerate(self.arr_range):
-                if ind_cur_elem == ind_elem:
-                    list_cur_samples.append(np.linspace(elem[0], elem[1], num_samples_per_dim))
-                else:
-                    list_cur_samples.append(np.random.uniform(elem[0], elem[1], num_samples_per_dim))
-            list_cur_samples = np.array(list_cur_samples)
-            list_cur_samples = list_cur_samples.T
-            if arr_samples is None:
-                arr_samples = list_cur_samples
-            else:
-                arr_samples = np.vstack((arr_samples, list_cur_samples))
-        return arr_samples
-
-    '''
     def _get_sobol_seq(self, num_samples):
         num_range = self.arr_range.shape[0]
         cur_seed = np.random.randint(0, 1000)
         arr_samples = sobol_seq.i4_sobol_generate(num_range, num_samples, cur_seed)
         arr_samples = arr_samples * (self.arr_range[:, 1].flatten() - self.arr_range[:, 0].flatten()) + self.arr_range[:, 0].flatten()
         return arr_samples
-    '''
 
     # TODO: is_grid is not appropriate expression
     def _get_initial(self, is_random=False, is_grid=False, fun_obj=None, int_seed=None):
