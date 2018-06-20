@@ -169,3 +169,59 @@ def test_predict_test_():
     with pytest.raises(AssertionError) as error:
         gp.predict_test_(X, Y, X_test, np.random.randn(10), np.random.randn(10), hyps, str_cov='se', prior_mu=prior_mu)
 
+def test_predict_test():
+    np.random.seed(42)
+    dim_X = 2
+    num_X = 5
+    num_X_test = 20
+    X = np.random.randn(num_X, dim_X)
+    Y = np.random.randn(num_X, 1)
+    X_test = np.random.randn(num_X_test, dim_X)
+    prior_mu = None
+    cov_X_X, inv_cov_X_X, hyps = gp.get_optimized_kernel(X, Y, prior_mu, 'se')
+    
+    with pytest.raises(AssertionError) as error:
+        gp.predict_test(X, Y, X_test, hyps, str_cov='se', prior_mu='abc')
+    with pytest.raises(AssertionError) as error:
+        gp.predict_test(X, Y, X_test, hyps, str_cov=1, prior_mu=prior_mu)
+    with pytest.raises(AssertionError) as error:
+        gp.predict_test(X, Y, X_test, 1, str_cov='se', prior_mu=prior_mu)
+    with pytest.raises(AssertionError) as error:
+        gp.predict_test(X, Y, 1, hyps, str_cov='se', prior_mu=prior_mu)
+    with pytest.raises(AssertionError) as error:
+        gp.predict_test(X, 1, X_test, hyps, str_cov='se', prior_mu=prior_mu)
+    with pytest.raises(AssertionError) as error:
+        gp.predict_test(1, Y, X_test, hyps, str_cov='se', prior_mu=prior_mu)
+    with pytest.raises(AssertionError) as error:
+        gp.predict_test(np.random.randn(num_X, 1), Y, X_test, hyps, str_cov='se', prior_mu=prior_mu)
+    with pytest.raises(AssertionError) as error:
+        gp.predict_test(np.random.randn(10, dim_X), Y, X_test, hyps, str_cov='se', prior_mu=prior_mu)
+    with pytest.raises(AssertionError) as error:
+        gp.predict_test(X, np.random.randn(10, 1), X_test, hyps, str_cov='se', prior_mu=prior_mu)
+
+def test_predict_optimized():
+    np.random.seed(42)
+    dim_X = 2
+    num_X = 5
+    num_X_test = 20
+    X = np.random.randn(num_X, dim_X)
+    Y = np.random.randn(num_X, 1)
+    X_test = np.random.randn(num_X_test, dim_X)
+    prior_mu = None
+    
+    with pytest.raises(AssertionError) as error:
+        gp.predict_optimized(X, Y, X_test, str_cov='se', prior_mu='abc')
+    with pytest.raises(AssertionError) as error:
+        gp.predict_optimized(X, Y, X_test, str_cov=1, prior_mu=prior_mu)
+    with pytest.raises(AssertionError) as error:
+        gp.predict_optimized(X, Y, 1, str_cov='se', prior_mu=prior_mu)
+    with pytest.raises(AssertionError) as error:
+        gp.predict_optimized(X, 1, X_test, str_cov='se', prior_mu=prior_mu)
+    with pytest.raises(AssertionError) as error:
+        gp.predict_optimized(1, Y, X_test, str_cov='se', prior_mu=prior_mu)
+    with pytest.raises(AssertionError) as error:
+        gp.predict_optimized(np.random.randn(num_X, 1), Y, X_test, str_cov='se', prior_mu=prior_mu)
+    with pytest.raises(AssertionError) as error:
+        gp.predict_optimized(np.random.randn(10, dim_X), Y, X_test, str_cov='se', prior_mu=prior_mu)
+    with pytest.raises(AssertionError) as error:
+        gp.predict_optimized(X, np.random.randn(10, 1), X_test, str_cov='se', prior_mu=prior_mu)

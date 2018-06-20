@@ -36,7 +36,7 @@ def ei(pred_mean, pred_std, Y_train, jitter=constants.JITTER_ACQ):
         val_z = (np.min(Y_train) - pred_mean) / (pred_std + jitter)
     return (np.min(Y_train) - pred_mean) * scipy.stats.norm.cdf(val_z) + pred_std * scipy.stats.norm.pdf(val_z)
 
-def ucb(pred_mean, pred_std, kappa=2.0, Y_train=None, is_increased=True):
+def ucb(pred_mean, pred_std, Y_train=None, kappa=2.0, is_increased=True):
     assert isinstance(pred_mean, np.ndarray)
     assert isinstance(pred_std, np.ndarray)
     assert isinstance(Y_train, np.ndarray)
