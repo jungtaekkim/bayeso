@@ -1,6 +1,6 @@
 # bo
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: May 30, 2018
+# last updated: June 20, 2018
 
 import numpy as np
 from scipy.optimize import minimize
@@ -8,13 +8,11 @@ from scipy.optimize import minimize
 from bayeso import gp
 from bayeso import acquisition
 from bayeso.utils import utils_common
+from bayeso import constants
 
-
-NUM_GRID = 50
-NUM_RANDOM = 1000
 
 class BO():
-    def __init__(self, arr_range, str_cov='se', is_ard=True, str_acq='ei', prior_mu=None):
+    def __init__(self, arr_range, str_cov=constants.STR_GP_COV, is_ard=True, str_acq=constants.STR_BO_ACQ, prior_mu=None):
         self.arr_range = arr_range
         self.str_cov = str_cov
         self.str_acq = str_acq
@@ -67,7 +65,7 @@ class BO():
                 print('WARNING: fun_obj is not given.')
                 arr_initial = self._get_initial_random(int_seed)
             else:
-                arr_grid = self._get_pseudo_latin(NUM_RANDOM)
+                arr_grid = self._get_pseudo_latin(constants.NUM_BO_RANDOM)
                 arr_initial = None
                 initial_best = np.inf
                 for cur_initial in arr_grid:

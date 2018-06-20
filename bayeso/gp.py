@@ -1,6 +1,6 @@
 # gp
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: Jun 01, 2018
+# last updated: June 20, 2018
 
 import numpy as np
 import scipy 
@@ -53,7 +53,7 @@ def log_ml(X_train, Y_train, hyps, str_cov, prior_mu_train):
     third_term = -float(X_train.shape[1]) / 2.0 * np.log(2.0 * np.pi)
     return np.squeeze(first_term + second_term + third_term)
 
-def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov, str_optimizer_method=constants.OPTIMIZER_METHOD, verbose=False):
+def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov, str_optimizer_method=constants.STR_OPTIMIZER_METHOD, verbose=False):
     assert isinstance(X_train, np.ndarray)
     assert isinstance(Y_train, np.ndarray)
     assert callable(prior_mu) or prior_mu is None
@@ -83,7 +83,7 @@ def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov, str_optimizer_meth
     cov_X_X, inv_cov_X_X = get_kernels(X_train, hyps, str_cov)
     return cov_X_X, inv_cov_X_X, hyps
 
-def predict_test_(X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps, str_cov='se', prior_mu=None):
+def predict_test_(X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps, str_cov=constants.STR_GP_COV, prior_mu=None):
     assert isinstance(X_train, np.ndarray)
     assert isinstance(Y_train, np.ndarray)
     assert isinstance(X_test, np.ndarray)
@@ -111,7 +111,7 @@ def predict_test_(X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps, str_cov=
     Sigma_Xs = cov_Xs_Xs - np.dot(np.dot(cov_X_Xs.T, inv_cov_X_X), cov_X_Xs)
     return mu_Xs, np.expand_dims(np.sqrt(np.maximum(np.diag(Sigma_Xs), 0.0)), axis=1)
 
-def predict_test(X_train, Y_train, X_test, hyps, str_cov='se', prior_mu=None):
+def predict_test(X_train, Y_train, X_test, hyps, str_cov=constants.STR_GP_COV, prior_mu=None):
     assert isinstance(X_train, np.ndarray)
     assert isinstance(Y_train, np.ndarray)
     assert isinstance(X_test, np.ndarray)
@@ -128,7 +128,7 @@ def predict_test(X_train, Y_train, X_test, hyps, str_cov='se', prior_mu=None):
     mu_Xs, sigma_Xs = predict_test_(X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps, str_cov, prior_mu)
     return mu_Xs, sigma_Xs
 
-def predict_optimized(X_train, Y_train, X_test, str_cov='se', prior_mu=None, verbose=False):
+def predict_optimized(X_train, Y_train, X_test, str_cov=constants.STR_GP_COV, prior_mu=None, verbose=False):
     assert isinstance(X_train, np.ndarray)
     assert isinstance(Y_train, np.ndarray)
     assert isinstance(X_test, np.ndarray)

@@ -1,4 +1,4 @@
-# test_gp
+# test_bo
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
 # last updated: June 20, 2018
 

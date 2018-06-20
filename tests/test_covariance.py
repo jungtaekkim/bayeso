@@ -1,6 +1,6 @@
 # test_covariance
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: Jun 01, 2018
+# last updated: June 01, 2018
 
 import pytest
 import numpy as np
