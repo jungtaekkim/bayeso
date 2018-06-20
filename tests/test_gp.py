@@ -160,3 +160,16 @@ def test_get_optimized_kernels():
     assert hyps['signal'] - truth_hyps_signal < TEST_EPSILON
     assert hyps['noise'] - truth_hyps_noise < TEST_EPSILON
     assert (hyps['lengthscales'] - truth_hyps_lengthscales < TEST_EPSILON).all()
+
+def test_predict_test_():
+    np.random.seed(42)
+    dim_X = 2
+    num_X = 5
+    num_X_test = 10
+    X = np.random.randn(num_X, dim_X)
+    Y = np.random.randn(num_X, 1)
+    X_test = np.random.randn(num_X_test, dim_X)
+    prior_mu = None
+
+    cov_X_X, inv_cov_X_X, hyps = gp.predict_test_(X, Y, prior_mu, 'se')
+
