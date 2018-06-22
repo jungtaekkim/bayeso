@@ -9,6 +9,7 @@ import sobol_seq
 from bayeso import gp
 from bayeso import acquisition
 from bayeso.utils import utils_common
+from bayeso.utils import utils_bo
 from bayeso import constants
 
 
@@ -29,142 +30,95 @@ class BO():
         assert arr_range.shape[1] == 2
 
         self.arr_range = arr_range
+        self.num_dim = arr_range.shape[0]
         self.str_cov = str_cov
         self.str_acq = str_acq
         self.is_ard = is_ard
         self.prior_mu = prior_mu
 
-    def _get_initial_random(self, int_seed=None):
+    def _get_initial_grid(self, int_grid=constants.NUM_BO_GRID):
+        arr_initials = utils_bo.get_grid(self.arr_range, int_grid)
+        return arr_initials
+
+    def _get_initial_uniform(self, int_samples, int_seed=None):
         if int_seed is not None:
             np.random.seed(int_seed)
-        list_initial = []
-        for elem in self.arr_range:
-            list_initial.append(np.random.uniform(elem[0], elem[1]))
-        arr_initial = np.array(list_initial)
-        return arr_initial
+        list_initials = []
+        for _ in range(0, int_samples):
+            list_initial = []
+            for elem in self.arr_range:
+                list_initial.append(np.random.uniform(elem[0], elem[1]))
+            list_initials.append(np.array(list_initial))
+        arr_initials = np.array(list_initials)
+        return arr_initials
 
-    def _get_sobol_seq(self, num_samples):
-        num_range = self.arr_range.shape[0]
-        cur_seed = np.random.randint(0, 1000)
-        arr_samples = sobol_seq.i4_sobol_generate(num_range, num_samples, cur_seed)
+    def _get_initial_sobol(self, int_samples, int_seed=None):
+        if int_seed is None:
+            int_seed = np.random.randint(0, 10000)
+        arr_samples = sobol_seq.i4_sobol_generate(self.num_dim, int_samples, int_seed)
         arr_samples = arr_samples * (self.arr_range[:, 1].flatten() - self.arr_range[:, 0].flatten()) + self.arr_range[:, 0].flatten()
         return arr_samples
 
-    # TODO: is_grid is not appropriate expression
-    def _get_initial(self, is_random=False, is_grid=False, fun_obj=None, int_seed=None):
-        if is_random and not is_grid:
-            arr_initial = self._get_initial_random(int_seed)
-        elif is_random and is_grid:
-            if fun_obj is None:
-                print('WARNING: fun_obj is not given.')
-                arr_initial = self._get_initial_random(int_seed)
-            else:
-                arr_grid = self._get_pseudo_latin(constants.NUM_BO_RANDOM)
-                arr_initial = None
-                initial_best = np.inf
-                for cur_initial in arr_grid:
-                    cur_acq = fun_obj(cur_initial)
-                    if cur_acq < initial_best:
-                        initial_best = cur_acq
-                        arr_initial = cur_initial
-        elif not is_random and is_grid:
-            if fun_obj is None:
-                print('WARNING: fun_obj is not given.')
-                arr_initial = self._get_initial_random(int_seed)
-            else:
-                list_grid = []
-                for elem in self.arr_range:
-                    list_grid.append(np.linspace(elem[0], elem[1], NUM_GRID))
-                arr_grid = np.array(list_grid)
-                arr_initial = None
-                initial_best = np.inf
-                count_same = 0
+    def _get_initial_latin(self, int_samples):
+        pass
 
-                for ind_initial in range(0, NUM_GRID**self.arr_range.shape[0]):
-                    cur_initial = []
-                    for ind_cur in range(0, self.arr_range.shape[0]):
-                        cur_initial.append(arr_grid[ind_cur, int(ind_initial / (NUM_GRID**ind_cur) % NUM_GRID)])
-                    cur_initial = np.array(cur_initial)
-                    cur_acq = fun_obj(cur_initial)
-                    if cur_acq < initial_best:
-                        initial_best = cur_acq
-                        arr_initial = cur_initial
-                    elif cur_acq == initial_best:
-                        count_same += 1
-                if count_same == NUM_GRID**self.arr_range.shape[0] - 1:
-                    arr_initial = self._get_initial_random()
+    def _get_initial(self, str_initial_method,
+        fun_objective=None,
+        int_samples=10,
+        int_seed=None
+    ):
+        if str_initial_method == 'grid':
+            arr_initials = self._get_initial_grid()
+            arr_initials = utils_bo.get_best_acquisition(arr_initials, fun_objective)
+        elif str_initial_method == 'uniform':
+            arr_initials = self._get_initial_uniform(int_samples, int_seed=int_seed)
+        elif str_initial_method == 'sobol':
+            arr_initials = self._get_initial_sobol(int_samples, int_seed=int_seed)
+        elif str_initial_method == 'latin':
+            raise NotImplementedError('_get_initial: latin')
         else:
-            raise ValueError('initialization is inappropriate.')
-        return arr_initial
+            raise ValueError('_get_initial: missing condition for str_initial_method')
+        return arr_initials
 
-    def _optimize_objective(self, fun_acq, X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps):
+    def _optimize_objective(self, fun_acquisition, X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps):
         X_test = np.atleast_2d(X_test)
         pred_mean, pred_std = gp.predict_test_(X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps, self.str_cov, self.prior_mu)
-        result_acq = fun_acq(np.squeeze(pred_mean), np.squeeze(pred_std), Y_train=Y_train)
-        return result_acq
+        acquisitions = fun_acquisition(pred_mean.flatten(), pred_std.flatten(), Y_train=Y_train)
+        return acquisitions
 
-    def _optimize(self, fun_obj, is_grid_optimized=True, verbose=False):
+    def _optimize(self, fun_objective, str_initial_method='sobol', verbose=False):
         list_bounds = []
         for elem in self.arr_range:
             list_bounds.append(tuple(elem))
-        if is_grid_optimized:
-            result_optimized = minimize(fun_obj, x0=self._get_initial(is_random=False, is_grid=True, fun_obj=fun_obj), bounds=list_bounds, method='L-BFGS-B', options={'disp': verbose})
-        else:
-            result_optimized = minimize(fun_obj, x0=self._get_initial(is_random=True, is_grid=True, fun_obj=fun_obj), bounds=list_bounds, method='L-BFGS-B', options={'disp': verbose})
-        if verbose:
-            print('INFORM: optimized result for acq. ', result_optimized.x)
-        result_optimized = result_optimized.x
-        return result_optimized
+        arr_initials = self._get_initial(str_initial_method, fun_objective=fun_objective)
+        list_next_point = []
+        for arr_initial in arr_initials:
+            next_point = minimize(
+                fun_objective,
+                x0=arr_initial,
+                bounds=list_bounds,
+                method=constants.STR_OPTIMIZER_METHOD_BO,
+                options={'disp': verbose}
+            )
+            list_next_point.append(next_point.x)
+            if verbose:
+                print('INFORM: optimized result for acq. ', next_point.x)
+        next_point = utils_bo.get_best_acquisition(np.array(list_next_point), fun_objective)
+        return next_point.flatten()
 
     def optimize(self, X_train, Y_train, is_grid_optimized=False, verbose=False):
         cov_X_X, inv_cov_X_X, hyps = gp.get_optimized_kernel(X_train, Y_train, self.prior_mu, self.str_cov, verbose=verbose)
 
         # NEED: to add acquisition function
         if self.str_acq == 'pi':
-            fun_acq = acquisition.pi
+            fun_acquisition = acquisition.pi
         elif self.str_acq == 'ei':
-            fun_acq = acquisition.ei
+            fun_acquisition = acquisition.ei
         elif self.str_acq == 'ucb':
-            fun_acq = acquisition.ucb
+            fun_acquisition = acquisition.ucb
         else:
-            raise ValueError('acquisition function is not properly set.')
+            raise ValueError('optimize: missing condition for self.str_acq.')
       
-        fun_obj = lambda X_test: -1000.0 * self._optimize_objective(fun_acq, X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps)
-        result_optimized = self._optimize(fun_obj, is_grid_optimized, verbose)
-        return result_optimized, cov_X_X, inv_cov_X_X, hyps
-
-def optimize_many_(model_bo, fun_target, X_train, Y_train, num_iter):
-    X_final = X_train
-    Y_final = Y_train
-    for _ in range(0, num_iter):
-        result_bo, _, _, _ = model_bo.optimize(X_final, Y_final)
-        X_final = np.vstack((X_final, result_bo))
-        Y_final = np.vstack((Y_final, fun_target(result_bo)))
-    return X_final, Y_final
-
-def optimize_many(model_bo, fun_target, X_train, num_iter):
-    Y_train = []
-    for elem in X_train:
-        Y_train.append(fun_target(elem))
-    Y_train = np.array(Y_train)
-    Y_train = np.reshape(Y_train, (Y_train.shape[0], 1))
-    X_final, Y_final = optimize_many_(model_bo, fun_target, X_train, Y_train, num_iter)
-    return X_final, Y_final
-
-def optimize_many_with_random_init(model_bo, fun_target, num_init, num_iter, int_seed=None):
-    list_init = []
-    for ind_init in range(0, num_init):
-        if int_seed is None or int_seed == 0:
-            print('REMIND: seed is None or 0.')
-            list_init.append(model_bo._get_initial(is_random=True, is_grid=False))
-        else:
-            list_init.append(model_bo._get_initial(is_random=True, is_grid=False, int_seed=int_seed**2 * (ind_init+1)))
-    X_init = np.array(list_init)
-    X_final, Y_final = optimize_many(model_bo, fun_target, X_init, num_iter)
-    return X_final, Y_final
-        
-
-if __name__ == '__main__':
-    pass
-
-
+        fun_objective = lambda X_test: -1.0 * constants.MULTIPLIER_ACQ * self._optimize_objective(fun_acquisition, X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps)
+        next_point = self._optimize(fun_objective, verbose=verbose)
+        return next_point, cov_X_X, inv_cov_X_X, hyps

@@ -53,7 +53,7 @@ def log_ml(X_train, Y_train, hyps, str_cov, prior_mu_train):
     third_term = -float(X_train.shape[1]) / 2.0 * np.log(2.0 * np.pi)
     return np.squeeze(first_term + second_term + third_term)
 
-def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov, str_optimizer_method=constants.STR_OPTIMIZER_METHOD, verbose=False):
+def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov, str_optimizer_method=constants.STR_OPTIMIZER_METHOD_GP, verbose=False):
     assert isinstance(X_train, np.ndarray)
     assert isinstance(Y_train, np.ndarray)
     assert callable(prior_mu) or prior_mu is None

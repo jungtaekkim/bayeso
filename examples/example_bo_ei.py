@@ -24,7 +24,7 @@ def main():
         Y_train = fun_target(X_train)
         next_x, cov_X_X, inv_cov_X_X, hyps = model_bo.optimize(X_train, fun_target(X_train))
         mu_test, sigma_test = gp.predict_test_(X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps)
-        acq_test = acquisition.ei(mu_test.flatten(), sigma_test.flatten(), Y_train.flatten())
+        acq_test = acquisition.ei(mu_test.flatten(), sigma_test.flatten(), Y_train)
         acq_test = np.reshape(acq_test, (acq_test.shape[0], 1))
         X_train = np.vstack((X_train, next_x))
         Y_train = fun_target(X_train)

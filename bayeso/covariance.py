@@ -1,10 +1,11 @@
 # covariance
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: May 30, 2018
+# last updated: June 23, 2018
 
 import numpy as np
 
 from bayeso import constants
+
 
 def cov_se(bx, bxp, lengthscales, signal):
     assert isinstance(bx, np.ndarray)
@@ -15,7 +16,6 @@ def cov_se(bx, bxp, lengthscales, signal):
         assert bx.shape[0] == bxp.shape[0] == lengthscales.shape[0]
     else:
         assert bx.shape[0] == bxp.shape[0]
-
     return signal**2 * np.exp(-0.5 * np.linalg.norm((bx - bxp) / lengthscales, ord=2)**2)
 
 def cov_main(str_cov, X, Xs, hyps, jitter=constants.JITTER_COV):
