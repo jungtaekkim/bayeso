@@ -123,8 +123,6 @@ def test_get_optimized_kernel():
         gp.get_optimized_kernel(X, Y, prior_mu, 'abc')
     with pytest.raises(AssertionError) as error:
         gp.get_optimized_kernel(X, Y, prior_mu, 'se', str_optimizer_method=1)
-    with pytest.raises(AssertionError) as error:
-        gp.get_optimized_kernel(X, Y, prior_mu, 'se', str_optimizer_method='abc')
 
 def test_predict_test_():
     np.random.seed(42)

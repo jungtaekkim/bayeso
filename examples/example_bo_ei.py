@@ -22,7 +22,7 @@ def main():
     X_test = np.reshape(X_test, (400, 1))
     for ind_ in range(1, 20+1):
         Y_train = fun_target(X_train)
-        next_x, cov_X_X, inv_cov_X_X, hyps = model_bo.optimize(X_train, fun_target(X_train))
+        next_x, cov_X_X, inv_cov_X_X, hyps = model_bo.optimize(X_train, fun_target(X_train), str_initial_method='grid')
         mu_test, sigma_test = gp.predict_test_(X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps)
         acq_test = acquisition.ei(mu_test.flatten(), sigma_test.flatten(), Y_train)
         acq_test = np.reshape(acq_test, (acq_test.shape[0], 1))

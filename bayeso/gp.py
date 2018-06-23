@@ -63,7 +63,6 @@ def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov, str_optimizer_meth
     assert len(X_train.shape) == 2
     assert len(Y_train.shape) == 2
     assert X_train.shape[0] == Y_train.shape[0]
-    assert str_optimizer_method == 'L-BFGS-B'
 
     prior_mu_train = get_prior_mu(prior_mu, X_train)
     num_dim = X_train.shape[1]
@@ -79,7 +78,7 @@ def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov, str_optimizer_meth
     result_optimized = result_optimized.x
     hyps = utils_covariance.restore_hyps(str_cov, result_optimized)
     if verbose:
-        print('INFORM: optimized result for gpr ', hyps)
+        print('INFORM: get_optimized_kernel: optimized result for gpr ', hyps)
     cov_X_X, inv_cov_X_X = get_kernels(X_train, hyps, str_cov)
     return cov_X_X, inv_cov_X_X, hyps
 
