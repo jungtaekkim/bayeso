@@ -34,6 +34,7 @@ class BO():
         assert callable(prior_mu) or prior_mu is None
         assert len(arr_range.shape) == 2
         assert arr_range.shape[1] == 2
+        assert (arr_range[:, 0] <= arr_range[:, 1]).all()
 
         self.arr_range = arr_range
         self.num_dim = arr_range.shape[0]
@@ -136,6 +137,7 @@ class BO():
         assert len(Y_train.shape) == 2
         assert Y_train.shape[1] == 1
         assert X_train.shape[0] == Y_train.shape[0]
+        assert X_train.shape[1] == self.num_dim
 
         cov_X_X, inv_cov_X_X, hyps = gp.get_optimized_kernel(X_train, Y_train, self.prior_mu, self.str_cov, verbose=self.verbose)
 

@@ -1,6 +1,6 @@
 # test_bo
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: June 20, 2018
+# last updated: June 23, 2018
 
 import numpy as np
 import pytest
@@ -12,29 +12,90 @@ from bayeso.utils import utils_covariance
 
 TEST_EPSILON = 1e-5
 
-def test_predict_optimized():
+def test_load_bo():
+    # legitimate cases
+    arr_range_1 = np.array([
+        [0.0, 10.0],
+        [-2.0, 2.0],
+        [-5.0, 5.0],
+    ])
+    arr_range_2 = np.array([
+        [0.0, 10.0],
+        [2.0, 2.0],
+        [5.0, 5.0],
+    ])
+    # wrong cases
+    arr_range_3 = np.array([
+        [20.0, 10.0],
+        [-2.0, 2.0],
+        [-5.0, 5.0],
+    ])
+    arr_range_4 = np.array([
+        [20.0, 10.0],
+        [4.0, 2.0],
+        [10.0, 5.0],
+    ])
+
+    with pytest.raises(AssertionError) as error:
+        model_bo = bo.BO(1)
+    with pytest.raises(AssertionError) as error:
+        model_bo = bo.BO(np.arange(0, 10))
+    with pytest.raises(AssertionError) as error:
+        model_bo = bo.BO(arr_range_3)
+    with pytest.raises(AssertionError) as error:
+        model_bo = bo.BO(arr_range_4)
+    with pytest.raises(AssertionError) as error:
+        model_bo = bo.BO(arr_range_1, str_cov=1)
+    with pytest.raises(AssertionError) as error:
+        model_bo = bo.BO(arr_range_1, str_acq=1)
+    with pytest.raises(AssertionError) as error:
+        model_bo = bo.BO(arr_range_1, is_ard=1)
+    with pytest.raises(AssertionError) as error:
+        model_bo = bo.BO(arr_range_1, prior_mu=1)
+    with pytest.raises(AssertionError) as error:
+        model_bo = bo.BO(arr_range_1, verbose=1)
+    with pytest.raises(AssertionError) as error:
+        model_bo = bo.BO(arr_range_1, debug=1)
+
+    model_bo = bo.BO(arr_range_1)
+    model_bo = bo.BO(arr_range_2)
+
+def test_optimize():
     np.random.seed(42)
-    dim_X = 2
+    arr_range_1 = np.array([
+        [0.0, 10.0],
+        [-2.0, 2.0],
+        [-5.0, 5.0],
+    ])
+    dim_X = 3
     num_X = 5
-    num_X_test = 20
     X = np.random.randn(num_X, dim_X)
     Y = np.random.randn(num_X, 1)
-    X_test = np.random.randn(num_X_test, dim_X)
-    prior_mu = None
-    
+    model_bo = bo.BO(arr_range_1)
+
     with pytest.raises(AssertionError) as error:
-        gp.predict_optimized(X, Y, X_test, str_cov='se', prior_mu='abc')
+        model_bo.optimize(1, Y)
     with pytest.raises(AssertionError) as error:
-        gp.predict_optimized(X, Y, X_test, str_cov=1, prior_mu=prior_mu)
+        model_bo.optimize(X, 1)
     with pytest.raises(AssertionError) as error:
-        gp.predict_optimized(X, Y, 1, str_cov='se', prior_mu=prior_mu)
+        model_bo.optimize(np.random.randn(num_X), Y)
     with pytest.raises(AssertionError) as error:
-        gp.predict_optimized(X, 1, X_test, str_cov='se', prior_mu=prior_mu)
+        model_bo.optimize(np.random.randn(num_X, 1), Y)
     with pytest.raises(AssertionError) as error:
-        gp.predict_optimized(1, Y, X_test, str_cov='se', prior_mu=prior_mu)
+        model_bo.optimize(X, np.random.randn(num_X))
     with pytest.raises(AssertionError) as error:
-        gp.predict_optimized(np.random.randn(num_X, 1), Y, X_test, str_cov='se', prior_mu=prior_mu)
+        model_bo.optimize(X, np.random.randn(num_X, 2))
     with pytest.raises(AssertionError) as error:
-        gp.predict_optimized(np.random.randn(10, dim_X), Y, X_test, str_cov='se', prior_mu=prior_mu)
+        model_bo.optimize(X, np.random.randn(3, 1))
     with pytest.raises(AssertionError) as error:
-        gp.predict_optimized(X, np.random.randn(10, 1), X_test, str_cov='se', prior_mu=prior_mu)
+        model_bo.optimize(X, Y, str_initial_method=1)
+    with pytest.raises(ValueError) as error:
+        model_bo.optimize(X, Y, str_initial_method='abc')
+
+    next_point, cov_X_X, inv_cov_X_X, hyps = model_bo.optimize(X, Y)
+    assert isinstance(next_point, np.ndarray)
+    assert isinstance(cov_X_X, np.ndarray)
+    assert isinstance(inv_cov_X_X, np.ndarray)
+    assert isinstance(hyps, dict)
+    assert len(next_point.shape) == 1
+    assert next_point.shape[0] == dim_X
