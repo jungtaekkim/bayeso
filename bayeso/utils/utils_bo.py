@@ -1,8 +1,11 @@
 # utils_bo
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: June 22, 2018
+# last updated: June 23, 2018
 
 import numpy as np
+
+from bayeso import bo
+from bayeso import constants
 
 
 def get_grid(arr_ranges, int_grid):
@@ -23,6 +26,10 @@ def get_grid(arr_ranges, int_grid):
     return arr_grid
 
 def get_best_acquisition(arr_initials, fun_objective):
+    assert isinstance(arr_initials, np.ndarray)
+    assert callable(fun_objective)
+    assert len(arr_initials.shape) == 2
+
     cur_best = np.inf
     cur_initial = None
     for arr_initial in arr_initials:
@@ -32,33 +39,51 @@ def get_best_acquisition(arr_initials, fun_objective):
             cur_best = cur_acq
     return np.expand_dims(cur_initial, axis=0)
 
-def optimize_many_(model_bo, fun_target, X_train, Y_train, num_iter):
+def optimize_many_(model_bo, fun_target, X_train, Y_train, int_iter):
+    assert isinstance(model_bo, bo.BO)
+    assert callable(fun_target)
+    assert isinstance(X_train, np.ndarray)
+    assert isinstance(Y_train, np.ndarray)
+    assert isinstance(int_iter, int)
+    assert len(X_train.shape) == 2
+    assert len(Y_train.shape) == 2
+    assert X_train.shape[0] == Y_train.shape[0]
+    assert Y_train.shape[1] == 1
+
     X_final = X_train
     Y_final = Y_train
-    for _ in range(0, num_iter):
-        result_bo, _, _, _ = model_bo.optimize(X_final, Y_final)
-        X_final = np.vstack((X_final, result_bo))
-        Y_final = np.vstack((Y_final, fun_target(result_bo)))
+    for _ in range(0, int_iter):
+        next_point, _, _, _ = model_bo.optimize(X_final, Y_final)
+        X_final = np.vstack((X_final, next_point))
+        Y_final = np.vstack((Y_final, fun_target(next_point)))
     return X_final, Y_final
 
-def optimize_many(model_bo, fun_target, X_train, num_iter):
+def optimize_many(model_bo, fun_target, X_train, int_iter):
+    assert isinstance(model_bo, bo.BO)
+    assert callable(fun_target)
+    assert isinstance(X_train, np.ndarray)
+    assert isinstance(int_iter, int)
+    assert len(X_train.shape) == 2
+
     Y_train = []
     for elem in X_train:
         Y_train.append(fun_target(elem))
     Y_train = np.array(Y_train)
     Y_train = np.reshape(Y_train, (Y_train.shape[0], 1))
-    X_final, Y_final = optimize_many_(model_bo, fun_target, X_train, Y_train, num_iter)
+    X_final, Y_final = optimize_many_(model_bo, fun_target, X_train, Y_train, int_iter)
     return X_final, Y_final
 
-def optimize_many_with_random_init(model_bo, fun_target, num_init, num_iter, int_seed=None):
-    list_init = []
-    for ind_init in range(0, num_init):
-        if int_seed is None or int_seed == 0:
-            print('REMIND: seed is None or 0.')
-            list_init.append(model_bo._get_initial(is_random=True, is_grid=False))
-        else:
-            list_init.append(model_bo._get_initial(is_random=True, is_grid=False, int_seed=int_seed**2 * (ind_init+1)))
-    X_init = np.array(list_init)
-    X_final, Y_final = optimize_many(model_bo, fun_target, X_init, num_iter)
-    return X_final, Y_final
+def optimize_many_with_random_init(model_bo, fun_target, int_init, int_iter, str_initial_method=constants.STR_BO_INITIALIZATION, int_seed=None):
+    assert isinstance(model_bo, bo.BO)
+    assert callable(fun_target)
+    assert isinstance(int_init, int)
+    assert isinstance(int_iter, int)
+    assert isinstance(int_seed, int) or int_seed is None
+    assert str_initial_method in constants.ALLOWED_INITIALIZATIONS_BO
 
+    X_init = model_bo.get_initial(str_initial_method, fun_objective=fun_target, int_samples=int_init, int_seed=int_seed)
+    if model_bo.debug:
+        print('DEBUG: optimize_many_with_random_init: X_init')
+        print(X_init)
+    X_final, Y_final = optimize_many(model_bo, fun_target, X_init, int_iter)
+    return X_final, Y_final

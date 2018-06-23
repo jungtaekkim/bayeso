@@ -65,11 +65,15 @@ class BO():
         arr_initials = np.array(list_initials)
         return arr_initials
 
+    # TODO: I am not sure, but noise can be added.
     def _get_initial_sobol(self, int_samples, int_seed=None):
         assert isinstance(int_seed, int) or int_seed is None
 
         if int_seed is None:
             int_seed = np.random.randint(0, 10000)
+        if self.debug:
+            print('DEBUG: _get_initial_sobol: int_seed')
+            print(int_seed)
         arr_samples = sobol_seq.i4_sobol_generate(self.num_dim, int_samples, int_seed)
         arr_samples = arr_samples * (self.arr_range[:, 1].flatten() - self.arr_range[:, 0].flatten()) + self.arr_range[:, 0].flatten()
         return arr_samples
@@ -77,11 +81,12 @@ class BO():
     def _get_initial_latin(self, int_samples):
         pass
 
-    def _get_initial(self, str_initial_method,
+    def get_initial(self, str_initial_method,
         fun_objective=None,
         int_samples=constants.NUM_ACQ_SAMPLES,
         int_seed=None,
     ):
+        assert isinstance(str_initial_method, str)
         assert callable(fun_objective) or fun_objective is None
         assert isinstance(int_samples, int)
         assert isinstance(int_seed, int) or int_seed is None
@@ -95,11 +100,11 @@ class BO():
         elif str_initial_method == 'sobol':
             arr_initials = self._get_initial_sobol(int_samples, int_seed=int_seed)
         elif str_initial_method == 'latin':
-            raise NotImplementedError('_get_initial: latin')
+            raise NotImplementedError('get_initial: latin')
         else:
-            raise ValueError('_get_initial: missing condition for str_initial_method')
+            raise ValueError('get_initial: missing condition for str_initial_method')
         if self.debug:
-            print('DEBUG: _get_initial: arr_initials')
+            print('DEBUG: get_initial: arr_initials')
             print(arr_initials)
         return arr_initials
 
@@ -110,10 +115,11 @@ class BO():
         return acquisitions
 
     def _optimize(self, fun_objective, str_initial_method):
+        assert str_initial_method in constants.ALLOWED_INITIALIZATIONS_OPTIMIZER
         list_bounds = []
         for elem in self.arr_range:
             list_bounds.append(tuple(elem))
-        arr_initials = self._get_initial(str_initial_method, fun_objective=fun_objective)
+        arr_initials = self.get_initial(str_initial_method, fun_objective=fun_objective)
         list_next_point = []
         for arr_initial in arr_initials:
             next_point = minimize(
@@ -129,7 +135,7 @@ class BO():
         next_point = utils_bo.get_best_acquisition(np.array(list_next_point), fun_objective)
         return next_point.flatten()
 
-    def optimize(self, X_train, Y_train, str_initial_method='sobol'):
+    def optimize(self, X_train, Y_train, str_initial_method=constants.STR_OPTIMIZER_INITIALIZATION):
         assert isinstance(X_train, np.ndarray)
         assert isinstance(Y_train, np.ndarray)
         assert isinstance(str_initial_method, str)

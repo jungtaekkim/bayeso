@@ -6,8 +6,6 @@ import numpy as np
 import pytest
 
 from bayeso import bo
-from bayeso import gp
-from bayeso.utils import utils_covariance
 
 
 TEST_EPSILON = 1e-5
@@ -60,6 +58,41 @@ def test_load_bo():
     model_bo = bo.BO(arr_range_1)
     model_bo = bo.BO(arr_range_2)
 
+def test_get_initial():
+    np.random.seed(42)
+    arr_range = np.array([
+        [0.0, 10.0],
+        [-2.0, 2.0],
+        [-5.0, 5.0],
+    ])
+    dim_X = arr_range.shape[0]
+    num_X = 5
+    X = np.random.randn(num_X, dim_X)
+    Y = np.random.randn(num_X, 1)
+    model_bo = bo.BO(arr_range)
+
+    with pytest.raises(AssertionError) as error:
+        model_bo.get_initial(1)
+    with pytest.raises(AssertionError) as error:
+        model_bo.get_initial('grid', fun_objective=None)
+    with pytest.raises(AssertionError) as error:
+        model_bo.get_initial('uniform', fun_objective=1)
+    with pytest.raises(AssertionError) as error:
+        model_bo.get_initial('uniform', int_samples='abc')
+    with pytest.raises(AssertionError) as error:
+        model_bo.get_initial('uniform', int_seed='abc')
+    with pytest.raises(ValueError) as error:
+        model_bo.get_initial('abc')
+
+    arr_initials = model_bo.get_initial('uniform', int_samples=3, int_seed=42)
+    truth_arr_initials = np.array([
+        [3.74540119, 1.80285723, 2.31993942],
+        [5.98658484, -1.37592544, -3.4400548],
+        [0.58083612, 1.46470458, 1.01115012],
+    ])
+
+    assert (arr_initials - truth_arr_initials < TEST_EPSILON).all()
+
 def test_optimize():
     np.random.seed(42)
     arr_range_1 = np.array([
@@ -67,7 +100,7 @@ def test_optimize():
         [-2.0, 2.0],
         [-5.0, 5.0],
     ])
-    dim_X = 3
+    dim_X = arr_range_1.shape[0]
     num_X = 5
     X = np.random.randn(num_X, dim_X)
     Y = np.random.randn(num_X, 1)
@@ -89,7 +122,7 @@ def test_optimize():
         model_bo.optimize(X, np.random.randn(3, 1))
     with pytest.raises(AssertionError) as error:
         model_bo.optimize(X, Y, str_initial_method=1)
-    with pytest.raises(ValueError) as error:
+    with pytest.raises(AssertionError) as error:
         model_bo.optimize(X, Y, str_initial_method='abc')
 
     next_point, cov_X_X, inv_cov_X_X, hyps = model_bo.optimize(X, Y)
