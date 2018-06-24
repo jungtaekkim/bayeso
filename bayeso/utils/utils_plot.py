@@ -30,7 +30,7 @@ def plot_gp(X_train, Y_train, X_test, mu, sigma,
     assert isinstance(sigma, np.ndarray)
     assert isinstance(Y_test_truth, np.ndarray) or Y_test_truth is None
     assert isinstance(path_save, str) or path_save is None
-    assert isinstance(str_postfix, str) or path_save is None
+    assert isinstance(str_postfix, str) or str_postfix is None
     assert isinstance(str_x_axis, str)
     assert isinstance(str_y_axis, str)
     assert isinstance(is_tex, bool)
@@ -131,7 +131,7 @@ def plot_minimum(arr_minima, list_str_label, int_init, is_std,
     assert isinstance(colors, list)
     assert len(arr_minima.shape) == 3
     assert arr_minima.shape[0] == len(list_str_label)
-    assert arr_minima.shape[2] > int_init
+    assert arr_minima.shape[2] >= int_init
 
     if is_tex:
         plt.rc('text', usetex=True)
@@ -187,7 +187,7 @@ def plot_minimum(arr_minima, list_str_label, int_init, is_std,
         if not is_legend:
             fig_legend = pylab.figure(figsize=(3, 2))
             fig_legend.legend(lines, list_str_label, 'center', fancybox=False, edgecolor='black', fontsize=32)
-            fig_legend.savefig(os.path.join(path_save, 'legend_' + str_postfix + '.pdf'), format='pdf', transparent=True, bbox_inches='tight', frameon=False)
+            fig_legend.savefig(os.path.join(path_save, 'legend_{}.pdf'.format(str_postfix)), format='pdf', transparent=True, bbox_inches='tight', frameon=False)
     plt.ion()
     plt.pause(time_pause)
     plt.close('all')
@@ -195,11 +195,43 @@ def plot_minimum(arr_minima, list_str_label, int_init, is_std,
 def plot_bo_step(X_train, Y_train, X_test, Y_test, mean_test, std_test,
     path_save=None,
     str_postfix=None,
-    num_init=None,
+    str_x_axis='$\mathbf{x}$',
+    str_y_axis='$y$',
+    int_init=None,
     is_tex=False,
+    is_zero_axis=False,
     time_pause=constants.TIME_PAUSE,
     range_shade=constants.RANGE_SHADE,
 ):
+    assert isinstance(X_train, np.ndarray)
+    assert isinstance(Y_train, np.ndarray)
+    assert isinstance(X_test, np.ndarray)
+    assert isinstance(Y_test, np.ndarray)
+    assert isinstance(mean_test, np.ndarray)
+    assert isinstance(std_test, np.ndarray)
+    assert isinstance(path_save, str) or path_save is None
+    assert isinstance(str_postfix, str) or str_postfix is None
+    assert isinstance(str_x_axis, str)
+    assert isinstance(str_y_axis, str)
+    assert isinstance(int_init, int) or int_init is None
+    assert isinstance(is_tex, bool)
+    assert isinstance(is_zero_axis, bool)
+    assert isinstance(time_pause, float)
+    assert isinstance(range_shade, float)
+    assert len(X_train.shape) == 2
+    assert len(X_test.shape) == 2
+    assert len(Y_train.shape) == 2
+    assert len(mean_test.shape) == 2
+    assert len(std_test.shape) == 2
+    assert X_train.shape[1] == X_test.shape[1] == 1
+    assert Y_train.shape[1] == 1
+    assert X_train.shape[0] == Y_train.shape[0]
+    assert mean_test.shape[1] == 1
+    assert std_test.shape[1] == 1
+    assert X_test.shape[0] == mean_test.shape[0] == std_test.shape[0]
+    if int_init is not None:
+        assert X_train.shape[0] >= int_init
+
     if is_tex:
         plt.rc('text', usetex=True)
     else:
@@ -208,18 +240,20 @@ def plot_bo_step(X_train, Y_train, X_test, Y_test, mean_test, std_test,
     ax = plt.gca()
     ax.spines['top'].set_color('none')
     ax.spines['right'].set_color('none')
-#    ax.spines['bottom'].set_position('zero')
+    if is_zero_axis:
+        ax.spines['bottom'].set_position('zero')
     ax.plot(X_test, Y_test, 'g', linewidth=4)
     ax.plot(X_test, mean_test, 'b', linewidth=4)
     ax.fill_between(X_test.flatten(), 
         mean_test.flatten() - range_shade * std_test.flatten(), 
         mean_test.flatten() + range_shade * std_test.flatten(), 
         color='b', 
-        alpha=0.3)
-    if num_init is not None:
-        if X_train.shape[0] > num_init:
-            ax.plot(X_train[:num_init, :], Y_train[:num_init, :], 'x', c='saddlebrown', ms=14, markeredgewidth=6)
-            ax.plot(X_train[num_init:X_train.shape[0]-1, :], Y_train[num_init:X_train.shape[0]-1, :], 'rx', ms=14, markeredgewidth=6)
+        alpha=0.3,
+    )
+    if int_init is not None:
+        if X_train.shape[0] > int_init:
+            ax.plot(X_train[:int_init, :], Y_train[:int_init, :], 'x', c='saddlebrown', ms=14, markeredgewidth=6)
+            ax.plot(X_train[int_init:X_train.shape[0]-1, :], Y_train[int_init:X_train.shape[0]-1, :], 'rx', ms=14, markeredgewidth=6)
             ax.plot(X_train[X_train.shape[0]-1, :], Y_train[X_train.shape[0]-1, :], c='orange', marker='+', ms=18, markeredgewidth=6)
         else:
             ax.plot(X_train, Y_train, 'x', c='saddlebrown', ms=14, markeredgewidth=6)
@@ -227,13 +261,12 @@ def plot_bo_step(X_train, Y_train, X_test, Y_test, mean_test, std_test,
         ax.plot(X_train[:X_train.shape[0]-1, :], Y_train[:X_train.shape[0]-1, :], 'rx', ms=14, markeredgewidth=6)
         ax.plot(X_train[X_train.shape[0]-1, :], Y_train[X_train.shape[0]-1, :], c='orange', marker='+', ms=18, markeredgewidth=6)
 
-    ax.set_xlabel('$\mathbf{x}$', fontsize=32)
-    ax.set_ylabel('$y$', fontsize=32)
+    ax.set_xlabel(str_x_axis, fontsize=32)
+    ax.set_ylabel(str_y_axis, fontsize=32)
     ax.set_xlim([np.min(X_test), np.max(X_test)])
     ax.tick_params(labelsize=22)
-#    plt.legend(loc='upper right', fancybox=False, edgecolor='black', fontsize=24)
     if path_save is not None and str_postfix is not None:
-        plt.savefig(os.path.join(path_save, 'bo_step_' + str_postfix + '.pdf'), format='pdf', transparent=True, bbox_inches='tight', frameon=False)
+        plt.savefig(os.path.join(path_save, 'bo_step_{}.pdf'.format(str_postfix)), format='pdf', transparent=True, bbox_inches='tight', frameon=False)
     plt.ion()
     plt.pause(time_pause)
     plt.close('all')
@@ -241,11 +274,48 @@ def plot_bo_step(X_train, Y_train, X_test, Y_test, mean_test, std_test,
 def plot_bo_step_acq(X_train, Y_train, X_test, Y_test, mean_test, std_test, acq_test,
     path_save=None,
     str_postfix=None,
-    num_init=None,
+    str_x_axis='$\mathbf{x}$',
+    str_y_axis='$y$',
+    str_acq_axis='acq.',
+    int_init=None,
     is_tex=False,
+    is_zero_axis=False,
+    is_acq_axis_small=False,
     time_pause=constants.TIME_PAUSE,
     range_shade=constants.RANGE_SHADE,
 ):
+    assert isinstance(X_train, np.ndarray)
+    assert isinstance(Y_train, np.ndarray)
+    assert isinstance(X_test, np.ndarray)
+    assert isinstance(Y_test, np.ndarray)
+    assert isinstance(mean_test, np.ndarray)
+    assert isinstance(std_test, np.ndarray)
+    assert isinstance(path_save, str) or path_save is None
+    assert isinstance(str_postfix, str) or str_postfix is None
+    assert isinstance(str_x_axis, str)
+    assert isinstance(str_y_axis, str)
+    assert isinstance(str_acq_axis, str)
+    assert isinstance(int_init, int) or int_init is None
+    assert isinstance(is_tex, bool)
+    assert isinstance(is_zero_axis, bool)
+    assert isinstance(time_pause, float)
+    assert isinstance(range_shade, float)
+    assert len(X_train.shape) == 2
+    assert len(X_test.shape) == 2
+    assert len(Y_train.shape) == 2
+    assert len(mean_test.shape) == 2
+    assert len(std_test.shape) == 2
+    assert len(acq_test.shape) == 2
+    assert X_train.shape[1] == X_test.shape[1] == 1
+    assert Y_train.shape[1] == 1
+    assert X_train.shape[0] == Y_train.shape[0]
+    assert mean_test.shape[1] == 1
+    assert std_test.shape[1] == 1
+    assert acq_test.shape[1] == 1
+    assert X_test.shape[0] == mean_test.shape[0] == std_test.shape[0] == acq_test.shape[0]
+    if int_init is not None:
+        assert X_train.shape[0] >= int_init
+
     if is_tex:
         plt.rc('text', usetex=True)
     else:
@@ -253,7 +323,8 @@ def plot_bo_step_acq(X_train, Y_train, X_test, Y_test, mean_test, std_test, acq_
     fig, (ax1, ax2) = plt.subplots(2, 1, gridspec_kw = {'height_ratios':[3, 1]})
     ax1.spines['top'].set_color('none')
     ax1.spines['right'].set_color('none')
-#    ax1.spines['bottom'].set_position('zero')
+    if is_zero_axis:
+        ax1.spines['bottom'].set_position('zero')
     ax1.plot(X_test, Y_test, 'g', linewidth=4)
     ax1.plot(X_test, mean_test, 'b', linewidth=4)
     ax1.fill_between(X_test.flatten(), 
@@ -261,28 +332,32 @@ def plot_bo_step_acq(X_train, Y_train, X_test, Y_test, mean_test, std_test, acq_
         mean_test.flatten() + range_shade * std_test.flatten(), 
         color='b', 
         alpha=0.3)
-    if num_init is not None:
-        if X_train.shape[0] > num_init:
-            ax1.plot(X_train[:num_init, :], Y_train[:num_init, :], 'x', c='saddlebrown', ms=14, markeredgewidth=6)
-            ax1.plot(X_train[num_init:X_train.shape[0]-1, :], Y_train[num_init:X_train.shape[0]-1, :], 'rx', ms=14, markeredgewidth=6)
+    if int_init is not None:
+        if X_train.shape[0] > int_init:
+            ax1.plot(X_train[:int_init, :], Y_train[:int_init, :], 'x', c='saddlebrown', ms=14, markeredgewidth=6)
+            ax1.plot(X_train[int_init:X_train.shape[0]-1, :], Y_train[int_init:X_train.shape[0]-1, :], 'rx', ms=14, markeredgewidth=6)
             ax1.plot(X_train[X_train.shape[0]-1, :], Y_train[X_train.shape[0]-1, :], c='orange', marker='+', ms=18, markeredgewidth=6)
         else:
             ax1.plot(X_train, Y_train, 'x', c='saddlebrown', ms=14, markeredgewidth=6)
-    ax1.set_ylabel('$y$', fontsize=32)
+    else:
+        ax1.plot(X_train[:X_train.shape[0]-1, :], Y_train[:X_train.shape[0]-1, :], 'rx', ms=14, markeredgewidth=6)
+        ax1.plot(X_train[X_train.shape[0]-1, :], Y_train[X_train.shape[0]-1, :], c='orange', marker='+', ms=18, markeredgewidth=6)
+       
+    ax1.set_ylabel(str_y_axis, fontsize=32)
     ax1.set_xlim([np.min(X_test), np.max(X_test)])
     ax1.tick_params(labelsize=22)
 
     ax2.plot(X_test, acq_test, 'b', linewidth=4)
-    ax2.set_xlabel('$\mathbf{x}$', fontsize=32)
-    ax2.set_ylabel('acq.', fontsize=32)
+    ax2.set_xlabel(str_x_axis, fontsize=32)
+    ax2.set_ylabel(str_acq_axis, fontsize=32)
     ax2.spines['top'].set_color('none')
     ax2.spines['right'].set_color('none')
     ax2.set_xlim([np.min(X_test), np.max(X_test)])
     ax2.tick_params(labelsize=22)
-    ax2.tick_params('y', labelsize=14)
-#    plt.legend(loc='upper right', fancybox=False, edgecolor='black', fontsize=24)
+    if is_acq_axis_small:
+        ax2.tick_params('y', labelsize=14)
     if path_save is not None and str_postfix is not None:
-        plt.savefig(os.path.join(path_save, 'bo_step_acq_' + str_postfix + '.pdf'), format='pdf', transparent=True, bbox_inches='tight', frameon=False)
+        plt.savefig(os.path.join(path_save, 'bo_step_acq_{}.pdf'.format(str_postfix)), format='pdf', transparent=True, bbox_inches='tight', frameon=False)
     plt.ion()
     plt.pause(time_pause)
     plt.close('all')

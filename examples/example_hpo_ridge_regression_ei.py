@@ -31,7 +31,7 @@ def main():
     # (max_depth, n_estimators)
     int_init = 3
 
-    model_bo = bo.BO(np.array([[0.1, 2]]), debug=True)
+    model_bo = bo.BO(np.array([[0.1, 2]]), debug=False)
     list_Y = []
     for _ in range(0, 10):
         X_final, Y_final = utils_bo.optimize_many_with_random_init(model_bo, fun_target, int_init, 10, str_initial_method_bo='uniform', str_initial_method_optimizer='grid', int_samples_ao=100)

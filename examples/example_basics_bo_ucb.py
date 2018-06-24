@@ -33,8 +33,8 @@ def main():
         acq_test = np.expand_dims(acq_test, axis=1)
         X_train = np.vstack((X_train, next_x))
         Y_train = fun_target(X_train)
-        utils_plot.plot_bo_step(X_train, Y_train, X_test, fun_target(X_test), mu_test, sigma_test, '../results/bo/', 'test_bascis_{}_'.format(str_acq) + str(ind_), num_init)
-        utils_plot.plot_bo_step_acq(X_train, Y_train, X_test, fun_target(X_test), mu_test, sigma_test, acq_test, '../results/bo/', 'test_basics_{}_'.format(str_acq) + str(ind_), num_init)
+        utils_plot.plot_bo_step(X_train, Y_train, X_test, fun_target(X_test), mu_test, sigma_test, path_save='../results/bo/', str_postfix='test_bascis_{}_'.format(str_acq) + str(ind_), int_init=num_init)
+        utils_plot.plot_bo_step_acq(X_train, Y_train, X_test, fun_target(X_test), mu_test, sigma_test, acq_test, path_save='../results/bo/', str_postfix='test_basics_{}_'.format(str_acq) + str(ind_), int_init=num_init)
 
 
 if __name__ == '__main__':
