@@ -1,3 +1,7 @@
+# example_hpo_xgboost_ei
+# author: Jungtaek Kim (jtkim@postech.ac.kr)
+# last updated: June 24, 2018
+
 import numpy as np
 import sys
 import xgboost as xgb

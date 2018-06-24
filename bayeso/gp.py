@@ -1,6 +1,6 @@
 # gp
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: June 20, 2018
+# last updated: June 24, 2018
 
 import numpy as np
 import scipy 
@@ -53,13 +53,13 @@ def log_ml(X_train, Y_train, hyps, str_cov, prior_mu_train):
     third_term = -float(X_train.shape[1]) / 2.0 * np.log(2.0 * np.pi)
     return np.squeeze(first_term + second_term + third_term)
 
-def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov, str_optimizer_method=constants.STR_OPTIMIZER_METHOD_GP, verbose=False):
+def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov, str_optimizer_method=constants.STR_OPTIMIZER_METHOD_GP, debug=False):
     assert isinstance(X_train, np.ndarray)
     assert isinstance(Y_train, np.ndarray)
     assert callable(prior_mu) or prior_mu is None
     assert isinstance(str_cov, str)
     assert isinstance(str_optimizer_method, str)
-    assert isinstance(verbose, bool)
+    assert isinstance(debug, bool)
     assert len(X_train.shape) == 2
     assert len(Y_train.shape) == 2
     assert X_train.shape[0] == Y_train.shape[0]
@@ -77,8 +77,8 @@ def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov, str_optimizer_meth
     )
     result_optimized = result_optimized.x
     hyps = utils_covariance.restore_hyps(str_cov, result_optimized)
-    if verbose:
-        print('INFORM: get_optimized_kernel: optimized result for gpr ', hyps)
+    if debug:
+        print('[DEBUG] get_optimized_kernel: optimized hyps for gpr ', hyps)
     cov_X_X, inv_cov_X_X = get_kernels(X_train, hyps, str_cov)
     return cov_X_X, inv_cov_X_X, hyps
 
@@ -127,7 +127,7 @@ def predict_test(X_train, Y_train, X_test, hyps, str_cov=constants.STR_GP_COV, p
     mu_Xs, sigma_Xs = predict_test_(X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps, str_cov, prior_mu)
     return mu_Xs, sigma_Xs
 
-def predict_optimized(X_train, Y_train, X_test, str_cov=constants.STR_GP_COV, prior_mu=None, verbose=False):
+def predict_optimized(X_train, Y_train, X_test, str_cov=constants.STR_GP_COV, prior_mu=None, debug=False):
     assert isinstance(X_train, np.ndarray)
     assert isinstance(Y_train, np.ndarray)
     assert isinstance(X_test, np.ndarray)
@@ -139,6 +139,6 @@ def predict_optimized(X_train, Y_train, X_test, str_cov=constants.STR_GP_COV, pr
     assert X_train.shape[0] == Y_train.shape[0]
     assert X_train.shape[1] == X_test.shape[1]
 
-    cov_X_X, inv_cov_X_X, hyps = get_optimized_kernel(X_train, Y_train, prior_mu, str_cov, verbose=verbose)
+    cov_X_X, inv_cov_X_X, hyps = get_optimized_kernel(X_train, Y_train, prior_mu, str_cov, debug=debug)
     mu_Xs, sigma_Xs = predict_test_(X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps, str_cov, prior_mu)
     return mu_Xs, sigma_Xs

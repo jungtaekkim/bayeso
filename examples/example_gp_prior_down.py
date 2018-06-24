@@ -1,14 +1,17 @@
+# example_gp_prior_down
+# author: Jungtaek Kim (jtkim@postech.ac.kr)
+# last updated: June 24, 2018
+
 import numpy as np
-import sys
-sys.path.append('../')
 
 from bayeso import gp
-from bayeso import utils
+from bayeso.utils import utils_plot
+
 
 def linear_up(X):
     list_up = []
     for elem_X in X:
-        list_up.append([0.5 * np.sum(elem_X)])
+        list_up.append([-0.5 * np.sum(elem_X)])
     return np.array(list_up)
 
 def main():
@@ -16,17 +19,16 @@ def main():
         [-3.0],
         [-2.0],
         [-1.0],
-#        [2.0],
-#        [1.2],
-#        [1.1],
     ])
     Y_train = np.cos(X_train) + 2.0
     num_test = 200
     X_test = np.linspace(-3, 6, num_test)
     X_test = X_test.reshape((num_test, 1))
+    Y_test_truth = np.cos(X_test) + 2.0
     prior_mu = linear_up
     mu, sigma = gp.predict_optimized(X_train, Y_train, X_test, prior_mu=prior_mu)
-    utils.plot_gp(X_train, Y_train, X_test, mu, sigma, '../results/gp/', 'test_optimized_prior_up')
+    utils_plot.plot_gp(X_train, Y_train, X_test, mu, sigma, Y_test_truth, '../results/gp/', 'test_optimized_prior_down')
+
 
 if __name__ == '__main__':
     main()

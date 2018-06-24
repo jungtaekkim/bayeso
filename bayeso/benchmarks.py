@@ -23,5 +23,3 @@ def branin(X):
     Y = np.reshape(Y, (Y.shape[0], 1))
     return Y
 
-
-

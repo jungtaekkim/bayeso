@@ -1,6 +1,6 @@
 # bo
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: June 23, 2018
+# last updated: June 24, 2018
 
 import numpy as np
 from scipy.optimize import minimize
@@ -20,7 +20,6 @@ class BO():
         str_acq=constants.STR_BO_ACQ,
         is_ard=True,
         prior_mu=None,
-        verbose=False,
         debug=False,
     ):
         # TODO: use is_ard.
@@ -29,7 +28,6 @@ class BO():
         assert isinstance(str_cov, str)
         assert isinstance(str_acq, str)
         assert isinstance(is_ard, bool)
-        assert isinstance(verbose, bool)
         assert isinstance(debug, bool)
         assert callable(prior_mu) or prior_mu is None
         assert len(arr_range.shape) == 2
@@ -41,7 +39,6 @@ class BO():
         self.str_cov = str_cov
         self.str_acq = str_acq
         self.is_ard = is_ard
-        self.verbose = verbose
         self.debug = debug
         self.prior_mu = prior_mu
 
@@ -72,8 +69,7 @@ class BO():
         if int_seed is None:
             int_seed = np.random.randint(0, 10000)
         if self.debug:
-            print('DEBUG: _get_initial_sobol: int_seed')
-            print(int_seed)
+            print('[DEBUG] _get_initial_sobol: int_seed', int_seed)
         arr_samples = sobol_seq.i4_sobol_generate(self.num_dim, int_samples, int_seed)
         arr_samples = arr_samples * (self.arr_range[:, 1].flatten() - self.arr_range[:, 0].flatten()) + self.arr_range[:, 0].flatten()
         return arr_samples
@@ -81,6 +77,7 @@ class BO():
     def _get_initial_latin(self, int_samples):
         pass
 
+    # TODO: int_grid should be able to be input.
     def get_initial(self, str_initial_method,
         fun_objective=None,
         int_samples=constants.NUM_ACQ_SAMPLES,
@@ -93,6 +90,8 @@ class BO():
 
         if str_initial_method == 'grid':
             assert fun_objective is not None
+            if self.debug:
+                print('[DEBUG] get_initial: int_samples is ignored, because grid is chosen.')
             arr_initials = self._get_initial_grid()
             arr_initials = utils_bo.get_best_acquisition(arr_initials, fun_objective)
         elif str_initial_method == 'uniform':
@@ -104,7 +103,7 @@ class BO():
         else:
             raise ValueError('get_initial: missing condition for str_initial_method')
         if self.debug:
-            print('DEBUG: get_initial: arr_initials')
+            print('[DEBUG] get_initial: arr_initials')
             print(arr_initials)
         return arr_initials
 
@@ -114,12 +113,12 @@ class BO():
         acquisitions = fun_acquisition(pred_mean.flatten(), pred_std.flatten(), Y_train=Y_train)
         return acquisitions
 
-    def _optimize(self, fun_objective, str_initial_method):
+    def _optimize(self, fun_objective, str_initial_method, int_samples):
         assert str_initial_method in constants.ALLOWED_INITIALIZATIONS_OPTIMIZER
         list_bounds = []
         for elem in self.arr_range:
             list_bounds.append(tuple(elem))
-        arr_initials = self.get_initial(str_initial_method, fun_objective=fun_objective)
+        arr_initials = self.get_initial(str_initial_method, fun_objective=fun_objective, int_samples=int_samples)
         list_next_point = []
         for arr_initial in arr_initials:
             next_point = minimize(
@@ -127,15 +126,18 @@ class BO():
                 x0=arr_initial,
                 bounds=list_bounds,
                 method=constants.STR_OPTIMIZER_METHOD_BO,
-                options={'disp': self.verbose}
+                options={'disp': False}
             )
             list_next_point.append(next_point.x)
-            if self.verbose:
-                print('INFORM: _optimize: optimized result for acq. ', next_point.x)
+            if self.debug:
+                print('[DEBUG] _optimize: optimized point for acq', next_point.x)
         next_point = utils_bo.get_best_acquisition(np.array(list_next_point), fun_objective)
         return next_point.flatten()
 
-    def optimize(self, X_train, Y_train, str_initial_method=constants.STR_OPTIMIZER_INITIALIZATION):
+    def optimize(self, X_train, Y_train,
+        str_initial_method=constants.STR_OPTIMIZER_INITIALIZATION,
+        int_samples=constants.NUM_ACQ_SAMPLES,
+    ):
         assert isinstance(X_train, np.ndarray)
         assert isinstance(Y_train, np.ndarray)
         assert isinstance(str_initial_method, str)
@@ -145,7 +147,7 @@ class BO():
         assert X_train.shape[0] == Y_train.shape[0]
         assert X_train.shape[1] == self.num_dim
 
-        cov_X_X, inv_cov_X_X, hyps = gp.get_optimized_kernel(X_train, Y_train, self.prior_mu, self.str_cov, verbose=self.verbose)
+        cov_X_X, inv_cov_X_X, hyps = gp.get_optimized_kernel(X_train, Y_train, self.prior_mu, self.str_cov, debug=self.debug)
 
         if self.str_acq == 'pi':
             fun_acquisition = acquisition.pi
@@ -157,5 +159,5 @@ class BO():
             raise ValueError('optimize: missing condition for self.str_acq.')
       
         fun_objective = lambda X_test: -1.0 * constants.MULTIPLIER_ACQ * self._optimize_objective(fun_acquisition, X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps)
-        next_point = self._optimize(fun_objective, str_initial_method=str_initial_method)
+        next_point = self._optimize(fun_objective, str_initial_method=str_initial_method, int_samples=int_samples)
         return next_point, cov_X_X, inv_cov_X_X, hyps

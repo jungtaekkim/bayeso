@@ -1,6 +1,6 @@
 # utils_plot
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: June 01, 2018
+# last updated: June 24, 2018
 
 import os
 import numpy as np
@@ -15,14 +15,29 @@ def plot_gp(X_train, Y_train, X_test, mu, sigma,
     Y_test_truth=None,
     path_save=None,
     str_postfix=None,
+    str_x_axis='$\mathbf{x}$',
+    str_y_axis='$y$',
     is_tex=False,
     is_zero_axis=False,
     time_pause=constants.TIME_PAUSE,
     range_shade=constants.RANGE_SHADE,
     colors=constants.COLORS,
-    str_x_axis='$\mathbf{x}$',
-    str_y_axis='$y$',
 ):
+    assert isinstance(X_train, np.ndarray)
+    assert isinstance(Y_train, np.ndarray)
+    assert isinstance(X_test, np.ndarray)
+    assert isinstance(mu, np.ndarray)
+    assert isinstance(sigma, np.ndarray)
+    assert isinstance(Y_test_truth, np.ndarray) or Y_test_truth is None
+    assert isinstance(path_save, str) or path_save is None
+    assert isinstance(str_postfix, str) or path_save is None
+    assert isinstance(str_x_axis, str)
+    assert isinstance(str_y_axis, str)
+    assert isinstance(is_tex, bool)
+    assert isinstance(is_zero_axis, bool)
+    assert isinstance(time_pause, float)
+    assert isinstance(range_shade, float)
+    assert isinstance(colors, list)
     assert len(X_train.shape) == 2
     assert len(X_test.shape) == 2
     assert len(Y_train.shape) == 2
@@ -86,41 +101,63 @@ def plot_gp(X_train, Y_train, X_test, mu, sigma,
     plt.pause(time_pause)
     plt.close('all')
 
-def plot_minimum(list_all, list_str_label, num_init, is_std,
+def plot_minimum(arr_minima, list_str_label, int_init, is_std,
     is_marker=True,
     is_legend=False,
     is_tex=False,
     path_save=None,
     str_postfix=None,
+    str_x_axis='Iteration',
+    str_y_axis='Minimum function value',
     time_pause=constants.TIME_PAUSE,
     range_shade=constants.RANGE_SHADE,
     markers=constants.MARKERS,
     colors=constants.COLORS,
 ):
+    assert isinstance(arr_minima, np.ndarray)
+    assert isinstance(list_str_label, list)
+    assert isinstance(int_init, int)
+    assert isinstance(is_std, bool)
+    assert isinstance(is_marker, bool)
+    assert isinstance(is_legend, bool)
+    assert isinstance(is_tex, bool)
+    assert isinstance(path_save, str) or path_save is None
+    assert isinstance(str_postfix, str) or str_postfix is None
+    assert isinstance(str_x_axis, str)
+    assert isinstance(str_y_axis, str)
+    assert isinstance(time_pause, float)
+    assert isinstance(range_shade, float)
+    assert isinstance(markers, list)
+    assert isinstance(colors, list)
+    assert len(arr_minima.shape) == 3
+    assert arr_minima.shape[0] == len(list_str_label)
+    assert arr_minima.shape[2] > int_init
+
     if is_tex:
         plt.rc('text', usetex=True)
     else:
         plt.rc('pdf', fonttype=42)
     fig = plt.figure(figsize=(8, 6))
     ax = plt.gca()
-    for ind_read, list_read in enumerate(list_all):
-        ind_color = ind_read % len(colors)
-        ind_marker = ind_read % len(markers)
-        mean_min, std_min = utils_common.get_minimum(list_read, num_init)
+    for ind_minimum, arr_minimum in enumerate(arr_minima):
+        ind_color = ind_minimum % len(colors)
+        ind_marker = ind_minimum % len(markers)
+        _, mean_min, std_min = utils_common.get_minimum(arr_minimum, int_init)
         x_data = range(0, mean_min.shape[0])
         y_data = mean_min
         std_data = std_min
         if is_marker:
-            ax.plot(x_data, y_data, 
-                label=list_str_label[ind_read], 
-                c=colors[ind_color], 
-                linewidth=4, 
-                marker=markers[ind_marker], 
-                markersize=10, 
-                mew=3)
+            ax.plot(x_data, y_data,
+                label=list_str_label[ind_minimum],
+                c=colors[ind_color],
+                linewidth=4,
+                marker=markers[ind_marker],
+                markersize=10,
+                mew=3,
+            )
         else:
             ax.plot(x_data, y_data, 
-                label=list_str_label[ind_read], 
+                label=list_str_label[ind_minimum], 
                 c=colors[ind_color], 
                 linewidth=4,
                 marker='None')
@@ -132,8 +169,8 @@ def plot_minimum(list_all, list_str_label, num_init, is_std,
                 color=colors[ind_color], 
                 alpha=0.3)
     lines, labels = ax.get_legend_handles_labels()
-    ax.set_xlabel('Iteration', fontsize=27)
-    ax.set_ylabel('Minimum function value', fontsize=27)
+    ax.set_xlabel(str_x_axis, fontsize=27)
+    ax.set_ylabel(str_y_axis, fontsize=27)
     ax.set_xlim([0, mean_min.shape[0]-1])
     ax.tick_params(labelsize=22)
     ax.spines['top'].set_color('none')
@@ -249,8 +286,3 @@ def plot_bo_step_acq(X_train, Y_train, X_test, Y_test, mean_test, std_test, acq_
     plt.ion()
     plt.pause(time_pause)
     plt.close('all')
-
-
-if __name__ == '__main__':
-    pass
-
