@@ -51,8 +51,6 @@ def test_load_bo():
     with pytest.raises(AssertionError) as error:
         model_bo = bo.BO(arr_range_1, prior_mu=1)
     with pytest.raises(AssertionError) as error:
-        model_bo = bo.BO(arr_range_1, verbose=1)
-    with pytest.raises(AssertionError) as error:
         model_bo = bo.BO(arr_range_1, debug=1)
 
     model_bo = bo.BO(arr_range_1)
@@ -124,6 +122,8 @@ def test_optimize():
         model_bo.optimize(X, Y, str_initial_method=1)
     with pytest.raises(AssertionError) as error:
         model_bo.optimize(X, Y, str_initial_method='abc')
+    with pytest.raises(AssertionError) as error:
+        model_bo.optimize(X, Y, int_samples='abc')
 
     next_point, cov_X_X, inv_cov_X_X, hyps = model_bo.optimize(X, Y)
     assert isinstance(next_point, np.ndarray)

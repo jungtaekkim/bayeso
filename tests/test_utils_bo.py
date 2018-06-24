@@ -1,6 +1,6 @@
 # test_bo
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: June 23, 2018
+# last updated: June 24, 2018
 
 import numpy as np
 import pytest
@@ -137,6 +137,12 @@ def test_optimize_many_():
         utils_bo.optimize_many_(model_bo, fun_target, np.random.randn(2, dim_X), Y, num_iter)
     with pytest.raises(AssertionError) as error:
         utils_bo.optimize_many_(model_bo, fun_target, X, np.random.randn(num_X, 2), num_iter)
+    with pytest.raises(AssertionError) as error:
+        utils_bo.optimize_many_(model_bo, fun_target, X, Y, num_iter, str_initial_method_optimizer=1)
+    with pytest.raises(AssertionError) as error:
+        utils_bo.optimize_many_(model_bo, fun_target, X, Y, num_iter, str_initial_method_optimizer='abc')
+    with pytest.raises(AssertionError) as error:
+        utils_bo.optimize_many_(model_bo, fun_target, X, Y, num_iter, int_samples_ao='abc')
 
     X_final, Y_final = utils_bo.optimize_many_(model_bo, fun_target, X, Y, num_iter)
     assert X_final.shape[1] == X.shape[1] == dim_X
@@ -165,6 +171,12 @@ def test_optimize_many():
         utils_bo.optimize_many(model_bo, fun_target, X, 1.2)
     with pytest.raises(AssertionError) as error:
         utils_bo.optimize_many(model_bo, fun_target, np.random.randn(num_X), num_iter)
+    with pytest.raises(AssertionError) as error:
+        utils_bo.optimize_many(model_bo, fun_target, X, num_iter, str_initial_method_optimizer=1)
+    with pytest.raises(AssertionError) as error:
+        utils_bo.optimize_many(model_bo, fun_target, X, num_iter, str_initial_method_optimizer='abc')
+    with pytest.raises(AssertionError) as error:
+        utils_bo.optimize_many(model_bo, fun_target, X, num_iter, int_samples_ao='abc')
 
     X_final, Y_final = utils_bo.optimize_many(model_bo, fun_target, X, num_iter)
     assert X_final.shape[1] == X.shape[1] == dim_X
@@ -191,13 +203,19 @@ def test_optimize_many_with_random_init():
     with pytest.raises(AssertionError) as error:
         utils_bo.optimize_many_with_random_init(model_bo, fun_target, num_X, 1.2)
     with pytest.raises(AssertionError) as error:
-        utils_bo.optimize_many_with_random_init(model_bo, fun_target, num_X, num_iter, str_initial_method=1)
+        utils_bo.optimize_many_with_random_init(model_bo, fun_target, num_X, num_iter, str_initial_method_bo=1)
     with pytest.raises(AssertionError) as error:
-        utils_bo.optimize_many_with_random_init(model_bo, fun_target, num_X, num_iter, str_initial_method='grid')
+        utils_bo.optimize_many_with_random_init(model_bo, fun_target, num_X, num_iter, str_initial_method_bo='abc')
+    with pytest.raises(AssertionError) as error:
+        utils_bo.optimize_many_with_random_init(model_bo, fun_target, num_X, num_iter, str_initial_method_bo='grid')
+    with pytest.raises(AssertionError) as error:
+        utils_bo.optimize_many_with_random_init(model_bo, fun_target, num_X, num_iter, str_initial_method_optimizer=1)
+    with pytest.raises(AssertionError) as error:
+        utils_bo.optimize_many_with_random_init(model_bo, fun_target, num_X, num_iter, str_initial_method_optimizer='abc')
     with pytest.raises(AssertionError) as error:
         utils_bo.optimize_many_with_random_init(model_bo, fun_target, num_X, num_iter, int_seed=1.2)
 
-    X_final, Y_final = utils_bo.optimize_many_with_random_init(model_bo, fun_target, num_X, num_iter, str_initial_method='uniform')
+    X_final, Y_final = utils_bo.optimize_many_with_random_init(model_bo, fun_target, num_X, num_iter, str_initial_method_bo='uniform')
     assert X_final.shape[1] == dim_X
     assert X_final.shape[0] == Y_final.shape[0] == num_X + num_iter
     assert Y_final.shape[1] == 1

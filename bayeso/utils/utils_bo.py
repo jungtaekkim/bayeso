@@ -72,6 +72,7 @@ def optimize_many(model_bo, fun_target, X_train, int_iter,
     assert isinstance(X_train, np.ndarray)
     assert isinstance(int_iter, int)
     assert isinstance(str_initial_method_optimizer, str)
+    assert isinstance(int_samples_ao, int)
     assert len(X_train.shape) == 2
 
     Y_train = []
