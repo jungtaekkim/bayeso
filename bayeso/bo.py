@@ -3,6 +3,7 @@
 # last updated: June 24, 2018
 
 import numpy as np
+import time
 from scipy.optimize import minimize
 import sobol_seq
 
@@ -147,6 +148,8 @@ class BO():
         assert X_train.shape[0] == Y_train.shape[0]
         assert X_train.shape[1] == self.num_dim
 
+        time_start = time.time()
+
         cov_X_X, inv_cov_X_X, hyps = gp.get_optimized_kernel(X_train, Y_train, self.prior_mu, self.str_cov, debug=self.debug)
 
         if self.str_acq == 'pi':
@@ -160,4 +163,9 @@ class BO():
       
         fun_objective = lambda X_test: -1.0 * constants.MULTIPLIER_ACQ * self._optimize_objective(fun_acquisition, X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps)
         next_point = self._optimize(fun_objective, str_initial_method=str_initial_method, int_samples=int_samples)
+
+        time_end = time.time()
+
+        if self.debug:
+            print('[DEBUG] optimize: time consumed', time_end - time_start, 'sec.')
         return next_point, cov_X_X, inv_cov_X_X, hyps

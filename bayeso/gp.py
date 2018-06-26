@@ -2,6 +2,7 @@
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
 # last updated: June 24, 2018
 
+import time
 import numpy as np
 import scipy 
 import scipy.optimize
@@ -139,6 +140,12 @@ def predict_optimized(X_train, Y_train, X_test, str_cov=constants.STR_GP_COV, pr
     assert X_train.shape[0] == Y_train.shape[0]
     assert X_train.shape[1] == X_test.shape[1]
 
+    time_start = time.time()
+
     cov_X_X, inv_cov_X_X, hyps = get_optimized_kernel(X_train, Y_train, prior_mu, str_cov, debug=debug)
     mu_Xs, sigma_Xs = predict_test_(X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps, str_cov, prior_mu)
+
+    time_end = time.time()
+    if debug:
+        print('[DEBUG] predict_optimized: time consumed', time_end - time_start, 'sec.')
     return mu_Xs, sigma_Xs

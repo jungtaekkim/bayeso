@@ -3,6 +3,7 @@
 # last updated: June 24, 2018
 
 import numpy as np
+import time
 
 from bayeso import bo
 from bayeso import constants
@@ -107,6 +108,8 @@ def optimize_many_with_random_init(model_bo, fun_target, int_init, int_iter,
     assert isinstance(int_seed, int) or int_seed is None
     assert str_initial_method_bo in constants.ALLOWED_INITIALIZATIONS_BO
 
+    time_start = time.time()
+
     X_init = model_bo.get_initial(str_initial_method_bo, fun_objective=fun_target, int_samples=int_init, int_seed=int_seed)
     if model_bo.debug:
         print('[DEBUG] optimize_many_with_random_init: X_init')
@@ -115,4 +118,10 @@ def optimize_many_with_random_init(model_bo, fun_target, int_init, int_iter,
         str_initial_method_optimizer=str_initial_method_optimizer,
         int_samples_ao=int_samples_ao,
     )
+
+    time_end = time.time()
+
+    if model_bo.debug:
+        print('[DEBUG] optimize_many_with_random_init', time_end - time_start, 'sec.')
+
     return X_final, Y_final
