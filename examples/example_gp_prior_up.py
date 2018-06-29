@@ -5,7 +5,7 @@
 import numpy as np
 
 from bayeso import gp
-from bayeso.utils import utils_plot
+from bayeso.utils import utils_plotting
 
 
 def linear_up(X):
@@ -27,7 +27,7 @@ def main():
     Y_test_truth = np.cos(X_test) + 2.0
     prior_mu = linear_up
     mu, sigma = gp.predict_optimized(X_train, Y_train, X_test, prior_mu=prior_mu)
-    utils_plot.plot_gp(X_train, Y_train, X_test, mu, sigma, Y_test_truth, '../results/gp/', 'test_optimized_prior_up')
+    utils_plotting.plot_gp(X_train, Y_train, X_test, mu, sigma, Y_test_truth, '../results/gp/', 'test_optimized_prior_up')
 
 
 if __name__ == '__main__':

@@ -7,7 +7,7 @@ import numpy as np
 from bayeso import gp
 from bayeso import bo
 from bayeso import acquisition
-from bayeso.utils import utils_plot
+from bayeso.utils import utils_plotting
 
 
 def fun_target(X):
@@ -33,8 +33,8 @@ def main():
         acq_test = np.expand_dims(acq_test, axis=1)
         X_train = np.vstack((X_train, next_x))
         Y_train = fun_target(X_train)
-        utils_plot.plot_bo_step(X_train, Y_train, X_test, fun_target(X_test), mu_test, sigma_test, path_save='../results/bo/', str_postfix='test_bascis_{}_'.format(str_acq) + str(ind_), int_init=num_init)
-        utils_plot.plot_bo_step_acq(X_train, Y_train, X_test, fun_target(X_test), mu_test, sigma_test, acq_test, path_save='../results/bo/', str_postfix='test_basics_{}_'.format(str_acq) + str(ind_), int_init=num_init, is_acq_axis_small=True)
+        utils_plotting.plot_bo_step(X_train, Y_train, X_test, fun_target(X_test), mu_test, sigma_test, path_save='../results/bo/', str_postfix='test_bascis_{}_'.format(str_acq) + str(ind_), int_init=num_init)
+        utils_plotting.plot_bo_step_acq(X_train, Y_train, X_test, fun_target(X_test), mu_test, sigma_test, acq_test, path_save='../results/bo/', str_postfix='test_basics_{}_'.format(str_acq) + str(ind_), int_init=num_init, is_acq_axis_small=True)
 
 
 if __name__ == '__main__':
