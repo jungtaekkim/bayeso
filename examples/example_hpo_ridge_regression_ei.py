@@ -13,7 +13,7 @@ from bayeso import gp
 from bayeso import bo
 from bayeso import acquisition
 from bayeso.utils import utils_bo
-from bayeso.utils import utils_plot
+from bayeso.utils import utils_plotting
 
 BOSTON = sklearn.datasets.load_boston()
 BOSTON_DATA = BOSTON.data
@@ -38,7 +38,7 @@ def main():
         list_Y.append(Y_final)
     arr_Y = np.array(list_Y)
     arr_Y = np.expand_dims(np.squeeze(arr_Y), axis=0)
-    utils_plot.plot_minimum(arr_Y, ['ridge'], int_init, True, path_save='../results/hpo/', str_postfix='ridge')
+    utils_plotting.plot_minimum(arr_Y, ['ridge'], int_init, True, path_save='../results/hpo/', str_postfix='ridge')
 
 if __name__ == '__main__':
     main()
