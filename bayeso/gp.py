@@ -24,29 +24,33 @@ def get_prior_mu(prior_mu, X):
         assert len(prior_mu_X.shape) == 2
     return prior_mu_X
 
-def get_kernels(X_train, hyps, str_cov):
+def get_kernels(X_train, hyps, str_cov, debug=False):
     assert isinstance(X_train, np.ndarray)
-    assert len(X_train.shape) == 2
     assert isinstance(hyps, dict)
     assert isinstance(str_cov, str)
+    assert isinstance(debug, bool)
+    assert len(X_train.shape) == 2
+    if debug:
+        pass
 
     cov_X_X = covariance.cov_main(str_cov, X_train, X_train, hyps) + hyps['noise']**2 * np.eye(X_train.shape[0])
     cov_X_X = (cov_X_X + cov_X_X.T) / 2.0
     inv_cov_X_X = np.linalg.inv(cov_X_X)
     return cov_X_X, inv_cov_X_X
 
-def log_ml(X_train, Y_train, hyps, str_cov, prior_mu_train):
+def log_ml(X_train, Y_train, hyps, str_cov, prior_mu_train, debug=False):
     assert isinstance(X_train, np.ndarray)
     assert isinstance(Y_train, np.ndarray)
     assert isinstance(hyps, np.ndarray)
     assert isinstance(str_cov, str)
+    assert isinstance(debug, bool)
     assert len(X_train.shape) == 2
     assert len(Y_train.shape) == 2
     assert len(prior_mu_train.shape) == 2
     assert X_train.shape[0] == Y_train.shape[0] == prior_mu_train.shape[0]
 
     hyps = utils_covariance.restore_hyps(str_cov, hyps)
-    cov_X_X, inv_cov_X_X = get_kernels(X_train, hyps, str_cov)
+    cov_X_X, inv_cov_X_X = get_kernels(X_train, hyps, str_cov, debug)
     new_Y_train = Y_train - prior_mu_train
 
     first_term = -0.5 * np.dot(np.dot(new_Y_train.T, inv_cov_X_X), new_Y_train)
@@ -65,22 +69,28 @@ def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov, str_optimizer_meth
     assert len(Y_train.shape) == 2
     assert X_train.shape[0] == Y_train.shape[0]
 
+    time_start = time.time()
+
     prior_mu_train = get_prior_mu(prior_mu, X_train)
     num_dim = X_train.shape[1]
-    neg_log_ml = lambda hyps: -1.0 * log_ml(X_train, Y_train, hyps, str_cov, prior_mu_train)
+    neg_log_ml = lambda hyps: -1.0 * log_ml(X_train, Y_train, hyps, str_cov, prior_mu_train, debug)
     result_optimized = scipy.optimize.minimize(
         neg_log_ml,
         utils_covariance.convert_hyps(
             str_cov,
-            utils_covariance.get_hyps(str_cov, num_dim)
+            utils_covariance.get_hyps(str_cov, num_dim),
         ),
-        method=str_optimizer_method
+        method=str_optimizer_method,
     )
     result_optimized = result_optimized.x
     hyps = utils_covariance.restore_hyps(str_cov, result_optimized)
-    if debug:
-        print('[DEBUG] get_optimized_kernel: optimized hyps for gpr ', hyps)
     cov_X_X, inv_cov_X_X = get_kernels(X_train, hyps, str_cov)
+
+    time_end = time.time()
+
+    if debug:
+        print('[DEBUG] get_optimized_kernel in gp.py: optimized hyps for gpr', hyps)
+        print('[DEBUG] get_optimized_kernel in gp.py: time consumed', time_end - time_start, 'sec.')
     return cov_X_X, inv_cov_X_X, hyps
 
 def predict_test_(X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps, str_cov=constants.STR_GP_COV, prior_mu=None):
@@ -147,5 +157,5 @@ def predict_optimized(X_train, Y_train, X_test, str_cov=constants.STR_GP_COV, pr
 
     time_end = time.time()
     if debug:
-        print('[DEBUG] predict_optimized: time consumed', time_end - time_start, 'sec.')
+        print('[DEBUG] predict_optimized in gp.py: time consumed', time_end - time_start, 'sec.')
     return mu_Xs, sigma_Xs

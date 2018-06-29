@@ -56,12 +56,25 @@ def optimize_many_(model_bo, fun_target, X_train, Y_train, int_iter,
     assert X_train.shape[0] == Y_train.shape[0]
     assert Y_train.shape[1] == 1
 
+    time_start = time.time()
+
     X_final = X_train
     Y_final = Y_train
     for _ in range(0, int_iter):
         next_point, _, _, _ = model_bo.optimize(X_final, Y_final, str_initial_method=str_initial_method_optimizer, int_samples=int_samples_ao)
         X_final = np.vstack((X_final, next_point))
+        
+        time_to_evaluate_start = time.time()
         Y_final = np.vstack((Y_final, fun_target(next_point)))
+        time_to_evaluate_end = time.time()
+        if model_bo.debug:
+            print('[DEBUG] optimize_many_ in utils_bo.py: time consumed to evaluate', time_to_evaluate_end - time_to_evaluate_start, 'sec.')
+
+
+    time_end = time.time()
+
+    if model_bo.debug:
+        print('[DEBUG] optimize_many_ in utils_bo.py: time consumed', time_end - time_start, 'sec.')
     return X_final, Y_final
 
 def optimize_many(model_bo, fun_target, X_train, int_iter,
@@ -112,7 +125,7 @@ def optimize_many_with_random_init(model_bo, fun_target, int_init, int_iter,
 
     X_init = model_bo.get_initial(str_initial_method_bo, fun_objective=fun_target, int_samples=int_init, int_seed=int_seed)
     if model_bo.debug:
-        print('[DEBUG] optimize_many_with_random_init: X_init')
+        print('[DEBUG] optimize_many_with_random_init in utils_bo.py: X_init')
         print(X_init)
     X_final, Y_final = optimize_many(model_bo, fun_target, X_init, int_iter,
         str_initial_method_optimizer=str_initial_method_optimizer,
@@ -122,6 +135,6 @@ def optimize_many_with_random_init(model_bo, fun_target, int_init, int_iter,
     time_end = time.time()
 
     if model_bo.debug:
-        print('[DEBUG] optimize_many_with_random_init', time_end - time_start, 'sec.')
+        print('[DEBUG] optimize_many_with_random_init in utils_bo.py: time consumed', time_end - time_start, 'sec.')
 
     return X_final, Y_final

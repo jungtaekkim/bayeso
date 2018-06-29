@@ -70,7 +70,7 @@ class BO():
         if int_seed is None:
             int_seed = np.random.randint(0, 10000)
         if self.debug:
-            print('[DEBUG] _get_initial_sobol: int_seed', int_seed)
+            print('[DEBUG] _get_initial_sobol in bo.py: int_seed', int_seed)
         arr_samples = sobol_seq.i4_sobol_generate(self.num_dim, int_samples, int_seed)
         arr_samples = arr_samples * (self.arr_range[:, 1].flatten() - self.arr_range[:, 0].flatten()) + self.arr_range[:, 0].flatten()
         return arr_samples
@@ -92,7 +92,7 @@ class BO():
         if str_initial_method == 'grid':
             assert fun_objective is not None
             if self.debug:
-                print('[DEBUG] get_initial: int_samples is ignored, because grid is chosen.')
+                print('[DEBUG] get_initial in bo.py: int_samples is ignored, because grid is chosen.')
             arr_initials = self._get_initial_grid()
             arr_initials = utils_bo.get_best_acquisition(arr_initials, fun_objective)
         elif str_initial_method == 'uniform':
@@ -104,7 +104,7 @@ class BO():
         else:
             raise ValueError('get_initial: missing condition for str_initial_method')
         if self.debug:
-            print('[DEBUG] get_initial: arr_initials')
+            print('[DEBUG] get_initial in bo.py: arr_initials')
             print(arr_initials)
         return arr_initials
 
@@ -131,7 +131,7 @@ class BO():
             )
             list_next_point.append(next_point.x)
             if self.debug:
-                print('[DEBUG] _optimize: optimized point for acq', next_point.x)
+                print('[DEBUG] _optimize in bo.py: optimized point for acq', next_point.x)
         next_point = utils_bo.get_best_acquisition(np.array(list_next_point), fun_objective)
         return next_point.flatten()
 
@@ -167,5 +167,5 @@ class BO():
         time_end = time.time()
 
         if self.debug:
-            print('[DEBUG] optimize: time consumed', time_end - time_start, 'sec.')
+            print('[DEBUG] optimize in bo.py: time consumed', time_end - time_start, 'sec.')
         return next_point, cov_X_X, inv_cov_X_X, hyps

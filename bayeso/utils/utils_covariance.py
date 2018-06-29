@@ -15,7 +15,7 @@ def get_hyps(str_cov, num_dim, is_ard=True):
     if str_cov == 'se':
         hyps['signal'] = 1.0
         if is_ard:
-            hyps['lengthscales'] = np.zeros(num_dim) + 1.0
+            hyps['lengthscales'] = np.ones(num_dim)
         else:
             hyps['lengthscales'] = 1.0
     elif str_cov == 'matern52' or str_cov == 'matern32':
