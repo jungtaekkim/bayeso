@@ -1,0 +1,15 @@
+[run]
+source =
+    bayeso
+    tests
+
+[report]
+exclude_lines =
+    pragma: no cover
+    assert
+    isinstance
+    debug
+    print
+    return
+    raise NotImplementedError
+    raise ValueError
