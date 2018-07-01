@@ -8,8 +8,10 @@ exclude_lines =
     pragma: no cover
     assert
     isinstance
-    debug
     print
     return
     raise NotImplementedError
     raise ValueError
+    if debug:
+    with pytests.raises(AssertionError) as error:
+    with pytests.raises(ValueError) as error:
