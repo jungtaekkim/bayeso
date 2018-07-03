@@ -4,7 +4,18 @@
 
 import numpy as np
 
-BOUND_BRANIN = np.array([[-5, 10], [0, 15]])
+INFO_BRANIN = {
+    'bounds': np.array([
+        [-5, 10],
+        [0, 15]
+    ]),
+    'global_minimum_X': np.array([
+        [-np.pi, 12.275],
+        [np.pi, 2.275],
+        [9.42478, 2.475],
+    ]),
+    'global_minimum_y': 0.397887,
+}
 
 
 def branin(X,

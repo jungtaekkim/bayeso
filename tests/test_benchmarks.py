@@ -28,3 +28,7 @@ def test_branin():
     with pytest.raises(AssertionError) as error:
         benchmarks.branin(np.zeros((10, 2)), t='abc')
 
+    X = np.array([[0.0, 0.0]])
+    val_fun = benchmarks.branin(X)
+    truth_val_fun = np.array([[55.60211264]])
+    assert (val_fun - truth_val_fun < TEST_EPSILON).all()
