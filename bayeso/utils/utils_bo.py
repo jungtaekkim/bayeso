@@ -41,7 +41,7 @@ def get_best_acquisition(arr_initials, fun_objective):
     return np.expand_dims(cur_initial, axis=0)
 
 def optimize_many_(model_bo, fun_target, X_train, Y_train, int_iter,
-    str_initial_method_optimizer=constants.STR_OPTIMIZER_INITIALIZATION,
+    str_initial_method_ao=constants.STR_OPTIMIZER_INITIALIZATION,
     int_samples_ao=constants.NUM_ACQ_SAMPLES,
 ):
     assert isinstance(model_bo, bo.BO)
@@ -49,7 +49,7 @@ def optimize_many_(model_bo, fun_target, X_train, Y_train, int_iter,
     assert isinstance(X_train, np.ndarray)
     assert isinstance(Y_train, np.ndarray)
     assert isinstance(int_iter, int)
-    assert isinstance(str_initial_method_optimizer, str)
+    assert isinstance(str_initial_method_ao, str)
     assert isinstance(int_samples_ao, int)
     assert len(X_train.shape) == 2
     assert len(Y_train.shape) == 2
@@ -61,9 +61,16 @@ def optimize_many_(model_bo, fun_target, X_train, Y_train, int_iter,
     X_final = X_train
     Y_final = Y_train
     for _ in range(0, int_iter):
-        next_point, _, _, _ = model_bo.optimize(X_final, Y_final, str_initial_method=str_initial_method_optimizer, int_samples=int_samples_ao)
+        next_point, _, _, _ = model_bo.optimize(X_final, Y_final, str_initial_method=str_initial_method_ao, int_samples=int_samples_ao)
+        if model_bo.debug:
+            print('[DEBUG] optimize_many_ in utils_bo.py: next_point', next_point)
+        if next_point in X_final:
+            next_point = model_bo.get_initial('uniform', int_samples=1)
+            next_point = next_point[0]
+            if model_bo.debug:
+                print('[DEBUG] optimize_many_ in utils_bo.py: next_point is repeated, so it is randomly selected.')
         X_final = np.vstack((X_final, next_point))
-        
+
         time_to_evaluate_start = time.time()
         Y_final = np.vstack((Y_final, fun_target(next_point)))
         time_to_evaluate_end = time.time()
@@ -78,14 +85,14 @@ def optimize_many_(model_bo, fun_target, X_train, Y_train, int_iter,
     return X_final, Y_final
 
 def optimize_many(model_bo, fun_target, X_train, int_iter,
-    str_initial_method_optimizer=constants.STR_OPTIMIZER_INITIALIZATION,
+    str_initial_method_ao=constants.STR_OPTIMIZER_INITIALIZATION,
     int_samples_ao=constants.NUM_ACQ_SAMPLES,
 ):
     assert isinstance(model_bo, bo.BO)
     assert callable(fun_target)
     assert isinstance(X_train, np.ndarray)
     assert isinstance(int_iter, int)
-    assert isinstance(str_initial_method_optimizer, str)
+    assert isinstance(str_initial_method_ao, str)
     assert isinstance(int_samples_ao, int)
     assert len(X_train.shape) == 2
 
@@ -100,14 +107,14 @@ def optimize_many(model_bo, fun_target, X_train, int_iter,
         X_train,
         Y_train,
         int_iter,
-        str_initial_method_optimizer=str_initial_method_optimizer,
+        str_initial_method_ao=str_initial_method_ao,
         int_samples_ao=int_samples_ao,
     )
     return X_final, Y_final
 
 def optimize_many_with_random_init(model_bo, fun_target, int_init, int_iter,
     str_initial_method_bo=constants.STR_BO_INITIALIZATION,
-    str_initial_method_optimizer=constants.STR_OPTIMIZER_INITIALIZATION,
+    str_initial_method_ao=constants.STR_OPTIMIZER_INITIALIZATION,
     int_samples_ao=constants.NUM_ACQ_SAMPLES,
     int_seed=None,
 ):
@@ -116,7 +123,7 @@ def optimize_many_with_random_init(model_bo, fun_target, int_init, int_iter,
     assert isinstance(int_init, int)
     assert isinstance(int_iter, int)
     assert isinstance(str_initial_method_bo, str)
-    assert isinstance(str_initial_method_optimizer, str)
+    assert isinstance(str_initial_method_ao, str)
     assert isinstance(int_samples_ao, int)
     assert isinstance(int_seed, int) or int_seed is None
     assert str_initial_method_bo in constants.ALLOWED_INITIALIZATIONS_BO
@@ -128,7 +135,7 @@ def optimize_many_with_random_init(model_bo, fun_target, int_init, int_iter,
         print('[DEBUG] optimize_many_with_random_init in utils_bo.py: X_init')
         print(X_init)
     X_final, Y_final = optimize_many(model_bo, fun_target, X_init, int_iter,
-        str_initial_method_optimizer=str_initial_method_optimizer,
+        str_initial_method_ao=str_initial_method_ao,
         int_samples_ao=int_samples_ao,
     )
 

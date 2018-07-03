@@ -30,5 +30,11 @@ def test_branin():
 
     X = np.array([[0.0, 0.0]])
     val_fun = benchmarks.branin(X)
-    truth_val_fun = np.array([[55.60211264]])
+    truth_val_fun = np.array([55.60211264])
     assert (val_fun - truth_val_fun < TEST_EPSILON).all()
+
+    X = np.array([[0.0, 0.0], [1.0, 1.0]])
+    val_fun = benchmarks.branin(X)
+    assert len(val_fun.shape) == 1
+    assert val_fun.shape[0] == X.shape[0]
+

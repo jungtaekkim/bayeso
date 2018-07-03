@@ -1,4 +1,4 @@
-# test_acquisition
+# test_branin
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
 # last updated: July 03, 2018
 

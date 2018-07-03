@@ -1,6 +1,6 @@
 # bo
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: June 24, 2018
+# last updated: July 04, 2018
 
 import numpy as np
 import time
@@ -114,16 +114,16 @@ class BO():
         acquisitions = fun_acquisition(pred_mean.flatten(), pred_std.flatten(), Y_train=Y_train)
         return acquisitions
 
-    def _optimize(self, fun_objective, str_initial_method, int_samples):
+    def _optimize(self, fun_negative_acquisition, str_initial_method, int_samples):
         assert str_initial_method in constants.ALLOWED_INITIALIZATIONS_OPTIMIZER
         list_bounds = []
         for elem in self.arr_range:
             list_bounds.append(tuple(elem))
-        arr_initials = self.get_initial(str_initial_method, fun_objective=fun_objective, int_samples=int_samples)
+        arr_initials = self.get_initial(str_initial_method, fun_objective=fun_negative_acquisition, int_samples=int_samples)
         list_next_point = []
         for arr_initial in arr_initials:
             next_point = minimize(
-                fun_objective,
+                fun_negative_acquisition,
                 x0=arr_initial,
                 bounds=list_bounds,
                 method=constants.STR_OPTIMIZER_METHOD_BO,
@@ -132,7 +132,7 @@ class BO():
             list_next_point.append(next_point.x)
             if self.debug:
                 print('[DEBUG] _optimize in bo.py: optimized point for acq', next_point.x)
-        next_point = utils_bo.get_best_acquisition(np.array(list_next_point), fun_objective)
+        next_point = utils_bo.get_best_acquisition(np.array(list_next_point), fun_negative_acquisition)
         return next_point.flatten()
 
     def optimize(self, X_train, Y_train,
@@ -161,8 +161,8 @@ class BO():
         else:
             raise ValueError('optimize: missing condition for self.str_acq.')
       
-        fun_objective = lambda X_test: -1.0 * constants.MULTIPLIER_ACQ * self._optimize_objective(fun_acquisition, X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps)
-        next_point = self._optimize(fun_objective, str_initial_method=str_initial_method, int_samples=int_samples)
+        fun_negative_acquisition = lambda X_test: -1.0 * constants.MULTIPLIER_ACQ * self._optimize_objective(fun_acquisition, X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps)
+        next_point = self._optimize(fun_negative_acquisition, str_initial_method=str_initial_method, int_samples=int_samples)
 
         time_end = time.time()
 

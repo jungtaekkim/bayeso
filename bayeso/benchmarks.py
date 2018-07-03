@@ -33,10 +33,13 @@ def branin(X,
     assert isinstance(r, float)
     assert isinstance(s, float)
     assert isinstance(t, float)
-    assert len(X.shape) == 2
-    assert X.shape[1] == 2
+    assert len(X.shape) == 1 or len(X.shape) == 2
+    if len(X.shape) == 1:
+        assert X.shape[0] == 2
+        X = np.expand_dims(X, axis=0)
+    elif len(X.shape) == 2:
+        assert X.shape[1] == 2
 
     Y = a * (X[:, 1] - b * X[:, 0]**2 + c * X[:, 0] - r)**2 + s * (1 - t) * np.cos(X[:, 0]) + s
-    Y = np.expand_dims(Y, axis=1)
     return Y
 
