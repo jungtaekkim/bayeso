@@ -4,6 +4,8 @@
 
 import numpy as np
 
+from bayeso import constants
+
 
 def get_hyps(str_cov, num_dim, is_ard=True):
     assert isinstance(str_cov, str)
@@ -24,12 +26,14 @@ def get_hyps(str_cov, num_dim, is_ard=True):
         raise ValueError('get_hyps: missing condition for str_cov.')
     return hyps
 
-def convert_hyps(str_cov, hyps):
+def convert_hyps(str_cov, hyps, is_fixed_noise=False):
     assert isinstance(str_cov, str)
     assert isinstance(hyps, dict)
+    assert isinstance(is_fixed_noise, bool)
 
     list_hyps = []
-    list_hyps.append(hyps['noise'])
+    if not is_fixed_noise:
+        list_hyps.append(hyps['noise'])
     if str_cov == 'se':
         list_hyps.append(hyps['signal'])
         for elem_lengthscale in hyps['lengthscales']:
@@ -40,17 +44,24 @@ def convert_hyps(str_cov, hyps):
         raise ValueError('convert_hyps: missing condition for str_cov.')
     return np.array(list_hyps)
 
-def restore_hyps(str_cov, hyps):
+def restore_hyps(str_cov, hyps, is_fixed_noise=False, fixed_noise=constants.GP_NOISE_FIXED):
     assert isinstance(str_cov, str)
     assert isinstance(hyps, np.ndarray)
     assert len(hyps.shape) == 1
+    assert isinstance(is_fixed_noise, bool)
 
     dict_hyps = dict()
-    dict_hyps['noise'] = hyps[0]
+    if not is_fixed_noise:
+        dict_hyps['noise'] = hyps[0]
+        ind_start = 1
+    else:
+        dict_hyps['noise'] = fixed_noise
+        ind_start = 0
+
     if str_cov == 'se':
-        dict_hyps['signal'] = hyps[1]
+        dict_hyps['signal'] = hyps[ind_start]
         list_lengthscales = []
-        for ind_elem in range(2, len(hyps)):
+        for ind_elem in range(ind_start+1, len(hyps)):
             list_lengthscales.append(hyps[ind_elem])
         dict_hyps['lengthscales'] = np.array(list_lengthscales)
     elif str_cov == 'matern52' or str_cov == 'matern32':

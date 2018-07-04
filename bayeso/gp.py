@@ -38,18 +38,19 @@ def get_kernels(X_train, hyps, str_cov, debug=False):
     inv_cov_X_X = np.linalg.inv(cov_X_X)
     return cov_X_X, inv_cov_X_X
 
-def log_ml(X_train, Y_train, hyps, str_cov, prior_mu_train, debug=False):
+def log_ml(X_train, Y_train, hyps, str_cov, prior_mu_train, is_fixed_noise=False, debug=False):
     assert isinstance(X_train, np.ndarray)
     assert isinstance(Y_train, np.ndarray)
     assert isinstance(hyps, np.ndarray)
     assert isinstance(str_cov, str)
+    assert isinstance(is_fixed_noise, bool)
     assert isinstance(debug, bool)
     assert len(X_train.shape) == 2
     assert len(Y_train.shape) == 2
     assert len(prior_mu_train.shape) == 2
     assert X_train.shape[0] == Y_train.shape[0] == prior_mu_train.shape[0]
 
-    hyps = utils_covariance.restore_hyps(str_cov, hyps)
+    hyps = utils_covariance.restore_hyps(str_cov, hyps, is_fixed_noise=is_fixed_noise)
     cov_X_X, inv_cov_X_X = get_kernels(X_train, hyps, str_cov, debug)
     new_Y_train = Y_train - prior_mu_train
 
@@ -59,6 +60,7 @@ def log_ml(X_train, Y_train, hyps, str_cov, prior_mu_train, debug=False):
     return np.squeeze(first_term + second_term + third_term)
 
 def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov, str_optimizer_method=constants.STR_OPTIMIZER_METHOD_GP, debug=False):
+    # TODO: check to input same is_fixed_noise to convert_hyps and restore_hyps
     assert isinstance(X_train, np.ndarray)
     assert isinstance(Y_train, np.ndarray)
     assert callable(prior_mu) or prior_mu is None
@@ -69,21 +71,23 @@ def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov, str_optimizer_meth
     assert len(Y_train.shape) == 2
     assert X_train.shape[0] == Y_train.shape[0]
 
+    is_fixed_noise=True
     time_start = time.time()
 
     prior_mu_train = get_prior_mu(prior_mu, X_train)
     num_dim = X_train.shape[1]
-    neg_log_ml = lambda hyps: -1.0 * log_ml(X_train, Y_train, hyps, str_cov, prior_mu_train, debug)
+    neg_log_ml = lambda hyps: -1.0 * log_ml(X_train, Y_train, hyps, str_cov, prior_mu_train, is_fixed_noise=is_fixed_noise, debug=debug)
     result_optimized = scipy.optimize.minimize(
         neg_log_ml,
         utils_covariance.convert_hyps(
             str_cov,
             utils_covariance.get_hyps(str_cov, num_dim),
+            is_fixed_noise=is_fixed_noise,
         ),
         method=str_optimizer_method,
     )
     result_optimized = result_optimized.x
-    hyps = utils_covariance.restore_hyps(str_cov, result_optimized)
+    hyps = utils_covariance.restore_hyps(str_cov, result_optimized, is_fixed_noise=is_fixed_noise)
     cov_X_X, inv_cov_X_X = get_kernels(X_train, hyps, str_cov)
 
     time_end = time.time()
