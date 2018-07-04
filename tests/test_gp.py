@@ -45,6 +45,8 @@ def test_get_kernels():
         gp.get_kernels(X, hyps, 1)
     with pytest.raises(ValueError) as error:
         gp.get_kernels(X, hyps, 'abc')
+    with pytest.raises(AssertionError) as error:
+        gp.get_kernels(X, hyps, 'se', debug=1)
 
     cov_X_X, inv_cov_X_X = gp.get_kernels(X, hyps, 'se')
     print(cov_X_X)
@@ -89,6 +91,10 @@ def test_log_ml():
         gp.log_ml(X, np.expand_dims(np.arange(0, 4), axis=1), arr_hyps, str_cov, prior_mu_X)
     with pytest.raises(AssertionError) as error:
         gp.log_ml(X, Y, arr_hyps, str_cov, np.expand_dims(np.arange(0, 4), axis=1))
+    with pytest.raises(AssertionError) as error:
+        gp.log_ml(X, Y, arr_hyps, str_cov, prior_mu_X, is_fixed_noise=1)
+    with pytest.raises(AssertionError) as error:
+        gp.log_ml(X, Y, arr_hyps, str_cov, prior_mu_X, debug=1)
 
     log_ml = gp.log_ml(X, Y, arr_hyps, str_cov, prior_mu_X)
     print(log_ml)
@@ -123,6 +129,10 @@ def test_get_optimized_kernel():
         gp.get_optimized_kernel(X, Y, prior_mu, 'abc')
     with pytest.raises(AssertionError) as error:
         gp.get_optimized_kernel(X, Y, prior_mu, 'se', str_optimizer_method=1)
+    with pytest.raises(AssertionError) as error:
+        gp.get_optimized_kernel(X, Y, prior_mu, 'se', is_fixed_noise=1)
+    with pytest.raises(AssertionError) as error:
+        gp.get_optimized_kernel(X, Y, prior_mu, 'se', debug=1)
 
 def test_predict_test_():
     np.random.seed(42)
@@ -222,3 +232,7 @@ def test_predict_optimized():
         gp.predict_optimized(np.random.randn(10, dim_X), Y, X_test, str_cov='se', prior_mu=prior_mu)
     with pytest.raises(AssertionError) as error:
         gp.predict_optimized(X, np.random.randn(10, 1), X_test, str_cov='se', prior_mu=prior_mu)
+    with pytest.raises(AssertionError) as error:
+        gp.predict_optimized(X, Y, X_test, is_fixed_noise=1)
+    with pytest.raises(AssertionError) as error:
+        gp.predict_optimized(X, Y, X_test, debug=1)

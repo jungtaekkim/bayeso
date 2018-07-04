@@ -12,8 +12,9 @@ from bayeso import constants
 def get_grid(arr_ranges, int_grid):
     assert isinstance(arr_ranges, np.ndarray)
     assert isinstance(int_grid, int)
-    assert len(arr_ranges.shape)
+    assert len(arr_ranges.shape) == 2
     assert arr_ranges.shape[1] == 2
+    assert (arr_ranges[:, 0] <= arr_ranges[:, 1]).all()
 
     list_grid = []
     for range_ in arr_ranges:

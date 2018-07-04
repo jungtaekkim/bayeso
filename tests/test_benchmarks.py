@@ -37,4 +37,3 @@ def test_branin():
     val_fun = benchmarks.branin(X)
     assert len(val_fun.shape) == 1
     assert val_fun.shape[0] == X.shape[0]
-
