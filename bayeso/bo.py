@@ -137,7 +137,7 @@ class BO():
         return next_point.flatten(), next_points
 
     def optimize(self, X_train, Y_train,
-        str_initial_method=constants.STR_OPTIMIZER_INITIALIZATION,
+        str_initial_method=constants.STR_AO_INITIALIZATION,
         int_samples=constants.NUM_ACQ_SAMPLES,
         is_normalized=True,
     ):
