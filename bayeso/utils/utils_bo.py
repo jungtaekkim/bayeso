@@ -1,6 +1,6 @@
 # utils_bo
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: June 24, 2018
+# last updated: July 04, 2018
 
 import numpy as np
 import time
@@ -40,6 +40,32 @@ def get_best_acquisition(arr_initials, fun_objective):
             cur_best = cur_acq
     return np.expand_dims(cur_initial, axis=0)
 
+def get_next_best_acquisition(arr_points, arr_acquisitions, cur_points):
+    assert isinstance(arr_points, np.ndarray)
+    assert isinstance(arr_acquisitions, np.ndarray)
+    assert isinstance(cur_points, np.ndarray)
+    assert len(arr_points.shape) == 2
+    assert len(arr_acquisitions.shape) == 1
+    assert len(cur_points.shape) == 2
+    assert arr_points.shape[0] == arr_acquisitions.shape[0]
+    assert arr_points.shape[1] == cur_points.shape[1]
+   
+    for cur_point in cur_points:
+        ind_same, = np.where(np.sum(arr_points == cur_point, axis=1) == arr_points.shape[1])
+        arr_points = np.delete(arr_points, ind_same, axis=0)
+        arr_acquisitions = np.delete(arr_acquisitions, ind_same)
+    cur_best = np.inf
+    next_point = None
+
+    if arr_points.shape[0] > 0:
+        for arr_point, cur_acq in zip(arr_points, arr_acquisitions):
+            if cur_acq < cur_best:
+                cur_best = cur_acq
+                next_point = arr_point
+    else:
+        next_point = cur_points[cur_points.shape[0]-1]
+    return next_point
+
 def optimize_many_(model_bo, fun_target, X_train, Y_train, int_iter,
     str_initial_method_ao=constants.STR_OPTIMIZER_INITIALIZATION,
     int_samples_ao=constants.NUM_ACQ_SAMPLES,
@@ -60,15 +86,17 @@ def optimize_many_(model_bo, fun_target, X_train, Y_train, int_iter,
 
     X_final = X_train
     Y_final = Y_train
-    for _ in range(0, int_iter):
-        next_point, _, _, _ = model_bo.optimize(X_final, Y_final, str_initial_method=str_initial_method_ao, int_samples=int_samples_ao)
+    for ind_iter in range(0, int_iter):
+        if model_bo.debug:
+            print('[DEBUG] optimize_many_ in utils_bo.py: current iteration', ind_iter + 1)
+        next_point, next_points, acquisitions, _, _, _ = model_bo.optimize(X_final, Y_final, str_initial_method=str_initial_method_ao, int_samples=int_samples_ao)
         if model_bo.debug:
             print('[DEBUG] optimize_many_ in utils_bo.py: next_point', next_point)
-        if next_point in X_final:
-            next_point = model_bo.get_initial('uniform', int_samples=1)
-            next_point = next_point[0]
+        if np.where(np.sum(next_point == X_final, axis=1) == X_final.shape[1])[0].shape[0] > 0:
+            print(X_final)
+            next_point = get_next_best_acquisition(next_points, acquisitions, X_final)
             if model_bo.debug:
-                print('[DEBUG] optimize_many_ in utils_bo.py: next_point is repeated, so it is randomly selected.')
+                print('[DEBUG] optimize_many_ in utils_bo.py: next_point is repeated, so next best is selected. next_point', next_point)
         X_final = np.vstack((X_final, next_point))
 
         time_to_evaluate_start = time.time()

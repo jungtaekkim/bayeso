@@ -17,13 +17,14 @@ def fun_target(X):
     return benchmarks.branin(X)
 
 def main():
-    int_bo = 3
+    int_bo = 5
     int_iter = 40
     int_init = 3
 
     model_bo = bo.BO(INFO_TARGET.get('bounds'), debug=True)
     list_Y = []
-    for _ in range(0, int_bo):
+    for ind_bo in range(0, int_bo):
+        print('BO Iteration', ind_bo)
         X_final, Y_final = utils_bo.optimize_many_with_random_init(model_bo, fun_target, int_init, int_iter, str_initial_method_bo='uniform', str_initial_method_ao='uniform', int_samples_ao=100)
         print(X_final)
         print(Y_final)

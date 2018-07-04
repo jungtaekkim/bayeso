@@ -132,14 +132,16 @@ class BO():
             list_next_point.append(next_point.x)
             if self.debug:
                 print('[DEBUG] _optimize in bo.py: optimized point for acq', next_point.x)
-        next_point = utils_bo.get_best_acquisition(np.array(list_next_point), fun_negative_acquisition)
-        return next_point.flatten()
+        next_points = np.array(list_next_point)
+        next_point = utils_bo.get_best_acquisition(next_points, fun_negative_acquisition)
+        return next_point.flatten(), next_points
 
     def optimize(self, X_train, Y_train,
         str_initial_method=constants.STR_OPTIMIZER_INITIALIZATION,
         int_samples=constants.NUM_ACQ_SAMPLES,
         is_normalized=True,
     ):
+        # TODO: is_normalized cases
         assert isinstance(X_train, np.ndarray)
         assert isinstance(Y_train, np.ndarray)
         assert isinstance(str_initial_method, str)
@@ -154,7 +156,8 @@ class BO():
 
         time_start = time.time()
 
-        Y_train = (Y_train - np.min(Y_train)) / (np.max(Y_train) - np.min(Y_train))
+        if is_normalized:
+            Y_train = (Y_train - np.min(Y_train)) / (np.max(Y_train) - np.min(Y_train)) * constants.MULTIPLIER_RESPONSE
 
         cov_X_X, inv_cov_X_X, hyps = gp.get_optimized_kernel(X_train, Y_train, self.prior_mu, self.str_cov, debug=self.debug)
 
@@ -168,10 +171,11 @@ class BO():
             raise ValueError('optimize: missing condition for self.str_acq.')
       
         fun_negative_acquisition = lambda X_test: -1.0 * constants.MULTIPLIER_ACQ * self._optimize_objective(fun_acquisition, X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps)
-        next_point = self._optimize(fun_negative_acquisition, str_initial_method=str_initial_method, int_samples=int_samples)
+        next_point, next_points = self._optimize(fun_negative_acquisition, str_initial_method=str_initial_method, int_samples=int_samples)
+        acquisitions = fun_negative_acquisition(next_points)
 
         time_end = time.time()
 
         if self.debug:
             print('[DEBUG] optimize in bo.py: time consumed', time_end - time_start, 'sec.')
-        return next_point, cov_X_X, inv_cov_X_X, hyps
+        return next_point, next_points, acquisitions, cov_X_X, inv_cov_X_X, hyps
