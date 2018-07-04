@@ -13,7 +13,7 @@ def get_hyps(str_cov, num_dim, is_ard=True):
     assert isinstance(is_ard, bool)
 
     hyps = dict()
-    hyps['noise'] = 0.1
+    hyps['noise'] = constants.GP_NOISE
     if str_cov == 'se':
         hyps['signal'] = 1.0
         if is_ard:
@@ -44,7 +44,7 @@ def convert_hyps(str_cov, hyps, is_fixed_noise=False):
         raise ValueError('convert_hyps: missing condition for str_cov.')
     return np.array(list_hyps)
 
-def restore_hyps(str_cov, hyps, is_fixed_noise=False, fixed_noise=constants.GP_NOISE_FIXED):
+def restore_hyps(str_cov, hyps, is_fixed_noise=False, fixed_noise=constants.GP_NOISE):
     assert isinstance(str_cov, str)
     assert isinstance(hyps, np.ndarray)
     assert isinstance(is_fixed_noise, bool)
@@ -71,8 +71,15 @@ def restore_hyps(str_cov, hyps, is_fixed_noise=False, fixed_noise=constants.GP_N
         raise ValueError('restore_hyps: missing condition for str_cov.')
     return dict_hyps
 
+# TODO: make it complete
 def validate_hyps_dict(dict_hyps, str_cov, int_dim):
-    raise NotImplementedError('validate_hyps_dict in utils_covariance.py')
+    is_valid = True
+    if not dict_hyps.get('noise'):
+        is_valid = False
+        raise ValueError('validate_hyps_dict: invalid hyps')
+    if np.abs(dict_hyps['noise']) > constants.BOUND_UPPER_GP_NOISE:
+        dict_hyps['noise'] = constants.BOUND_UPPER_GP_NOISE
+    return dict_hyps, is_valid
 
 def validate_hyps_arr(arr_hyps, str_cov, int_dim):
     raise NotImplementedError('validate_hyps_arr in utils_covariance.py')

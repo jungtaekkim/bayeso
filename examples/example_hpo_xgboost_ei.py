@@ -20,7 +20,7 @@ DIGITS = sklearn.datasets.load_digits()
 DIGITS_DATA = DIGITS.images
 DIGITS_DATA = np.reshape(DIGITS_DATA, (DIGITS_DATA.shape[0], DIGITS_DATA.shape[1] * DIGITS_DATA.shape[2]))
 DIGITS_LABELS = DIGITS.target
-DATA_TRAIN, DATA_TEST, LABELS_TRAIN, LABELS_TEST = sklearn.model_selection.train_test_split(DIGITS_DATA, DIGITS_LABELS, test_size=0.3)
+DATA_TRAIN, DATA_TEST, LABELS_TRAIN, LABELS_TEST = sklearn.model_selection.train_test_split(DIGITS_DATA, DIGITS_LABELS, test_size=0.3, stratify=DIGITS_LABELS)
 
 def fun_target(X):
     print(X)
@@ -34,7 +34,7 @@ def main():
     model_bo = bo.BO(np.array([[1, 10], [100, 500]]), debug=True)
     list_Y = []
     for _ in range(0, 5):
-        X_final, Y_final = utils_bo.optimize_many_with_random_init(model_bo, fun_target, int_init, 20, str_initial_method_bo='uniform', str_initial_method_ao='grid', int_samples_ao=100)
+        X_final, Y_final = utils_bo.optimize_many_with_random_init(model_bo, fun_target, int_init, 20, str_initial_method_bo='uniform', str_initial_method_ao='uniform', int_samples_ao=100)
         list_Y.append(Y_final)
     arr_Y = np.array(list_Y)
     arr_Y = np.expand_dims(np.squeeze(arr_Y), axis=0)

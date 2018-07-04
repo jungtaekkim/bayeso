@@ -138,11 +138,13 @@ class BO():
     def optimize(self, X_train, Y_train,
         str_initial_method=constants.STR_OPTIMIZER_INITIALIZATION,
         int_samples=constants.NUM_ACQ_SAMPLES,
+        is_normalized=True,
     ):
         assert isinstance(X_train, np.ndarray)
         assert isinstance(Y_train, np.ndarray)
         assert isinstance(str_initial_method, str)
         assert isinstance(int_samples, int)
+        assert isinstance(is_normalized, bool)
         assert len(X_train.shape) == 2
         assert len(Y_train.shape) == 2
         assert Y_train.shape[1] == 1
@@ -151,6 +153,8 @@ class BO():
         assert int_samples > 0
 
         time_start = time.time()
+
+        Y_train = (Y_train - np.min(Y_train)) / (np.max(Y_train) - np.min(Y_train))
 
         cov_X_X, inv_cov_X_X, hyps = gp.get_optimized_kernel(X_train, Y_train, self.prior_mu, self.str_cov, debug=self.debug)
 

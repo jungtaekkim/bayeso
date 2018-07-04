@@ -2,6 +2,9 @@
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
 # last updated: June 23, 2018
 
+import numpy as np
+
+
 JITTER_ACQ = 1e-5
 JITTER_COV = 1e-5
 
@@ -18,7 +21,10 @@ NUM_ACQ_SAMPLES = 50
 
 MULTIPLIER_ACQ = 10.0
 
-GP_NOISE_FIXED = 1e-4
+GP_NOISE = 1e-2
+
+IS_FIXED_GP_NOISE = False
+BOUND_UPPER_GP_NOISE = np.inf
 
 TIME_PAUSE = 2.0
 RANGE_SHADE = 1.96

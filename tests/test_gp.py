@@ -9,7 +9,7 @@ from bayeso import gp
 from bayeso.utils import utils_covariance
 
 
-TEST_EPSILON = 1e-5
+TEST_EPSILON = 1e-7
 
 def test_get_prior_mu():
     fun_prior = lambda X: np.expand_dims(np.linalg.norm(X, axis=1), axis=1)
@@ -50,14 +50,14 @@ def test_get_kernels():
     print(cov_X_X)
     print(inv_cov_X_X)
     truth_cov_X_X = [
-        [1.01001000e+00, 1.37095909e-06, 3.53262857e-24],
-        [1.37095909e-06, 1.01001000e+00, 1.37095909e-06],
-        [3.53262857e-24, 1.37095909e-06, 1.01001000e+00]
+        [1.00011000e+00, 1.37095909e-06, 3.53262857e-24],
+        [1.37095909e-06, 1.00011000e+00, 1.37095909e-06],
+        [3.53262857e-24, 1.37095909e-06, 1.00011000e+00]
     ]
     truth_inv_cov_X_X = [
-        [9.90089207e-01, -1.34391916e-06, 1.82419797e-12],
-        [-1.34391916e-06, 9.90089207e-01, -1.34391916e-06],
-        [1.82419797e-12, -1.34391916e-06, 9.90089207e-01]
+        [9.99890012e-01, -1.37065753e-06, 1.87890871e-12],
+        [-1.37065753e-06, 9.99890012e-01, -1.37065753e-06],
+        [1.87890871e-12, -1.37065753e-06, 9.99890012e-01]
     ]
     assert (cov_X_X - truth_cov_X_X < TEST_EPSILON).all()
     assert (inv_cov_X_X - truth_inv_cov_X_X < TEST_EPSILON).all()

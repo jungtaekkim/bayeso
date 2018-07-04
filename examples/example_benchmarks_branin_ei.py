@@ -3,15 +3,8 @@
 # last updated: July 04, 2018
 
 import numpy as np
-import sklearn
-import sklearn.datasets
-import sklearn.metrics
-import sklearn.model_selection
-import sklearn.linear_model
 
-from bayeso import gp
 from bayeso import bo
-from bayeso import acquisition
 from bayeso import benchmarks
 from bayeso.utils import utils_bo
 from bayeso.utils import utils_plotting

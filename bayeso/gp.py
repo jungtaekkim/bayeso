@@ -39,7 +39,7 @@ def get_kernels(X_train, hyps, str_cov, debug=False):
     inv_cov_X_X = np.linalg.inv(cov_X_X)
     return cov_X_X, inv_cov_X_X
 
-def log_ml(X_train, Y_train, hyps, str_cov, prior_mu_train, is_fixed_noise=False, debug=False):
+def log_ml(X_train, Y_train, hyps, str_cov, prior_mu_train, is_fixed_noise=constants.IS_FIXED_GP_NOISE, debug=False):
     assert isinstance(X_train, np.ndarray)
     assert isinstance(Y_train, np.ndarray)
     assert isinstance(hyps, np.ndarray)
@@ -61,19 +61,23 @@ def log_ml(X_train, Y_train, hyps, str_cov, prior_mu_train, is_fixed_noise=False
     third_term = -float(X_train.shape[1]) / 2.0 * np.log(2.0 * np.pi)
     return np.squeeze(first_term + second_term + third_term)
 
-def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov, str_optimizer_method=constants.STR_OPTIMIZER_METHOD_GP, debug=False):
+def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov,
+    str_optimizer_method=constants.STR_OPTIMIZER_METHOD_GP,
+    is_fixed_noise=constants.IS_FIXED_GP_NOISE,
+    debug=False
+):
     # TODO: check to input same is_fixed_noise to convert_hyps and restore_hyps
     assert isinstance(X_train, np.ndarray)
     assert isinstance(Y_train, np.ndarray)
     assert callable(prior_mu) or prior_mu is None
     assert isinstance(str_cov, str)
     assert isinstance(str_optimizer_method, str)
+    assert isinstance(is_fixed_noise, bool)
     assert isinstance(debug, bool)
     assert len(X_train.shape) == 2
     assert len(Y_train.shape) == 2
     assert X_train.shape[0] == Y_train.shape[0]
 
-    is_fixed_noise=True
     time_start = time.time()
 
     prior_mu_train = get_prior_mu(prior_mu, X_train)
@@ -90,6 +94,7 @@ def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov, str_optimizer_meth
     )
     result_optimized = result_optimized.x
     hyps = utils_covariance.restore_hyps(str_cov, result_optimized, is_fixed_noise=is_fixed_noise)
+    hyps, _ = utils_covariance.validate_hyps_dict(hyps, str_cov, num_dim)
     cov_X_X, inv_cov_X_X = get_kernels(X_train, hyps, str_cov)
 
     time_end = time.time()
@@ -120,7 +125,7 @@ def predict_test_(X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps, str_cov=
     prior_mu_train = get_prior_mu(prior_mu, X_train)
     prior_mu_test = get_prior_mu(prior_mu, X_test)
     cov_X_Xs = covariance.cov_main(str_cov, X_train, X_test, hyps)
-    cov_Xs_Xs = covariance.cov_main(str_cov, X_test, X_test, hyps) + hyps['noise']**2 * np.eye(X_test.shape[0])
+    cov_Xs_Xs = covariance.cov_main(str_cov, X_test, X_test, hyps)
     cov_Xs_Xs = (cov_Xs_Xs + cov_Xs_Xs.T) / 2.0
 
     mu_Xs = np.dot(np.dot(cov_X_Xs.T, inv_cov_X_X), Y_train - prior_mu_train) + prior_mu_test
@@ -144,11 +149,18 @@ def predict_test(X_train, Y_train, X_test, hyps, str_cov=constants.STR_GP_COV, p
     mu_Xs, sigma_Xs = predict_test_(X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps, str_cov, prior_mu)
     return mu_Xs, sigma_Xs
 
-def predict_optimized(X_train, Y_train, X_test, str_cov=constants.STR_GP_COV, prior_mu=None, debug=False):
+def predict_optimized(X_train, Y_train, X_test,
+    str_cov=constants.STR_GP_COV,
+    prior_mu=None,
+    is_fixed_noise=constants.IS_FIXED_GP_NOISE,
+    debug=False
+):
     assert isinstance(X_train, np.ndarray)
     assert isinstance(Y_train, np.ndarray)
     assert isinstance(X_test, np.ndarray)
     assert isinstance(str_cov, str)
+    assert isinstance(is_fixed_noise, bool)
+    assert isinstance(debug, bool)
     assert callable(prior_mu) or prior_mu is None
     assert len(X_train.shape) == 2
     assert len(Y_train.shape) == 2
@@ -158,7 +170,7 @@ def predict_optimized(X_train, Y_train, X_test, str_cov=constants.STR_GP_COV, pr
 
     time_start = time.time()
 
-    cov_X_X, inv_cov_X_X, hyps = get_optimized_kernel(X_train, Y_train, prior_mu, str_cov, debug=debug)
+    cov_X_X, inv_cov_X_X, hyps = get_optimized_kernel(X_train, Y_train, prior_mu, str_cov, is_fixed_noise=is_fixed_noise, debug=debug)
     mu_Xs, sigma_Xs = predict_test_(X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps, str_cov, prior_mu)
 
     time_end = time.time()
