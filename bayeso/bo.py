@@ -76,7 +76,7 @@ class BO():
         return arr_samples
 
     def _get_initial_latin(self, int_samples):
-        pass
+        raise NotImplementedError('_get_initial_latin in bo.py')
 
     # TODO: int_grid should be able to be input.
     def get_initial(self, str_initial_method,
@@ -142,11 +142,13 @@ class BO():
         assert isinstance(X_train, np.ndarray)
         assert isinstance(Y_train, np.ndarray)
         assert isinstance(str_initial_method, str)
+        assert isinstance(int_samples, int)
         assert len(X_train.shape) == 2
         assert len(Y_train.shape) == 2
         assert Y_train.shape[1] == 1
         assert X_train.shape[0] == Y_train.shape[0]
         assert X_train.shape[1] == self.num_dim
+        assert int_samples > 0
 
         time_start = time.time()
 

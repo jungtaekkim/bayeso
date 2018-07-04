@@ -47,8 +47,9 @@ def convert_hyps(str_cov, hyps, is_fixed_noise=False):
 def restore_hyps(str_cov, hyps, is_fixed_noise=False, fixed_noise=constants.GP_NOISE_FIXED):
     assert isinstance(str_cov, str)
     assert isinstance(hyps, np.ndarray)
-    assert len(hyps.shape) == 1
     assert isinstance(is_fixed_noise, bool)
+    assert isinstance(fixed_noise, float)
+    assert len(hyps.shape) == 1
 
     dict_hyps = dict()
     if not is_fixed_noise:
@@ -69,3 +70,9 @@ def restore_hyps(str_cov, hyps, is_fixed_noise=False, fixed_noise=constants.GP_N
     else:
         raise ValueError('restore_hyps: missing condition for str_cov.')
     return dict_hyps
+
+def validate_hyps_dict(dict_hyps, str_cov, int_dim):
+    raise NotImplementedError('validate_hyps_dict in utils_covariance.py')
+
+def validate_hyps_arr(arr_hyps, str_cov, int_dim):
+    raise NotImplementedError('validate_hyps_arr in utils_covariance.py')

@@ -22,10 +22,10 @@ def cov_main(str_cov, X, Xs, hyps, jitter=constants.JITTER_COV):
     assert isinstance(str_cov, str)
     assert isinstance(X, np.ndarray)
     assert isinstance(Xs, np.ndarray)
-    assert len(X.shape) == 2
-    assert len(Xs.shape) == 2
     assert isinstance(hyps, dict)
     assert isinstance(jitter, float)
+    assert len(X.shape) == 2
+    assert len(Xs.shape) == 2
 
     num_X = X.shape[0]
     num_d_X = X.shape[1]

@@ -22,6 +22,7 @@ def get_prior_mu(prior_mu, X):
     else:
         prior_mu_X = prior_mu(X)
         assert len(prior_mu_X.shape) == 2
+        assert X.shape[0] == prior_mu_X.shape[0]
     return prior_mu_X
 
 def get_kernels(X_train, hyps, str_cov, debug=False):
@@ -43,6 +44,7 @@ def log_ml(X_train, Y_train, hyps, str_cov, prior_mu_train, is_fixed_noise=False
     assert isinstance(Y_train, np.ndarray)
     assert isinstance(hyps, np.ndarray)
     assert isinstance(str_cov, str)
+    assert isinstance(prior_mu_train, np.ndarray)
     assert isinstance(is_fixed_noise, bool)
     assert isinstance(debug, bool)
     assert len(X_train.shape) == 2
