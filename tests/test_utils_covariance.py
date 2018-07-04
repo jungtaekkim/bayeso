@@ -1,11 +1,12 @@
 # test_utils_covariance
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: June 01, 2018
+# last updated: July 04, 2018
 
 import pytest
 import numpy as np
 
 from bayeso.utils import utils_covariance
+from bayeso import constants
 
 
 def test_get_hyps():
@@ -19,7 +20,7 @@ def test_get_hyps():
         utils_covariance.get_hyps('abc', 2)
     
     cur_hyps =  utils_covariance.get_hyps('se', 2)
-    assert cur_hyps['noise'] == 0.1
+    assert cur_hyps['noise'] == constants.GP_NOISE
     assert cur_hyps['signal'] == 1.0
     assert len(cur_hyps['lengthscales'].shape) == 1
     assert (cur_hyps['lengthscales'] == np.array([1.0, 1.0])).all()

@@ -138,9 +138,9 @@ def test_optimize_many_():
     with pytest.raises(AssertionError) as error:
         utils_bo.optimize_many_(model_bo, fun_target, X, np.random.randn(num_X, 2), num_iter)
     with pytest.raises(AssertionError) as error:
-        utils_bo.optimize_many_(model_bo, fun_target, X, Y, num_iter, str_initial_method_optimizer=1)
+        utils_bo.optimize_many_(model_bo, fun_target, X, Y, num_iter, str_initial_method_ao=1)
     with pytest.raises(AssertionError) as error:
-        utils_bo.optimize_many_(model_bo, fun_target, X, Y, num_iter, str_initial_method_optimizer='abc')
+        utils_bo.optimize_many_(model_bo, fun_target, X, Y, num_iter, str_initial_method_ao='abc')
     with pytest.raises(AssertionError) as error:
         utils_bo.optimize_many_(model_bo, fun_target, X, Y, num_iter, int_samples_ao='abc')
 
@@ -172,9 +172,9 @@ def test_optimize_many():
     with pytest.raises(AssertionError) as error:
         utils_bo.optimize_many(model_bo, fun_target, np.random.randn(num_X), num_iter)
     with pytest.raises(AssertionError) as error:
-        utils_bo.optimize_many(model_bo, fun_target, X, num_iter, str_initial_method_optimizer=1)
+        utils_bo.optimize_many(model_bo, fun_target, X, num_iter, str_initial_method_ao=1)
     with pytest.raises(AssertionError) as error:
-        utils_bo.optimize_many(model_bo, fun_target, X, num_iter, str_initial_method_optimizer='abc')
+        utils_bo.optimize_many(model_bo, fun_target, X, num_iter, str_initial_method_ao='abc')
     with pytest.raises(AssertionError) as error:
         utils_bo.optimize_many(model_bo, fun_target, X, num_iter, int_samples_ao='abc')
 
@@ -209,9 +209,9 @@ def test_optimize_many_with_random_init():
     with pytest.raises(AssertionError) as error:
         utils_bo.optimize_many_with_random_init(model_bo, fun_target, num_X, num_iter, str_initial_method_bo='grid')
     with pytest.raises(AssertionError) as error:
-        utils_bo.optimize_many_with_random_init(model_bo, fun_target, num_X, num_iter, str_initial_method_optimizer=1)
+        utils_bo.optimize_many_with_random_init(model_bo, fun_target, num_X, num_iter, str_initial_method_ao=1)
     with pytest.raises(AssertionError) as error:
-        utils_bo.optimize_many_with_random_init(model_bo, fun_target, num_X, num_iter, str_initial_method_optimizer='abc')
+        utils_bo.optimize_many_with_random_init(model_bo, fun_target, num_X, num_iter, str_initial_method_ao='abc')
     with pytest.raises(AssertionError) as error:
         utils_bo.optimize_many_with_random_init(model_bo, fun_target, num_X, num_iter, int_seed=1.2)
 

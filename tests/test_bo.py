@@ -125,7 +125,7 @@ def test_optimize():
     with pytest.raises(AssertionError) as error:
         model_bo.optimize(X, Y, int_samples='abc')
 
-    next_point, cov_X_X, inv_cov_X_X, hyps = model_bo.optimize(X, Y)
+    next_point, next_points, acquisitions, cov_X_X, inv_cov_X_X, hyps = model_bo.optimize(X, Y)
     assert isinstance(next_point, np.ndarray)
     assert isinstance(cov_X_X, np.ndarray)
     assert isinstance(inv_cov_X_X, np.ndarray)

@@ -1,6 +1,6 @@
 # bo
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: June 24, 2018
+# last updated: July 04, 2018
 
 import numpy as np
 import time
@@ -76,7 +76,7 @@ class BO():
         return arr_samples
 
     def _get_initial_latin(self, int_samples):
-        pass
+        raise NotImplementedError('_get_initial_latin in bo.py')
 
     # TODO: int_grid should be able to be input.
     def get_initial(self, str_initial_method,
@@ -114,16 +114,16 @@ class BO():
         acquisitions = fun_acquisition(pred_mean.flatten(), pred_std.flatten(), Y_train=Y_train)
         return acquisitions
 
-    def _optimize(self, fun_objective, str_initial_method, int_samples):
+    def _optimize(self, fun_negative_acquisition, str_initial_method, int_samples):
         assert str_initial_method in constants.ALLOWED_INITIALIZATIONS_OPTIMIZER
         list_bounds = []
         for elem in self.arr_range:
             list_bounds.append(tuple(elem))
-        arr_initials = self.get_initial(str_initial_method, fun_objective=fun_objective, int_samples=int_samples)
+        arr_initials = self.get_initial(str_initial_method, fun_objective=fun_negative_acquisition, int_samples=int_samples)
         list_next_point = []
         for arr_initial in arr_initials:
             next_point = minimize(
-                fun_objective,
+                fun_negative_acquisition,
                 x0=arr_initial,
                 bounds=list_bounds,
                 method=constants.STR_OPTIMIZER_METHOD_BO,
@@ -132,23 +132,32 @@ class BO():
             list_next_point.append(next_point.x)
             if self.debug:
                 print('[DEBUG] _optimize in bo.py: optimized point for acq', next_point.x)
-        next_point = utils_bo.get_best_acquisition(np.array(list_next_point), fun_objective)
-        return next_point.flatten()
+        next_points = np.array(list_next_point)
+        next_point = utils_bo.get_best_acquisition(next_points, fun_negative_acquisition)
+        return next_point.flatten(), next_points
 
     def optimize(self, X_train, Y_train,
         str_initial_method=constants.STR_OPTIMIZER_INITIALIZATION,
         int_samples=constants.NUM_ACQ_SAMPLES,
+        is_normalized=True,
     ):
+        # TODO: is_normalized cases
         assert isinstance(X_train, np.ndarray)
         assert isinstance(Y_train, np.ndarray)
         assert isinstance(str_initial_method, str)
+        assert isinstance(int_samples, int)
+        assert isinstance(is_normalized, bool)
         assert len(X_train.shape) == 2
         assert len(Y_train.shape) == 2
         assert Y_train.shape[1] == 1
         assert X_train.shape[0] == Y_train.shape[0]
         assert X_train.shape[1] == self.num_dim
+        assert int_samples > 0
 
         time_start = time.time()
+
+        if is_normalized:
+            Y_train = (Y_train - np.min(Y_train)) / (np.max(Y_train) - np.min(Y_train)) * constants.MULTIPLIER_RESPONSE
 
         cov_X_X, inv_cov_X_X, hyps = gp.get_optimized_kernel(X_train, Y_train, self.prior_mu, self.str_cov, debug=self.debug)
 
@@ -161,11 +170,12 @@ class BO():
         else:
             raise ValueError('optimize: missing condition for self.str_acq.')
       
-        fun_objective = lambda X_test: -1.0 * constants.MULTIPLIER_ACQ * self._optimize_objective(fun_acquisition, X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps)
-        next_point = self._optimize(fun_objective, str_initial_method=str_initial_method, int_samples=int_samples)
+        fun_negative_acquisition = lambda X_test: -1.0 * constants.MULTIPLIER_ACQ * self._optimize_objective(fun_acquisition, X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps)
+        next_point, next_points = self._optimize(fun_negative_acquisition, str_initial_method=str_initial_method, int_samples=int_samples)
+        acquisitions = fun_negative_acquisition(next_points)
 
         time_end = time.time()
 
         if self.debug:
             print('[DEBUG] optimize in bo.py: time consumed', time_end - time_start, 'sec.')
-        return next_point, cov_X_X, inv_cov_X_X, hyps
+        return next_point, next_points, acquisitions, cov_X_X, inv_cov_X_X, hyps

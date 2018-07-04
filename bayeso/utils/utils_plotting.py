@@ -1,4 +1,4 @@
-# utils_plot
+# utils_plotting
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
 # last updated: June 24, 2018
 
