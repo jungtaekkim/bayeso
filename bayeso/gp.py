@@ -73,8 +73,14 @@ def log_ml(X_train, Y_train, hyps, str_cov, prior_mu_train,
     new_Y_train = Y_train - prior_mu_train
     if is_cholesky:
         cov_X_X, lower = get_kernel_cholesky(X_train, hyps, str_cov, debug)
-        lower_new_Y_train, _, _, _ = np.linalg.lstsq(lower, new_Y_train, rcond=None)
-        alpha, _, _, _ = np.linalg.lstsq(lower.T, lower_new_Y_train, rcond=None)
+        try:
+            lower_new_Y_train, _, _, _ = np.linalg.lstsq(lower, new_Y_train, rcond=None)
+        except:
+            lower_new_Y_train, _, _, _ = np.linalg.lstsq(lower, new_Y_train, rcond=-1)
+        try:
+            alpha, _, _, _ = np.linalg.lstsq(lower.T, lower_new_Y_train, rcond=None)
+        except:
+            alpha, _, _, _ = np.linalg.lstsq(lower.T, lower_new_Y_train, rcond=-1)
         first_term = -0.5 * np.dot(new_Y_train.T, alpha)
         second_term = -1.0 * np.sum(np.log(np.diagonal(lower) + constants.JITTER_LOG))
     else:
