@@ -39,13 +39,26 @@ def get_kernels(X_train, hyps, str_cov, debug=False):
     inv_cov_X_X = np.linalg.inv(cov_X_X)
     return cov_X_X, inv_cov_X_X
 
-def log_ml(X_train, Y_train, hyps, str_cov, prior_mu_train, is_fixed_noise=constants.IS_FIXED_GP_NOISE, debug=False):
+def get_kernel_cholesky(X_train, hyps, str_cov, debug=False):
+    assert isinstance(X_train, np.ndarray)
+    assert isinstance(hyps, dict)
+    assert isinstance(str_cov, str)
+    assert isinstance(debug, bool)
+    assert len(X_train.shape) == 2
+    
+    cov_X_X = covariance.cov_main(str_cov, X_train, X_train, hyps) + hyps['noise']**2 * np.eye(X_train.shape[0])
+    cov_X_X = (cov_X_X + cov_X_X.T) / 2.0
+    lower = np.linalg.cholesky(cov_X_X)
+    return cov_X_X, lower
+
+def log_ml(X_train, Y_train, hyps, str_cov, prior_mu_train, is_fixed_noise=constants.IS_FIXED_GP_NOISE, is_cholesky=True, debug=False):
     assert isinstance(X_train, np.ndarray)
     assert isinstance(Y_train, np.ndarray)
     assert isinstance(hyps, np.ndarray)
     assert isinstance(str_cov, str)
     assert isinstance(prior_mu_train, np.ndarray)
     assert isinstance(is_fixed_noise, bool)
+    assert isinstance(is_cholesky, bool)
     assert isinstance(debug, bool)
     assert len(X_train.shape) == 2
     assert len(Y_train.shape) == 2
@@ -53,13 +66,22 @@ def log_ml(X_train, Y_train, hyps, str_cov, prior_mu_train, is_fixed_noise=const
     assert X_train.shape[0] == Y_train.shape[0] == prior_mu_train.shape[0]
 
     hyps = utils_covariance.restore_hyps(str_cov, hyps, is_fixed_noise=is_fixed_noise)
-    cov_X_X, inv_cov_X_X = get_kernels(X_train, hyps, str_cov, debug)
     new_Y_train = Y_train - prior_mu_train
+    if is_cholesky:
+        cov_X_X, lower = get_kernel_cholesky(X_train, hyps, str_cov, debug)
+        lower_new_Y_train, _, _, _ = np.linalg.lstsq(lower, new_Y_train, rcond=None)
+        alpha, _, _, _ = np.linalg.lstsq(lower.T, lower_new_Y_train, rcond=None)
+        first_term = -0.5 * np.dot(new_Y_train.T, alpha)
+        second_term = -1.0 * np.sum(np.log(np.diagonal(lower) + constants.JITTER_LOG))
+    else:
+        cov_X_X, inv_cov_X_X = get_kernels(X_train, hyps, str_cov, debug)
 
-    first_term = -0.5 * np.dot(np.dot(new_Y_train.T, inv_cov_X_X), new_Y_train)
-    second_term = -0.5 * np.log(np.linalg.det(cov_X_X))
+        first_term = -0.5 * np.dot(np.dot(new_Y_train.T, inv_cov_X_X), new_Y_train)
+        second_term = -0.5 * np.log(np.linalg.det(cov_X_X) + constants.JITTER_LOG)
+        
     third_term = -float(X_train.shape[1]) / 2.0 * np.log(2.0 * np.pi)
-    return np.squeeze(first_term + second_term + third_term)
+    log_ml = np.squeeze(first_term + second_term + third_term)
+    return log_ml
 
 def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov,
     str_optimizer_method=constants.STR_OPTIMIZER_METHOD_GP,

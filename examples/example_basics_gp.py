@@ -1,12 +1,12 @@
 # example_basics_gp
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: June 24, 2018
+# last updated: July 05, 2018
 
 import numpy as np
 
 from bayeso import gp
 from bayeso.utils import utils_common
-from bayeso.utils import utils_plot
+from bayeso.utils import utils_plotting
 
 
 def main():
@@ -27,7 +27,7 @@ def main():
         'noise': 0.02,
     }
     mu, sigma = gp.predict_test(X_train, Y_train, X_test, hyps)
-    utils_plot.plot_gp(X_train, Y_train, X_test, mu, sigma, Y_test_truth, path_save='../results/gp/', str_postfix='test_cos')
+    utils_plotting.plot_gp(X_train, Y_train, X_test, mu, sigma, Y_test_truth, path_save='../results/gp/', str_postfix='test_cos')
 
 if __name__ == '__main__':
     main()
