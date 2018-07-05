@@ -10,6 +10,8 @@ Welcome to bayeso's documentation!
 
 The code can be found in `our GitHub repository <https://github.com/jungtaekkim/bayeso>`_.
 
+It is still under construction. We will update soon.
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:

@@ -12,8 +12,9 @@ from bayeso import constants
 def get_grid(arr_ranges, int_grid):
     assert isinstance(arr_ranges, np.ndarray)
     assert isinstance(int_grid, int)
-    assert len(arr_ranges.shape)
+    assert len(arr_ranges.shape) == 2
     assert arr_ranges.shape[1] == 2
+    assert (arr_ranges[:, 0] <= arr_ranges[:, 1]).all()
 
     list_grid = []
     for range_ in arr_ranges:
@@ -67,7 +68,7 @@ def get_next_best_acquisition(arr_points, arr_acquisitions, cur_points):
     return next_point
 
 def optimize_many_(model_bo, fun_target, X_train, Y_train, int_iter,
-    str_initial_method_ao=constants.STR_OPTIMIZER_INITIALIZATION,
+    str_initial_method_ao=constants.STR_AO_INITIALIZATION,
     int_samples_ao=constants.NUM_ACQ_SAMPLES,
 ):
     assert isinstance(model_bo, bo.BO)
@@ -113,7 +114,7 @@ def optimize_many_(model_bo, fun_target, X_train, Y_train, int_iter,
     return X_final, Y_final
 
 def optimize_many(model_bo, fun_target, X_train, int_iter,
-    str_initial_method_ao=constants.STR_OPTIMIZER_INITIALIZATION,
+    str_initial_method_ao=constants.STR_AO_INITIALIZATION,
     int_samples_ao=constants.NUM_ACQ_SAMPLES,
 ):
     assert isinstance(model_bo, bo.BO)
@@ -142,7 +143,7 @@ def optimize_many(model_bo, fun_target, X_train, int_iter,
 
 def optimize_many_with_random_init(model_bo, fun_target, int_init, int_iter,
     str_initial_method_bo=constants.STR_BO_INITIALIZATION,
-    str_initial_method_ao=constants.STR_OPTIMIZER_INITIALIZATION,
+    str_initial_method_ao=constants.STR_AO_INITIALIZATION,
     int_samples_ao=constants.NUM_ACQ_SAMPLES,
     int_seed=None,
 ):
