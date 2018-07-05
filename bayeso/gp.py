@@ -51,7 +51,11 @@ def get_kernel_cholesky(X_train, hyps, str_cov, debug=False):
     lower = np.linalg.cholesky(cov_X_X)
     return cov_X_X, lower
 
-def log_ml(X_train, Y_train, hyps, str_cov, prior_mu_train, is_fixed_noise=constants.IS_FIXED_GP_NOISE, is_cholesky=True, debug=False):
+def log_ml(X_train, Y_train, hyps, str_cov, prior_mu_train,
+    is_fixed_noise=constants.IS_FIXED_GP_NOISE,
+    is_cholesky=True,
+    debug=False
+):
     assert isinstance(X_train, np.ndarray)
     assert isinstance(Y_train, np.ndarray)
     assert isinstance(hyps, np.ndarray)
