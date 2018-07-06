@@ -87,7 +87,10 @@ def optimize_many_(model_bo, fun_target, X_train, Y_train, int_iter,
 
     X_final = X_train
     Y_final = Y_train
+    time_final = []
     for ind_iter in range(0, int_iter):
+        time_iter_start = time.time()
+
         if model_bo.debug:
             print('[DEBUG] optimize_many_ in utils_bo.py: current iteration', ind_iter + 1)
         next_point, next_points, acquisitions, _, _, _ = model_bo.optimize(X_final, Y_final, str_initial_method=str_initial_method_ao, int_samples=int_samples_ao)
@@ -106,12 +109,14 @@ def optimize_many_(model_bo, fun_target, X_train, Y_train, int_iter,
         if model_bo.debug:
             print('[DEBUG] optimize_many_ in utils_bo.py: time consumed to evaluate', time_to_evaluate_end - time_to_evaluate_start, 'sec.')
 
+        time_iter_end = time.time()
+        time_final.append(time_iter_end - time_iter_start)
 
     time_end = time.time()
 
     if model_bo.debug:
         print('[DEBUG] optimize_many_ in utils_bo.py: time consumed', time_end - time_start, 'sec.')
-    return X_final, Y_final
+    return X_final, Y_final, np.array(time_final)
 
 def optimize_many(model_bo, fun_target, X_train, int_iter,
     str_initial_method_ao=constants.STR_AO_INITIALIZATION,
@@ -126,11 +131,17 @@ def optimize_many(model_bo, fun_target, X_train, int_iter,
     assert len(X_train.shape) == 2
 
     Y_train = []
+    time_initials = []
     for elem in X_train:
+        time_initial_start = time.time()
         Y_train.append(fun_target(elem))
+        time_initial_end = time.time()
+        time_initials.append(time_initial_end - time_initial_start)
+    time_initials = np.array(time_initials)
+
     Y_train = np.array(Y_train)
     Y_train = np.reshape(Y_train, (Y_train.shape[0], 1))
-    X_final, Y_final = optimize_many_(
+    X_final, Y_final, time_final = optimize_many_(
         model_bo,
         fun_target,
         X_train,
@@ -139,7 +150,7 @@ def optimize_many(model_bo, fun_target, X_train, int_iter,
         str_initial_method_ao=str_initial_method_ao,
         int_samples_ao=int_samples_ao,
     )
-    return X_final, Y_final
+    return X_final, Y_final, np.concatenate((time_initials, time_final))
 
 def optimize_many_with_random_init(model_bo, fun_target, int_init, int_iter,
     str_initial_method_bo=constants.STR_BO_INITIALIZATION,
@@ -163,7 +174,7 @@ def optimize_many_with_random_init(model_bo, fun_target, int_init, int_iter,
     if model_bo.debug:
         print('[DEBUG] optimize_many_with_random_init in utils_bo.py: X_init')
         print(X_init)
-    X_final, Y_final = optimize_many(model_bo, fun_target, X_init, int_iter,
+    X_final, Y_final, time_final = optimize_many(model_bo, fun_target, X_init, int_iter,
         str_initial_method_ao=str_initial_method_ao,
         int_samples_ao=int_samples_ao,
     )
@@ -173,4 +184,4 @@ def optimize_many_with_random_init(model_bo, fun_target, int_init, int_iter,
     if model_bo.debug:
         print('[DEBUG] optimize_many_with_random_init in utils_bo.py: time consumed', time_end - time_start, 'sec.')
 
-    return X_final, Y_final
+    return X_final, Y_final, time_final
