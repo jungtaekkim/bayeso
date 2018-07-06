@@ -19,7 +19,7 @@ def fun_target(X):
     return benchmarks.branin(X)
 
 def main():
-    num_points = 500
+    num_points = 100
     is_fixed_noise = False
     model_bo = bo.BO(INFO_TARGET.get('bounds'), debug=True)
     X_init = model_bo.get_initial('uniform', fun_objective=fun_target, int_samples=num_points)

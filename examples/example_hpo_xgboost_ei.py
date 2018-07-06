@@ -33,12 +33,18 @@ def main():
     int_init = 3
     model_bo = bo.BO(np.array([[1, 10], [100, 500]]), debug=True)
     list_Y = []
+    list_time = []
     for _ in range(0, 5):
-        X_final, Y_final = utils_bo.optimize_many_with_random_init(model_bo, fun_target, int_init, 20, str_initial_method_bo='uniform', str_initial_method_ao='uniform', int_samples_ao=100)
+        X_final, Y_final, time_final = utils_bo.optimize_many_with_random_init(model_bo, fun_target, int_init, 20, str_initial_method_bo='uniform', str_initial_method_ao='uniform', int_samples_ao=100)
         list_Y.append(Y_final)
+        list_time.append(time_final)
     arr_Y = np.array(list_Y)
     arr_Y = np.expand_dims(np.squeeze(arr_Y), axis=0)
+    arr_time = np.array(list_time)
+    arr_time = np.expand_dims(arr_time, axis=0)
+
     utils_plotting.plot_minimum(arr_Y, ['xgboost'], int_init, True, path_save='../results/hpo/', str_postfix='xgboost')
+    utils_plotting.plot_minimum_time(arr_time, arr_Y, ['xgboost'], int_init, True, path_save='../results/hpo/', str_postfix='xgboost')
 
 
 if __name__ == '__main__':

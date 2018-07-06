@@ -25,9 +25,10 @@ def main():
     list_Y = []
     for ind_bo in range(0, int_bo):
         print('BO Iteration', ind_bo)
-        X_final, Y_final = utils_bo.optimize_many_with_random_init(model_bo, fun_target, int_init, int_iter, str_initial_method_bo='uniform', str_initial_method_ao='uniform', int_samples_ao=100)
+        X_final, Y_final, time_final = utils_bo.optimize_many_with_random_init(model_bo, fun_target, int_init, int_iter, str_initial_method_bo='uniform', str_initial_method_ao='uniform', int_samples_ao=100)
         print(X_final)
         print(Y_final)
+        print(time_final)
         list_Y.append(Y_final)
     arr_Y = np.array(list_Y)
     arr_Y = np.expand_dims(np.squeeze(arr_Y), axis=0)

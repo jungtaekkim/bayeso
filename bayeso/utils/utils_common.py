@@ -1,6 +1,6 @@
 # utils_common
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: June 24, 2018
+# last updated: July 06, 2018
 
 import numpy as np
 
@@ -28,3 +28,20 @@ def get_minimum(all_data, int_init):
     mean_minimum = np.mean(arr_minimum, axis=0)
     std_minimum = np.std(arr_minimum, axis=0)
     return arr_minimum, mean_minimum, std_minimum
+
+def get_time(arr_time, int_init, is_initial):
+    assert isinstance(arr_time, np.ndarray)
+    assert isinstance(int_init, int)
+    assert isinstance(is_initial, bool)
+
+    list_time = []
+    for elem_time in arr_time:
+        cur_list = np.array([0.0])
+        cur_time = 0.0
+
+        if is_initial:
+            elem_time = elem_time[int_init:]
+        cur_list = np.concatenate((cur_list, np.cumsum(elem_time)))
+        list_time.append(cur_list)
+    list_time = np.array(list_time)
+    return np.mean(list_time, axis=0)

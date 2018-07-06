@@ -192,6 +192,104 @@ def plot_minimum(arr_minima, list_str_label, int_init, is_std,
     plt.pause(time_pause)
     plt.close('all')
 
+def plot_minimum_time(arr_times, arr_minima, list_str_label, int_init, is_std,
+    is_marker=True,
+    is_legend=False,
+    is_tex=False,
+    path_save=None,
+    str_postfix=None,
+    str_x_axis='Time (sec.)',
+    str_y_axis='Minimum function value',
+    time_pause=constants.TIME_PAUSE,
+    range_shade=constants.RANGE_SHADE,
+    markers=constants.MARKERS,
+    colors=constants.COLORS,
+):
+    assert isinstance(arr_times, np.ndarray)
+    assert isinstance(arr_minima, np.ndarray)
+    assert isinstance(list_str_label, list)
+    assert isinstance(int_init, int)
+    assert isinstance(is_std, bool)
+    assert isinstance(is_marker, bool)
+    assert isinstance(is_legend, bool)
+    assert isinstance(is_tex, bool)
+    assert isinstance(path_save, str) or path_save is None
+    assert isinstance(str_postfix, str) or str_postfix is None
+    assert isinstance(str_x_axis, str)
+    assert isinstance(str_y_axis, str)
+    assert isinstance(time_pause, float)
+    assert isinstance(range_shade, float)
+    assert isinstance(markers, list)
+    assert isinstance(colors, list)
+    assert len(arr_times.shape) == 3
+    assert len(arr_minima.shape) == 3
+    assert arr_times.shape[0] == arr_minima.shape[0] == len(list_str_label)
+    assert arr_times.shape[1] == arr_minima.shape[1]
+    assert arr_minima.shape[2] >= int_init
+    assert arr_times.shape[2] == arr_minima.shape[2] or arr_times.shape[2] + int_init == arr_minima.shape[2]
+
+    if is_tex:
+        plt.rc('text', usetex=True)
+    else:
+        plt.rc('pdf', fonttype=42)
+    fig = plt.figure(figsize=(8, 6))
+    ax = plt.gca()
+
+    list_x_data = []
+    for ind_minimum, arr_minimum in enumerate(arr_minima):
+        ind_color = ind_minimum % len(colors)
+        ind_marker = ind_minimum % len(markers)
+        _, mean_min, std_min = utils_common.get_minimum(arr_minimum, int_init)
+        x_data = utils_common.get_time(arr_times[ind_minimum], int_init, arr_times.shape[2] == arr_minima.shape[2])
+        y_data = mean_min
+        std_data = std_min
+        if is_marker:
+            ax.plot(x_data, y_data,
+                label=list_str_label[ind_minimum],
+                c=colors[ind_color],
+                linewidth=4,
+                marker=markers[ind_marker],
+                markersize=10,
+                mew=3,
+            )
+        else:
+            ax.plot(x_data, y_data, 
+                label=list_str_label[ind_minimum], 
+                c=colors[ind_color], 
+                linewidth=4,
+                marker='None')
+           
+        if is_std:
+            ax.fill_between(x_data, 
+                y_data - range_shade * std_data, 
+                y_data + range_shade * std_data, 
+                color=colors[ind_color], 
+                alpha=0.3)
+        list_x_data.append(x_data)
+    lines, labels = ax.get_legend_handles_labels()
+    ax.set_xlabel(str_x_axis, fontsize=27)
+    ax.set_ylabel(str_y_axis, fontsize=27)
+    ax.set_xlim([np.min(list_x_data), np.max(list_x_data)])
+    ax.tick_params(labelsize=22)
+    ax.spines['top'].set_color('none')
+    ax.spines['right'].set_color('none')
+    if is_legend:
+        plt.legend(loc='upper right', fancybox=False, edgecolor='black', fontsize=24)
+    if path_save is not None and str_postfix is not None:
+        if is_std:
+            str_figure = 'minimum_time_mean_std_' + str_postfix
+        else:
+            str_figure = 'minimum_time_mean_only_' + str_postfix
+        plt.savefig(os.path.join(path_save, str_figure + '.pdf'), format='pdf', transparent=True, bbox_inches='tight', frameon=False)
+
+        if not is_legend:
+            fig_legend = pylab.figure(figsize=(3, 2))
+            fig_legend.legend(lines, list_str_label, 'center', fancybox=False, edgecolor='black', fontsize=32)
+            fig_legend.savefig(os.path.join(path_save, 'legend_{}.pdf'.format(str_postfix)), format='pdf', transparent=True, bbox_inches='tight', frameon=False)
+    plt.ion()
+    plt.pause(time_pause)
+    plt.close('all')
+
 def plot_bo_step(X_train, Y_train, X_test, Y_test, mean_test, std_test,
     path_save=None,
     str_postfix=None,
