@@ -25,7 +25,8 @@ def fun_target(X):
     ridge_model = sklearn.linear_model.Ridge(alpha=X[0])
     ridge_model.fit(DATA_TRAIN, LABELS_TRAIN)
     preds = ridge_model.predict(DATA_TEST)
-    return sklearn.metrics.mean_squared_error(LABELS_TEST, preds)
+    mse = sklearn.metrics.mean_squared_error(LABELS_TEST, preds)
+    return mse
 
 def main():
     # (max_depth, n_estimators)
