@@ -1,6 +1,6 @@
 # example_basics_bo_pi
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: June 24, 2018
+# last updated: July 06, 2018
 
 import numpy as np
 
@@ -15,6 +15,7 @@ def fun_target(X):
 
 def main():
     str_acq = 'pi'
+    num_iter = 10
     X_train = np.array([
         [-5],
         [-1],
@@ -25,9 +26,9 @@ def main():
     model_bo = bo.BO(np.array([[-6., 6.]]), str_acq=str_acq)
     X_test = np.linspace(-6, 6, 400)
     X_test = np.reshape(X_test, (400, 1))
-    for ind_ in range(1, 10+1):
+    for ind_ in range(1, num_iter + 1):
         Y_train = fun_target(X_train)
-        next_x, _, _, cov_X_X, inv_cov_X_X, hyps = model_bo.optimize(X_train, fun_target(X_train), str_initial_method='grid')
+        next_x, _, _, cov_X_X, inv_cov_X_X, hyps = model_bo.optimize(X_train, fun_target(X_train), str_initial_method='uniform')
         mu_test, sigma_test = gp.predict_test_(X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps)
         acq_test = acquisition.pi(mu_test.flatten(), sigma_test.flatten(), Y_train)
         acq_test = np.expand_dims(acq_test, axis=1)
