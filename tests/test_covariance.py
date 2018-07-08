@@ -49,7 +49,7 @@ def test_cov_main():
     with pytest.raises(AssertionError) as error:
         covariance.cov_main('se', np.zeros((10, 3)), np.zeros((20, 3)), cur_hyps, 1)
 
-    with pytest.raises(ValueError) as error:
+    with pytest.raises(AssertionError) as error:
         covariance.cov_main('abc', np.zeros((10, 3)), np.zeros((20, 3)), cur_hyps, 0.001)
 
     cur_hyps.pop('signal', None)
