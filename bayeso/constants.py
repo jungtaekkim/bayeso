@@ -31,7 +31,8 @@ BOUND_UPPER_GP_NOISE = np.inf
 TIME_PAUSE = 2.0
 RANGE_SHADE = 1.96
 
-ALLOWED_GP_COVARIANCE = ['se', 'matern32', 'matern52']
+ALLOWED_GP_COV = ['se', 'matern32', 'matern52']
+ALLOWED_BO_ACQ = ['pi', 'ei', 'ucb']
 ALLOWED_INITIALIZATIONS_BO = ['sobol', 'uniform', 'latin']
 ALLOWED_INITIALIZATIONS_AO = ALLOWED_INITIALIZATIONS_BO + ['grid']
 

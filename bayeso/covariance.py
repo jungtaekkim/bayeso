@@ -26,7 +26,7 @@ def cov_main(str_cov, X, Xs, hyps, jitter=constants.JITTER_COV):
     assert isinstance(jitter, float)
     assert len(X.shape) == 2
     assert len(Xs.shape) == 2
-    assert str_cov in constants.ALLOWED_GP_COVARIANCE
+    assert str_cov in constants.ALLOWED_GP_COV
 
     num_X = X.shape[0]
     num_d_X = X.shape[1]

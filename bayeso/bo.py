@@ -34,6 +34,8 @@ class BO():
         assert len(arr_range.shape) == 2
         assert arr_range.shape[1] == 2
         assert (arr_range[:, 0] <= arr_range[:, 1]).all()
+        assert str_cov in constants.ALLOWED_GP_COV
+        assert str_acq in constants.ALLOWED_BO_ACQ
 
         self.arr_range = arr_range
         self.num_dim = arr_range.shape[0]
