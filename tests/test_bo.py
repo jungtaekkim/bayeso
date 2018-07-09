@@ -84,7 +84,7 @@ def test_get_initial():
         model_bo.get_initial('uniform', int_samples='abc')
     with pytest.raises(AssertionError) as error:
         model_bo.get_initial('uniform', int_seed='abc')
-    with pytest.raises(ValueError) as error:
+    with pytest.raises(NotImplementedError) as error:
         model_bo.get_initial('abc')
 
     arr_initials = model_bo.get_initial('grid', fun_objective=fun_objective)
