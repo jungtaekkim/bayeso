@@ -1,6 +1,6 @@
 # test_branin
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: July 03, 2018
+# last updated: July 09, 2018
 
 import numpy as np
 import pytest

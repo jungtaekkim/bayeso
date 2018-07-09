@@ -16,6 +16,7 @@ def validate_info(dict_info):
         if not elem_key in dict_info.keys():
             is_valid = False
 
+    print(is_valid)
     if is_valid:
         dim_fun = dict_info['dim_fun']
         bounds = dict_info['bounds']
@@ -27,18 +28,28 @@ def validate_info(dict_info):
             isinstance(global_minimum_X, np.ndarray) &\
             isinstance(global_minimum_y, float)
 
+    print(is_valid)
     if is_valid:
-        dim_fun = dict_info['dim_fun']
         bounds = dict_info['bounds']
         global_minimum_X = dict_info['global_minimum_X']
 
         is_valid = len(bounds.shape) == 2 &\
             len(global_minimum_X.shape) == 2
 
+    print(is_valid)
+    if is_valid:
+        dim_fun = dict_info['dim_fun']
+        bounds = dict_info['bounds']
+        global_minimum_X = dict_info['global_minimum_X']
+
         if dim_fun < np.inf:
             is_valid = dim_fun == bounds.shape[0] == global_minimum_X.shape[1]
         else:
             is_valid = bounds.shape[0] == global_minimum_X.shape[1] == 1
+
+    print(is_valid)
+    if is_valid:
+        bounds = dict_info['bounds']
         is_valid = bounds.shape[1] == 2
     return is_valid
 
@@ -69,4 +80,3 @@ def get_covariate(dict_info, cur_covariate, int_dim):
     else:
         raise ValueError('get_covariate: invalid cur_covariate and int_dim')
     return covariate
-
