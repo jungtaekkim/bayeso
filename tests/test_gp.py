@@ -134,7 +134,7 @@ def test_log_ml():
 
     log_ml = gp.log_ml(X, Y, arr_hyps, str_cov, prior_mu_X)
     print(log_ml)
-    truth_log_ml = 65.14727922868668
+    truth_log_ml = -65.74995266591506
     assert np.abs(log_ml - truth_log_ml) < TEST_EPSILON
 
 def test_get_optimized_kernel():
