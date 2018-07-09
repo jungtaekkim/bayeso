@@ -71,6 +71,7 @@ def test_get_initial():
     num_X = 5
     X = np.random.randn(num_X, dim_X)
     Y = np.random.randn(num_X, 1)
+    fun_objective = lambda X: np.sum(X)
     model_bo = bo.BO(arr_range)
 
     with pytest.raises(AssertionError) as error:
@@ -86,13 +87,26 @@ def test_get_initial():
     with pytest.raises(ValueError) as error:
         model_bo.get_initial('abc')
 
+    arr_initials = model_bo.get_initial('grid', fun_objective=fun_objective)
+    truth_arr_initials = np.array([
+        [0.0, -2.0, -5.0],
+    ])
+    assert (np.abs(arr_initials - truth_arr_initials) < TEST_EPSILON).all()
+
+    arr_initials = model_bo.get_initial('sobol', int_samples=3, int_seed=42)
+    truth_arr_initials = np.array([
+        [5.0, 0.0, 0.0],
+        [7.5, -1.0, 2.5],
+        [2.5, 1.0, -2.5],
+    ])
+    assert (np.abs(arr_initials - truth_arr_initials) < TEST_EPSILON).all()
+
     arr_initials = model_bo.get_initial('uniform', int_samples=3, int_seed=42)
     truth_arr_initials = np.array([
         [3.74540119, 1.80285723, 2.31993942],
         [5.98658484, -1.37592544, -3.4400548],
         [0.58083612, 1.46470458, 1.01115012],
     ])
-
     assert (np.abs(arr_initials - truth_arr_initials) < TEST_EPSILON).all()
 
 def test_optimize():
@@ -131,6 +145,36 @@ def test_optimize():
     with pytest.raises(AssertionError) as error:
         model_bo.optimize(X, Y, is_normalized='abc')
 
+    next_point, next_points, acquisitions, cov_X_X, inv_cov_X_X, hyps = model_bo.optimize(X, Y)
+    assert isinstance(next_point, np.ndarray)
+    assert isinstance(next_points, np.ndarray)
+    assert isinstance(acquisitions, np.ndarray)
+    assert isinstance(cov_X_X, np.ndarray)
+    assert isinstance(inv_cov_X_X, np.ndarray)
+    assert isinstance(hyps, dict)
+    assert len(next_point.shape) == 1
+    assert len(next_points.shape) == 2
+    assert len(acquisitions.shape) == 1
+    assert next_point.shape[0] == dim_X
+    assert next_points.shape[1] == dim_X
+    assert next_points.shape[0] == acquisitions.shape[0]
+
+    model_bo = bo.BO(arr_range_1, str_acq='pi')
+    next_point, next_points, acquisitions, cov_X_X, inv_cov_X_X, hyps = model_bo.optimize(X, Y)
+    assert isinstance(next_point, np.ndarray)
+    assert isinstance(next_points, np.ndarray)
+    assert isinstance(acquisitions, np.ndarray)
+    assert isinstance(cov_X_X, np.ndarray)
+    assert isinstance(inv_cov_X_X, np.ndarray)
+    assert isinstance(hyps, dict)
+    assert len(next_point.shape) == 1
+    assert len(next_points.shape) == 2
+    assert len(acquisitions.shape) == 1
+    assert next_point.shape[0] == dim_X
+    assert next_points.shape[1] == dim_X
+    assert next_points.shape[0] == acquisitions.shape[0]
+
+    model_bo = bo.BO(arr_range_1, str_acq='ucb')
     next_point, next_points, acquisitions, cov_X_X, inv_cov_X_X, hyps = model_bo.optimize(X, Y)
     assert isinstance(next_point, np.ndarray)
     assert isinstance(next_points, np.ndarray)

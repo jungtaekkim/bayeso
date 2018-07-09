@@ -137,6 +137,11 @@ def test_log_ml():
     truth_log_ml = -65.74995266591506
     assert np.abs(log_ml - truth_log_ml) < TEST_EPSILON
 
+    log_ml = gp.log_ml(X, Y, arr_hyps, str_cov, prior_mu_X, is_cholesky=False)
+    print(log_ml)
+    truth_log_ml = -65.74995266566506
+    assert np.abs(log_ml - truth_log_ml) < TEST_EPSILON
+
 def test_get_optimized_kernel():
     np.random.seed(42)
     dim_X = 3
@@ -241,6 +246,10 @@ def test_predict_test():
         gp.predict_test(np.random.randn(10, dim_X), Y, X_test, hyps, str_cov='se', prior_mu=prior_mu)
     with pytest.raises(AssertionError) as error:
         gp.predict_test(X, np.random.randn(10, 1), X_test, hyps, str_cov='se', prior_mu=prior_mu)
+    
+    mu_Xs, sigma_Xs = gp.predict_test(X, Y, X_test, hyps, str_cov='se', prior_mu=prior_mu)
+    print(mu_Xs)
+    print(sigma_Xs)
 
 def test_predict_optimized():
     np.random.seed(42)
@@ -272,3 +281,7 @@ def test_predict_optimized():
         gp.predict_optimized(X, Y, X_test, is_fixed_noise=1)
     with pytest.raises(AssertionError) as error:
         gp.predict_optimized(X, Y, X_test, debug=1)
+    
+    mu_Xs, sigma_Xs = gp.predict_optimized(X, Y, X_test)
+    print(mu_Xs)
+    print(sigma_Xs)
