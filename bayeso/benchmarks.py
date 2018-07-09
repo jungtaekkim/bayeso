@@ -1,10 +1,11 @@
 # benchmarks
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: July 03, 2018
+# last updated: July 09, 2018
 
 import numpy as np
 
 INFO_BRANIN = {
+    'dim_fun': 2,
     'bounds': np.array([
         [-5, 10],
         [0, 15]
@@ -17,6 +18,16 @@ INFO_BRANIN = {
     'global_minimum_y': 0.397887,
 }
 
+INFO_ACKLEY = {
+    'dim_fun': np.inf,
+    'bounds': np.array([
+        [-32.768, 32.768],
+    ]),
+    'global_minimum_X': np.array([
+        [0.0],
+    ]),
+    'global_minimum_y': 0.0,
+}
 
 def branin(X,
     a=1.0,
@@ -41,5 +52,22 @@ def branin(X,
         assert X.shape[1] == 2
 
     Y = a * (X[:, 1] - b * X[:, 0]**2 + c * X[:, 0] - r)**2 + s * (1 - t) * np.cos(X[:, 0]) + s
+    return Y
+
+def ackley(X,
+    a=20.0,
+    b=0.2,
+    c=2.0*np.pi,
+):
+    assert isinstance(X, np.ndarray)
+    assert isinstance(a, float)
+    assert isinstance(b, float)
+    assert isinstance(c, float)
+    assert len(X.shape) == 1 or len(X.shape) == 2
+    if len(X.shape) == 1:
+        X = np.expand_dims(X, axis=0)
+
+    dim_X = X.shape[1]
+    Y = -a * np.exp(-b * np.linalg.norm(X, ord=2, axis=1) * np.sqrt(1.0 / dim_X)) - np.exp(1.0/dim_X * np.sum(np.cos(c * X), axis=1)) + a + np.exp(1.0)
     return Y
 

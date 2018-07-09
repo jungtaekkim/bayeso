@@ -1,4 +1,4 @@
-# test_branin
+# test_ackley
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
 # last updated: July 03, 2018
 
@@ -10,9 +10,9 @@ from bayeso.utils import utils_benchmarks
 
 
 TEST_EPSILON = 1e-5
-FUN_TARGET = benchmarks.branin
-INFO_FUN = benchmarks.INFO_BRANIN
-INT_DIM = 2
+FUN_TARGET = benchmarks.ackley
+INFO_FUN = benchmarks.INFO_ACKLEY
+INT_DIM = 3
 
 def test_validate_info():
     assert utils_benchmarks.validate_info(INFO_FUN)

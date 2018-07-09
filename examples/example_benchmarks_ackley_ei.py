@@ -1,4 +1,4 @@
-# example_benchmarks_branin_ei
+# example_benchmarks_ackley_ei
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
 # last updated: July 09, 2018
 
@@ -9,19 +9,22 @@ from bayeso import benchmarks
 from bayeso.utils import utils_bo
 from bayeso.utils import utils_plotting
 
-INFO_TARGET = benchmarks.INFO_BRANIN
-STR_FUN_TARGET = 'branin'
+INFO_TARGET = benchmarks.INFO_ACKLEY
+STR_FUN_TARGET = 'ackley'
 
 
 def fun_target(X):
-    return benchmarks.branin(X)
+    return benchmarks.ackley(X)
 
 def main():
     int_bo = 5
-    int_iter = 40
+    int_iter = 100
     int_init = 3
+    
+    int_dim = 3
 
-    model_bo = bo.BO(INFO_TARGET.get('bounds'), debug=True)
+    bounds = utils_benchmarks.get_bounds(INFO_TARGET, int_dim)
+    model_bo = bo.BO(bounds, debug=True)
     list_Y = []
     list_time = []
     for ind_bo in range(0, int_bo):
@@ -32,11 +35,11 @@ def main():
         print(time_final)
         list_Y.append(Y_final)
         list_time.append(time_final)
+
     arr_Y = np.array(list_Y)
     arr_Y = np.expand_dims(np.squeeze(arr_Y), axis=0)
     arr_time = np.array(list_time)
     arr_time = np.expand_dims(arr_time, axis=0)
-
     utils_plotting.plot_minimum(arr_Y, [STR_FUN_TARGET], int_init, True, path_save='../results/benchmarks/', str_postfix=STR_FUN_TARGET)
     utils_plotting.plot_minimum_time(arr_time, arr_Y, [STR_FUN_TARGET], int_init, True, path_save='../results/benchmarks/', str_postfix=STR_FUN_TARGET)
 
