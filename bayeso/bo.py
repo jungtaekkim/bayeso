@@ -104,7 +104,7 @@ class BO():
         elif str_initial_method == 'latin':
             raise NotImplementedError('get_initial: latin')
         else:
-            raise ValueError('get_initial: missing condition for str_initial_method')
+            raise NotImplementedError('get_initial: allowed str_initial_method, but it is not implemented.')
         if self.debug:
             print('[DEBUG] get_initial in bo.py: arr_initials')
             print(arr_initials)

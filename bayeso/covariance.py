@@ -46,5 +46,5 @@ def cov_main(str_cov, X, Xs, hyps, jitter=constants.JITTER_COV):
     elif str_cov == 'matern52' or str_cov == 'matern32':
         raise NotImplementedError('cov_main: matern52 or matern32.')
     else:
-        raise ValueError('cov_main: missing condition for str_cov.')
+        raise NotImplementedError('cov_main: allowed str_cov, but it is not implemented.')
     return cov_
