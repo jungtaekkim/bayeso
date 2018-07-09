@@ -45,7 +45,11 @@ def test_load_bo():
     with pytest.raises(AssertionError) as error:
         model_bo = bo.BO(arr_range_1, str_cov=1)
     with pytest.raises(AssertionError) as error:
+        model_bo = bo.BO(arr_range_1, str_cov='abc')
+    with pytest.raises(AssertionError) as error:
         model_bo = bo.BO(arr_range_1, str_acq=1)
+    with pytest.raises(AssertionError) as error:
+        model_bo = bo.BO(arr_range_1, str_acq='abc')
     with pytest.raises(AssertionError) as error:
         model_bo = bo.BO(arr_range_1, is_ard=1)
     with pytest.raises(AssertionError) as error:

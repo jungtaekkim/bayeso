@@ -1,6 +1,6 @@
 # bo
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: July 04, 2018
+# last updated: July 09, 2018
 
 import numpy as np
 import time
@@ -34,6 +34,8 @@ class BO():
         assert len(arr_range.shape) == 2
         assert arr_range.shape[1] == 2
         assert (arr_range[:, 0] <= arr_range[:, 1]).all()
+        assert str_cov in constants.ALLOWED_GP_COV
+        assert str_acq in constants.ALLOWED_BO_ACQ
 
         self.arr_range = arr_range
         self.num_dim = arr_range.shape[0]
@@ -115,7 +117,6 @@ class BO():
         return acquisitions
 
     def _optimize(self, fun_negative_acquisition, str_initial_method, int_samples):
-        assert str_initial_method in constants.ALLOWED_INITIALIZATIONS_OPTIMIZER
         list_bounds = []
         for elem in self.arr_range:
             list_bounds.append(tuple(elem))
@@ -153,6 +154,7 @@ class BO():
         assert X_train.shape[0] == Y_train.shape[0]
         assert X_train.shape[1] == self.num_dim
         assert int_samples > 0
+        assert str_initial_method in constants.ALLOWED_INITIALIZATIONS_AO
 
         time_start = time.time()
 

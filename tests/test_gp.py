@@ -1,6 +1,6 @@
 # test_gp
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: June 20, 2018
+# last updated: July 09, 2018
 
 import numpy as np
 import pytest
@@ -43,7 +43,7 @@ def test_get_kernels():
         gp.get_kernels(X, 1, 'se')
     with pytest.raises(AssertionError) as error:
         gp.get_kernels(X, hyps, 1)
-    with pytest.raises(ValueError) as error:
+    with pytest.raises(AssertionError) as error:
         gp.get_kernels(X, hyps, 'abc')
     with pytest.raises(AssertionError) as error:
         gp.get_kernels(X, hyps, 'se', debug=1)
@@ -63,6 +63,42 @@ def test_get_kernels():
     ]
     assert (cov_X_X - truth_cov_X_X < TEST_EPSILON).all()
     assert (inv_cov_X_X - truth_inv_cov_X_X < TEST_EPSILON).all()
+    assert cov_X_X.shape == inv_cov_X_X.shape
+
+def test_get_kernel_cholesky():
+    dim_X = 3
+    X = np.reshape(np.arange(0, 9), (3, dim_X))
+    hyps = utils_covariance.get_hyps('se', dim_X)
+
+    with pytest.raises(AssertionError) as error:
+        gp.get_kernel_cholesky(1, hyps, 'se')
+    with pytest.raises(AssertionError) as error:
+        gp.get_kernel_cholesky(np.arange(0, 10), hyps, 'se')
+    with pytest.raises(AssertionError) as error:
+        gp.get_kernel_cholesky(X, 1, 'se')
+    with pytest.raises(AssertionError) as error:
+        gp.get_kernel_cholesky(X, hyps, 1)
+    with pytest.raises(AssertionError) as error:
+        gp.get_kernel_cholesky(X, hyps, 'abc')
+    with pytest.raises(AssertionError) as error:
+        gp.get_kernel_cholesky(X, hyps, 'se', debug=1)
+
+    cov_X_X, lower = gp.get_kernel_cholesky(X, hyps, 'se')
+    print(cov_X_X)
+    print(lower)
+    truth_cov_X_X = [
+        [1.00011000e+00, 1.37095909e-06, 3.53262857e-24],
+        [1.37095909e-06, 1.00011000e+00, 1.37095909e-06],
+        [3.53262857e-24, 1.37095909e-06, 1.00011000e+00],
+    ]
+    truth_lower = [
+        [1.00005500e+00, 0.00000000e+00, 0.00000000e+00],
+        [1.37088369e-06, 1.00005500e+00, 0.00000000e+00],
+        [3.53243429e-24, 1.37088369e-06, 1.00005500e+00],
+    ]
+    assert (cov_X_X - truth_cov_X_X < TEST_EPSILON).all()
+    assert (lower - truth_lower < TEST_EPSILON).all()
+    assert cov_X_X.shape == lower.shape
 
 def test_log_ml():
     dim_X = 3
