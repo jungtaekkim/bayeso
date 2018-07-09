@@ -29,6 +29,18 @@ INFO_ACKLEY = {
     'global_minimum_y': 0.0,
 }
 
+INFO_EGGHOLDER = {
+    'dim_fun': 2,
+    'bounds': np.array([
+        [-512.0, 512.0],
+        [-512.0, 512.0],
+    ]),
+    'global_minimum_X': np.array([
+        [512.0, 404.2319],
+    ]),
+    'global_minimum_y': -959.6407,
+}
+
 def branin(X,
     a=1.0,
     b=5.1 / (4.0 * np.pi**2),
@@ -69,5 +81,17 @@ def ackley(X,
 
     dim_X = X.shape[1]
     Y = -a * np.exp(-b * np.linalg.norm(X, ord=2, axis=1) * np.sqrt(1.0 / dim_X)) - np.exp(1.0/dim_X * np.sum(np.cos(c * X), axis=1)) + a + np.exp(1.0)
+    return Y
+
+def eggholder(X):
+    assert isinstance(X, np.ndarray)
+    assert len(X.shape) == 1 or len(X.shape) == 2
+    if len(X.shape) == 1:
+        assert X.shape[0] == 2
+        X = np.expand_dims(X, axis=0)
+    elif len(X.shape) == 2:
+        assert X.shape[1] == 2
+
+    Y = -1.0 * (X[:, 1] + 47.0) * np.sin(np.sqrt(np.abs(X[:, 1] + X[:, 0] / 2.0 + 47.0))) - X[:, 0] * np.sin(np.sqrt(np.abs(X[:, 0] - (X[:, 1] + 47.0))))
     return Y
 

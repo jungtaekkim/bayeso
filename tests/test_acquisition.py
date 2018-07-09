@@ -30,7 +30,7 @@ def test_pi():
 
     val_acq = acquisition.pi(np.arange(0, 10), np.ones(10), np.zeros((5, 1)))
     truth_val_acq = np.array([5.00000000e-01, 1.58657674e-01, 2.27512118e-02, 1.35003099e-03, 3.16765954e-05, 2.86725916e-07, 9.86952260e-10, 1.28045212e-12, 6.22500364e-16, 1.12951395e-19])
-    assert (val_acq - truth_val_acq < TEST_EPSILON).all()
+    assert (np.abs(val_acq - truth_val_acq) < TEST_EPSILON).all()
 
 def test_ei():
     with pytest.raises(AssertionError) as error:
@@ -52,7 +52,7 @@ def test_ei():
 
     val_acq = acquisition.ei(np.arange(0, 10), np.ones(10), np.zeros((5, 1)))
     truth_val_acq = np.array([3.98942280e-01, 8.33154706e-02, 8.49070261e-03, 3.82154315e-04, 7.14525833e-06, 5.34616535e-08, 1.56356969e-10, 1.76032579e-13, 7.55026079e-17, 1.22477876e-20])
-    assert (val_acq - truth_val_acq < TEST_EPSILON).all()
+    assert (np.abs(val_acq - truth_val_acq) < TEST_EPSILON).all()
 
 def test_ucb():
     with pytest.raises(AssertionError) as error:
@@ -77,4 +77,4 @@ def test_ucb():
     val_acq = acquisition.ucb(np.arange(0, 10), np.ones(10), Y_train=np.zeros((5, 1)))
     truth_val_acq = np.array([3.21887582, 2.21887582, 1.21887582, 0.21887582, -0.78112418, -1.78112418, -2.78112418, -3.78112418, -4.78112418, -5.78112418])
     
-    assert (val_acq - truth_val_acq < TEST_EPSILON).all()
+    assert (np.abs(val_acq - truth_val_acq) < TEST_EPSILON).all()

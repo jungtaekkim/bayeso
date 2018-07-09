@@ -61,8 +61,8 @@ def test_get_kernels():
         [-1.37065753e-06, 9.99890012e-01, -1.37065753e-06],
         [1.87890871e-12, -1.37065753e-06, 9.99890012e-01]
     ]
-    assert (cov_X_X - truth_cov_X_X < TEST_EPSILON).all()
-    assert (inv_cov_X_X - truth_inv_cov_X_X < TEST_EPSILON).all()
+    assert (np.abs(cov_X_X - truth_cov_X_X) < TEST_EPSILON).all()
+    assert (np.abs(inv_cov_X_X - truth_inv_cov_X_X) < TEST_EPSILON).all()
     assert cov_X_X.shape == inv_cov_X_X.shape
 
 def test_get_kernel_cholesky():
@@ -96,8 +96,8 @@ def test_get_kernel_cholesky():
         [1.37088369e-06, 1.00005500e+00, 0.00000000e+00],
         [3.53243429e-24, 1.37088369e-06, 1.00005500e+00],
     ]
-    assert (cov_X_X - truth_cov_X_X < TEST_EPSILON).all()
-    assert (lower - truth_lower < TEST_EPSILON).all()
+    assert (np.abs(cov_X_X - truth_cov_X_X) < TEST_EPSILON).all()
+    assert (np.abs(lower - truth_lower) < TEST_EPSILON).all()
     assert cov_X_X.shape == lower.shape
 
 def test_log_ml():
@@ -135,7 +135,7 @@ def test_log_ml():
     log_ml = gp.log_ml(X, Y, arr_hyps, str_cov, prior_mu_X)
     print(log_ml)
     truth_log_ml = 65.14727922868668
-    assert log_ml - truth_log_ml < TEST_EPSILON
+    assert np.abs(log_ml - truth_log_ml) < TEST_EPSILON
 
 def test_get_optimized_kernel():
     np.random.seed(42)

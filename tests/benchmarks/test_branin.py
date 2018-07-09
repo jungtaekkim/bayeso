@@ -21,4 +21,4 @@ def test_global_minimum():
     for elem_X in INFO_FUN.get('global_minimum_X', np.array([])):
         cur_X = utils_benchmarks.get_covariate(INFO_FUN, elem_X, INT_DIM)
         val_fun = FUN_TARGET(np.expand_dims(elem_X, axis=0))
-        assert (val_fun - INFO_FUN.get('global_minimum_y', np.inf) < TEST_EPSILON).all()
+        assert (np.abs(val_fun - INFO_FUN.get('global_minimum_y', np.inf)) < TEST_EPSILON).all()

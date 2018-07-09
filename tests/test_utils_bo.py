@@ -1,4 +1,4 @@
-# test_bo
+# test_utils_bo
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
 # last updated: June 24, 2018
 
@@ -7,9 +7,6 @@ import pytest
 
 from bayeso import bo
 from bayeso.utils import utils_bo
-
-
-TEST_EPSILON = 1e-5
 
 
 def test_get_grid():
