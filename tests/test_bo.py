@@ -93,7 +93,7 @@ def test_get_initial():
         [0.58083612, 1.46470458, 1.01115012],
     ])
 
-    assert (arr_initials - truth_arr_initials < TEST_EPSILON).all()
+    assert (np.abs(arr_initials - truth_arr_initials) < TEST_EPSILON).all()
 
 def test_optimize():
     np.random.seed(42)

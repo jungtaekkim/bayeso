@@ -1,4 +1,4 @@
-# example_benchmarks_branin_ei
+# example_benchmarks_eggholder_ei
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
 # last updated: July 09, 2018
 
@@ -9,16 +9,16 @@ from bayeso import benchmarks
 from bayeso.utils import utils_bo
 from bayeso.utils import utils_plotting
 
-INFO_TARGET = benchmarks.INFO_BRANIN
-STR_FUN_TARGET = 'branin'
+INFO_TARGET = benchmarks.INFO_EGGHOLDER
+STR_FUN_TARGET = 'eggholder'
 
 
 def fun_target(X):
-    return benchmarks.branin(X)
+    return benchmarks.eggholder(X)
 
 def main():
     int_bo = 5
-    int_iter = 40
+    int_iter = 100
     int_init = 3
 
     model_bo = bo.BO(INFO_TARGET.get('bounds'), debug=True)

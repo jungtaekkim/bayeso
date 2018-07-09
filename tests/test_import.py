@@ -20,6 +20,9 @@ def test_import_acquisition():
 def test_import_utils_bo():
     import bayeso.utils.utils_bo
 
+def test_import_utils_benchmarks():
+    import bayeso.utils.utils_benchmarks
+
 def test_import_utils_common():
     import bayeso.utils.utils_common
 

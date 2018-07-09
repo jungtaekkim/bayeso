@@ -16,6 +16,10 @@ def test_branin():
     with pytest.raises(AssertionError) as error:
         benchmarks.branin(np.arange(0, 10))
     with pytest.raises(AssertionError) as error:
+        benchmarks.branin(np.zeros((10, 3)))
+    with pytest.raises(AssertionError) as error:
+        benchmarks.branin(np.zeros((10, 2, 1)))
+    with pytest.raises(AssertionError) as error:
         benchmarks.branin(np.zeros((10, 2)), a='abc')
     with pytest.raises(AssertionError) as error:
         benchmarks.branin(np.zeros((10, 2)), b='abc')
@@ -31,9 +35,51 @@ def test_branin():
     X = np.array([[0.0, 0.0]])
     val_fun = benchmarks.branin(X)
     truth_val_fun = np.array([55.60211264])
-    assert (val_fun - truth_val_fun < TEST_EPSILON).all()
+    assert (np.abs(val_fun - truth_val_fun) < TEST_EPSILON).all()
 
     X = np.array([[0.0, 0.0], [1.0, 1.0]])
     val_fun = benchmarks.branin(X)
+    assert len(val_fun.shape) == 1
+    assert val_fun.shape[0] == X.shape[0]
+
+def test_ackley():
+    with pytest.raises(AssertionError) as error:
+        benchmarks.ackley(1)
+    with pytest.raises(AssertionError) as error:
+        benchmarks.ackley(np.zeros((10, 2, 1)))
+    with pytest.raises(AssertionError) as error:
+        benchmarks.ackley(np.zeros((10, 2)), a='abc')
+    with pytest.raises(AssertionError) as error:
+        benchmarks.ackley(np.zeros((10, 2)), b='abc')
+    with pytest.raises(AssertionError) as error:
+        benchmarks.ackley(np.zeros((10, 2)), c='abc')
+
+    X = np.array([[0.0, 0.0]])
+    val_fun = benchmarks.ackley(X)
+    truth_val_fun = np.array([0.0])
+    assert (np.abs(val_fun - truth_val_fun) < TEST_EPSILON).all()
+
+    X = np.array([[0.0, 0.0, 0.0], [1.0, 1.0, 1.0]])
+    val_fun = benchmarks.ackley(X)
+    assert len(val_fun.shape) == 1
+    assert val_fun.shape[0] == X.shape[0]
+
+def test_eggholder():
+    with pytest.raises(AssertionError) as error:
+        benchmarks.eggholder(1)
+    with pytest.raises(AssertionError) as error:
+        benchmarks.eggholder(np.arange(0, 10))
+    with pytest.raises(AssertionError) as error:
+        benchmarks.eggholder(np.zeros((10, 3)))
+    with pytest.raises(AssertionError) as error:
+        benchmarks.eggholder(np.zeros((10, 2, 1)))
+
+    X = np.array([[0.0, 0.0]])
+    val_fun = benchmarks.eggholder(X)
+    truth_val_fun = np.array([-25.46033719])
+    assert (np.abs(val_fun - truth_val_fun) < TEST_EPSILON).all()
+
+    X = np.array([[0.0, 0.0], [1.0, 1.0]])
+    val_fun = benchmarks.eggholder(X)
     assert len(val_fun.shape) == 1
     assert val_fun.shape[0] == X.shape[0]

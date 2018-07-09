@@ -1,4 +1,4 @@
-# test_branin
+# test_eggholder
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
 # last updated: July 09, 2018
 
@@ -9,9 +9,9 @@ from bayeso import benchmarks
 from bayeso.utils import utils_benchmarks
 
 
-TEST_EPSILON = 1e-5
-FUN_TARGET = benchmarks.branin
-INFO_FUN = benchmarks.INFO_BRANIN
+TEST_EPSILON = 1e-3
+FUN_TARGET = benchmarks.eggholder
+INFO_FUN = benchmarks.INFO_EGGHOLDER
 INT_DIM = 2
 
 def test_validate_info():
