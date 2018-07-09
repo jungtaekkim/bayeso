@@ -18,7 +18,7 @@ def fun_target(X):
 
 def main():
     int_bo = 5
-    int_iter = 40
+    int_iter = 100
     int_init = 3
 
     model_bo = bo.BO(INFO_TARGET.get('bounds'), debug=True)
