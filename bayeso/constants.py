@@ -36,7 +36,7 @@ ALLOWED_BO_ACQ = ['pi', 'ei', 'ucb']
 ALLOWED_INITIALIZATIONS_BO = ['sobol', 'uniform', 'latin']
 ALLOWED_INITIALIZATIONS_AO = ALLOWED_INITIALIZATIONS_BO + ['grid']
 
-KEYS_BENCHMARK = ['dim_fun', 'bounds', 'global_minimum_X', 'global_minimum_y']
+KEYS_INFO_BENCHMARK = ['dim_fun', 'bounds', 'global_minimum_X', 'global_minimum_y']
 
 COLORS = [
     'red',

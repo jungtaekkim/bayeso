@@ -12,8 +12,7 @@ def validate_info(dict_info):
     assert isinstance(dict_info, dict)
 
     is_valid = True
-
-    for elem_key in constants.KEYS_BENCHMARK:
+    for elem_key in constants.KEYS_INFO_BENCHMARK:
         if not elem_key in dict_info.keys():
             is_valid = False
 
@@ -46,6 +45,7 @@ def validate_info(dict_info):
 def get_bounds(dict_info, int_dim):
     assert isinstance(dict_info, dict)
     assert isinstance(int_dim, int)
+    assert int_dim > 0 and int_dim < np.inf
 
     if dict_info.get('dim_fun') == int_dim:
         bounds = dict_info.get('bounds')
@@ -60,6 +60,7 @@ def get_covariate(dict_info, cur_covariate, int_dim):
     assert isinstance(cur_covariate, np.ndarray)
     assert isinstance(int_dim, int)
     assert len(cur_covariate.shape) == 1
+    assert int_dim > 0 and int_dim < np.inf
 
     if dict_info.get('dim_fun') == cur_covariate.shape[0] == int_dim:
         covariate = cur_covariate
