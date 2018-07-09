@@ -42,6 +42,7 @@ def validate_info(dict_info):
         bounds = dict_info['bounds']
         global_minimum_X = dict_info['global_minimum_X']
 
+        # TODO: if dim_fun is counterfeited from np.inf to 1, then it would return True as is_valid, because dim_fun == bounds.shape[0] == global_minimum_X.shape[1] == 1.
         if dim_fun < np.inf:
             is_valid = dim_fun == bounds.shape[0] == global_minimum_X.shape[1]
         else:
