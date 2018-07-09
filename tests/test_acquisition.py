@@ -76,5 +76,8 @@ def test_ucb():
 
     val_acq = acquisition.ucb(np.arange(0, 10), np.ones(10), Y_train=np.zeros((5, 1)))
     truth_val_acq = np.array([3.21887582, 2.21887582, 1.21887582, 0.21887582, -0.78112418, -1.78112418, -2.78112418, -3.78112418, -4.78112418, -5.78112418])
-    
+    assert (np.abs(val_acq - truth_val_acq) < TEST_EPSILON).all()
+
+    val_acq = acquisition.ucb(np.arange(0, 10), np.ones(10))
+    truth_val_acq = np.array([2.0, 1.0, 0.0, -1.0, -2.0, -3.0, -4.0, -5.0, -6.0, -7.0])
     assert (np.abs(val_acq - truth_val_acq) < TEST_EPSILON).all()

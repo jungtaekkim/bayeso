@@ -93,6 +93,7 @@ def test_get_initial():
     ])
     assert (np.abs(arr_initials - truth_arr_initials) < TEST_EPSILON).all()
 
+    arr_initials = model_bo.get_initial('sobol', int_samples=3)
     arr_initials = model_bo.get_initial('sobol', int_samples=3, int_seed=42)
     truth_arr_initials = np.array([
         [5.0, 0.0, 0.0],

@@ -39,12 +39,13 @@ def ei(pred_mean, pred_std, Y_train, jitter=constants.JITTER_ACQ):
 def ucb(pred_mean, pred_std, Y_train=None, kappa=2.0, is_increased=True):
     assert isinstance(pred_mean, np.ndarray)
     assert isinstance(pred_std, np.ndarray)
-    assert isinstance(Y_train, np.ndarray)
+    assert isinstance(Y_train, np.ndarray) or Y_train is None
     assert isinstance(kappa, float)
     assert isinstance(is_increased, bool)
     assert len(pred_mean.shape) == 1
     assert len(pred_std.shape) == 1
-    assert len(Y_train.shape) == 2
+    if Y_train is not None:
+        assert len(Y_train.shape) == 2
     assert pred_mean.shape[0] == pred_std.shape[0]
 
     if is_increased and Y_train is not None:

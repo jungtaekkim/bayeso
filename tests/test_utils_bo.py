@@ -148,6 +148,18 @@ def test_get_next_best_acquisition():
     next_point = utils_bo.get_next_best_acquisition(arr_points, arr_acquisitions, cur_points)
     assert (next_point == np.array([-2.0, -4.0])).all()
 
+    cur_points = np.array([
+        [-10.0, 1.0],
+        [1.0, -3.0],
+        [11.0, 2.0],
+        [0.0, 1.0],
+        [1.0, -3.0],
+        [-2.0, -4.0],
+        [1.0, 3.0],
+    ])
+    next_point = utils_bo.get_next_best_acquisition(arr_points, arr_acquisitions, cur_points)
+    assert (next_point == np.array([1.0, 3.0])).all()
+
 def test_optimize_many_():
     np.random.seed(42)
     arr_range = np.array([

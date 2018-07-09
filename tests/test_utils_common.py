@@ -8,6 +8,8 @@ import numpy as np
 from bayeso.utils import utils_common
 
 
+TEST_EPSILON = 1e-5
+
 def test_get_minimum():
     with pytest.raises(AssertionError) as error:
         utils_common.get_minimum(1.2, 2.1)
@@ -50,3 +52,30 @@ def test_get_minimum():
     assert (cur_minimum == truth_all_data).all()
     assert (cur_mean == np.mean(truth_all_data, axis=0)).all()
     assert (cur_std == np.std(truth_all_data, axis=0)).all()
+
+def test_get_time():
+    arr_time = np.array([
+        [1.0, 0.5, 0.2, 0.7, 2.0],
+        [2.0, 0.7, 1.2, 0.3, 0.7],
+        [0.2, 0.1, 1.0, 0.2, 1.5],
+    ])
+    int_init = 2
+    is_initial = True
+    with pytest.raises(AssertionError) as error:
+        utils_common.get_time(arr_time, int_init, 1)
+    with pytest.raises(AssertionError) as error:
+        utils_common.get_time(arr_time, 'abc', is_initial)
+    with pytest.raises(AssertionError) as error:
+        utils_common.get_time('abc', int_init, is_initial)
+    with pytest.raises(AssertionError) as error:
+        utils_common.get_time(np.arange(0, 10), int_init, is_initial)
+    with pytest.raises(AssertionError) as error:
+        utils_common.get_time(arr_time, 10, is_initial)
+
+    cur_time = utils_common.get_time(arr_time, int_init, is_initial)
+    truth_cur_time = np.array([0.0, 0.8, 1.2, 2.6])
+    assert (np.abs(cur_time - truth_cur_time) < TEST_EPSILON).all()
+
+    cur_time = utils_common.get_time(arr_time, int_init, False)
+    truth_cur_time = np.array([0.0, 1.06666667, 1.5, 2.3, 2.7, 4.1])
+    assert (np.abs(cur_time - truth_cur_time) < TEST_EPSILON).all()

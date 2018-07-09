@@ -33,6 +33,9 @@ def get_time(arr_time, int_init, is_initial):
     assert isinstance(arr_time, np.ndarray)
     assert isinstance(int_init, int)
     assert isinstance(is_initial, bool)
+    assert len(arr_time.shape) == 2
+    if is_initial:
+        assert arr_time.shape[1] > int_init
 
     list_time = []
     for elem_time in arr_time:
