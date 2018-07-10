@@ -319,14 +319,15 @@ def plot_bo_step(X_train, Y_train, X_test, Y_test, mean_test, std_test,
     assert len(X_train.shape) == 2
     assert len(X_test.shape) == 2
     assert len(Y_train.shape) == 2
+    assert len(Y_test.shape) == 2
     assert len(mean_test.shape) == 2
     assert len(std_test.shape) == 2
     assert X_train.shape[1] == X_test.shape[1] == 1
-    assert Y_train.shape[1] == 1
+    assert Y_train.shape[1] == Y_test.shape[1] == 1
     assert X_train.shape[0] == Y_train.shape[0]
     assert mean_test.shape[1] == 1
     assert std_test.shape[1] == 1
-    assert X_test.shape[0] == mean_test.shape[0] == std_test.shape[0]
+    assert X_test.shape[0] == Y_test.shape[0] == mean_test.shape[0] == std_test.shape[0]
     if int_init is not None:
         assert X_train.shape[0] >= int_init
 
@@ -396,21 +397,23 @@ def plot_bo_step_acq(X_train, Y_train, X_test, Y_test, mean_test, std_test, acq_
     assert isinstance(int_init, int) or int_init is None
     assert isinstance(is_tex, bool)
     assert isinstance(is_zero_axis, bool)
+    assert isinstance(is_acq_axis_small, bool)
     assert isinstance(time_pause, float)
     assert isinstance(range_shade, float)
     assert len(X_train.shape) == 2
     assert len(X_test.shape) == 2
     assert len(Y_train.shape) == 2
+    assert len(Y_test.shape) == 2
     assert len(mean_test.shape) == 2
     assert len(std_test.shape) == 2
     assert len(acq_test.shape) == 2
     assert X_train.shape[1] == X_test.shape[1] == 1
-    assert Y_train.shape[1] == 1
+    assert Y_train.shape[1] == Y_test.shape[1] == 1
     assert X_train.shape[0] == Y_train.shape[0]
     assert mean_test.shape[1] == 1
     assert std_test.shape[1] == 1
     assert acq_test.shape[1] == 1
-    assert X_test.shape[0] == mean_test.shape[0] == std_test.shape[0] == acq_test.shape[0]
+    assert X_test.shape[0] == Y_test.shape[0] == mean_test.shape[0] == std_test.shape[0] == acq_test.shape[0]
     if int_init is not None:
         assert X_train.shape[0] >= int_init
 

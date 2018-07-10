@@ -8,7 +8,29 @@ exclude_lines =
     pragma: no cover
     raise NotImplementedError
     print
-    plt.
-    ax.
-    ax1.
-    ax2.
+    plt.figure
+    plt.rc
+    plt.gca
+    plt.legend
+    plt.savefig
+    plt.ion
+    plt.pause
+    plt.close
+    plt.subplots
+    ax.plot
+    ax.fill
+    ax.set
+    ax.get
+    ax.tick
+    ax.spines
+    ax1
+    ax2
+    pylab.figure
+    fig_legend.legend
+    fig_legend.savefig
+    if is_tex:
+    if int_init
+    if path_save
+    if is_legend:
+    if not is_legend:
+    if is_std:
