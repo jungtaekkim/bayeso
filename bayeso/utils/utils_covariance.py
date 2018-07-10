@@ -1,6 +1,6 @@
 # utils_covariance
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: June 20, 2018
+# last updated: July 09, 2018
 
 import numpy as np
 
@@ -11,6 +11,7 @@ def get_hyps(str_cov, num_dim, is_ard=True):
     assert isinstance(str_cov, str)
     assert isinstance(num_dim, int)
     assert isinstance(is_ard, bool)
+    assert str_cov in constants.ALLOWED_GP_COV
 
     hyps = dict()
     hyps['noise'] = constants.GP_NOISE
@@ -23,13 +24,14 @@ def get_hyps(str_cov, num_dim, is_ard=True):
     elif str_cov == 'matern52' or str_cov == 'matern32':
         raise NotImplementedError('get_hyps: matern52 or matern32.')
     else:
-        raise ValueError('get_hyps: missing condition for str_cov.')
+        raise NotImplementedError('get_hyps: allowed str_cov, but it is not implemented.')
     return hyps
 
 def convert_hyps(str_cov, hyps, is_fixed_noise=False):
     assert isinstance(str_cov, str)
     assert isinstance(hyps, dict)
     assert isinstance(is_fixed_noise, bool)
+    assert str_cov in constants.ALLOWED_GP_COV
 
     list_hyps = []
     if not is_fixed_noise:
@@ -41,7 +43,7 @@ def convert_hyps(str_cov, hyps, is_fixed_noise=False):
     elif str_cov == 'matern52' or str_cov == 'matern32':
         raise NotImplementedError('convert_hyps: matern52 or matern32.')
     else:
-        raise ValueError('convert_hyps: missing condition for str_cov.')
+        raise NotImplementedError('convert_hyps: allowed str_cov, but it is not implemented.')
     return np.array(list_hyps)
 
 def restore_hyps(str_cov, hyps, is_fixed_noise=False, fixed_noise=constants.GP_NOISE):

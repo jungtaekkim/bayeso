@@ -16,14 +16,21 @@ def test_get_hyps():
         utils_covariance.get_hyps(1.2, 2)
     with pytest.raises(AssertionError) as error:
         utils_covariance.get_hyps('se', 2.1)
-    with pytest.raises(ValueError) as error:
+    with pytest.raises(AssertionError) as error:
         utils_covariance.get_hyps('abc', 2)
-    
+    with pytest.raises(AssertionError) as error:
+        utils_covariance.get_hyps('se', 2, is_ard='abc')
+   
     cur_hyps =  utils_covariance.get_hyps('se', 2)
     assert cur_hyps['noise'] == constants.GP_NOISE
     assert cur_hyps['signal'] == 1.0
     assert len(cur_hyps['lengthscales'].shape) == 1
     assert (cur_hyps['lengthscales'] == np.array([1.0, 1.0])).all()
+
+    cur_hyps =  utils_covariance.get_hyps('se', 2, is_ard=False)
+    assert cur_hyps['noise'] == constants.GP_NOISE
+    assert cur_hyps['signal'] == 1.0
+    assert cur_hyps['lengthscales'] == 1.0
 
 def test_convert_hyps():
     cur_hyps = {'noise': 0.1, 'signal': 1.0, 'lengthscales': np.array([1.0, 1.0])}
@@ -36,7 +43,7 @@ def test_convert_hyps():
         utils_covariance.convert_hyps('se', 2.1)
     with pytest.raises(AssertionError) as error:
         utils_covariance.convert_hyps('abc', 2.1)
-    with pytest.raises(ValueError) as error:
+    with pytest.raises(AssertionError) as error:
         utils_covariance.convert_hyps('abc', cur_hyps)
     with pytest.raises(AssertionError) as error:
         utils_covariance.convert_hyps('se', dict(), is_fixed_noise=1)

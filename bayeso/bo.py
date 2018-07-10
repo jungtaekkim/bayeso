@@ -170,7 +170,7 @@ class BO():
         elif self.str_acq == 'ucb':
             fun_acquisition = acquisition.ucb
         else:
-            raise ValueError('optimize: missing condition for self.str_acq.')
+            raise NotImplementedError('optimize: allowed str_acq, but it is not implemented.')
       
         fun_negative_acquisition = lambda X_test: -1.0 * constants.MULTIPLIER_ACQ * self._optimize_objective(fun_acquisition, X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps)
         next_point, next_points = self._optimize(fun_negative_acquisition, str_initial_method=str_initial_method, int_samples=int_samples)
