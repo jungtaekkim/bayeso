@@ -52,6 +52,7 @@ def restore_hyps(str_cov, hyps, is_fixed_noise=False, fixed_noise=constants.GP_N
     assert isinstance(is_fixed_noise, bool)
     assert isinstance(fixed_noise, float)
     assert len(hyps.shape) == 1
+    assert str_cov in constants.ALLOWED_GP_COV
 
     dict_hyps = dict()
     if not is_fixed_noise:
@@ -70,7 +71,7 @@ def restore_hyps(str_cov, hyps, is_fixed_noise=False, fixed_noise=constants.GP_N
     elif str_cov == 'matern52' or str_cov == 'matern32':
         raise NotImplementedError('restore_hyps: matern52 or matern32.')
     else:
-        raise ValueError('restore_hyps: missing condition for str_cov.')
+        raise NotImplementedError('restore_hyps: allowed str_cov, but it is not implemented.')
     return dict_hyps
 
 # TODO: make it complete

@@ -117,7 +117,7 @@ def test_log_ml():
         gp.log_ml(X, Y, dict_hyps, str_cov, prior_mu_X)
     with pytest.raises(AssertionError) as error:
         gp.log_ml(X, Y, arr_hyps, 1, prior_mu_X)
-    with pytest.raises(ValueError) as error:
+    with pytest.raises(AssertionError) as error:
         gp.log_ml(X, Y, arr_hyps, 'abc', prior_mu_X)
     with pytest.raises(AssertionError) as error:
         gp.log_ml(X, Y, arr_hyps, str_cov, np.arange(0, 3))
@@ -166,7 +166,7 @@ def test_get_optimized_kernel():
         gp.get_optimized_kernel(np.ones((50, 3)), Y, prior_mu, 'se')
     with pytest.raises(AssertionError) as error:
         gp.get_optimized_kernel(X, np.ones((50, 1)), prior_mu, 'se')
-    with pytest.raises(ValueError) as error:
+    with pytest.raises(AssertionError) as error:
         gp.get_optimized_kernel(X, Y, prior_mu, 'abc')
     with pytest.raises(AssertionError) as error:
         gp.get_optimized_kernel(X, Y, prior_mu, 'se', str_optimizer_method=1)
