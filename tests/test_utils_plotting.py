@@ -84,3 +84,110 @@ def test_plot_gp():
     with pytest.raises(AssertionError) as error:
         utils_plotting.plot_gp(X_train, Y_train, X_test, mu, sigma, colors='abc')
 
+def test_plot_minimum():
+    num_model = 2
+    num_bo = 3
+    num_iter = 10
+    arr_minima = np.ones((num_model, num_bo, num_iter))
+    list_str_label = ['abc', 'def']
+    int_init = 3
+    is_std = True
+
+    with pytest.raises(AssertionError) as error:
+        utils_plotting.plot_minimum(arr_minima, list_str_label, int_init, 1)
+    with pytest.raises(AssertionError) as error:
+        utils_plotting.plot_minimum(arr_minima, list_str_label, 'abc', is_std)
+    with pytest.raises(AssertionError) as error:
+        utils_plotting.plot_minimum(arr_minima, 1, int_init, is_std)
+    with pytest.raises(AssertionError) as error:
+        utils_plotting.plot_minimum(1, list_str_label, int_init, is_std)
+    with pytest.raises(AssertionError) as error:
+        utils_plotting.plot_minimum(np.ones((10, 2)), list_str_label, int_init, is_std)
+    with pytest.raises(AssertionError) as error:
+        utils_plotting.plot_minimum(np.ones(2), list_str_label, int_init, is_std)
+    with pytest.raises(AssertionError) as error:
+        utils_plotting.plot_minimum(arr_minima, ['abc', 'def', 'ghi'], int_init, is_std)
+    with pytest.raises(AssertionError) as error:
+        utils_plotting.plot_minimum(arr_minima, list_str_label, 12, is_std)
+    with pytest.raises(AssertionError) as error:
+        utils_plotting.plot_minimum(arr_minima, list_str_label, int_init, is_std, is_marker=1)
+    with pytest.raises(AssertionError) as error:
+        utils_plotting.plot_minimum(arr_minima, list_str_label, int_init, is_std, is_legend=1)
+    with pytest.raises(AssertionError) as error:
+        utils_plotting.plot_minimum(arr_minima, list_str_label, int_init, is_std, is_tex=1)
+    with pytest.raises(AssertionError) as error:
+        utils_plotting.plot_minimum(arr_minima, list_str_label, int_init, is_std, path_save=1)
+    with pytest.raises(AssertionError) as error:
+        utils_plotting.plot_minimum(arr_minima, list_str_label, int_init, is_std, str_postfix=1)
+    with pytest.raises(AssertionError) as error:
+        utils_plotting.plot_minimum(arr_minima, list_str_label, int_init, is_std, str_x_axis=1)
+    with pytest.raises(AssertionError) as error:
+        utils_plotting.plot_minimum(arr_minima, list_str_label, int_init, is_std, str_y_axis=1)
+    with pytest.raises(AssertionError) as error:
+        utils_plotting.plot_minimum(arr_minima, list_str_label, int_init, is_std, time_pause='abc')
+    with pytest.raises(AssertionError) as error:
+        utils_plotting.plot_minimum(arr_minima, list_str_label, int_init, is_std, range_shade='abc')
+    with pytest.raises(AssertionError) as error:
+        utils_plotting.plot_minimum(arr_minima, list_str_label, int_init, is_std, markers='abc')
+    with pytest.raises(AssertionError) as error:
+        utils_plotting.plot_minimum(arr_minima, list_str_label, int_init, is_std, colors='abc')
+
+def test_plot_minimum_time():
+    num_model = 2
+    num_bo = 3
+    num_iter = 10
+    arr_times = np.ones((num_model, num_bo, num_iter))
+    arr_minima = np.ones((num_model, num_bo, num_iter))
+    list_str_label = ['abc', 'def']
+    int_init = 3
+    is_std = True
+
+    with pytest.raises(AssertionError) as error:
+        utils_plotting.plot_minimum_time(arr_times, arr_minima, list_str_label, int_init, 1)
+    with pytest.raises(AssertionError) as error:
+        utils_plotting.plot_minimum_time(arr_times, arr_minima, list_str_label, 'abc', is_std)
+    with pytest.raises(AssertionError) as error:
+        utils_plotting.plot_minimum_time(arr_times, arr_minima, 1, int_init, is_std)
+    with pytest.raises(AssertionError) as error:
+        utils_plotting.plot_minimum_time(arr_times, 1, list_str_label, int_init, is_std)
+    with pytest.raises(AssertionError) as error:
+        utils_plotting.plot_minimum_time(1, arr_minima, list_str_label, int_init, is_std)
+    with pytest.raises(AssertionError) as error:
+        utils_plotting.plot_minimum_time(np.ones((4, num_bo, num_iter)), arr_minima, list_str_label, int_init, is_std)
+    with pytest.raises(AssertionError) as error:
+        utils_plotting.plot_minimum_time(np.ones((num_model, 4, num_iter)), arr_minima, list_str_label, int_init, is_std)
+    with pytest.raises(AssertionError) as error:
+        utils_plotting.plot_minimum_time(np.ones((num_bo, num_iter)), arr_minima, list_str_label, int_init, is_std)
+    with pytest.raises(AssertionError) as error:
+        utils_plotting.plot_minimum_time(np.ones(num_iter), arr_minima, list_str_label, int_init, is_std)
+    with pytest.raises(AssertionError) as error:
+        utils_plotting.plot_minimum_time(arr_times, np.ones((10, 2)), list_str_label, int_init, is_std)
+    with pytest.raises(AssertionError) as error:
+        utils_plotting.plot_minimum_time(arr_times, np.ones(2), list_str_label, int_init, is_std)
+    with pytest.raises(AssertionError) as error:
+        utils_plotting.plot_minimum_time(arr_times, arr_minima, ['abc', 'def', 'ghi'], int_init, is_std)
+    with pytest.raises(AssertionError) as error:
+        utils_plotting.plot_minimum_time(arr_times, arr_minima, list_str_label, 12, is_std)
+    with pytest.raises(AssertionError) as error:
+        utils_plotting.plot_minimum_time(arr_times, arr_minima, list_str_label, int_init, is_std, is_marker=1)
+    with pytest.raises(AssertionError) as error:
+        utils_plotting.plot_minimum_time(arr_times, arr_minima, list_str_label, int_init, is_std, is_legend=1)
+    with pytest.raises(AssertionError) as error:
+        utils_plotting.plot_minimum_time(arr_times, arr_minima, list_str_label, int_init, is_std, is_tex=1)
+    with pytest.raises(AssertionError) as error:
+        utils_plotting.plot_minimum_time(arr_times, arr_minima, list_str_label, int_init, is_std, path_save=1)
+    with pytest.raises(AssertionError) as error:
+        utils_plotting.plot_minimum_time(arr_times, arr_minima, list_str_label, int_init, is_std, str_postfix=1)
+    with pytest.raises(AssertionError) as error:
+        utils_plotting.plot_minimum_time(arr_times, arr_minima, list_str_label, int_init, is_std, str_x_axis=1)
+    with pytest.raises(AssertionError) as error:
+        utils_plotting.plot_minimum_time(arr_times, arr_minima, list_str_label, int_init, is_std, str_y_axis=1)
+    with pytest.raises(AssertionError) as error:
+        utils_plotting.plot_minimum_time(arr_times, arr_minima, list_str_label, int_init, is_std, time_pause='abc')
+    with pytest.raises(AssertionError) as error:
+        utils_plotting.plot_minimum_time(arr_times, arr_minima, list_str_label, int_init, is_std, range_shade='abc')
+    with pytest.raises(AssertionError) as error:
+        utils_plotting.plot_minimum_time(arr_times, arr_minima, list_str_label, int_init, is_std, markers='abc')
+    with pytest.raises(AssertionError) as error:
+        utils_plotting.plot_minimum_time(arr_times, arr_minima, list_str_label, int_init, is_std, colors='abc')
+
