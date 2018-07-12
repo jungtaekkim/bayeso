@@ -139,7 +139,7 @@ def plot_minimum(arr_minima, list_str_label, int_init, is_std,
         plt.rc('pdf', fonttype=42)
     fig = plt.figure(figsize=(8, 6))
     ax = plt.gca()
-    for ind_minimum, arr_minimum in enumerate(arr_minima):
+    for ind_minimum, arr_minimum in enumerate(arr_minima): # pragma: no cover
         ind_color = ind_minimum % len(colors)
         ind_marker = ind_minimum % len(markers)
         _, mean_min, std_min = utils_common.get_minimum(arr_minimum, int_init)
