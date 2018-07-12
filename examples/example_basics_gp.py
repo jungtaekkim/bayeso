@@ -1,13 +1,16 @@
 # example_basics_gp
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: July 05, 2018
+# last updated: July 12, 2018
 
 import numpy as np
+import os
 
 from bayeso import gp
 from bayeso.utils import utils_common
 from bayeso.utils import utils_plotting
 
+
+PATH_SAVE = './figures/gp/'
 
 def main():
     X_train = np.array([
@@ -27,8 +30,10 @@ def main():
         'noise': 0.02,
     }
     mu, sigma = gp.predict_test(X_train, Y_train, X_test, hyps)
-    utils_plotting.plot_gp(X_train, Y_train, X_test, mu, sigma, Y_test_truth, path_save='../results/gp/', str_postfix='test_cos')
+    utils_plotting.plot_gp(X_train, Y_train, X_test, mu, sigma, Y_test_truth, path_save=PATH_SAVE, str_postfix='cos')
 
 if __name__ == '__main__':
+    if not os.path.isdir(PATH_SAVE):
+        os.makedirs(PATH_SAVE)
     main()
 

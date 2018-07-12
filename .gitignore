@@ -105,5 +105,5 @@ ENV/
 .DS_Store
 __MACOSX/
 results/
+figures/
 .pytest_cache/
-

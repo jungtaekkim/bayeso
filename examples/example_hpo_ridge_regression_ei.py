@@ -1,8 +1,9 @@
 # example_hpo_ridge_regression_ei
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: June 24, 2018
+# last updated: July 12, 2018
 
 import numpy as np
+import os
 import sklearn
 import sklearn.datasets
 import sklearn.metrics
@@ -19,6 +20,7 @@ BOSTON = sklearn.datasets.load_boston()
 BOSTON_DATA = BOSTON.data
 BOSTON_LABELS = BOSTON.target
 DATA_TRAIN, DATA_TEST, LABELS_TRAIN, LABELS_TEST = sklearn.model_selection.train_test_split(BOSTON_DATA, BOSTON_LABELS, test_size=0.3)
+PATH_SAVE = './figures/hpo/'
 
 def fun_target(X):
     print(X)
@@ -44,9 +46,11 @@ def main():
     arr_time = np.array(list_time)
     arr_time = np.expand_dims(arr_time, axis=0)
 
-    utils_plotting.plot_minimum(arr_Y, ['ridge'], int_init, True, path_save='../results/hpo/', str_postfix='ridge')
-    utils_plotting.plot_minimum_time(arr_time, arr_Y, ['ridge'], int_init, True, path_save='../results/hpo/', str_postfix='ridge')
+    utils_plotting.plot_minimum(arr_Y, ['ridge'], int_init, True, path_save=PATH_SAVE, str_postfix='ridge')
+    utils_plotting.plot_minimum_time(arr_time, arr_Y, ['ridge'], int_init, True, path_save=PATH_SAVE, str_postfix='ridge')
 
 if __name__ == '__main__':
+    if not os.path.isdir(PATH_SAVE):
+        os.makedirs(PATH_SAVE)
     main()
 

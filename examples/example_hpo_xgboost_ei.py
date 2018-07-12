@@ -1,8 +1,9 @@
 # example_hpo_xgboost_ei
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: June 24, 2018
+# last updated: July 12, 2018
 
 import numpy as np
+import os
 import xgboost as xgb
 import sklearn
 import sklearn.datasets
@@ -21,6 +22,7 @@ DIGITS_DATA = DIGITS.images
 DIGITS_DATA = np.reshape(DIGITS_DATA, (DIGITS_DATA.shape[0], DIGITS_DATA.shape[1] * DIGITS_DATA.shape[2]))
 DIGITS_LABELS = DIGITS.target
 DATA_TRAIN, DATA_TEST, LABELS_TRAIN, LABELS_TEST = sklearn.model_selection.train_test_split(DIGITS_DATA, DIGITS_LABELS, test_size=0.3, stratify=DIGITS_LABELS)
+PATH_SAVE = './figures/hpo/'
 
 def fun_target(X):
     print(X)
@@ -43,10 +45,12 @@ def main():
     arr_time = np.array(list_time)
     arr_time = np.expand_dims(arr_time, axis=0)
 
-    utils_plotting.plot_minimum(arr_Y, ['xgboost'], int_init, True, path_save='../results/hpo/', str_postfix='xgboost')
-    utils_plotting.plot_minimum_time(arr_time, arr_Y, ['xgboost'], int_init, True, path_save='../results/hpo/', str_postfix='xgboost')
+    utils_plotting.plot_minimum(arr_Y, ['xgboost'], int_init, True, path_save=PATH_SAVE, str_postfix='xgboost')
+    utils_plotting.plot_minimum_time(arr_time, arr_Y, ['xgboost'], int_init, True, path_save=PATH_SAVE, str_postfix='xgboost')
 
 
 if __name__ == '__main__':
+    if not os.path.isdir(PATH_SAVE):
+        os.makedirs(PATH_SAVE)
     main()
 

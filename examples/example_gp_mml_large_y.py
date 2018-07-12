@@ -1,12 +1,15 @@
 # example_gp_mml_large_y
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: June 24, 2018
+# last updated: July 12, 2018
 
 import numpy as np
+import os
 
 from bayeso import gp
 from bayeso.utils import utils_plotting
 
+
+PATH_SAVE = './figures/gp/'
 
 def main():
     X_train = np.array([
@@ -23,9 +26,11 @@ def main():
     X_test = X_test.reshape((num_test, 1))
     Y_test_truth = np.cos(X_test) * 100000.0
     mu, sigma = gp.predict_optimized(X_train, Y_train, X_test)
-    utils_plotting.plot_gp(X_train, Y_train, X_test, mu, sigma, Y_test_truth, '../results/gp/', 'test_optimized_large_y')
+    utils_plotting.plot_gp(X_train, Y_train, X_test, mu, sigma, Y_test_truth, PATH_SAVE, 'test_optimized_large_y')
 
 
 if __name__ == '__main__':
+    if not os.path.isdir(PATH_SAVE):
+        os.makedirs(PATH_SAVE)
     main()
 

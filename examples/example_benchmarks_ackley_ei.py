@@ -1,16 +1,19 @@
 # example_benchmarks_ackley_ei
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: July 09, 2018
+# last updated: July 12, 2018
 
 import numpy as np
+import os
 
 from bayeso import bo
 from bayeso import benchmarks
 from bayeso.utils import utils_bo
 from bayeso.utils import utils_plotting
+from bayeso.utils import utils_benchmarks
 
 INFO_TARGET = benchmarks.INFO_ACKLEY
 STR_FUN_TARGET = 'ackley'
+PATH_SAVE = './figures/benchmarks/'
 
 
 def fun_target(X):
@@ -40,9 +43,11 @@ def main():
     arr_Y = np.expand_dims(np.squeeze(arr_Y), axis=0)
     arr_time = np.array(list_time)
     arr_time = np.expand_dims(arr_time, axis=0)
-    utils_plotting.plot_minimum(arr_Y, [STR_FUN_TARGET], int_init, True, path_save='../results/benchmarks/', str_postfix=STR_FUN_TARGET)
-    utils_plotting.plot_minimum_time(arr_time, arr_Y, [STR_FUN_TARGET], int_init, True, path_save='../results/benchmarks/', str_postfix=STR_FUN_TARGET)
+    utils_plotting.plot_minimum(arr_Y, [STR_FUN_TARGET], int_init, True, path_save=PATH_SAVE, str_postfix=STR_FUN_TARGET)
+    utils_plotting.plot_minimum_time(arr_time, arr_Y, [STR_FUN_TARGET], int_init, True, path_save=PATH_SAVE, str_postfix=STR_FUN_TARGET)
 
 if __name__ == '__main__':
+    if not os.path.isdir(PATH_SAVE):
+        os.makedirs(PATH_SAVE)
     main()
 

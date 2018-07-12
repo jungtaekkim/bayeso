@@ -1,14 +1,17 @@
 # example_basics_bo_ucb
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: July 06, 2018
+# last updated: July 12, 2018
 
 import numpy as np
+import os
 
 from bayeso import gp
 from bayeso import bo
 from bayeso import acquisition
 from bayeso.utils import utils_plotting
 
+
+PATH_SAVE = './figures/bo/'
 
 def fun_target(X):
     return 4.0 * np.cos(X) + 0.1 * X + 2.0 * np.sin(X) + 0.4 * (X - 0.5)**2
@@ -34,10 +37,12 @@ def main():
         acq_test = np.expand_dims(acq_test, axis=1)
         X_train = np.vstack((X_train, next_x))
         Y_train = fun_target(X_train)
-        utils_plotting.plot_bo_step(X_train, Y_train, X_test, fun_target(X_test), mu_test, sigma_test, path_save='../results/bo/', str_postfix='test_bascis_{}_'.format(str_acq) + str(ind_), int_init=num_init)
-        utils_plotting.plot_bo_step_acq(X_train, Y_train, X_test, fun_target(X_test), mu_test, sigma_test, acq_test, path_save='../results/bo/', str_postfix='test_basics_{}_'.format(str_acq) + str(ind_), int_init=num_init, is_acq_axis_small=True)
+        utils_plotting.plot_bo_step(X_train, Y_train, X_test, fun_target(X_test), mu_test, sigma_test, path_save=PATH_SAVE, str_postfix='bascis_{}_'.format(str_acq) + str(ind_), int_init=num_init)
+        utils_plotting.plot_bo_step_acq(X_train, Y_train, X_test, fun_target(X_test), mu_test, sigma_test, acq_test, path_save=PATH_SAVE, str_postfix='basics_{}_'.format(str_acq) + str(ind_), int_init=num_init, is_acq_axis_small=True)
 
 
 if __name__ == '__main__':
+    if not os.path.isdir(PATH_SAVE):
+        os.makedirs(PATH_SAVE)
     main()
 

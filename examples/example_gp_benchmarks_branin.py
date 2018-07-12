@@ -1,6 +1,6 @@
 # example_gp_benchmarks_branin
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: July 04, 2018
+# last updated: July 12, 2018
 
 import numpy as np
 

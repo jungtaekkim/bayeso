@@ -1,12 +1,15 @@
 # example_gp_prior_up
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: June 24, 2018
+# last updated: July 12, 2018
 
 import numpy as np
+import os
 
 from bayeso import gp
 from bayeso.utils import utils_plotting
 
+
+PATH_SAVE = './figures/gp/'
 
 def linear_up(X):
     list_up = []
@@ -27,9 +30,11 @@ def main():
     Y_test_truth = np.cos(X_test) + 2.0
     prior_mu = linear_up
     mu, sigma = gp.predict_optimized(X_train, Y_train, X_test, prior_mu=prior_mu)
-    utils_plotting.plot_gp(X_train, Y_train, X_test, mu, sigma, Y_test_truth, '../results/gp/', 'test_optimized_prior_up')
+    utils_plotting.plot_gp(X_train, Y_train, X_test, mu, sigma, Y_test_truth, PATH_SAVE, 'test_optimized_prior_up')
 
 
 if __name__ == '__main__':
+    if not os.path.isdir(PATH_SAVE):
+        os.makedirs(PATH_SAVE)
     main()
 
