@@ -81,3 +81,28 @@ def test_ucb():
     val_acq = acquisition.ucb(np.arange(0, 10), np.ones(10))
     truth_val_acq = np.array([2.0, 1.0, 0.0, -1.0, -2.0, -3.0, -4.0, -5.0, -6.0, -7.0])
     assert (np.abs(val_acq - truth_val_acq) < TEST_EPSILON).all()
+
+def test_aei():
+    with pytest.raises(AssertionError) as error:
+        acquisition.aei('abc', np.ones(10), np.zeros((5, 1)), 1.0)
+    with pytest.raises(AssertionError) as error:
+        acquisition.aei(np.ones(10), 'abc', np.zeros((5, 1)), 1.0)
+    with pytest.raises(AssertionError) as error:
+        acquisition.aei(np.ones(10), np.ones(10), 'abc', 1.0)
+    with pytest.raises(AssertionError) as error:
+        acquisition.aei(np.ones(10), np.ones(10), np.zeros((5, 1)), 'abc')
+    with pytest.raises(AssertionError) as error:
+        acquisition.aei(np.ones(10), np.ones(10), np.zeros((5, 1)), 1.0, jitter=1)
+    with pytest.raises(AssertionError) as error:
+        acquisition.aei(np.ones(5), np.ones(10), np.zeros((5, 1)), 1.0)
+    with pytest.raises(AssertionError) as error:
+        acquisition.aei(np.ones(10), np.ones(10), np.zeros(5), 1.0)
+    with pytest.raises(AssertionError) as error:
+        acquisition.aei(np.ones(10), np.ones((10, 1)), np.zeros((5, 1)), 1.0)
+    with pytest.raises(AssertionError) as error:
+        acquisition.aei(np.ones((10, 1)), np.ones(10), np.zeros((5, 1)), 1.0)
+
+    val_acq = acquisition.aei(np.arange(0, 10), np.ones(10), np.zeros((5, 1)), 1.0)
+    truth_val_acq = np.array([1.16847489e-01, 2.44025364e-02, 2.48686922e-03, 1.11930407e-04, 2.09279771e-06, 1.56585558e-08, 4.57958958e-11, 5.15587486e-14, 2.21142019e-17, 3.58729395e-21])
+    assert (np.abs(val_acq - truth_val_acq) < TEST_EPSILON).all()
+

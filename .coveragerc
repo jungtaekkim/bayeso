@@ -29,7 +29,6 @@ exclude_lines =
     fig_legend.legend
     fig_legend.savefig
     if is_tex:
-    if Y_test_truth is not None:
     if path_save is not None and str_postfix is not None:
     if is_legend:
     if not is_legend:
