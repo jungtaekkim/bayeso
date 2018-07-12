@@ -235,8 +235,8 @@ def plot_minimum_time(arr_times, arr_minima, list_str_label, int_init, is_std,
     fig = plt.figure(figsize=(8, 6))
     ax = plt.gca()
 
-    list_x_data = []
-    for ind_minimum, arr_minimum in enumerate(arr_minima):
+    list_x_data = [] # pragma: no cover
+    for ind_minimum, arr_minimum in enumerate(arr_minima): # pragma: no cover
         ind_color = ind_minimum % len(colors)
         ind_marker = ind_minimum % len(markers)
         _, mean_min, std_min = utils_common.get_minimum(arr_minimum, int_init)
