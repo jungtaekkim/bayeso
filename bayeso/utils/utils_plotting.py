@@ -61,7 +61,7 @@ def plot_gp(X_train, Y_train, X_test, mu, sigma,
     fig = plt.figure(figsize=(8, 6))
     ax = plt.gca()
 
-    if Y_test_truth is not None:
+    if Y_test_truth is not None: # pragma: no cover
         ax.plot(X_test.flatten(), Y_test_truth.flatten(),
             c=colors[1],
             linewidth=4,
