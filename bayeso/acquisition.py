@@ -53,3 +53,22 @@ def ucb(pred_mean, pred_std, Y_train=None, kappa=2.0, is_increased=True):
     else:
         kappa_ = kappa
     return -pred_mean + kappa_ * pred_std
+
+def aei(pred_mean, pred_std, Y_train, noise,
+    jitter=constants.JITTER_ACQ
+):
+    assert isinstance(pred_mean, np.ndarray)
+    assert isinstance(pred_std, np.ndarray)
+    assert isinstance(Y_train, np.ndarray)
+    assert isinstance(noise, float)
+    assert isinstance(jitter, float)
+    assert len(pred_mean.shape) == 1
+    assert len(pred_std.shape) == 1
+    assert len(Y_train.shape) == 2
+    assert pred_mean.shape[0] == pred_std.shape[0]
+
+    with np.errstate(divide='ignore'):
+        val_z = (np.min(Y_train) - pred_mean) / (pred_std + jitter)
+    ei = (np.min(Y_train) - pred_mean) * scipy.stats.norm.cdf(val_z) + pred_std * scipy.stats.norm.pdf(val_z)
+    aei = ei * (1.0 - noise / np.sqrt(pred_std**2 + noise**2))
+    return aei

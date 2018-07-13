@@ -169,6 +169,8 @@ class BO():
             fun_acquisition = acquisition.ei
         elif self.str_acq == 'ucb':
             fun_acquisition = acquisition.ucb
+        elif self.str_acq == 'aei':
+            fun_acquisition = lambda pred_mean, pred_std, Y_train: acquisition.aei(pred_mean, pred_std, Y_train, hyps['noise'])
         else:
             raise NotImplementedError('optimize: allowed str_acq, but it is not implemented.')
       
