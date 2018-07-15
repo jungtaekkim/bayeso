@@ -11,6 +11,14 @@ Simple, but essential Bayesian optimization package.
 ## Installation
 We recommend it should be installed in `virtualenv`.
 
+* Using PyPI repository
+Command it.
+
+```shell
+$ pip install bayeso
+```
+
+* Using source code
 Command
 
 ```shell
@@ -24,6 +32,7 @@ $ python setup.py develop
 ```
 in the bayeso root.
 
+* Uninstallation
 If you would like to uninstall bayeso, command it.
 
 ```shell
