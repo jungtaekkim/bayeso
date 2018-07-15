@@ -19,16 +19,18 @@ Command it.
 $ pip install bayeso
 ```
 
-* Using source code (for development)
+* Using source code (for developer installation)
 
 Command
 
 ```shell
 $ pip install .
 ```
-in the bayeso root,
+in the bayeso root.
 
-or if you would like to use development mode, command
+* Using source code (for editable development mode)
+
+Command
 
 ```shell
 $ pip install -r requirements.txt
