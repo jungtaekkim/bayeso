@@ -26,7 +26,7 @@ Command
 ```shell
 $ pip install .
 ```
-in the bayeso root,\
+in the bayeso root,
 
 or if you would like to use development mode, command
 
