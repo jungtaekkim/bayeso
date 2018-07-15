@@ -27,7 +27,8 @@ Command
 $ pip install .
 ```
 in the bayeso root,\
-or if you would like to use development mode,
+
+or if you would like to use development mode, command
 
 ```shell
 $ pip install -r requirements.txt
