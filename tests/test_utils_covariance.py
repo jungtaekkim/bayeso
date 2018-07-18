@@ -1,6 +1,6 @@
 # test_utils_covariance
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: July 04, 2018
+# last updated: July 18, 2018
 
 import pytest
 import numpy as np
@@ -28,6 +28,16 @@ def test_get_hyps():
     assert (cur_hyps['lengthscales'] == np.array([1.0, 1.0])).all()
 
     cur_hyps =  utils_covariance.get_hyps('se', 2, is_ard=False)
+    assert cur_hyps['noise'] == constants.GP_NOISE
+    assert cur_hyps['signal'] == 1.0
+    assert cur_hyps['lengthscales'] == 1.0
+
+    cur_hyps =  utils_covariance.get_hyps('matern32', 2, is_ard=False)
+    assert cur_hyps['noise'] == constants.GP_NOISE
+    assert cur_hyps['signal'] == 1.0
+    assert cur_hyps['lengthscales'] == 1.0
+
+    cur_hyps =  utils_covariance.get_hyps('matern52', 2, is_ard=False)
     assert cur_hyps['noise'] == constants.GP_NOISE
     assert cur_hyps['signal'] == 1.0
     assert cur_hyps['lengthscales'] == 1.0
@@ -79,3 +89,57 @@ def test_restore_hyps():
     assert restored_hyps['noise'] == constants.GP_NOISE
     assert restored_hyps['signal'] == cur_hyps[0]
     assert (restored_hyps['lengthscales'] == cur_hyps[1:]).all()
+
+def test_validate_hyps_dict():
+    num_dim = 2
+    str_cov = 'matern32'
+    cur_hyps =  utils_covariance.get_hyps(str_cov, num_dim)
+    cur_hyps.pop('noise')
+    with pytest.raises(AssertionError) as error:
+        _, is_valid = utils_covariance.validate_hyps_dict(cur_hyps, str_cov, num_dim)
+        assert is_valid == True
+
+    cur_hyps =  utils_covariance.get_hyps(str_cov, num_dim)
+    with pytest.raises(AssertionError) as error:
+        _, is_valid = utils_covariance.validate_hyps_dict(cur_hyps, 'abc', num_dim)
+        assert is_valid == True
+
+    cur_hyps =  utils_covariance.get_hyps(str_cov, num_dim)
+    cur_hyps.pop('lengthscales')
+    with pytest.raises(AssertionError) as error:
+        _, is_valid = utils_covariance.validate_hyps_dict(cur_hyps, str_cov, num_dim)
+        assert is_valid == True
+
+    cur_hyps =  utils_covariance.get_hyps(str_cov, num_dim)
+    cur_hyps.pop('signal')
+    with pytest.raises(AssertionError) as error:
+        _, is_valid = utils_covariance.validate_hyps_dict(cur_hyps, str_cov, num_dim)
+        assert is_valid == True
+
+    cur_hyps =  utils_covariance.get_hyps(str_cov, num_dim)
+    cur_hyps['noise'] = 'abc'
+    with pytest.raises(AssertionError) as error:
+        _, is_valid = utils_covariance.validate_hyps_dict(cur_hyps, str_cov, num_dim)
+        assert is_valid == True
+
+    cur_hyps =  utils_covariance.get_hyps(str_cov, num_dim)
+    cur_hyps['noise'] = np.inf
+    cur_hyps, is_valid = utils_covariance.validate_hyps_dict(cur_hyps, str_cov, num_dim)
+    assert cur_hyps['noise'] == constants.BOUND_UPPER_GP_NOISE
+
+    cur_hyps =  utils_covariance.get_hyps(str_cov, num_dim)
+    with pytest.raises(AssertionError) as error:
+        _, is_valid = utils_covariance.validate_hyps_dict(cur_hyps, str_cov, 123)
+        assert is_valid == True
+
+    cur_hyps =  utils_covariance.get_hyps(str_cov, num_dim)
+    cur_hyps['lengthscales'] = 'abc'
+    with pytest.raises(AssertionError) as error:
+        _, is_valid = utils_covariance.validate_hyps_dict(cur_hyps, str_cov, num_dim)
+        assert is_valid == True
+
+    cur_hyps =  utils_covariance.get_hyps(str_cov, num_dim)
+    cur_hyps['signal'] = 'abc'
+    with pytest.raises(AssertionError) as error:
+        _, is_valid = utils_covariance.validate_hyps_dict(cur_hyps, str_cov, num_dim)
+        assert is_valid == True

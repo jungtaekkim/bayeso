@@ -76,7 +76,7 @@ def validate_hyps_dict(dict_hyps, str_cov, int_dim):
         if not isinstance(dict_hyps['noise'], float):
             is_valid = False
         else:
-            if np.abs(dict_hyps['noise']) > constants.BOUND_UPPER_GP_NOISE:
+            if np.abs(dict_hyps['noise']) >= constants.BOUND_UPPER_GP_NOISE:
                 dict_hyps['noise'] = constants.BOUND_UPPER_GP_NOISE
     if str_cov == 'se' or str_cov == 'matern32' or str_cov == 'matern52':
         if 'lengthscales' not in dict_hyps:
@@ -91,6 +91,8 @@ def validate_hyps_dict(dict_hyps, str_cov, int_dim):
         else:
             if not isinstance(dict_hyps['signal'], float):
                 is_valid = False
+    else:
+        is_valid = False
     return dict_hyps, is_valid
 
 def validate_hyps_arr(arr_hyps, str_cov, int_dim):
