@@ -5,7 +5,7 @@
 import numpy as np
 
 from bayeso import constants
-
+from bayeso.utils import utils_covariance
 
 def cov_se(bx, bxp, lengthscales, signal):
     assert isinstance(bx, np.ndarray)
@@ -63,24 +63,14 @@ def cov_main(str_cov, X, Xs, hyps, jitter=constants.JITTER_COV):
     cov_ = np.zeros((num_X, num_Xs))
     if num_X == num_Xs:
         cov_ += np.eye(num_X) * jitter
-    if str_cov == 'se':
-        if hyps.get('lengthscales') is None or hyps.get('signal') is None:
-            raise ValueError('cov_main: insufficient hyperparameters.')
+    if str_cov == 'se' or str_cov == 'matern32' or str_cov == 'matern52':
+        hyps, is_valid = utils_covariance.validate_hyps_dict(hyps, str_cov, num_d_X)
+        # TODO: ValueError is appropriate? We can just raise AssertionError in validate_hyps_dict. I am not sure.
+        if not is_valid:
+            raise ValueError('cov_main: invalid hyperparameters.')
         for ind_X in range(0, num_X):
             for ind_Xs in range(0, num_Xs):
                 cov_[ind_X, ind_Xs] += cov_se(X[ind_X], Xs[ind_Xs], hyps['lengthscales'], hyps['signal'])
-    elif str_cov == 'matern32':
-        if hyps.get('lengthscales') is None or hyps.get('signal') is None:
-            raise ValueError('cov_main: insufficient hyperparameters.')
-        for ind_X in range(0, num_X):
-            for ind_Xs in range(0, num_Xs):
-                cov_[ind_X, ind_Xs] += cov_matern32(X[ind_X], Xs[ind_Xs], hyps['lengthscales'], hyps['signal'])
-    elif str_cov == 'matern52':
-        if hyps.get('lengthscales') is None or hyps.get('signal') is None:
-            raise ValueError('cov_main: insufficient hyperparameters.')
-        for ind_X in range(0, num_X):
-            for ind_Xs in range(0, num_Xs):
-                cov_[ind_X, ind_Xs] += cov_matern52(X[ind_X], Xs[ind_Xs], hyps['lengthscales'], hyps['signal'])
     else:
         raise NotImplementedError('cov_main: allowed str_cov, but it is not implemented.')
     return cov_

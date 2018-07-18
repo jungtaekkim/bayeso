@@ -1,6 +1,6 @@
 # utils_covariance
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: July 09, 2018
+# last updated: July 18, 2018
 
 import numpy as np
 
@@ -68,14 +68,29 @@ def restore_hyps(str_cov, hyps, is_fixed_noise=False, fixed_noise=constants.GP_N
         raise NotImplementedError('restore_hyps: allowed str_cov, but it is not implemented.')
     return dict_hyps
 
-# TODO: make it complete
 def validate_hyps_dict(dict_hyps, str_cov, int_dim):
     is_valid = True
-    if not dict_hyps.get('noise'):
+    if 'noise' not in dict_hyps:
         is_valid = False
-        raise ValueError('validate_hyps_dict: invalid hyps')
-    if np.abs(dict_hyps['noise']) > constants.BOUND_UPPER_GP_NOISE:
-        dict_hyps['noise'] = constants.BOUND_UPPER_GP_NOISE
+    else:
+        if not isinstance(dict_hyps['noise'], float):
+            is_valid = False
+        else:
+            if np.abs(dict_hyps['noise']) > constants.BOUND_UPPER_GP_NOISE:
+                dict_hyps['noise'] = constants.BOUND_UPPER_GP_NOISE
+    if str_cov == 'se' or str_cov == 'matern32' or str_cov == 'matern52':
+        if 'lengthscales' not in dict_hyps:
+            is_valid = False
+        else:
+            if isinstance(dict_hyps['lengthscales'], np.ndarray) and dict_hyps['lengthscales'].shape[0] != int_dim:
+                is_valid = False
+            if not isinstance(dict_hyps['lengthscales'], np.ndarray) and not isinstance(dict_hyps['lengthscales'], float):
+                is_valid = False
+        if 'signal' not in dict_hyps:
+            is_valid = False
+        else:
+            if not isinstance(dict_hyps['signal'], float):
+                is_valid = False
     return dict_hyps, is_valid
 
 def validate_hyps_arr(arr_hyps, str_cov, int_dim):
