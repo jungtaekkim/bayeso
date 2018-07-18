@@ -170,7 +170,7 @@ def test_optimize_many_():
     num_iter = 10
     X = np.random.randn(num_X, dim_X)
     Y = np.random.randn(num_X, 1)
-    fun_target = lambda x: x**2 - 2.0 * x + 1.0
+    fun_target = lambda x: 2.0 * x + 1.0
     model_bo = bo.BO(arr_range)
 
     with pytest.raises(AssertionError) as error:
