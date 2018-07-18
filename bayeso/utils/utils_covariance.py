@@ -15,14 +15,12 @@ def get_hyps(str_cov, num_dim, is_ard=True):
 
     hyps = dict()
     hyps['noise'] = constants.GP_NOISE
-    if str_cov == 'se':
+    if str_cov == 'se' or str_cov == 'matern32' or str_cov == 'matern52':
         hyps['signal'] = 1.0
         if is_ard:
             hyps['lengthscales'] = np.ones(num_dim)
         else:
             hyps['lengthscales'] = 1.0
-    elif str_cov == 'matern52' or str_cov == 'matern32':
-        raise NotImplementedError('get_hyps: matern52 or matern32.')
     else:
         raise NotImplementedError('get_hyps: allowed str_cov, but it is not implemented.')
     return hyps
@@ -36,12 +34,10 @@ def convert_hyps(str_cov, hyps, is_fixed_noise=False):
     list_hyps = []
     if not is_fixed_noise:
         list_hyps.append(hyps['noise'])
-    if str_cov == 'se':
+    if str_cov == 'se' or str_cov == 'matern32' or str_cov == 'matern52':
         list_hyps.append(hyps['signal'])
         for elem_lengthscale in hyps['lengthscales']:
             list_hyps.append(elem_lengthscale)
-    elif str_cov == 'matern52' or str_cov == 'matern32':
-        raise NotImplementedError('convert_hyps: matern52 or matern32.')
     else:
         raise NotImplementedError('convert_hyps: allowed str_cov, but it is not implemented.')
     return np.array(list_hyps)
@@ -62,14 +58,12 @@ def restore_hyps(str_cov, hyps, is_fixed_noise=False, fixed_noise=constants.GP_N
         dict_hyps['noise'] = fixed_noise
         ind_start = 0
 
-    if str_cov == 'se':
+    if str_cov == 'se' or str_cov == 'matern32' or str_cov == 'matern52':
         dict_hyps['signal'] = hyps[ind_start]
         list_lengthscales = []
         for ind_elem in range(ind_start+1, len(hyps)):
             list_lengthscales.append(hyps[ind_elem])
         dict_hyps['lengthscales'] = np.array(list_lengthscales)
-    elif str_cov == 'matern52' or str_cov == 'matern32':
-        raise NotImplementedError('restore_hyps: matern52 or matern32.')
     else:
         raise NotImplementedError('restore_hyps: allowed str_cov, but it is not implemented.')
     return dict_hyps

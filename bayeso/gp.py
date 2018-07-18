@@ -31,8 +31,6 @@ def get_kernels(X_train, hyps, str_cov, debug=False):
     assert isinstance(str_cov, str)
     assert isinstance(debug, bool)
     assert len(X_train.shape) == 2
-    if debug:
-        pass
 
     cov_X_X = covariance.cov_main(str_cov, X_train, X_train, hyps) + hyps['noise']**2 * np.eye(X_train.shape[0])
     cov_X_X = (cov_X_X + cov_X_X.T) / 2.0
