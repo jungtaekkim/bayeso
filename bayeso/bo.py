@@ -113,7 +113,7 @@ class BO():
     def _optimize_objective(self, fun_acquisition, X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps):
         X_test = np.atleast_2d(X_test)
         pred_mean, pred_std = gp.predict_test_(X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps, self.str_cov, self.prior_mu)
-        acquisitions = fun_acquisition(pred_mean.flatten(), pred_std.flatten(), Y_train=Y_train)
+        acquisitions = fun_acquisition(pred_mean=pred_mean.flatten(), pred_std=pred_std.flatten(), Y_train=Y_train)
         return acquisitions
 
     def _optimize(self, fun_negative_acquisition, str_initial_method, int_samples):
@@ -171,6 +171,10 @@ class BO():
             fun_acquisition = acquisition.ucb
         elif self.str_acq == 'aei':
             fun_acquisition = lambda pred_mean, pred_std, Y_train: acquisition.aei(pred_mean, pred_std, Y_train, hyps['noise'])
+        elif self.str_acq == 'pure_exploit':
+            fun_acquisition = acquisition.pure_exploit
+        elif self.str_acq == 'pure_explore':
+            fun_acquisition = acquisition.pure_explore
         else:
             raise NotImplementedError('optimize: allowed str_acq, but it is not implemented.')
       
