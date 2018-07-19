@@ -204,3 +204,33 @@ def test_optimize():
     assert next_point.shape[0] == dim_X
     assert next_points.shape[1] == dim_X
     assert next_points.shape[0] == acquisitions.shape[0]
+
+    model_bo = bo.BO(arr_range_1, str_acq='pure_exploit')
+    next_point, next_points, acquisitions, cov_X_X, inv_cov_X_X, hyps = model_bo.optimize(X, Y)
+    assert isinstance(next_point, np.ndarray)
+    assert isinstance(next_points, np.ndarray)
+    assert isinstance(acquisitions, np.ndarray)
+    assert isinstance(cov_X_X, np.ndarray)
+    assert isinstance(inv_cov_X_X, np.ndarray)
+    assert isinstance(hyps, dict)
+    assert len(next_point.shape) == 1
+    assert len(next_points.shape) == 2
+    assert len(acquisitions.shape) == 1
+    assert next_point.shape[0] == dim_X
+    assert next_points.shape[1] == dim_X
+    assert next_points.shape[0] == acquisitions.shape[0]
+
+    model_bo = bo.BO(arr_range_1, str_acq='pure_explore')
+    next_point, next_points, acquisitions, cov_X_X, inv_cov_X_X, hyps = model_bo.optimize(X, Y)
+    assert isinstance(next_point, np.ndarray)
+    assert isinstance(next_points, np.ndarray)
+    assert isinstance(acquisitions, np.ndarray)
+    assert isinstance(cov_X_X, np.ndarray)
+    assert isinstance(inv_cov_X_X, np.ndarray)
+    assert isinstance(hyps, dict)
+    assert len(next_point.shape) == 1
+    assert len(next_points.shape) == 2
+    assert len(acquisitions.shape) == 1
+    assert next_point.shape[0] == dim_X
+    assert next_points.shape[1] == dim_X
+    assert next_points.shape[0] == acquisitions.shape[0]

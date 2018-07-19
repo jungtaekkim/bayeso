@@ -72,3 +72,31 @@ def aei(pred_mean, pred_std, Y_train, noise,
     ei = (np.min(Y_train) - pred_mean) * scipy.stats.norm.cdf(val_z) + pred_std * scipy.stats.norm.pdf(val_z)
     aei = ei * (1.0 - noise / np.sqrt(pred_std**2 + noise**2))
     return aei
+
+# pred_std and Y_train are ignored.
+def pure_exploit(pred_mean, pred_std=None, Y_train=None):
+    assert isinstance(pred_mean, np.ndarray)
+    assert isinstance(pred_std, np.ndarray) or pred_std is None
+    assert isinstance(Y_train, np.ndarray) or Y_train is None
+    assert len(pred_mean.shape) == 1
+    if pred_std is not None:
+        assert len(pred_std.shape) == 1
+        assert pred_mean.shape[0] == pred_std.shape[0]
+    if Y_train is not None:
+        assert len(Y_train.shape) == 2
+
+    return -pred_mean
+
+# pred_mean and Y_train are ignored.
+def pure_explore(pred_std, pred_mean=None, Y_train=None):
+    assert isinstance(pred_mean, np.ndarray) or pred_mean is None
+    assert isinstance(pred_std, np.ndarray)
+    assert isinstance(Y_train, np.ndarray) or Y_train is None
+    assert len(pred_std.shape) == 1
+    if pred_mean is not None:
+        assert len(pred_mean.shape) == 1
+        assert pred_mean.shape[0] == pred_std.shape[0]
+    if Y_train is not None:
+        assert len(Y_train.shape) == 2
+
+    return pred_std

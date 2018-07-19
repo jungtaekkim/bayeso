@@ -106,3 +106,42 @@ def test_aei():
     truth_val_acq = np.array([1.16847489e-01, 2.44025364e-02, 2.48686922e-03, 1.11930407e-04, 2.09279771e-06, 1.56585558e-08, 4.57958958e-11, 5.15587486e-14, 2.21142019e-17, 3.58729395e-21])
     assert (np.abs(val_acq - truth_val_acq) < TEST_EPSILON).all()
 
+def test_pure_exploit():
+    with pytest.raises(AssertionError) as error:
+        acquisition.pure_exploit('abc')
+    with pytest.raises(AssertionError) as error:
+        acquisition.pure_exploit(np.ones((10, 1)))
+    with pytest.raises(AssertionError) as error:
+        acquisition.pure_exploit(np.ones(10), pred_std='abc')
+    with pytest.raises(AssertionError) as error:
+        acquisition.pure_exploit(np.ones(10), Y_train='abc')
+    with pytest.raises(AssertionError) as error:
+        acquisition.pure_exploit(np.ones(10), pred_std=np.ones((10, 1)))
+    with pytest.raises(AssertionError) as error:
+        acquisition.pure_exploit(np.ones(10), pred_std=np.ones(20))
+    with pytest.raises(AssertionError) as error:
+        acquisition.pure_exploit(np.ones(10), Y_train=np.ones(20))
+
+    val_acq = acquisition.pure_exploit(np.arange(0, 10))
+    truth_val_acq = -np.arange(0, 10)
+    assert (np.abs(val_acq - truth_val_acq) < TEST_EPSILON).all()
+
+def test_pure_explore():
+    with pytest.raises(AssertionError) as error:
+        acquisition.pure_explore('abc')
+    with pytest.raises(AssertionError) as error:
+        acquisition.pure_explore(np.ones((10, 1)))
+    with pytest.raises(AssertionError) as error:
+        acquisition.pure_explore(np.ones(10), pred_mean='abc')
+    with pytest.raises(AssertionError) as error:
+        acquisition.pure_explore(np.ones(10), Y_train='abc')
+    with pytest.raises(AssertionError) as error:
+        acquisition.pure_explore(np.ones(10), pred_mean=np.ones((10, 1)))
+    with pytest.raises(AssertionError) as error:
+        acquisition.pure_explore(np.ones(10), pred_mean=np.ones(20))
+    with pytest.raises(AssertionError) as error:
+        acquisition.pure_explore(np.ones(10), Y_train=np.ones(20))
+
+    val_acq = acquisition.pure_explore(np.arange(0, 10))
+    truth_val_acq = np.arange(0, 10)
+    assert (np.abs(val_acq - truth_val_acq) < TEST_EPSILON).all()
