@@ -1,8 +1,9 @@
 # test_ackley
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: July 09, 2018
+# last updated: July 20, 2018
 
 import numpy as np
+import copy
 import pytest
 
 from bayeso import benchmarks
@@ -15,7 +16,8 @@ INFO_FUN = benchmarks.INFO_ACKLEY
 INT_DIM = 3
 
 def test_validate_info():
-    assert utils_benchmarks.validate_info(INFO_FUN)
+    info_fun = copy.deepcopy(INFO_FUN)
+    assert utils_benchmarks.validate_info(info_fun)
 
 def test_global_minimum():
     for elem_X in INFO_FUN.get('global_minimum_X', np.array([])):
