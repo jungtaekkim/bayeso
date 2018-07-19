@@ -96,9 +96,7 @@ def optimize_many_(model_bo, fun_target, X_train, Y_train, int_iter,
         next_point, next_points, acquisitions, _, _, _ = model_bo.optimize(X_final, Y_final, str_initial_method=str_initial_method_ao, int_samples=int_samples_ao)
         if model_bo.debug:
             print('[DEBUG] optimize_many_ in utils_bo.py: next_point', next_point)
-        # TODO: I think this if statement has precision or type issue in Python 3.6. Check coveralls.
         if np.where(np.sum(next_point == X_final, axis=1) == X_final.shape[1])[0].shape[0] > 0:
-            print(X_final)
             next_point = get_next_best_acquisition(next_points, acquisitions, X_final)
             if model_bo.debug:
                 print('[DEBUG] optimize_many_ in utils_bo.py: next_point is repeated, so next best is selected. next_point', next_point)
