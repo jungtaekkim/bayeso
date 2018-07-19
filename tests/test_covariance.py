@@ -93,4 +93,13 @@ def test_cov_main():
     cur_hyps.pop('signal', None)
     with pytest.raises(ValueError) as error:
         covariance.cov_main('se', np.zeros((10, 3)), np.zeros((20, 3)), cur_hyps)
+    cur_hyps = utils_covariance.get_hyps('se', 3)
+    cov_ = covariance.cov_main('se', np.zeros((10, 3)), np.zeros((20, 3)), cur_hyps, 0.001)
+
+    cur_hyps = utils_covariance.get_hyps('matern32', 3)
+    cov_ = covariance.cov_main('matern32', np.zeros((10, 3)), np.zeros((20, 3)), cur_hyps, 0.001)
+
+    cur_hyps = utils_covariance.get_hyps('matern52', 3)
+    cov_ = covariance.cov_main('matern52', np.zeros((10, 3)), np.zeros((20, 3)), cur_hyps, 0.001)
+
    
