@@ -21,10 +21,10 @@ def fun_target(X):
 
 def main():
     int_bo = 5
-    int_iter = 100
+    int_iter = 50
     int_init = 3
     
-    int_dim = 3
+    int_dim = 2
 
     bounds = utils_benchmarks.get_bounds(INFO_TARGET, int_dim)
     model_bo = bo.BO(bounds, debug=True)

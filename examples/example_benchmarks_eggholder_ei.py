@@ -24,7 +24,7 @@ def main():
     int_iter = 100
     int_init = 3
     
-    int_dim = 3
+    int_dim = 2
 
     bounds = utils_benchmarks.get_bounds(INFO_TARGET, int_dim)
     model_bo = bo.BO(bounds, debug=True)
