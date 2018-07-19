@@ -68,9 +68,19 @@ def cov_main(str_cov, X, Xs, hyps, jitter=constants.JITTER_COV):
         # TODO: ValueError is appropriate? We can just raise AssertionError in validate_hyps_dict. I am not sure.
         if not is_valid:
             raise ValueError('cov_main: invalid hyperparameters.')
+
+        if str_cov == 'se':
+            target_cov = cov_se
+        elif str_cov == 'matern32':
+            target_cov = cov_matern32
+        elif str_cov == 'matern52':
+            target_cov = cov_matern52
+        else:
+            raise NotImplementedError('cov_main: allowed str_cov condition, but it is not implemented.')
+
         for ind_X in range(0, num_X):
             for ind_Xs in range(0, num_Xs):
-                cov_[ind_X, ind_Xs] += cov_se(X[ind_X], Xs[ind_Xs], hyps['lengthscales'], hyps['signal'])
+                cov_[ind_X, ind_Xs] += target_cov(X[ind_X], Xs[ind_Xs], hyps['lengthscales'], hyps['signal'])
     else:
         raise NotImplementedError('cov_main: allowed str_cov, but it is not implemented.')
     return cov_
