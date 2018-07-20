@@ -1,4 +1,4 @@
-# example_benchmarks_eggholder_ei
+# example_benchmarks_ackley_ei
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
 # last updated: July 12, 2018
 
@@ -11,20 +11,20 @@ from bayeso.utils import utils_bo
 from bayeso.utils import utils_plotting
 from bayeso.utils import utils_benchmarks
 
-INFO_TARGET = benchmarks.INFO_EGGHOLDER
-STR_FUN_TARGET = 'eggholder'
-PATH_SAVE = './figures/benchmarks/'
+INFO_TARGET = benchmarks.INFO_ACKLEY
+STR_FUN_TARGET = 'ackley'
+PATH_SAVE = '../figures/benchmarks/'
 
 
 def fun_target(X):
-    return benchmarks.eggholder(X)
+    return benchmarks.ackley(X)
 
 def main():
     int_bo = 5
     int_iter = 100
     int_init = 3
     
-    int_dim = 2
+    int_dim = 3
 
     bounds = utils_benchmarks.get_bounds(INFO_TARGET, int_dim)
     model_bo = bo.BO(bounds, debug=True)

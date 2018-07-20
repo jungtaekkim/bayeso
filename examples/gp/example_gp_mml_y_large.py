@@ -9,7 +9,7 @@ from bayeso import gp
 from bayeso.utils import utils_plotting
 
 
-PATH_SAVE = './figures/gp/'
+PATH_SAVE = '../figures/gp/'
 
 def main():
     X_train = np.array([
