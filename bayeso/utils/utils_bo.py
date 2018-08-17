@@ -9,38 +9,6 @@ from bayeso import bo
 from bayeso import constants
 
 
-def get_grid(arr_ranges, int_grid):
-    assert isinstance(arr_ranges, np.ndarray)
-    assert isinstance(int_grid, int)
-    assert len(arr_ranges.shape) == 2
-    assert arr_ranges.shape[1] == 2
-    assert (arr_ranges[:, 0] <= arr_ranges[:, 1]).all()
-
-    list_grid = []
-    for range_ in arr_ranges:
-        list_grid.append(np.linspace(range_[0], range_[1], int_grid))
-    list_grid_mesh = list(np.meshgrid(*list_grid))
-    list_grid = []
-    for elem in list_grid_mesh:
-        list_grid.append(elem.flatten(order='C'))
-    arr_grid = np.vstack(tuple(list_grid))
-    arr_grid = arr_grid.T
-    return arr_grid
-
-def get_best_acquisition(arr_initials, fun_objective):
-    assert isinstance(arr_initials, np.ndarray)
-    assert callable(fun_objective)
-    assert len(arr_initials.shape) == 2
-
-    cur_best = np.inf
-    cur_initial = None
-    for arr_initial in arr_initials:
-        cur_acq = fun_objective(arr_initial)
-        if cur_acq < cur_best:
-            cur_initial = arr_initial
-            cur_best = cur_acq
-    return np.expand_dims(cur_initial, axis=0)
-
 def get_next_best_acquisition(arr_points, arr_acquisitions, cur_points):
     assert isinstance(arr_points, np.ndarray)
     assert isinstance(arr_acquisitions, np.ndarray)

@@ -1,4 +1,4 @@
-# example_gp_mml_kernel_matern52
+# example_gp_mml_kernel_matern32
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
 # last updated: July 18, 2018
 
@@ -10,8 +10,8 @@ from bayeso.utils import utils_common
 from bayeso.utils import utils_plotting
 
 
-PATH_SAVE = './figures/gp/'
-STR_COV = 'matern52'
+PATH_SAVE = '../figures/gp/'
+STR_COV = 'matern32'
 
 def main():
     np.random.seed(42)

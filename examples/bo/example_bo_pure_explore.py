@@ -1,4 +1,4 @@
-# example_bo_pure_exploit
+# example_bo_pure_explore
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
 # last updated: July 12, 2018
 
@@ -11,13 +11,13 @@ from bayeso import acquisition
 from bayeso.utils import utils_plotting
 
 
-PATH_SAVE = './figures/bo/'
+PATH_SAVE = '../figures/bo/'
 
 def fun_target(X):
     return 4.0 * np.cos(X) + 0.1 * X + 2.0 * np.sin(X) + 0.4 * (X - 0.5)**2
 
 def main():
-    str_acq = 'pure_exploit'
+    str_acq = 'pure_explore'
     num_iter = 10
     X_train = np.array([
         [-5],
@@ -33,7 +33,7 @@ def main():
         Y_train = fun_target(X_train)
         next_x, _, _, cov_X_X, inv_cov_X_X, hyps = model_bo.optimize(X_train, fun_target(X_train), str_initial_method='uniform')
         mu_test, sigma_test = gp.predict_test_(X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps)
-        acq_test = acquisition.pure_exploit(mu_test.flatten())
+        acq_test = acquisition.pure_explore(sigma_test.flatten())
         acq_test = np.expand_dims(acq_test, axis=1)
         X_train = np.vstack((X_train, next_x))
         Y_train = fun_target(X_train)

@@ -11,7 +11,7 @@ from bayeso import acquisition
 from bayeso.utils import utils_plotting
 
 
-PATH_SAVE = './figures/bo/'
+PATH_SAVE = '../figures/bo/'
 
 def fun_target(X):
     return 4.0 * np.cos(X) + 0.1 * X + 2.0 * np.sin(X) + 0.4 * (X - 0.5)**2

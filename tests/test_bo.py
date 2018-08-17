@@ -10,6 +10,111 @@ from bayeso import bo
 
 TEST_EPSILON = 1e-5
 
+def test_get_grid():
+    arr_range_1 = np.array([
+        [0.0, 10.0],
+        [-2.0, 2.0],
+        [-5.0, 5.0],
+    ])
+    arr_range_2 = np.array([
+        [0.0, 10.0],
+        [2.0, 2.0],
+        [5.0, 5.0],
+    ])
+
+    truth_arr_grid_1 = np.array([
+        [0., -2., -5.],
+        [0., -2., 0.],
+        [0., -2., 5.],
+        [5., -2., -5.],
+        [5., -2., 0.],
+        [5., -2., 5.],
+        [10., -2., -5.],
+        [10., -2., 0.],
+        [10., -2., 5.],
+        [0., 0., -5.],
+        [0., 0., 0.],
+        [0., 0., 5.],
+        [5., 0., -5.],
+        [5., 0., 0.],
+        [5., 0., 5.],
+        [10., 0., -5.],
+        [10., 0., 0.],
+        [10., 0., 5.],
+        [0., 2., -5.],
+        [0., 2., 0.],
+        [0., 2., 5.],
+        [5., 2., -5.],
+        [5., 2., 0.],
+        [5., 2., 5.],
+        [10., 2., -5.],
+        [10., 2., 0.],
+        [10., 2., 5.],
+    ])
+    truth_arr_grid_2 = np.array([
+        [0., 2., 5.],
+        [0., 2., 5.],
+        [0., 2., 5.],
+        [5., 2., 5.],
+        [5., 2., 5.],
+        [5., 2., 5.],
+        [10., 2., 5.],
+        [10., 2., 5.],
+        [10., 2., 5.],
+        [0., 2., 5.],
+        [0., 2., 5.],
+        [0., 2., 5.],
+        [5., 2., 5.],
+        [5., 2., 5.],
+        [5., 2., 5.],
+        [10., 2., 5.],
+        [10., 2., 5.],
+        [10., 2., 5.],
+        [0., 2., 5.],
+        [0., 2., 5.],
+        [0., 2., 5.],
+        [5., 2., 5.],
+        [5., 2., 5.],
+        [5., 2., 5.],
+        [10., 2., 5.],
+        [10., 2., 5.],
+        [10., 2., 5.],
+    ])
+
+    with pytest.raises(AssertionError) as error:
+        bo.get_grid('abc', 3)
+    with pytest.raises(AssertionError) as error:
+        bo.get_grid(arr_range_1, 'abc')
+    with pytest.raises(AssertionError) as error:
+        bo.get_grid(np.arange(0, 10), 3)
+    with pytest.raises(AssertionError) as error:
+        bo.get_grid(np.ones((3, 3)), 3)
+    with pytest.raises(AssertionError) as error:
+        bo.get_grid(np.array([[0.0, -2.0], [10.0, 20.0]]), 3)
+
+    arr_grid_1 = bo.get_grid(arr_range_1, 3)
+    arr_grid_2 = bo.get_grid(arr_range_2, 3)
+
+    assert (arr_grid_1 == truth_arr_grid_1).all()
+    assert (arr_grid_2 == truth_arr_grid_2).all()
+
+def test_get_best_acquisition():
+    fun_objective = lambda x: x**2 - 2.0 * x + 1.0
+    arr_initials = np.expand_dims(np.arange(-5, 5), axis=1)
+
+    with pytest.raises(AssertionError) as error:
+        bo.get_best_acquisition(1, fun_objective)
+    with pytest.raises(AssertionError) as error:
+        bo.get_best_acquisition(arr_initials, None)
+    with pytest.raises(AssertionError) as error:
+        bo.get_best_acquisition(np.arange(-5, 5), fun_objective)
+
+    best_initial = bo.get_best_acquisition(arr_initials, fun_objective)
+    assert len(best_initial.shape)
+    assert best_initial.shape[0] == 1
+    assert best_initial.shape[1] == arr_initials.shape[1]
+    assert best_initial == np.array([[1]])
+
 def test_load_bo():
     # legitimate cases
     arr_range_1 = np.array([
