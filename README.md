@@ -48,7 +48,11 @@ $ pip uninstall bayeso
 ```
 
 ## Supported Python Version
-Higher than Python 2.
+We test our package in the following versions.
+
+* Python 2.7
+* Python 3.5
+* Python 3.6
 
 ## Author
 * [Jungtaek Kim](http://mlg.postech.ac.kr/~jtkim/) (POSTECH)
