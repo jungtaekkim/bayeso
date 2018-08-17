@@ -10,9 +10,40 @@ import sobol_seq
 from bayeso import gp
 from bayeso import acquisition
 from bayeso.utils import utils_common
-from bayeso.utils import utils_bo
 from bayeso import constants
 
+
+def get_grid(arr_ranges, int_grid):
+    assert isinstance(arr_ranges, np.ndarray)
+    assert isinstance(int_grid, int)
+    assert len(arr_ranges.shape) == 2
+    assert arr_ranges.shape[1] == 2
+    assert (arr_ranges[:, 0] <= arr_ranges[:, 1]).all()
+
+    list_grid = []
+    for range_ in arr_ranges:
+        list_grid.append(np.linspace(range_[0], range_[1], int_grid))
+    list_grid_mesh = list(np.meshgrid(*list_grid))
+    list_grid = []
+    for elem in list_grid_mesh:
+        list_grid.append(elem.flatten(order='C'))
+    arr_grid = np.vstack(tuple(list_grid))
+    arr_grid = arr_grid.T
+    return arr_grid
+
+def get_best_acquisition(arr_initials, fun_objective):
+    assert isinstance(arr_initials, np.ndarray)
+    assert callable(fun_objective)
+    assert len(arr_initials.shape) == 2
+
+    cur_best = np.inf
+    cur_initial = None
+    for arr_initial in arr_initials:
+        cur_acq = fun_objective(arr_initial)
+        if cur_acq < cur_best:
+            cur_initial = arr_initial
+            cur_best = cur_acq
+    return np.expand_dims(cur_initial, axis=0)
 
 # TODO: I am not sure, but flatten() should be replaced.
 class BO():
@@ -48,7 +79,7 @@ class BO():
     def _get_initial_grid(self, int_grid=constants.NUM_BO_GRID):
         assert isinstance(int_grid, int)
 
-        arr_initials = utils_bo.get_grid(self.arr_range, int_grid)
+        arr_initials = get_grid(self.arr_range, int_grid)
         return arr_initials
 
     def _get_initial_uniform(self, int_samples, int_seed=None):
@@ -96,7 +127,7 @@ class BO():
             if self.debug:
                 print('[DEBUG] get_initial in bo.py: int_samples is ignored, because grid is chosen.')
             arr_initials = self._get_initial_grid()
-            arr_initials = utils_bo.get_best_acquisition(arr_initials, fun_objective)
+            arr_initials = get_best_acquisition(arr_initials, fun_objective)
         elif str_initial_method == 'uniform':
             arr_initials = self._get_initial_uniform(int_samples, int_seed=int_seed)
         elif str_initial_method == 'sobol':
@@ -135,7 +166,7 @@ class BO():
             if self.debug:
                 print('[DEBUG] _optimize in bo.py: optimized point for acq', next_point.x)
         next_points = np.array(list_next_point)
-        next_point = utils_bo.get_best_acquisition(next_points, fun_negative_acquisition)
+        next_point = get_best_acquisition(next_points, fun_negative_acquisition)
         return next_point.flatten(), next_points
 
     def optimize(self, X_train, Y_train,
