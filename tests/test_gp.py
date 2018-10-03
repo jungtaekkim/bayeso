@@ -6,6 +6,7 @@ import numpy as np
 import pytest
 
 from bayeso import gp
+from bayeso import constants
 from bayeso.utils import utils_covariance
 
 
@@ -106,7 +107,7 @@ def test_log_ml():
     X = np.reshape(np.arange(0, 9), (3, dim_X))
     Y = np.expand_dims(np.arange(3, 10, 3), axis=1)
     dict_hyps = utils_covariance.get_hyps(str_cov, dim_X)
-    arr_hyps = utils_covariance.convert_hyps(str_cov, dict_hyps)
+    arr_hyps = utils_covariance.convert_hyps(str_cov, dict_hyps, is_fixed_noise=constants.IS_FIXED_GP_NOISE)
     prior_mu_X = np.zeros((3, 1))
 
     with pytest.raises(AssertionError) as error:
