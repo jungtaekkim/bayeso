@@ -41,6 +41,19 @@ INFO_EGGHOLDER = {
     'global_minimum_y': -959.6407,
 }
 
+INFO_SIXHUMPCAMEL = {
+    'dim_fun': 2,
+    'bounds': np.array([
+        [-3.0, 3.0],
+        [-2.0, 2.0],
+    ]),
+    'global_minimum_X': np.array([
+        [0.0898, -0.7126],
+        [-0.0898, 0.7126],
+    ]),
+    'global_minimum_y': -1.0316,
+}
+
 def branin(X,
     a=1.0,
     b=5.1 / (4.0 * np.pi**2),
@@ -93,5 +106,17 @@ def eggholder(X):
         assert X.shape[1] == 2
 
     Y = -1.0 * (X[:, 1] + 47.0) * np.sin(np.sqrt(np.abs(X[:, 1] + X[:, 0] / 2.0 + 47.0))) - X[:, 0] * np.sin(np.sqrt(np.abs(X[:, 0] - (X[:, 1] + 47.0))))
+    return Y
+
+def sixhumpcamel(X):
+    assert isinstance(X, np.ndarray)
+    assert len(X.shape) == 1 or len(X.shape) == 2
+    if len(X.shape) == 1:
+        assert X.shape[0] == 2
+        X = np.expand_dims(X, axis=0)
+    elif len(X.shape) == 2:
+        assert X.shape[1] == 2
+
+    Y = (4.0 - 2.1 * X[:, 0]**2 + X[:, 0]**4 / 3.0) * X[:, 0]**2 + X[:, 0] * X[:, 1] + (-4.0 + 4.0 * X[:, 1]**2) * X[:, 1]**2
     return Y
 
