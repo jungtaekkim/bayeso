@@ -54,6 +54,22 @@ INFO_SIXHUMPCAMEL = {
     'global_minimum_y': -1.0316,
 }
 
+INFO_HARTMANN6D = {
+    'dim_fun': 6,
+    'bounds': np.array([
+        [0.0, 1.0],
+        [0.0, 1.0],
+        [0.0, 1.0],
+        [0.0, 1.0],
+        [0.0, 1.0],
+        [0.0, 1.0],
+    ]),
+    'global_minimum_X': np.array([
+        [0.20169, 0.150011, 0.476874, 0.275332, 0.311652, 0.6573],
+    ]),
+    'global_minimum_y': -3.32237,
+}
+
 def branin(X,
     a=1.0,
     b=5.1 / (4.0 * np.pi**2),
@@ -118,5 +134,40 @@ def sixhumpcamel(X):
         assert X.shape[1] == 2
 
     Y = (4.0 - 2.1 * X[:, 0]**2 + X[:, 0]**4 / 3.0) * X[:, 0]**2 + X[:, 0] * X[:, 1] + (-4.0 + 4.0 * X[:, 1]**2) * X[:, 1]**2
+    return Y
+
+def hartmann6d(X):
+    assert isinstance(X, np.ndarray)
+    assert len(X.shape) == 1 or len(X.shape) == 2
+    if len(X.shape) == 1:
+        assert X.shape[0] == 6
+        X = np.expand_dims(X, axis=0)
+    elif len(X.shape) == 2:
+        assert X.shape[1] == 6
+
+    alpha = np.array([1.0, 1.2, 3.0, 3.2])
+    A = np.array([
+        [10.0, 3.0, 17.0, 3.5, 1.7, 8.0],
+        [0.05, 10.0, 17.0, 0.1, 8.0, 14.0],
+        [3.0, 3.5, 1.7, 10.0, 17.0, 8.0],
+        [17.0, 8.0, 0.05, 10.0, 0.1, 14.0]
+    ])
+    P = 1e-4 * np.array([
+        [1312, 1696, 5569, 124, 8283, 5886],
+        [2329, 4135, 8307, 3736, 1004, 9991],
+        [2348, 1451, 3522, 2883, 3047, 6650],
+        [4047, 8828, 8732, 5743, 1091, 381]
+    ])
+
+    Y = np.zeros((X.shape[0], 1))
+    for ind_ in range(0, X.shape[0]):
+        outer = 0.0
+        for i_ in range(0, 4):
+            inner = 0.0
+            for j_ in range(0, 6):
+                inner += A[i_, j_] * (X[ind_, j_] - P[i_, j_])**2
+            outer += alpha[i_] * np.exp(-1.0 * inner)
+        Y[ind_, 0] = -1.0 * outer
+
     return Y
 
