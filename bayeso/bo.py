@@ -54,7 +54,7 @@ def get_best_acquisition(arr_initials, fun_objective):
     return np.expand_dims(cur_initial, axis=0)
 
 def check_optimizer_method_bo(str_optimizer_method_bo, num_dim, debug):
-    # TODO: add allowed_str_optimizer_method_bo
+    # TODO: use debug
     if str_optimizer_method_bo == 'DIRECT' and directminimize is None:
         str_optimizer_method_bo = 'L-BFGS-B'
         print('[DEBUG] check_optimizer_method_bo in bo.py: DIRECT is selected, but it is not installed.')
@@ -90,6 +90,7 @@ class BO():
         assert (arr_range[:, 0] <= arr_range[:, 1]).all()
         assert str_cov in constants.ALLOWED_GP_COV
         assert str_acq in constants.ALLOWED_BO_ACQ
+        assert str_optimizer_method_bo in constants.ALLOWED_OPTIMIZER_METHOD_BO
 
         self.arr_range = arr_range
         self.num_dim = arr_range.shape[0]

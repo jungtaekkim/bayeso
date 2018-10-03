@@ -25,12 +25,13 @@ MULTIPLIER_RESPONSE = 10.0
 
 GP_NOISE = 1e-2
 
-IS_FIXED_GP_NOISE = False
+IS_FIXED_GP_NOISE = True
 BOUND_UPPER_GP_NOISE = np.inf
 
 TIME_PAUSE = 2.0
 RANGE_SHADE = 1.96
 
+ALLOWED_OPTIMIZER_METHOD_BO = ['L-BFGS-B', 'DIRECT', 'CMA-ES']
 ALLOWED_GP_COV = ['se', 'matern32', 'matern52']
 ALLOWED_BO_ACQ = ['pi', 'ei', 'ucb', 'aei', 'pure_exploit', 'pure_explore']
 ALLOWED_INITIALIZATIONS_BO = ['sobol', 'uniform', 'latin']
