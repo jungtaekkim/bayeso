@@ -205,10 +205,14 @@ class BO():
             next_point_x = next_point.x
             list_next_point.append(next_point_x)
         elif self.str_optimizer_method_bo == 'CMA-ES':
-            es = cma.CMAEvolutionStrategy(np.zeros(self.num_dim), 0.5)
-            es.optimize(fun_negative_acquisition)
-            next_point = es.result
-            next_point_x = next_point.xbest
+            list_bounds = self._get_bounds()
+            list_bounds = np.array(list_bounds)
+            def fun_wrapper(f):
+                def g(bx):
+                    return f(bx)[0]
+                return g
+            arr_initials = self.get_initial(str_initial_method, fun_objective=fun_negative_acquisition, int_samples=1)
+            next_point_x = cma.fmin(fun_wrapper(fun_negative_acquisition), arr_initials[0], 0.5, options={'bounds': [list_bounds[:, 0], list_bounds[:, 1]], 'verbose': -1})[0]
             list_next_point.append(next_point_x)
 
         next_points = np.array(list_next_point)
