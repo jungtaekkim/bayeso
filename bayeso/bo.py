@@ -1,10 +1,18 @@
 # bo
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: July 09, 2018
+# last updated: Oct 03, 2018
 
 import numpy as np
 import time
 from scipy.optimize import minimize
+try:
+    from scipydirect import minimize as directminimize
+except:
+    directminimize = None
+try:
+    import cma
+except:
+    cma = None
 import sobol_seq
 
 from bayeso import gp
@@ -45,6 +53,19 @@ def get_best_acquisition(arr_initials, fun_objective):
             cur_best = cur_acq
     return np.expand_dims(cur_initial, axis=0)
 
+def check_optimizer_method_bo(str_optimizer_method_bo, num_dim, debug):
+    # TODO: add allowed_str_optimizer_method_bo
+    if str_optimizer_method_bo == 'DIRECT' and directminimize is None:
+        str_optimizer_method_bo = 'L-BFGS-B'
+        print('[DEBUG] check_optimizer_method_bo in bo.py: DIRECT is selected, but it is not installed.')
+    elif str_optimizer_method_bo == 'CMA-ES' and cma is None:
+        str_optimizer_method_bo = 'L-BFGS-B'
+        print('[DEBUG] check_optimizer_method_bo in bo.py: CMA-ES is selected, but it is not installed.')
+    elif str_optimizer_method_bo == 'CMA-ES' and num_dim == 1:
+        str_optimizer_method_bo = 'L-BFGS-B'
+        print('[DEBUG] check_optimizer_method_bo in bo.py: CMA-ES is selected, but a dimension of bounds is 1.')
+    return str_optimizer_method_bo
+
 # TODO: I am not sure, but flatten() should be replaced.
 class BO():
     def __init__(self, arr_range,
@@ -52,6 +73,7 @@ class BO():
         str_acq=constants.STR_BO_ACQ,
         is_ard=True,
         prior_mu=None,
+        str_optimizer_method_bo=constants.STR_OPTIMIZER_METHOD_BO,
         debug=False,
     ):
         # TODO: use is_ard.
@@ -60,6 +82,7 @@ class BO():
         assert isinstance(str_cov, str)
         assert isinstance(str_acq, str)
         assert isinstance(is_ard, bool)
+        assert isinstance(str_optimizer_method_bo, str)
         assert isinstance(debug, bool)
         assert callable(prior_mu) or prior_mu is None
         assert len(arr_range.shape) == 2
@@ -73,6 +96,7 @@ class BO():
         self.str_cov = str_cov
         self.str_acq = str_acq
         self.is_ard = is_ard
+        self.str_optimizer_method_bo = check_optimizer_method_bo(str_optimizer_method_bo, arr_range.shape[0], debug)
         self.debug = debug
         self.prior_mu = prior_mu
 
@@ -148,23 +172,44 @@ class BO():
         acquisitions = fun_acquisition(pred_mean=pred_mean.flatten(), pred_std=pred_std.flatten(), Y_train=Y_train)
         return acquisitions
 
-    def _optimize(self, fun_negative_acquisition, str_initial_method, int_samples):
+    def _get_bounds(self):
         list_bounds = []
         for elem in self.arr_range:
             list_bounds.append(tuple(elem))
-        arr_initials = self.get_initial(str_initial_method, fun_objective=fun_negative_acquisition, int_samples=int_samples)
+        return list_bounds
+
+    def _optimize(self, fun_negative_acquisition, str_initial_method, int_samples):
         list_next_point = []
-        for arr_initial in arr_initials:
-            next_point = minimize(
+        if self.str_optimizer_method_bo == 'L-BFGS-B':
+            list_bounds = self._get_bounds()
+            arr_initials = self.get_initial(str_initial_method, fun_objective=fun_negative_acquisition, int_samples=int_samples)
+            for arr_initial in arr_initials:
+                next_point = minimize(
+                    fun_negative_acquisition,
+                    x0=arr_initial,
+                    bounds=list_bounds,
+                    method=self.str_optimizer_method_bo,
+                    options={'disp': False}
+                )
+                next_point_x = next_point.x
+                list_next_point.append(next_point_x)
+                if self.debug:
+                    print('[DEBUG] _optimize in bo.py: optimized point for acq', next_point_x)
+        elif self.str_optimizer_method_bo == 'DIRECT':
+            list_bounds = self._get_bounds()
+            next_point = directminimize(
                 fun_negative_acquisition,
-                x0=arr_initial,
                 bounds=list_bounds,
-                method=constants.STR_OPTIMIZER_METHOD_BO,
-                options={'disp': False}
             )
-            list_next_point.append(next_point.x)
-            if self.debug:
-                print('[DEBUG] _optimize in bo.py: optimized point for acq', next_point.x)
+            next_point_x = next_point.x
+            list_next_point.append(next_point_x)
+        elif self.str_optimizer_method_bo == 'CMA-ES':
+            es = cma.CMAEvolutionStrategy(np.zeros(self.num_dim), 0.5)
+            es.optimize(fun_negative_acquisition)
+            next_point = es.result
+            next_point_x = next_point.xbest
+            list_next_point.append(next_point_x)
+
         next_points = np.array(list_next_point)
         next_point = get_best_acquisition(next_points, fun_negative_acquisition)
         return next_point.flatten(), next_points
