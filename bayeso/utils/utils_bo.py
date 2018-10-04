@@ -20,7 +20,7 @@ def get_next_best_acquisition(arr_points, arr_acquisitions, cur_points):
     assert arr_points.shape[1] == cur_points.shape[1]
    
     for cur_point in cur_points:
-        ind_same, = np.where(np.sum(arr_points == cur_point, axis=1) == arr_points.shape[1])
+        ind_same, = np.where(np.linalg.norm(arr_points - cur_point, axis=1) < 1e-2)
         arr_points = np.delete(arr_points, ind_same, axis=0)
         arr_acquisitions = np.delete(arr_acquisitions, ind_same)
     cur_best = np.inf
