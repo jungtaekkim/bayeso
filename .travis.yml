@@ -11,3 +11,5 @@ after_success:
   - pip install coveralls
   - coverage run -m pytest
   - coveralls
+notifications:
+  slack: bayeso:FWBoHH9TMqjKUJWkZxCaTNVE
