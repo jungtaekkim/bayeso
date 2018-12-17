@@ -24,3 +24,9 @@ def test_global_minimum():
         cur_X = utils_benchmarks.get_covariate(INFO_FUN, elem_X, INT_DIM)
         val_fun = FUN_TARGET(np.expand_dims(elem_X, axis=0))
         assert (np.abs(val_fun - INFO_FUN.get('global_minimum_y', np.inf)) < TEST_EPSILON).all()
+
+def test_function():
+    with pytest.raises(AssertionError) as error:
+        FUN_TARGET('abc')
+    with pytest.raises(AssertionError) as error:
+        FUN_TARGET(np.ones((2, 2, 2)))
