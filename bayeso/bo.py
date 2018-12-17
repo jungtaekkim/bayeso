@@ -54,16 +54,25 @@ def get_best_acquisition(arr_initials, fun_objective):
     return np.expand_dims(cur_initial, axis=0)
 
 def check_optimizer_method_bo(str_optimizer_method_bo, num_dim, debug):
-    # TODO: use debug
+    assert isinstance(str_optimizer_method_bo, str)
+    assert isinstance(num_dim, int)
+    assert isinstance(debug, bool)
+    assert str_optimizer_method_bo in constants.ALLOWED_OPTIMIZER_METHOD_BO
+
     if str_optimizer_method_bo == 'DIRECT' and directminimize is None:
+        if debug:
+            print('[DEBUG] check_optimizer_method_bo in bo.py: DIRECT is selected, but it is not installed.')
         str_optimizer_method_bo = 'L-BFGS-B'
-        print('[DEBUG] check_optimizer_method_bo in bo.py: DIRECT is selected, but it is not installed.')
     elif str_optimizer_method_bo == 'CMA-ES' and cma is None:
+        if debug:
+            print('[DEBUG] check_optimizer_method_bo in bo.py: CMA-ES is selected, but it is not installed.')
         str_optimizer_method_bo = 'L-BFGS-B'
-        print('[DEBUG] check_optimizer_method_bo in bo.py: CMA-ES is selected, but it is not installed.')
     elif str_optimizer_method_bo == 'CMA-ES' and num_dim == 1:
+        if debug:
+            print('[DEBUG] check_optimizer_method_bo in bo.py: CMA-ES is selected, but a dimension of bounds is 1.')
         str_optimizer_method_bo = 'L-BFGS-B'
-        print('[DEBUG] check_optimizer_method_bo in bo.py: CMA-ES is selected, but a dimension of bounds is 1.')
+    elif str_optimizer_method_bo in constants.ALLOWED_OPTIMIZER_METHOD_BO:
+        pass
     return str_optimizer_method_bo
 
 # TODO: I am not sure, but flatten() should be replaced.

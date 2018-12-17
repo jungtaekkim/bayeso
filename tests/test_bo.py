@@ -115,6 +115,19 @@ def test_get_best_acquisition():
     assert best_initial.shape[1] == arr_initials.shape[1]
     assert best_initial == np.array([[1]])
 
+def test_check_optimizer_method_bo():
+    directminimize = None
+    cma = None
+
+    with pytest.raises(AssertionError) as error:
+        bo.check_optimizer_method_bo(2, 2, True)
+    with pytest.raises(AssertionError) as error:
+        bo.check_optimizer_method_bo('DIRECT', 'abc', True)
+    with pytest.raises(AssertionError) as error:
+        bo.check_optimizer_method_bo('DIRECT', 2, 'abc')
+    with pytest.raises(AssertionError) as error:
+        bo.check_optimizer_method_bo('ABC', 2, True)
+
 def test_load_bo():
     # legitimate cases
     arr_range_1 = np.array([
