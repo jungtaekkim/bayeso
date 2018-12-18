@@ -174,7 +174,7 @@ def hartmann6d(X):
         [4047, 8828, 8732, 5743, 1091, 381]
     ])
 
-    Y = np.zeros((X.shape[0], 1))
+    Y = np.zeros(X.shape[0])
     for ind_ in range(0, X.shape[0]):
         outer = 0.0
         for i_ in range(0, 4):
@@ -182,8 +182,7 @@ def hartmann6d(X):
             for j_ in range(0, 6):
                 inner += A[i_, j_] * (X[ind_, j_] - P[i_, j_])**2
             outer += alpha[i_] * np.exp(-1.0 * inner)
-        Y[ind_, 0] = -1.0 * outer
-
+        Y[ind_] = -1.0 * outer
     return Y
 
 def holdertable(X):

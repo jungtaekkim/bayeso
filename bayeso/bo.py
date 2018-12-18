@@ -7,11 +7,11 @@ import time
 from scipy.optimize import minimize
 try:
     from scipydirect import minimize as directminimize
-except:
+except: # pragma: no cover
     directminimize = None
 try:
     import cma
-except:
+except: # pragma: no cover
     cma = None
 import sobol_seq
 
@@ -60,19 +60,17 @@ def check_optimizer_method_bo(str_optimizer_method_bo, num_dim, debug):
     assert str_optimizer_method_bo in constants.ALLOWED_OPTIMIZER_METHOD_BO
 
     if str_optimizer_method_bo == 'DIRECT' and directminimize is None:
-        if debug:
+        if debug: # pragma: no cover
             print('[DEBUG] check_optimizer_method_bo in bo.py: DIRECT is selected, but it is not installed.')
-        str_optimizer_method_bo = 'L-BFGS-B'
+        str_optimizer_method_bo = 'L-BFGS-B' # pragma: no cover
     elif str_optimizer_method_bo == 'CMA-ES' and cma is None:
-        if debug:
+        if debug: # pragma: no cover
             print('[DEBUG] check_optimizer_method_bo in bo.py: CMA-ES is selected, but it is not installed.')
-        str_optimizer_method_bo = 'L-BFGS-B'
+        str_optimizer_method_bo = 'L-BFGS-B' # pragma: no cover
     elif str_optimizer_method_bo == 'CMA-ES' and num_dim == 1:
-        if debug:
+        if debug: # pragma: no cover
             print('[DEBUG] check_optimizer_method_bo in bo.py: CMA-ES is selected, but a dimension of bounds is 1.')
-        str_optimizer_method_bo = 'L-BFGS-B'
-    elif str_optimizer_method_bo in constants.ALLOWED_OPTIMIZER_METHOD_BO:
-        pass
+        str_optimizer_method_bo = 'L-BFGS-B' # pragma: no cover
     return str_optimizer_method_bo
 
 # TODO: I am not sure, but flatten() should be replaced.

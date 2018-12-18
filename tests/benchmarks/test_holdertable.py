@@ -34,3 +34,4 @@ def test_function():
         FUN_TARGET(np.ones((2, 3)))
     with pytest.raises(AssertionError) as error:
         FUN_TARGET(np.ones(3))
+    assert (np.abs(FUN_TARGET(np.ones(2)) - (-0.78789663)) < TEST_EPSILON).all()
