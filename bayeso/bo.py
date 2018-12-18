@@ -59,18 +59,18 @@ def check_optimizer_method_bo(str_optimizer_method_bo, num_dim, debug):
     assert isinstance(debug, bool)
     assert str_optimizer_method_bo in constants.ALLOWED_OPTIMIZER_METHOD_BO
 
-    if str_optimizer_method_bo == 'DIRECT' and directminimize is None:
-        if debug: # pragma: no cover
+    if str_optimizer_method_bo == 'DIRECT' and directminimize is None: # pragma: no cover
+        if debug:
             print('[DEBUG] check_optimizer_method_bo in bo.py: DIRECT is selected, but it is not installed.')
-        str_optimizer_method_bo = 'L-BFGS-B' # pragma: no cover
-    elif str_optimizer_method_bo == 'CMA-ES' and cma is None:
-        if debug: # pragma: no cover
+        str_optimizer_method_bo = 'L-BFGS-B'
+    elif str_optimizer_method_bo == 'CMA-ES' and cma is None: # pragma: no cover
+        if debug:
             print('[DEBUG] check_optimizer_method_bo in bo.py: CMA-ES is selected, but it is not installed.')
-        str_optimizer_method_bo = 'L-BFGS-B' # pragma: no cover
-    elif str_optimizer_method_bo == 'CMA-ES' and num_dim == 1:
-        if debug: # pragma: no cover
+        str_optimizer_method_bo = 'L-BFGS-B'
+    elif str_optimizer_method_bo == 'CMA-ES' and num_dim == 1: # pragma: no cover
+        if debug:
             print('[DEBUG] check_optimizer_method_bo in bo.py: CMA-ES is selected, but a dimension of bounds is 1.')
-        str_optimizer_method_bo = 'L-BFGS-B' # pragma: no cover
+        str_optimizer_method_bo = 'L-BFGS-B'
     return str_optimizer_method_bo
 
 # TODO: I am not sure, but flatten() should be replaced.
@@ -203,7 +203,7 @@ class BO():
                 list_next_point.append(next_point_x)
                 if self.debug:
                     print('[DEBUG] _optimize in bo.py: optimized point for acq', next_point_x)
-        elif self.str_optimizer_method_bo == 'DIRECT':
+        elif self.str_optimizer_method_bo == 'DIRECT': # pragma: no cover
             list_bounds = self._get_bounds()
             next_point = directminimize(
                 fun_negative_acquisition,
