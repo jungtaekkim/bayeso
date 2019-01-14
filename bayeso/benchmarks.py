@@ -54,6 +54,18 @@ INFO_SIXHUMPCAMEL = {
     'global_minimum_y': -1.0316,
 }
 
+INFO_BEALE = {
+    'dim_fun': 2,
+    'bounds': np.array([
+        [-4.5, 4.5],
+        [-4.5, 4.5],
+    ]),
+    'global_minimum_X': np.array([
+        [3.0, 0.5],
+    ]),
+    'global_minimum_y': 0.0,
+}
+
 INFO_HARTMANN6D = {
     'dim_fun': 6,
     'bounds': np.array([
@@ -149,6 +161,18 @@ def sixhumpcamel(X):
         assert X.shape[1] == 2
 
     Y = (4.0 - 2.1 * X[:, 0]**2 + X[:, 0]**4 / 3.0) * X[:, 0]**2 + X[:, 0] * X[:, 1] + (-4.0 + 4.0 * X[:, 1]**2) * X[:, 1]**2
+    return Y
+
+def beale(X):
+    assert isinstance(X, np.ndarray)
+    assert len(X.shape) == 1 or len(X.shape) == 2
+    if len(X.shape) == 1:
+        assert X.shape[0] == 2
+        X = np.expand_dims(X, axis=0)
+    elif len(X.shape) == 2:
+        assert X.shape[1] == 2
+
+    Y = (1.5 - X[:, 0] + X[:, 0] * X[:, 1])**2 + (2.25 - X[:, 0] + X[:, 0] * X[:, 1]**2)**2 + (2.625 - X[:, 0] + X[:, 0] * X[:, 1]**3)**2
     return Y
 
 def hartmann6d(X):
