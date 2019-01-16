@@ -66,6 +66,18 @@ INFO_BEALE = {
     'global_minimum_y': 0.0,
 }
 
+INFO_GOLDSTEINPRICE = {
+    'dim_fun': 2,
+    'bounds': np.array([
+        [-2.0, 2.0],
+        [-2.0, 2.0],
+    ]),
+    'global_minimum_X': np.array([
+        [0.0, -1.0],
+    ]),
+    'global_minimum_y': 3.0,
+}
+
 INFO_HARTMANN6D = {
     'dim_fun': 6,
     'bounds': np.array([
@@ -173,6 +185,26 @@ def beale(X):
         assert X.shape[1] == 2
 
     Y = (1.5 - X[:, 0] + X[:, 0] * X[:, 1])**2 + (2.25 - X[:, 0] + X[:, 0] * X[:, 1]**2)**2 + (2.625 - X[:, 0] + X[:, 0] * X[:, 1]**3)**2
+    return Y
+
+def goldsteinprice(X):
+    assert isinstance(X, np.ndarray)
+    assert len(X.shape) == 1 or len(X.shape) == 2
+    if len(X.shape) == 1:
+        assert X.shape[0] == 2
+        X = np.expand_dims(X, axis=0)
+    elif len(X.shape) == 2:
+        assert X.shape[1] == 2
+
+    term_1a = (X[:, 0] + X[:, 1] + 1.0)**2
+    term_1b = 19.0 - 14.0 * X[:, 0] + 3.0 * X[:, 0]**2 - 14.0 * X[:, 1] + 6.0 * X[:, 0] * X[:, 1] + 3.0 * X[:, 1]**2
+    term_1 = 1.0 + term_1a * term_1b
+
+    term_2a = (2.0 * X[:, 0] - 3.0 * X[:, 1])**2
+    term_2b = 18.0 - 32.0 * X[:, 0] + 12.0 * X[:, 0]**2 + 48.0 * X[:, 1] - 36.0 * X[:, 0] * X[:, 1] + 27.0 * X[:, 1]**2
+    term_2 = 30.0 + term_2a * term_2b
+
+    Y = term_1 * term_2
     return Y
 
 def hartmann6d(X):
