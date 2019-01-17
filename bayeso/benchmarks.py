@@ -78,6 +78,18 @@ INFO_GOLDSTEINPRICE = {
     'global_minimum_y': 3.0,
 }
 
+INFO_BOHACHEVSKY = {
+    'dim_fun': 2,
+    'bounds': np.array([
+        [-100.0, 100.0],
+        [-100.0, 100.0],
+    ]),
+    'global_minimum_X': np.array([
+        [0.0, 0.0],
+    ]),
+    'global_minimum_y': 0.0,
+}
+
 INFO_HARTMANN6D = {
     'dim_fun': 6,
     'bounds': np.array([
@@ -205,6 +217,18 @@ def goldsteinprice(X):
     term_2 = 30.0 + term_2a * term_2b
 
     Y = term_1 * term_2
+    return Y
+
+def bohachevsky(X):
+    assert isinstance(X, np.ndarray)
+    assert len(X.shape) == 1 or len(X.shape) == 2
+    if len(X.shape) == 1:
+        assert X.shape[0] == 2
+        X = np.expand_dims(X, axis=0)
+    elif len(X.shape) == 2:
+        assert X.shape[1] == 2
+
+    Y = X[:, 0]**2 + 2.0 * X[:, 1]**2 - 0.3 * np.cos(3.0 * np.pi * X[:, 0]) - 0.4 * np.cos(4.0 * np.pi * X[:, 1]) + 0.7
     return Y
 
 def hartmann6d(X):
