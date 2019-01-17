@@ -92,6 +92,7 @@ def validate_hyps_dict(dict_hyps, str_cov, int_dim):
             if not isinstance(dict_hyps['signal'], float):
                 is_valid = False
     elif str_cov == 'set_mmd':
+        # TODO: add codes for set_mmd
         pass
     else:
         is_valid = False
