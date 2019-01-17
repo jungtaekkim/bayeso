@@ -81,6 +81,7 @@ class BO():
         is_ard=True,
         prior_mu=None,
         str_optimizer_method_bo=constants.STR_OPTIMIZER_METHOD_BO,
+        shape_X=None,
         debug=False,
     ):
         # TODO: use is_ard.
@@ -107,6 +108,7 @@ class BO():
         self.str_optimizer_method_bo = check_optimizer_method_bo(str_optimizer_method_bo, arr_range.shape[0], debug)
         self.debug = debug
         self.prior_mu = prior_mu
+        self.shape_X = shape_X
 
     def _get_initial_grid(self, int_grid=constants.NUM_BO_GRID):
         assert isinstance(int_grid, int)
@@ -175,7 +177,7 @@ class BO():
 
     def _optimize_objective(self, fun_acquisition, X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps):
         X_test = np.atleast_2d(X_test)
-        pred_mean, pred_std = gp.predict_test_(X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps, self.str_cov, self.prior_mu)
+        pred_mean, pred_std = gp.predict_test_(X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps, str_cov=self.str_cov, prior_mu=self.prior_mu, shape_X=self.shape_X)
         # no matter which acquisition functions are given, we input pred_mean, pred_std, and Y_train.
         acquisitions = fun_acquisition(pred_mean=pred_mean.flatten(), pred_std=pred_std.flatten(), Y_train=Y_train)
         return acquisitions
@@ -250,7 +252,7 @@ class BO():
         if is_normalized:
             Y_train = (Y_train - np.min(Y_train)) / (np.max(Y_train) - np.min(Y_train)) * constants.MULTIPLIER_RESPONSE
 
-        cov_X_X, inv_cov_X_X, hyps = gp.get_optimized_kernel(X_train, Y_train, self.prior_mu, self.str_cov, debug=self.debug)
+        cov_X_X, inv_cov_X_X, hyps = gp.get_optimized_kernel(X_train, Y_train, self.prior_mu, self.str_cov, shape_X=self.shape_X, debug=self.debug)
 
         if self.str_acq == 'pi':
             fun_acquisition = acquisition.pi

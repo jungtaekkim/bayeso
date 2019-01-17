@@ -1,24 +1,24 @@
 # utils_covariance
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: July 18, 2018
+# last updated: December 31, 2018
 
 import numpy as np
 
 from bayeso import constants
 
 
-def get_hyps(str_cov, num_dim, is_ard=True):
+def get_hyps(str_cov, int_dim, is_ard=True):
     assert isinstance(str_cov, str)
-    assert isinstance(num_dim, int)
+    assert isinstance(int_dim, int)
     assert isinstance(is_ard, bool)
     assert str_cov in constants.ALLOWED_GP_COV
 
     hyps = dict()
     hyps['noise'] = constants.GP_NOISE
-    if str_cov == 'se' or str_cov == 'matern32' or str_cov == 'matern52':
+    if str_cov == 'se' or str_cov == 'matern32' or str_cov == 'matern52' or str_cov == 'set_mmd':
         hyps['signal'] = 1.0
         if is_ard:
-            hyps['lengthscales'] = np.ones(num_dim)
+            hyps['lengthscales'] = np.ones(int_dim)
         else:
             hyps['lengthscales'] = 1.0
     else:
@@ -34,7 +34,7 @@ def convert_hyps(str_cov, hyps, is_fixed_noise=False):
     list_hyps = []
     if not is_fixed_noise:
         list_hyps.append(hyps['noise'])
-    if str_cov == 'se' or str_cov == 'matern32' or str_cov == 'matern52':
+    if str_cov == 'se' or str_cov == 'matern32' or str_cov == 'matern52' or str_cov == 'set_mmd':
         list_hyps.append(hyps['signal'])
         for elem_lengthscale in hyps['lengthscales']:
             list_hyps.append(elem_lengthscale)
@@ -58,7 +58,7 @@ def restore_hyps(str_cov, hyps, is_fixed_noise=False, fixed_noise=constants.GP_N
         dict_hyps['noise'] = fixed_noise
         ind_start = 0
 
-    if str_cov == 'se' or str_cov == 'matern32' or str_cov == 'matern52':
+    if str_cov == 'se' or str_cov == 'matern32' or str_cov == 'matern52' or str_cov == 'set_mmd':
         dict_hyps['signal'] = hyps[ind_start]
         list_lengthscales = []
         for ind_elem in range(ind_start+1, len(hyps)):
@@ -91,6 +91,8 @@ def validate_hyps_dict(dict_hyps, str_cov, int_dim):
         else:
             if not isinstance(dict_hyps['signal'], float):
                 is_valid = False
+    elif str_cov == 'set_mmd':
+        pass
     else:
         is_valid = False
     return dict_hyps, is_valid

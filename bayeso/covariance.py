@@ -1,11 +1,23 @@
 # covariance
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: July 09, 2018
+# last updated: January 17, 2019
 
 import numpy as np
 
 from bayeso import constants
 from bayeso.utils import utils_covariance
+
+
+def choose_target_cov(str_cov):
+    if str_cov == 'se':
+        target_cov = cov_se
+    elif str_cov == 'matern32':
+        target_cov = cov_matern32
+    elif str_cov == 'matern52':
+        target_cov = cov_matern52
+    else:
+        raise NotImplementedError('cov_main: allowed str_cov condition, but it is not implemented.')
+    return target_cov
 
 def cov_se(bx, bxp, lengthscales, signal):
     assert isinstance(bx, np.ndarray)
@@ -44,7 +56,36 @@ def cov_matern52(bx, bxp, lengthscales, signal):
     dist = np.linalg.norm((bx - bxp) / lengthscales, ord=2)
     return signal**2 * (1.0 + np.sqrt(5.0) * dist + 5.0 / 3.0 * dist**2) * np.exp(-1.0 * np.sqrt(5.0) * dist)
 
-def cov_main(str_cov, X, Xs, hyps, jitter=constants.JITTER_COV):
+def cov_mmd(str_cov, X, Xs, lengthscales, signal):
+    assert isinstance(X, np.ndarray)
+    assert isinstance(Xs, np.ndarray)
+    assert isinstance(lengthscales, np.ndarray) or isinstance(lengthscales, float)
+    assert isinstance(signal, float)
+    if isinstance(lengthscales, np.ndarray):
+        assert X.shape[1] == Xs.shape[1] == lengthscales.shape[0]
+    else:
+        assert X.shape[1] == Xs.shape[1]
+    num_X = X.shape[0]
+    num_Xs = Xs.shape[0]
+    num_d_X = X.shape[1]
+    num_d_Xs = Xs.shape[1]
+
+    target_cov = choose_target_cov(str_cov)
+    cov_ = 0.0
+
+    for ind_X in range(0, num_X):
+        list_cov_ = []
+        for ind_Xs in range(0, num_Xs):
+            list_cov_.append(target_cov(X[ind_X], Xs[ind_Xs], lengthscales, signal))
+        cov_ += np.sum(list_cov_)
+
+    cov_ /= num_X * num_Xs
+    return cov_
+
+def cov_main(str_cov, X, Xs, hyps,
+    shape_X=None,
+    jitter=constants.JITTER_COV
+):
     assert isinstance(str_cov, str)
     assert isinstance(X, np.ndarray)
     assert isinstance(Xs, np.ndarray)
@@ -69,18 +110,24 @@ def cov_main(str_cov, X, Xs, hyps, jitter=constants.JITTER_COV):
         if not is_valid:
             raise ValueError('cov_main: invalid hyperparameters.')
 
-        if str_cov == 'se':
-            target_cov = cov_se
-        elif str_cov == 'matern32':
-            target_cov = cov_matern32
-        elif str_cov == 'matern52':
-            target_cov = cov_matern52
-        else:
-            raise NotImplementedError('cov_main: allowed str_cov condition, but it is not implemented.')
+        target_cov = choose_target_cov(str_cov)
 
         for ind_X in range(0, num_X):
             for ind_Xs in range(0, num_Xs):
                 cov_[ind_X, ind_Xs] += target_cov(X[ind_X], Xs[ind_Xs], hyps['lengthscales'], hyps['signal'])
+    elif str_cov == 'set_mmd':
+        assert shape_X is not None
+        X = np.reshape(X, [-1] + list(shape_X))
+        Xs = np.reshape(Xs, [-1] + list(shape_X))
+        hyps, is_valid = utils_covariance.validate_hyps_dict(hyps, str_cov, num_d_X)
+        if not is_valid:
+            raise ValueError('cov_main: invalid hyperparameters.')
+
+        for ind_X in range(0, num_X):
+            for ind_Xs in range(0, num_Xs):
+                cov_[ind_X, ind_Xs] += cov_mmd('matern52', X[ind_X], Xs[ind_Xs], hyps['lengthscales'], hyps['signal'])
+        if num_X == num_Xs:
+            pass
     else:
         raise NotImplementedError('cov_main: allowed str_cov, but it is not implemented.')
     return cov_
