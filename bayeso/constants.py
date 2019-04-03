@@ -32,7 +32,9 @@ TIME_PAUSE = 2.0
 RANGE_SHADE = 1.96
 
 ALLOWED_OPTIMIZER_METHOD_BO = ['L-BFGS-B', 'DIRECT', 'CMA-ES']
-ALLOWED_GP_COV = ['se', 'matern32', 'matern52', 'set_mmd']
+ALLOWED_GP_COV_BASE = ['se', 'matern32', 'matern52']
+ALLOWED_GP_COV_SET = ['set_' + str_cov for str_cov in ALLOWED_GP_COV_BASE]
+ALLOWED_GP_COV = ALLOWED_GP_COV_BASE + ALLOWED_GP_COV_SET
 ALLOWED_BO_ACQ = ['pi', 'ei', 'ucb', 'aei', 'pure_exploit', 'pure_explore']
 ALLOWED_INITIALIZATIONS_BO = ['sobol', 'uniform', 'latin']
 ALLOWED_INITIALIZATIONS_AO = ALLOWED_INITIALIZATIONS_BO + ['grid']

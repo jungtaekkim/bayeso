@@ -11,6 +11,27 @@ from bayeso import constants
 from bayeso.utils import utils_common
 
 
+def _set_ax_config(ax, str_x_axis, str_y_axis,
+    size_labels=32,
+    size_ticks=22,
+    xlim_min=None,
+    xlim_max=None,
+    is_zero_axis=False,
+):
+    ax.set_xlabel(str_x_axis, fontsize=size_labels)
+    ax.set_ylabel(str_y_axis, fontsize=size_labels)
+    ax.tick_params(labelsize=size_ticks)
+    ax.spines['top'].set_color('none')
+    ax.spines['right'].set_color('none')
+
+    if xlim_min is not None and xlim_max is not None:
+        ax.set_xlim([xlim_min, xlim_max])
+
+    if is_zero_axis:
+        ax.spines['bottom'].set_position('zero')
+
+    return
+
 def plot_gp(X_train, Y_train, X_test, mu, sigma,
     Y_test_truth=None,
     path_save=None,
@@ -80,15 +101,9 @@ def plot_gp(X_train, Y_train, X_test, mu, sigma,
         c=colors[0], 
         markersize=10, 
         mew=4)
-    
-    ax.set_xlabel(str_x_axis, fontsize=32)
-    ax.set_ylabel(str_y_axis, fontsize=32)
-    ax.set_xlim([np.min(X_test), np.max(X_test)])
-    ax.tick_params(labelsize=22)
-    ax.spines['top'].set_color('none')
-    ax.spines['right'].set_color('none')
-    if is_zero_axis:
-        ax.spines['bottom'].set_position('zero')
+
+    _set_ax_config(ax, str_x_axis, str_y_axis, xlim_min=np.min(X_test), xlim_max=np.max(X_test), is_zero_axis=is_zero_axis)
+
     if path_save is not None and str_postfix is not None:
         str_figure = 'gp_' + str_postfix
         plt.savefig(os.path.join(path_save, str_figure + '.pdf'),
@@ -169,12 +184,9 @@ def plot_minimum(arr_minima, list_str_label, int_init, is_std,
                 color=colors[ind_color], 
                 alpha=0.3)
     lines, labels = ax.get_legend_handles_labels()
-    ax.set_xlabel(str_x_axis, fontsize=27)
-    ax.set_ylabel(str_y_axis, fontsize=27)
-    ax.set_xlim([0, mean_min.shape[0]-1])
-    ax.tick_params(labelsize=22)
-    ax.spines['top'].set_color('none')
-    ax.spines['right'].set_color('none')
+
+    _set_ax_config(ax, str_x_axis, str_y_axis, xlim_min=0, xlim_max=mean_min.shape[0]-1)
+
     if is_legend:
         plt.legend(loc='upper right', fancybox=False, edgecolor='black', fontsize=24)
     if path_save is not None and str_postfix is not None:

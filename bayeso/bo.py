@@ -53,7 +53,7 @@ def get_best_acquisition(arr_initials, fun_objective):
             cur_best = cur_acq
     return np.expand_dims(cur_initial, axis=0)
 
-def check_optimizer_method_bo(str_optimizer_method_bo, num_dim, debug):
+def _check_optimizer_method_bo(str_optimizer_method_bo, num_dim, debug):
     assert isinstance(str_optimizer_method_bo, str)
     assert isinstance(num_dim, int)
     assert isinstance(debug, bool)
@@ -61,17 +61,34 @@ def check_optimizer_method_bo(str_optimizer_method_bo, num_dim, debug):
 
     if str_optimizer_method_bo == 'DIRECT' and directminimize is None: # pragma: no cover
         if debug:
-            print('[DEBUG] check_optimizer_method_bo in bo.py: DIRECT is selected, but it is not installed.')
+            print('[DEBUG] _check_optimizer_method_bo in bo.py: DIRECT is selected, but it is not installed.')
         str_optimizer_method_bo = 'L-BFGS-B'
     elif str_optimizer_method_bo == 'CMA-ES' and cma is None: # pragma: no cover
         if debug:
-            print('[DEBUG] check_optimizer_method_bo in bo.py: CMA-ES is selected, but it is not installed.')
+            print('[DEBUG] _check_optimizer_method_bo in bo.py: CMA-ES is selected, but it is not installed.')
         str_optimizer_method_bo = 'L-BFGS-B'
     elif str_optimizer_method_bo == 'CMA-ES' and num_dim == 1: # pragma: no cover
         if debug:
-            print('[DEBUG] check_optimizer_method_bo in bo.py: CMA-ES is selected, but a dimension of bounds is 1.')
+            print('[DEBUG] _check_optimizer_method_bo in bo.py: CMA-ES is selected, but a dimension of bounds is 1.')
         str_optimizer_method_bo = 'L-BFGS-B'
     return str_optimizer_method_bo
+
+def _choose_fun_acquisition(str_acq, hyps):
+    if str_acq == 'pi':
+        fun_acquisition = acquisition.pi
+    elif str_acq == 'ei':
+        fun_acquisition = acquisition.ei
+    elif str_acq == 'ucb':
+        fun_acquisition = acquisition.ucb
+    elif str_acq == 'aei':
+        fun_acquisition = lambda pred_mean, pred_std, Y_train: acquisition.aei(pred_mean, pred_std, Y_train, hyps['noise'])
+    elif str_acq == 'pure_exploit':
+        fun_acquisition = acquisition.pure_exploit
+    elif str_acq == 'pure_explore':
+        fun_acquisition = acquisition.pure_explore
+    else:
+        raise NotImplementedError('_choose_fun_acquisition: allowed str_acq, but it is not implemented.')
+    return fun_acquisition
 
 # TODO: I am not sure, but flatten() should be replaced.
 class BO():
@@ -81,8 +98,7 @@ class BO():
         is_ard=True,
         prior_mu=None,
         str_optimizer_method_bo=constants.STR_OPTIMIZER_METHOD_BO,
-        shape_X=None,
-        debug=False,
+        debug=False
     ):
         # TODO: use is_ard.
         # TODO: add debug cases.
@@ -105,10 +121,9 @@ class BO():
         self.str_cov = str_cov
         self.str_acq = str_acq
         self.is_ard = is_ard
-        self.str_optimizer_method_bo = check_optimizer_method_bo(str_optimizer_method_bo, arr_range.shape[0], debug)
+        self.str_optimizer_method_bo = _check_optimizer_method_bo(str_optimizer_method_bo, arr_range.shape[0], debug)
         self.debug = debug
         self.prior_mu = prior_mu
-        self.shape_X = shape_X
 
     def _get_initial_grid(self, int_grid=constants.NUM_BO_GRID):
         assert isinstance(int_grid, int)
@@ -177,7 +192,7 @@ class BO():
 
     def _optimize_objective(self, fun_acquisition, X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps):
         X_test = np.atleast_2d(X_test)
-        pred_mean, pred_std = gp.predict_test_(X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps, str_cov=self.str_cov, prior_mu=self.prior_mu, shape_X=self.shape_X)
+        pred_mean, pred_std = gp.predict_test_(X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps, str_cov=self.str_cov, prior_mu=self.prior_mu, debug=self.debug)
         # no matter which acquisition functions are given, we input pred_mean, pred_std, and Y_train.
         acquisitions = fun_acquisition(pred_mean=pred_mean.flatten(), pred_std=pred_std.flatten(), Y_train=Y_train)
         return acquisitions
@@ -252,22 +267,9 @@ class BO():
         if is_normalized:
             Y_train = (Y_train - np.min(Y_train)) / (np.max(Y_train) - np.min(Y_train)) * constants.MULTIPLIER_RESPONSE
 
-        cov_X_X, inv_cov_X_X, hyps = gp.get_optimized_kernel(X_train, Y_train, self.prior_mu, self.str_cov, shape_X=self.shape_X, debug=self.debug)
+        cov_X_X, inv_cov_X_X, hyps = gp.get_optimized_kernel(X_train, Y_train, self.prior_mu, self.str_cov, debug=self.debug)
 
-        if self.str_acq == 'pi':
-            fun_acquisition = acquisition.pi
-        elif self.str_acq == 'ei':
-            fun_acquisition = acquisition.ei
-        elif self.str_acq == 'ucb':
-            fun_acquisition = acquisition.ucb
-        elif self.str_acq == 'aei':
-            fun_acquisition = lambda pred_mean, pred_std, Y_train: acquisition.aei(pred_mean, pred_std, Y_train, hyps['noise'])
-        elif self.str_acq == 'pure_exploit':
-            fun_acquisition = acquisition.pure_exploit
-        elif self.str_acq == 'pure_explore':
-            fun_acquisition = acquisition.pure_explore
-        else:
-            raise NotImplementedError('optimize: allowed str_acq, but it is not implemented.')
+        fun_acquisition = _choose_fun_acquisition(self.str_acq, hyps)
       
         fun_negative_acquisition = lambda X_test: -1.0 * constants.MULTIPLIER_ACQ * self._optimize_objective(fun_acquisition, X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps)
         next_point, next_points = self._optimize(fun_negative_acquisition, str_initial_method=str_initial_method, int_samples=int_samples)
