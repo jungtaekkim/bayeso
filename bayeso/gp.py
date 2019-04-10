@@ -126,6 +126,7 @@ def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov,
     assert len(Y_train.shape) == 2
     assert X_train.shape[0] == Y_train.shape[0]
     _check_str_cov('get_optimized_kernel', str_cov, X_train.shape)
+    assert str_optimizer_method in constants.ALLOWED_OPTIMIZER_METHOD_GP
 
     time_start = time.time()
 

@@ -31,25 +31,25 @@ def test_get_prior_mu():
     assert (gp.get_prior_mu(None, X) == np.zeros((X.shape[0], 1))).all()
     assert (gp.get_prior_mu(fun_prior, X) == fun_prior(X)).all()
 
-def test_get_kernels():
+def test_get_kernel_inverse():
     dim_X = 3
     X = np.reshape(np.arange(0, 9), (3, dim_X))
     hyps = utils_covariance.get_hyps('se', dim_X)
 
     with pytest.raises(AssertionError) as error:
-        gp.get_kernels(1, hyps, 'se')
+        gp.get_kernel_inverse(1, hyps, 'se')
     with pytest.raises(AssertionError) as error:
-        gp.get_kernels(np.arange(0, 100), hyps, 'se')
+        gp.get_kernel_inverse(np.arange(0, 100), hyps, 'se')
     with pytest.raises(AssertionError) as error:
-        gp.get_kernels(X, 1, 'se')
+        gp.get_kernel_inverse(X, 1, 'se')
     with pytest.raises(AssertionError) as error:
-        gp.get_kernels(X, hyps, 1)
+        gp.get_kernel_inverse(X, hyps, 1)
+    with pytest.raises(ValueError) as error:
+        gp.get_kernel_inverse(X, hyps, 'abc')
     with pytest.raises(AssertionError) as error:
-        gp.get_kernels(X, hyps, 'abc')
-    with pytest.raises(AssertionError) as error:
-        gp.get_kernels(X, hyps, 'se', debug=1)
+        gp.get_kernel_inverse(X, hyps, 'se', debug=1)
 
-    cov_X_X, inv_cov_X_X = gp.get_kernels(X, hyps, 'se')
+    cov_X_X, inv_cov_X_X = gp.get_kernel_inverse(X, hyps, 'se')
     print(cov_X_X)
     print(inv_cov_X_X)
     truth_cov_X_X = [
@@ -79,7 +79,7 @@ def test_get_kernel_cholesky():
         gp.get_kernel_cholesky(X, 1, 'se')
     with pytest.raises(AssertionError) as error:
         gp.get_kernel_cholesky(X, hyps, 1)
-    with pytest.raises(AssertionError) as error:
+    with pytest.raises(ValueError) as error:
         gp.get_kernel_cholesky(X, hyps, 'abc')
     with pytest.raises(AssertionError) as error:
         gp.get_kernel_cholesky(X, hyps, 'se', debug=1)
@@ -118,7 +118,7 @@ def test_log_ml():
         gp.log_ml(X, Y, dict_hyps, str_cov, prior_mu_X)
     with pytest.raises(AssertionError) as error:
         gp.log_ml(X, Y, arr_hyps, 1, prior_mu_X)
-    with pytest.raises(AssertionError) as error:
+    with pytest.raises(ValueError) as error:
         gp.log_ml(X, Y, arr_hyps, 'abc', prior_mu_X)
     with pytest.raises(AssertionError) as error:
         gp.log_ml(X, Y, arr_hyps, str_cov, np.arange(0, 3))
@@ -167,7 +167,7 @@ def test_get_optimized_kernel():
         gp.get_optimized_kernel(np.ones((50, 3)), Y, prior_mu, 'se')
     with pytest.raises(AssertionError) as error:
         gp.get_optimized_kernel(X, np.ones((50, 1)), prior_mu, 'se')
-    with pytest.raises(AssertionError) as error:
+    with pytest.raises(ValueError) as error:
         gp.get_optimized_kernel(X, Y, prior_mu, 'abc')
     with pytest.raises(AssertionError) as error:
         gp.get_optimized_kernel(X, Y, prior_mu, 'se', str_optimizer_method=1)

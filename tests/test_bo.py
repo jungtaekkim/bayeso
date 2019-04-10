@@ -120,13 +120,13 @@ def test_check_optimizer_method_bo():
     cma = None
 
     with pytest.raises(AssertionError) as error:
-        bo.check_optimizer_method_bo(2, 2, True)
+        bo._check_optimizer_method_bo(2, 2, True)
     with pytest.raises(AssertionError) as error:
-        bo.check_optimizer_method_bo('DIRECT', 'abc', True)
+        bo._check_optimizer_method_bo('DIRECT', 'abc', True)
     with pytest.raises(AssertionError) as error:
-        bo.check_optimizer_method_bo('DIRECT', 2, 'abc')
+        bo._check_optimizer_method_bo('DIRECT', 2, 'abc')
     with pytest.raises(AssertionError) as error:
-        bo.check_optimizer_method_bo('ABC', 2, True)
+        bo._check_optimizer_method_bo('ABC', 2, True)
 
 def test_load_bo():
     # legitimate cases
