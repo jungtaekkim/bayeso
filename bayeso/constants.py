@@ -1,6 +1,6 @@
 # constants
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: December 31, 2018
+# last updated: April 11, 2019
 
 import numpy as np
 

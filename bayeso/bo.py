@@ -1,6 +1,6 @@
 # bo
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: Oct 03, 2018
+# last updated: April 11, 2019
 
 import numpy as np
 import time

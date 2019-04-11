@@ -1,6 +1,6 @@
 # utils_plotting
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: June 24, 2018
+# last updated: April 11, 2019
 
 import os
 import numpy as np

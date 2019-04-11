@@ -1,6 +1,6 @@
 # covariance
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: January 17, 2019
+# last updated: April 11, 2019
 
 import numpy as np
 

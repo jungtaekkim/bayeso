@@ -1,6 +1,6 @@
 # gp
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: July 04, 2018
+# last updated: April 11, 2019
 
 import time
 import numpy as np
@@ -137,15 +137,17 @@ def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov,
         num_dim = X_train.shape[2]
 
     neg_log_ml = lambda hyps: -1.0 * log_ml(X_train, Y_train, hyps, str_cov, prior_mu_train, is_fixed_noise=is_fixed_noise, debug=debug)
-    result_optimized = scipy.optimize.minimize(
-        neg_log_ml,
-        utils_covariance.convert_hyps(
-            str_cov,
-            utils_covariance.get_hyps(str_cov, num_dim),
-            is_fixed_noise=is_fixed_noise,
-        ),
-        method=str_optimizer_method,
+    hyps_converted = utils_covariance.convert_hyps(
+        str_cov,
+        utils_covariance.get_hyps(str_cov, num_dim),
+        is_fixed_noise=is_fixed_noise,
     )
+
+    if str_optimizer_method == 'BFGS':
+        result_optimized = scipy.optimize.minimize(neg_log_ml, hyps_converted, method=str_optimizer_method)
+    else:
+        raise ValueError('get_optimized_kernel: missing condition for str_optimizer_method')
+
     result_optimized = result_optimized.x
     hyps = utils_covariance.restore_hyps(str_cov, result_optimized, is_fixed_noise=is_fixed_noise)
 
