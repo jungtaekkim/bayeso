@@ -40,6 +40,7 @@ def plot_gp(X_train, Y_train, X_test, mu, sigma,
     str_y_axis='$y$',
     is_tex=False,
     is_zero_axis=False,
+    is_pause=True,
     time_pause=constants.TIME_PAUSE,
     range_shade=constants.RANGE_SHADE,
     colors=constants.COLORS,
@@ -56,6 +57,7 @@ def plot_gp(X_train, Y_train, X_test, mu, sigma,
     assert isinstance(str_y_axis, str)
     assert isinstance(is_tex, bool)
     assert isinstance(is_zero_axis, bool)
+    assert isinstance(is_pause, bool)
     assert isinstance(time_pause, float)
     assert isinstance(range_shade, float)
     assert isinstance(colors, list)
@@ -113,7 +115,8 @@ def plot_gp(X_train, Y_train, X_test, mu, sigma,
             frameon=False
         )
     plt.ion()
-    plt.pause(time_pause)
+    if is_pause:
+        plt.pause(time_pause)
     plt.close('all')
 
 def plot_minimum(arr_minima, list_str_label, int_init, is_std,

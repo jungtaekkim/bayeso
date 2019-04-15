@@ -1,11 +1,16 @@
 # utils_covariance
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: December 31, 2018
+# last updated: April 15, 2019
 
 import numpy as np
 
 from bayeso import constants
 
+
+def _get_list_first():
+    list_first = ['se', 'matern32', 'matern52']
+    list_first += ['set_' + str_ for str_ in list_first]
+    return list_first
 
 def get_hyps(str_cov, int_dim, is_ard=True):
     assert isinstance(str_cov, str)
@@ -15,7 +20,10 @@ def get_hyps(str_cov, int_dim, is_ard=True):
 
     hyps = dict()
     hyps['noise'] = constants.GP_NOISE
-    if str_cov == 'se' or str_cov == 'matern32' or str_cov == 'matern52' or str_cov == 'set_mmd':
+
+    list_first = _get_list_first()
+
+    if str_cov in list_first:
         hyps['signal'] = 1.0
         if is_ard:
             hyps['lengthscales'] = np.ones(int_dim)
@@ -24,6 +32,33 @@ def get_hyps(str_cov, int_dim, is_ard=True):
     else:
         raise NotImplementedError('get_hyps: allowed str_cov, but it is not implemented.')
     return hyps
+
+def get_range_hyps(str_cov, int_dim,
+    is_ard=True,
+    is_fixed_noise=False
+):
+    assert isinstance(str_cov, str)
+    assert isinstance(int_dim, int)
+    assert isinstance(is_ard, bool)
+    assert isinstance(is_fixed_noise, bool)
+    assert str_cov in constants.ALLOWED_GP_COV
+
+    range_hyps = []
+
+    list_first = _get_list_first()
+
+    if str_cov in list_first:
+        range_hyps += constants.RANGE_SIGNAL # for signal scale
+        if is_ard: # for lengthscales
+            for _ in range(0, int_dim):
+                range_hyps += constants.RANGE_LENGTHSCALES
+        else:
+            range_hyps += constants.RANGE_LENGTHSCALES
+    else:
+        raise NotImplementedError('get_hyps: allowed str_cov, but it is not implemented.')
+    if not is_fixed_noise:
+        range_hyps += constants.RANGE_NOISE
+    return range_hyps
 
 def convert_hyps(str_cov, hyps, is_fixed_noise=False):
     assert isinstance(str_cov, str)
@@ -34,7 +69,10 @@ def convert_hyps(str_cov, hyps, is_fixed_noise=False):
     list_hyps = []
     if not is_fixed_noise:
         list_hyps.append(hyps['noise'])
-    if str_cov == 'se' or str_cov == 'matern32' or str_cov == 'matern52' or str_cov == 'set_mmd':
+
+    list_first = _get_list_first()
+
+    if str_cov in list_first:
         list_hyps.append(hyps['signal'])
         for elem_lengthscale in hyps['lengthscales']:
             list_hyps.append(elem_lengthscale)
@@ -58,7 +96,9 @@ def restore_hyps(str_cov, hyps, is_fixed_noise=False, fixed_noise=constants.GP_N
         dict_hyps['noise'] = fixed_noise
         ind_start = 0
 
-    if str_cov == 'se' or str_cov == 'matern32' or str_cov == 'matern52' or str_cov == 'set_mmd':
+    list_first = _get_list_first()
+
+    if str_cov in list_first:
         dict_hyps['signal'] = hyps[ind_start]
         list_lengthscales = []
         for ind_elem in range(ind_start+1, len(hyps)):
@@ -70,6 +110,7 @@ def restore_hyps(str_cov, hyps, is_fixed_noise=False, fixed_noise=constants.GP_N
 
 def validate_hyps_dict(dict_hyps, str_cov, int_dim):
     is_valid = True
+
     if 'noise' not in dict_hyps:
         is_valid = False
     else:
@@ -78,6 +119,7 @@ def validate_hyps_dict(dict_hyps, str_cov, int_dim):
         else:
             if np.abs(dict_hyps['noise']) >= constants.BOUND_UPPER_GP_NOISE:
                 dict_hyps['noise'] = constants.BOUND_UPPER_GP_NOISE
+
     if str_cov == 'se' or str_cov == 'matern32' or str_cov == 'matern52':
         if 'lengthscales' not in dict_hyps:
             is_valid = False

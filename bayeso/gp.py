@@ -145,10 +145,18 @@ def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov,
 
     if str_optimizer_method == 'BFGS':
         result_optimized = scipy.optimize.minimize(neg_log_ml, hyps_converted, method=str_optimizer_method)
+        result_optimized = result_optimized.x
+    elif str_optimizer_method == 'L-BFGS-B':
+        bounds = utils_covariance.get_range_hyps(str_cov, num_dim, is_fixed_noise=is_fixed_noise)
+        result_optimized = scipy.optimize.minimize(neg_log_ml, hyps_converted, method=str_optimizer_method, bounds=bounds)
+        result_optimized = result_optimized.x
+    elif str_optimizer_method == 'DIRECT':
+        pass
+    elif str_optimizer_method == 'CMA-ES':
+        pass
     else:
         raise ValueError('get_optimized_kernel: missing condition for str_optimizer_method')
 
-    result_optimized = result_optimized.x
     hyps = utils_covariance.restore_hyps(str_cov, result_optimized, is_fixed_noise=is_fixed_noise)
 
     hyps, _ = utils_covariance.validate_hyps_dict(hyps, str_cov, num_dim)

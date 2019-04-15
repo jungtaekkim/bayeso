@@ -97,6 +97,7 @@ class BO():
         str_acq=constants.STR_BO_ACQ,
         is_ard=True,
         prior_mu=None,
+        str_optimizer_method_gp=constants.STR_OPTIMIZER_METHOD_GP,
         str_optimizer_method_bo=constants.STR_OPTIMIZER_METHOD_BO,
         debug=False
     ):
@@ -107,6 +108,7 @@ class BO():
         assert isinstance(str_acq, str)
         assert isinstance(is_ard, bool)
         assert isinstance(str_optimizer_method_bo, str)
+        assert isinstance(str_optimizer_method_gp, str)
         assert isinstance(debug, bool)
         assert callable(prior_mu) or prior_mu is None
         assert len(arr_range.shape) == 2
@@ -114,6 +116,7 @@ class BO():
         assert (arr_range[:, 0] <= arr_range[:, 1]).all()
         assert str_cov in constants.ALLOWED_GP_COV
         assert str_acq in constants.ALLOWED_BO_ACQ
+        assert str_optimizer_method_gp in constants.ALLOWED_OPTIMIZER_METHOD_GP
         assert str_optimizer_method_bo in constants.ALLOWED_OPTIMIZER_METHOD_BO
 
         self.arr_range = arr_range
@@ -122,6 +125,7 @@ class BO():
         self.str_acq = str_acq
         self.is_ard = is_ard
         self.str_optimizer_method_bo = _check_optimizer_method_bo(str_optimizer_method_bo, arr_range.shape[0], debug)
+        self.str_optimizer_method_gp = str_optimizer_method_gp
         self.debug = debug
         self.prior_mu = prior_mu
 
@@ -246,7 +250,7 @@ class BO():
     def optimize(self, X_train, Y_train,
         str_initial_method=constants.STR_AO_INITIALIZATION,
         int_samples=constants.NUM_ACQ_SAMPLES,
-        is_normalized=True,
+        is_normalized=constants.IS_NORMALIZED_RESPONSE,
     ):
         # TODO: is_normalized cases
         assert isinstance(X_train, np.ndarray)
@@ -267,7 +271,7 @@ class BO():
         if is_normalized:
             Y_train = (Y_train - np.min(Y_train)) / (np.max(Y_train) - np.min(Y_train)) * constants.MULTIPLIER_RESPONSE
 
-        cov_X_X, inv_cov_X_X, hyps = gp.get_optimized_kernel(X_train, Y_train, self.prior_mu, self.str_cov, debug=self.debug)
+        cov_X_X, inv_cov_X_X, hyps = gp.get_optimized_kernel(X_train, Y_train, self.prior_mu, self.str_cov, str_optimizer_method=self.str_optimizer_method_gp, debug=self.debug)
 
         fun_acquisition = _choose_fun_acquisition(self.str_acq, hyps)
       
