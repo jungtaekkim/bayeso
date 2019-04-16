@@ -58,6 +58,16 @@ We test our package in the following versions.
 * [Jungtaek Kim](http://mlg.postech.ac.kr/~jtkim/) (POSTECH)
 * [Seungjin Choi](http://mlg.postech.ac.kr/~seungjin/) (POSTECH)
 
+## Citation
+```
+@misc{KimJ2017bayeso,
+    author={Kim, Jungtaek and Choi, Seungjin},
+    title={{bayeso}: A Bayesian optimization framework in {Python}},
+    howpublished={\url{https://github.com/jungtaekkim/bayeso}},
+    year={2017}
+}
+```
+
 ## Contact
 * Jungtaek Kim: [jtkim@postech.ac.kr](mailto:jtkim@postech.ac.kr)
 
