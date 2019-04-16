@@ -1,6 +1,6 @@
 # constants
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: April 11, 2019
+# last updated: April 16, 2019
 
 import numpy as np
 
@@ -37,6 +37,7 @@ RANGE_SHADE = 1.96
 
 ALLOWED_OPTIMIZER_METHOD_GP = ['BFGS', 'L-BFGS-B', 'DIRECT', 'CMA-ES']
 ALLOWED_OPTIMIZER_METHOD_BO = ['L-BFGS-B', 'DIRECT', 'CMA-ES']
+# INFO: Do not use _ (underscore) in base str_cov.
 ALLOWED_GP_COV_BASE = ['se', 'matern32', 'matern52']
 ALLOWED_GP_COV_SET = ['set_' + str_cov for str_cov in ALLOWED_GP_COV_BASE]
 ALLOWED_GP_COV = ALLOWED_GP_COV_BASE + ALLOWED_GP_COV_SET
