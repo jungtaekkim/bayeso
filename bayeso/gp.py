@@ -106,12 +106,43 @@ def log_ml(X_train, Y_train, hyps, str_cov, prior_mu_train,
         first_term = -0.5 * np.dot(np.dot(new_Y_train.T, inv_cov_X_X), new_Y_train)
         second_term = -0.5 * np.log(np.linalg.det(cov_X_X) + constants.JITTER_LOG)
         
-    third_term = -float(X_train.shape[1]) / 2.0 * np.log(2.0 * np.pi)
+    third_term = -float(X_train.shape[0]) / 2.0 * np.log(2.0 * np.pi)
     log_ml_ = np.squeeze(first_term + second_term + third_term)
     return log_ml_
 
+def log_pseudo_l_loocv(X_train, Y_train, hyps, str_cov, prior_mu_train,
+    is_fixed_noise=constants.IS_FIXED_GP_NOISE,
+    debug=False
+):
+    # TODO: add assertion statements
+    num_data = X_train.shape[0]
+    hyps = utils_covariance.restore_hyps(str_cov, hyps, is_fixed_noise=is_fixed_noise)
+
+    cov_X_X, inv_cov_X_X = get_kernel_inverse(X_train, hyps, str_cov, debug=debug)
+
+    log_pseudo_l = 0.0
+    for ind_data in range(0, num_data):
+        cur_X_train = np.vstack((X_train[:ind_data], X_train[ind_data+1:]))
+        cur_Y_train = np.vstack((Y_train[:ind_data], Y_train[ind_data+1:]))
+        
+        cur_X_test = np.expand_dims(X_train[ind_data], axis=0)
+        cur_Y_test = Y_train[ind_data]
+
+        cur_mu = np.squeeze(cur_Y_test) - np.dot(inv_cov_X_X, Y_train)[ind_data] / inv_cov_X_X[ind_data, ind_data]
+        cur_sigma = np.sqrt(1.0 / (inv_cov_X_X[ind_data, ind_data] + constants.JITTER_COV))
+
+#        cur_mu, cur_sigma = predict_test(cur_X_train, cur_Y_train, cur_X_test, hyps, str_cov=str_cov, prior_mu=prior_mu_train, debug=debug)
+        first_term = -0.5 * np.log(cur_sigma**2)
+        second_term = -0.5 * (np.squeeze(cur_Y_test - cur_mu))**2 / (cur_sigma**2)
+        third_term = -0.5 * np.log(2.0 * np.pi)
+        cur_log_pseudo_l = first_term + second_term + third_term
+        log_pseudo_l += cur_log_pseudo_l
+
+    return log_pseudo_l
+
 def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov,
     str_optimizer_method=constants.STR_OPTIMIZER_METHOD_GP,
+    str_modelselection_method='loocv',
     is_fixed_noise=constants.IS_FIXED_GP_NOISE,
     debug=False
 ):
@@ -121,6 +152,7 @@ def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov,
     assert callable(prior_mu) or prior_mu is None
     assert isinstance(str_cov, str)
     assert isinstance(str_optimizer_method, str)
+    assert isinstance(str_modelselection_method, str)
     assert isinstance(is_fixed_noise, bool)
     assert isinstance(debug, bool)
     assert len(Y_train.shape) == 2
@@ -130,13 +162,22 @@ def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov,
 
     time_start = time.time()
 
+    print('[DEBUG] get_optimized_kernel in gp.py: str_optimizer_method {}'.format(str_optimizer_method))
+    print('[DEBUG] get_optimized_kernel in gp.py: str_modelselection_method {}'.format(str_modelselection_method))
+
     prior_mu_train = get_prior_mu(prior_mu, X_train)
     if str_cov in constants.ALLOWED_GP_COV_BASE:
         num_dim = X_train.shape[1]
     elif str_cov in constants.ALLOWED_GP_COV_SET:
         num_dim = X_train.shape[2]
 
-    neg_log_ml = lambda hyps: -1.0 * log_ml(X_train, Y_train, hyps, str_cov, prior_mu_train, is_fixed_noise=is_fixed_noise, debug=debug)
+    if str_modelselection_method == 'ml':
+        neg_log_ml = lambda hyps: -1.0 * log_ml(X_train, Y_train, hyps, str_cov, prior_mu_train, is_fixed_noise=is_fixed_noise, debug=debug)
+    elif str_modelselection_method == 'loocv':
+        neg_log_ml = lambda hyps: -1.0 * log_pseudo_l_loocv(X_train, Y_train, hyps, str_cov, prior_mu_train, is_fixed_noise=is_fixed_noise, debug=debug)
+    else:
+        raise ValueError('get_optimized_kernel: missing condition for str_modelselection_method.')
+
     hyps_converted = utils_covariance.convert_hyps(
         str_cov,
         utils_covariance.get_hyps(str_cov, num_dim),
