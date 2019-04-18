@@ -142,7 +142,7 @@ def log_pseudo_l_loocv(X_train, Y_train, hyps, str_cov, prior_mu_train,
 
 def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov,
     str_optimizer_method=constants.STR_OPTIMIZER_METHOD_GP,
-    str_modelselection_method='loocv',
+    str_modelselection_method='ml',
     is_fixed_noise=constants.IS_FIXED_GP_NOISE,
     debug=False
 ):
