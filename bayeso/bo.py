@@ -1,6 +1,6 @@
 # bo
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: April 11, 2019
+# last updated: April 26, 2019
 
 import numpy as np
 import time
@@ -18,6 +18,7 @@ import sobol_seq
 from bayeso import gp
 from bayeso import acquisition
 from bayeso.utils import utils_common
+from bayeso.utils import utils_covariance
 from bayeso import constants
 
 
@@ -90,6 +91,18 @@ def _choose_fun_acquisition(str_acq, hyps):
         raise NotImplementedError('_choose_fun_acquisition: allowed str_acq, but it is not implemented.')
     return fun_acquisition
 
+def _check_hyps_convergence(list_hyps, hyps, str_cov, is_fixed_noise, ratio_threshold=0.05):
+    is_converged = False
+    if len(list_hyps) > 0:
+        hyps_converted = utils_covariance.convert_hyps(str_cov, hyps, is_fixed_noise=is_fixed_noise)
+        target_hyps_converted = utils_covariance.convert_hyps(str_cov, list_hyps[-1], is_fixed_noise=is_fixed_noise)
+
+        cur_norm = np.linalg.norm(hyps_converted - target_hyps_converted, ord=2)
+        threshold = np.linalg.norm(target_hyps_converted) * ratio_threshold
+        if np.linalg.norm(hyps_converted - target_hyps_converted, ord=2) < threshold:
+            is_converged = True
+    return is_converged
+
 # TODO: I am not sure, but flatten() should be replaced.
 class BO():
     def __init__(self, arr_range,
@@ -128,6 +141,9 @@ class BO():
         self.str_optimizer_method_gp = str_optimizer_method_gp
         self.debug = debug
         self.prior_mu = prior_mu
+
+        self.is_optimize_hyps = True
+        self.historical_hyps = []
 
     def _get_initial_grid(self, int_grid=constants.NUM_BO_GRID):
         assert isinstance(int_grid, int)
@@ -247,10 +263,13 @@ class BO():
         next_point = get_best_acquisition(next_points, fun_negative_acquisition)
         return next_point.flatten(), next_points
 
+    # TODO: str_mlm_method should be moved to __init__.
     def optimize(self, X_train, Y_train,
         str_initial_method=constants.STR_AO_INITIALIZATION,
         int_samples=constants.NUM_ACQ_SAMPLES,
         is_normalized=constants.IS_NORMALIZED_RESPONSE,
+        str_mlm_method=constants.STR_MLM_METHOD,
+        str_modelselection_method=constants.STR_MODELSELECTION_METHOD
     ):
         # TODO: is_normalized cases
         assert isinstance(X_train, np.ndarray)
@@ -258,6 +277,8 @@ class BO():
         assert isinstance(str_initial_method, str)
         assert isinstance(int_samples, int)
         assert isinstance(is_normalized, bool)
+        assert isinstance(str_mlm_method, str)
+        assert isinstance(str_modelselection_method, str)
         assert len(X_train.shape) == 2
         assert len(Y_train.shape) == 2
         assert Y_train.shape[1] == 1
@@ -265,13 +286,30 @@ class BO():
         assert X_train.shape[1] == self.num_dim
         assert int_samples > 0
         assert str_initial_method in constants.ALLOWED_INITIALIZATIONS_AO
+        assert str_mlm_method in constants.ALLOWED_MLM_METHOD
+        assert str_modelselection_method in constants.ALLOWED_MODELSELECTION_METHOD
 
         time_start = time.time()
 
         if is_normalized:
             Y_train = (Y_train - np.min(Y_train)) / (np.max(Y_train) - np.min(Y_train)) * constants.MULTIPLIER_RESPONSE
 
-        cov_X_X, inv_cov_X_X, hyps = gp.get_optimized_kernel(X_train, Y_train, self.prior_mu, self.str_cov, str_optimizer_method=self.str_optimizer_method_gp, debug=self.debug)
+        if str_mlm_method == 'regular':
+            cov_X_X, inv_cov_X_X, hyps = gp.get_optimized_kernel(X_train, Y_train, self.prior_mu, self.str_cov, str_optimizer_method=self.str_optimizer_method_gp, str_modelselection_method=str_modelselection_method, debug=self.debug)
+        elif str_mlm_method == 'converged':
+            if self.is_optimize_hyps:
+                cov_X_X, inv_cov_X_X, hyps = gp.get_optimized_kernel(X_train, Y_train, self.prior_mu, self.str_cov, str_optimizer_method=self.str_optimizer_method_gp, str_modelselection_method=str_modelselection_method, debug=self.debug)
+                self.is_optimize_hyps = not _check_hyps_convergence(self.historical_hyps, hyps, self.str_cov, constants.IS_FIXED_GP_NOISE)
+            else:
+                print('[DEBUG] optimize in bo.py: hyps are converged.')
+                hyps = self.historical_hyps[-1]
+                cov_X_X, inv_cov_X_X = gp.get_kernel_inverse(X_train, hyps, self.str_cov, debug=self.debug)
+        elif str_mlm_method == 'probabilistic':
+            pass
+        else:
+            raise ValueError('optimize: missing condition for str_mlm_method.')
+
+        self.historical_hyps.append(hyps)
 
         fun_acquisition = _choose_fun_acquisition(self.str_acq, hyps)
       

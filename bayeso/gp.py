@@ -1,6 +1,6 @@
 # gp
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: April 11, 2019
+# last updated: April 26, 2019
 
 import time
 import numpy as np
@@ -13,6 +13,11 @@ from bayeso.utils import utils_covariance
 
 
 def _check_str_cov(str_fun, str_cov, shape_X1, shape_X2=None):
+    assert isinstance(str_fun, str)
+    assert isinstance(str_cov, str)
+    assert isinstance(shape_X1, tuple)
+    assert shape_X2 is None or isinstance(shape_X2, tuple)
+
     if str_cov in constants.ALLOWED_GP_COV_BASE:
         assert len(shape_X1) == 2
         if shape_X2 is not None:
@@ -114,7 +119,18 @@ def log_pseudo_l_loocv(X_train, Y_train, hyps, str_cov, prior_mu_train,
     is_fixed_noise=constants.IS_FIXED_GP_NOISE,
     debug=False
 ):
-    # TODO: add assertion statements
+    assert isinstance(X_train, np.ndarray)
+    assert isinstance(Y_train, np.ndarray)
+    assert isinstance(hyps, np.ndarray)
+    assert isinstance(str_cov, str)
+    assert isinstance(prior_mu_train, np.ndarray)
+    assert isinstance(is_fixed_noise, bool)
+    assert isinstance(debug, bool)
+    assert len(Y_train.shape) == 2
+    assert len(prior_mu_train.shape) == 2
+    assert X_train.shape[0] == Y_train.shape[0] == prior_mu_train.shape[0]
+    _check_str_cov('log_pseudo_l_loocv', str_cov, X_train.shape)
+
     num_data = X_train.shape[0]
     hyps = utils_covariance.restore_hyps(str_cov, hyps, is_fixed_noise=is_fixed_noise)
 
@@ -142,7 +158,7 @@ def log_pseudo_l_loocv(X_train, Y_train, hyps, str_cov, prior_mu_train,
 
 def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov,
     str_optimizer_method=constants.STR_OPTIMIZER_METHOD_GP,
-    str_modelselection_method='ml',
+    str_modelselection_method=constants.STR_MODELSELECTION_METHOD,
     is_fixed_noise=constants.IS_FIXED_GP_NOISE,
     debug=False
 ):
@@ -159,11 +175,13 @@ def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov,
     assert X_train.shape[0] == Y_train.shape[0]
     _check_str_cov('get_optimized_kernel', str_cov, X_train.shape)
     assert str_optimizer_method in constants.ALLOWED_OPTIMIZER_METHOD_GP
+    assert str_modelselection_method in constants.ALLOWED_MODELSELECTION_METHOD
 
     time_start = time.time()
 
-    print('[DEBUG] get_optimized_kernel in gp.py: str_optimizer_method {}'.format(str_optimizer_method))
-    print('[DEBUG] get_optimized_kernel in gp.py: str_modelselection_method {}'.format(str_modelselection_method))
+    if debug:
+        print('[DEBUG] get_optimized_kernel in gp.py: str_optimizer_method {}'.format(str_optimizer_method))
+        print('[DEBUG] get_optimized_kernel in gp.py: str_modelselection_method {}'.format(str_modelselection_method))
 
     prior_mu_train = get_prior_mu(prior_mu, X_train)
     if str_cov in constants.ALLOWED_GP_COV_BASE:

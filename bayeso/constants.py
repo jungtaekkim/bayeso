@@ -1,6 +1,6 @@
 # constants
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: April 16, 2019
+# last updated: April 26, 2019
 
 import numpy as np
 
@@ -15,6 +15,8 @@ STR_GP_COV = 'matern52'
 STR_BO_ACQ = 'ei'
 STR_BO_INITIALIZATION = 'uniform'
 STR_AO_INITIALIZATION = 'uniform'
+STR_MLM_METHOD = 'regular'
+STR_MODELSELECTION_METHOD = 'ml'
 
 NUM_BO_GRID = 50
 NUM_BO_RANDOM = 1000
@@ -44,6 +46,8 @@ ALLOWED_GP_COV = ALLOWED_GP_COV_BASE + ALLOWED_GP_COV_SET
 ALLOWED_BO_ACQ = ['pi', 'ei', 'ucb', 'aei', 'pure_exploit', 'pure_explore']
 ALLOWED_INITIALIZATIONS_BO = ['sobol', 'uniform', 'latin']
 ALLOWED_INITIALIZATIONS_AO = ALLOWED_INITIALIZATIONS_BO + ['grid']
+ALLOWED_MLM_METHOD = ['regular', 'converged']
+ALLOWED_MODELSELECTION_METHOD = ['ml', 'loocv']
 
 KEYS_INFO_BENCHMARK = ['dim_fun', 'bounds', 'global_minimum_X', 'global_minimum_y']
 

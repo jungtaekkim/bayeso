@@ -1,6 +1,6 @@
 # utils_bo
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: July 04, 2018
+# last updated: April 26, 2019
 
 import numpy as np
 import time
@@ -38,6 +38,8 @@ def get_next_best_acquisition(arr_points, arr_acquisitions, cur_points):
 def optimize_many_(model_bo, fun_target, X_train, Y_train, int_iter,
     str_initial_method_ao=constants.STR_AO_INITIALIZATION,
     int_samples_ao=constants.NUM_ACQ_SAMPLES,
+    str_mlm_method=constants.STR_MLM_METHOD,
+    str_modelselection_method=constants.STR_MODELSELECTION_METHOD
 ):
     assert isinstance(model_bo, bo.BO)
     assert callable(fun_target)
@@ -46,10 +48,14 @@ def optimize_many_(model_bo, fun_target, X_train, Y_train, int_iter,
     assert isinstance(int_iter, int)
     assert isinstance(str_initial_method_ao, str)
     assert isinstance(int_samples_ao, int)
+    assert isinstance(str_mlm_method, str)
+    assert isinstance(str_modelselection_method, str)
     assert len(X_train.shape) == 2
     assert len(Y_train.shape) == 2
     assert X_train.shape[0] == Y_train.shape[0]
     assert Y_train.shape[1] == 1
+    assert str_mlm_method in constants.ALLOWED_MLM_METHOD
+    assert str_modelselection_method in constants.ALLOWED_MODELSELECTION_METHOD
 
     time_start = time.time()
 
@@ -61,7 +67,7 @@ def optimize_many_(model_bo, fun_target, X_train, Y_train, int_iter,
 
         if model_bo.debug:
             print('[DEBUG] optimize_many_ in utils_bo.py: current iteration', ind_iter + 1)
-        next_point, next_points, acquisitions, _, _, _ = model_bo.optimize(X_final, Y_final, str_initial_method=str_initial_method_ao, int_samples=int_samples_ao)
+        next_point, next_points, acquisitions, _, _, _ = model_bo.optimize(X_final, Y_final, str_initial_method=str_initial_method_ao, int_samples=int_samples_ao, str_mlm_method=str_mlm_method, str_modelselection_method=str_modelselection_method)
         if model_bo.debug:
             print('[DEBUG] optimize_many_ in utils_bo.py: next_point', next_point)
         # TODO: check this code, which uses norm.
@@ -90,6 +96,8 @@ def optimize_many_(model_bo, fun_target, X_train, Y_train, int_iter,
 def optimize_many(model_bo, fun_target, X_train, int_iter,
     str_initial_method_ao=constants.STR_AO_INITIALIZATION,
     int_samples_ao=constants.NUM_ACQ_SAMPLES,
+    str_mlm_method=constants.STR_MLM_METHOD,
+    str_modelselection_method=constants.STR_MODELSELECTION_METHOD
 ):
     assert isinstance(model_bo, bo.BO)
     assert callable(fun_target)
@@ -97,7 +105,11 @@ def optimize_many(model_bo, fun_target, X_train, int_iter,
     assert isinstance(int_iter, int)
     assert isinstance(str_initial_method_ao, str)
     assert isinstance(int_samples_ao, int)
+    assert isinstance(str_mlm_method, str)
+    assert isinstance(str_modelselection_method, str)
     assert len(X_train.shape) == 2
+    assert str_mlm_method in constants.ALLOWED_MLM_METHOD
+    assert str_modelselection_method in constants.ALLOWED_MODELSELECTION_METHOD
 
     Y_train = []
     time_initials = []
@@ -118,6 +130,8 @@ def optimize_many(model_bo, fun_target, X_train, int_iter,
         int_iter,
         str_initial_method_ao=str_initial_method_ao,
         int_samples_ao=int_samples_ao,
+        str_mlm_method=str_mlm_method,
+        str_modelselection_method=str_modelselection_method,
     )
     return X_final, Y_final, np.concatenate((time_initials, time_final))
 
@@ -125,7 +139,9 @@ def optimize_many_with_random_init(model_bo, fun_target, int_init, int_iter,
     str_initial_method_bo=constants.STR_BO_INITIALIZATION,
     str_initial_method_ao=constants.STR_AO_INITIALIZATION,
     int_samples_ao=constants.NUM_ACQ_SAMPLES,
-    int_seed=None,
+    str_mlm_method=constants.STR_MLM_METHOD,
+    str_modelselection_method=constants.STR_MODELSELECTION_METHOD,
+    int_seed=None
 ):
     assert isinstance(model_bo, bo.BO)
     assert callable(fun_target)
@@ -134,8 +150,26 @@ def optimize_many_with_random_init(model_bo, fun_target, int_init, int_iter,
     assert isinstance(str_initial_method_bo, str)
     assert isinstance(str_initial_method_ao, str)
     assert isinstance(int_samples_ao, int)
+    assert isinstance(str_mlm_method, str)
+    assert isinstance(str_modelselection_method, str)
     assert isinstance(int_seed, int) or int_seed is None
     assert str_initial_method_bo in constants.ALLOWED_INITIALIZATIONS_BO
+    assert str_mlm_method in constants.ALLOWED_MLM_METHOD
+    assert str_modelselection_method in constants.ALLOWED_MODELSELECTION_METHOD
+
+    print('[INFO] arr_range {}'.format(model_bo.arr_range))
+    print('[INFO] str_cov {}'.format(model_bo.str_cov))
+    print('[INFO] str_acq {}'.format(model_bo.str_acq))
+    print('[INFO] str_optimizer_method_gp {}'.format(model_bo.str_optimizer_method_gp))
+    print('[INFO] str_optimizer_method_bo {}'.format(model_bo.str_optimizer_method_bo))
+    print('[INFO] int_init {}'.format(int_init))
+    print('[INFO] int_iter {}'.format(int_iter))
+    print('[INFO] str_initial_method_bo {}'.format(str_initial_method_bo))
+    print('[INFO] str_initial_method_ao {}'.format(str_initial_method_ao))
+    print('[INFO] int_samples_ao {}'.format(int_samples_ao))
+    print('[INFO] str_mlm_method {}'.format(str_mlm_method))
+    print('[INFO] str_modelselection_method {}'.format(str_modelselection_method))
+    print('[INFO] int_seed {}'.format(int_seed))
 
     time_start = time.time()
 
@@ -146,6 +180,8 @@ def optimize_many_with_random_init(model_bo, fun_target, int_init, int_iter,
     X_final, Y_final, time_final = optimize_many(model_bo, fun_target, X_init, int_iter,
         str_initial_method_ao=str_initial_method_ao,
         int_samples_ao=int_samples_ao,
+        str_mlm_method=str_mlm_method,
+        str_modelselection_method=str_modelselection_method
     )
 
     time_end = time.time()
