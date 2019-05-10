@@ -70,10 +70,6 @@ def cov_set(str_cov, X, Xs, lengthscales, signal):
     num_d_X = X.shape[1]
     num_d_Xs = Xs.shape[1]
 
-    hyps, is_valid = utils_covariance.validate_hyps_dict(hyps, str_cov, num_d_X)
-    if not is_valid:
-        raise ValueError('cov_main: invalid hyperparameters.')
-
     fun_cov = choose_fun_cov(str_cov)
     cov_ = 0.0
     for ind_X in range(0, num_X):
@@ -117,7 +113,7 @@ def cov_main(str_cov, X, Xs, hyps,
         for ind_X in range(0, num_X):
             for ind_Xs in range(0, num_Xs):
                 cov_[ind_X, ind_Xs] += fun_cov(X[ind_X], Xs[ind_Xs], hyps['lengthscales'], hyps['signal'])
-    elif str_cov in ALLOWED_GP_COV_SET:
+    elif str_cov in constants.ALLOWED_GP_COV_SET:
         list_str_cov = str_cov.split('_')
         str_cov = list_str_cov[1]
         assert len(X.shape) == 3
