@@ -26,8 +26,8 @@ def _check_str_cov(str_fun, str_cov, shape_X1, shape_X2=None):
         assert len(shape_X1) == 3
         if shape_X2 is not None:
             assert len(shape_X2) == 3
-    elif str_cov in constants.ALLOWED_GP_COV:
-        raise ValueError('{}: missing condition for str_cov.'.format(str_fun))
+    elif str_cov in constants.ALLOWED_GP_COV: # pragma: no cover
+        raise ValueError('{}: missing conditions for str_cov.'.format(str_fun))
     else:
         raise ValueError('{}: invalid str_cov.'.format(str_fun))
     return
@@ -97,11 +97,11 @@ def log_ml(X_train, Y_train, hyps, str_cov, prior_mu_train,
         cov_X_X, lower = get_kernel_cholesky(X_train, hyps, str_cov, debug=debug)
         try:
             lower_new_Y_train, _, _, _ = np.linalg.lstsq(lower, new_Y_train, rcond=None)
-        except:
+        except: # pragma: no cover
             lower_new_Y_train, _, _, _ = np.linalg.lstsq(lower, new_Y_train, rcond=-1)
         try:
             alpha, _, _, _ = np.linalg.lstsq(lower.T, lower_new_Y_train, rcond=None)
-        except:
+        except: # pragma: no cover
             alpha, _, _, _ = np.linalg.lstsq(lower.T, lower_new_Y_train, rcond=-1)
         first_term = -0.5 * np.dot(new_Y_train.T, alpha)
         second_term = -1.0 * np.sum(np.log(np.diagonal(lower) + constants.JITTER_LOG))
