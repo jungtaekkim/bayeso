@@ -1,6 +1,6 @@
 # gp
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: April 26, 2019
+# last updated: June 03, 2019
 
 import time
 import numpy as np
@@ -147,7 +147,6 @@ def log_pseudo_l_loocv(X_train, Y_train, hyps, str_cov, prior_mu_train,
         cur_mu = np.squeeze(cur_Y_test) - np.dot(inv_cov_X_X, Y_train)[ind_data] / inv_cov_X_X[ind_data, ind_data]
         cur_sigma = np.sqrt(1.0 / (inv_cov_X_X[ind_data, ind_data] + constants.JITTER_COV))
 
-#        cur_mu, cur_sigma = predict_test(cur_X_train, cur_Y_train, cur_X_test, hyps, str_cov=str_cov, prior_mu=prior_mu_train, debug=debug)
         first_term = -0.5 * np.log(cur_sigma**2)
         second_term = -0.5 * (np.squeeze(cur_Y_test - cur_mu))**2 / (cur_sigma**2)
         third_term = -0.5 * np.log(2.0 * np.pi)
@@ -209,6 +208,7 @@ def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov,
         bounds = utils_covariance.get_range_hyps(str_cov, num_dim, is_fixed_noise=is_fixed_noise)
         result_optimized = scipy.optimize.minimize(neg_log_ml, hyps_converted, method=str_optimizer_method, bounds=bounds)
         result_optimized = result_optimized.x
+    # TODO: Fill this conditions
     elif str_optimizer_method == 'DIRECT':
         pass
     elif str_optimizer_method == 'CMA-ES':

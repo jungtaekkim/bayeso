@@ -1,6 +1,6 @@
 # bo
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: April 26, 2019
+# last updated: June 03, 2019
 
 import numpy as np
 import time
@@ -68,6 +68,7 @@ def _check_optimizer_method_bo(str_optimizer_method_bo, num_dim, debug):
         if debug:
             print('[DEBUG] _check_optimizer_method_bo in bo.py: CMA-ES is selected, but it is not installed.')
         str_optimizer_method_bo = 'L-BFGS-B'
+    # TODO: It should be checked.
     elif str_optimizer_method_bo == 'CMA-ES' and num_dim == 1: # pragma: no cover
         if debug:
             print('[DEBUG] _check_optimizer_method_bo in bo.py: CMA-ES is selected, but a dimension of bounds is 1.')
