@@ -206,12 +206,13 @@ def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov,
         result_optimized = scipy.optimize.minimize(neg_log_ml, hyps_converted, method=str_optimizer_method, bounds=bounds)
         result_optimized = result_optimized.x
     # TODO: Fill this conditions
-    elif str_optimizer_method == 'DIRECT':
+    elif str_optimizer_method == 'DIRECT': # pragma: no cover
         raise NotImplementedError('get_optimized_kernel: allowed str_optimizer_method, but it is not implemented.')
-    elif str_optimizer_method == 'CMA-ES':
+    elif str_optimizer_method == 'CMA-ES': # pragma: no cover
         raise NotImplementedError('get_optimized_kernel: allowed str_optimizer_method, but it is not implemented.')
-    else:
-        raise ValueError('get_optimized_kernel: missing condition for str_optimizer_method')
+    # INFO: It is allowed, but a condition is missed.
+    else: # pragma: no cover
+        raise ValueError('get_optimized_kernel: missing conditions for str_optimizer_method')
 
     hyps = utils_covariance.restore_hyps(str_cov, result_optimized, is_fixed_noise=is_fixed_noise)
 
