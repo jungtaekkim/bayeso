@@ -158,7 +158,7 @@ def test_log_ml():
 
     log_ml = gp.log_ml(X, Y, arr_hyps, str_cov, prior_mu_X)
     print(log_ml)
-    truth_log_ml = -65.74995266591506
+    truth_log_ml = -65.74302420122783
     assert np.abs(log_ml - truth_log_ml) < TEST_EPSILON
 
     log_ml = gp.log_ml(X, Y, arr_hyps, str_cov, prior_mu_X, is_cholesky=False)
@@ -234,6 +234,8 @@ def test_get_optimized_kernel():
     with pytest.raises(AssertionError) as error:
         gp.get_optimized_kernel(X, Y, prior_mu, 'se', str_optimizer_method=1)
     with pytest.raises(AssertionError) as error:
+        gp.get_optimized_kernel(X, Y, prior_mu, 'se', str_modelselection_method=1)
+    with pytest.raises(AssertionError) as error:
         gp.get_optimized_kernel(X, Y, prior_mu, 'se', is_fixed_noise=1)
     with pytest.raises(AssertionError) as error:
         gp.get_optimized_kernel(X, Y, prior_mu, 'se', debug=1)
@@ -245,6 +247,13 @@ def test_get_optimized_kernel():
         gp.get_optimized_kernel(X, Y, prior_mu, 'set_se')
     with pytest.raises(AssertionError) as error:
         gp.get_optimized_kernel(X_set, Y, prior_mu, 'set_se', debug=1)
+
+    gp.get_optimized_kernel(X, Y, prior_mu, 'se')
+    gp.get_optimized_kernel(X, Y, prior_mu, 'se', str_optimizer_method='L-BFGS-B')
+    gp.get_optimized_kernel(X, Y, prior_mu, 'se', str_modelselection_method='loocv')
+    gp.get_optimized_kernel(X_set, Y, prior_mu, 'set_se')
+    gp.get_optimized_kernel(X_set, Y, prior_mu, 'set_se', str_optimizer_method='L-BFGS-B')
+    gp.get_optimized_kernel(X_set, Y, prior_mu, 'set_se', str_modelselection_method='loocv')
 
 def test_predict_test_():
     np.random.seed(42)

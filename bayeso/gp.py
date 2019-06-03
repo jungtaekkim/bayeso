@@ -5,6 +5,7 @@
 import time
 import numpy as np
 import scipy 
+import scipy.linalg
 import scipy.optimize
 
 from bayeso import covariance
@@ -35,7 +36,7 @@ def _check_str_cov(str_fun, str_cov, shape_X1, shape_X2=None):
 def get_prior_mu(prior_mu, X):
     assert isinstance(X, np.ndarray)
     assert callable(prior_mu) or prior_mu is None
-    assert len(X.shape) == 2
+    assert len(X.shape) == 2 or len(X.shape) == 3
 
     if prior_mu is None:
         prior_mu_X = np.zeros((X.shape[0], 1))
@@ -70,7 +71,7 @@ def get_kernel_cholesky(X_train, hyps, str_cov,
    
     cov_X_X = covariance.cov_main(str_cov, X_train, X_train, hyps) + hyps['noise']**2 * np.eye(X_train.shape[0])
     cov_X_X = (cov_X_X + cov_X_X.T) / 2.0
-    lower = np.linalg.cholesky(cov_X_X)
+    lower = scipy.linalg.cholesky(cov_X_X, lower=True)
     return cov_X_X, lower
 
 def log_ml(X_train, Y_train, hyps, str_cov, prior_mu_train,
@@ -95,14 +96,10 @@ def log_ml(X_train, Y_train, hyps, str_cov, prior_mu_train,
     new_Y_train = Y_train - prior_mu_train
     if is_cholesky:
         cov_X_X, lower = get_kernel_cholesky(X_train, hyps, str_cov, debug=debug)
-        try:
-            lower_new_Y_train, _, _, _ = np.linalg.lstsq(lower, new_Y_train, rcond=None)
-        except: # pragma: no cover
-            lower_new_Y_train, _, _, _ = np.linalg.lstsq(lower, new_Y_train, rcond=-1)
-        try:
-            alpha, _, _, _ = np.linalg.lstsq(lower.T, lower_new_Y_train, rcond=None)
-        except: # pragma: no cover
-            alpha, _, _, _ = np.linalg.lstsq(lower.T, lower_new_Y_train, rcond=-1)
+
+        lower_new_Y_train = scipy.linalg.cho_solve((lower, True), new_Y_train)
+        alpha = scipy.linalg.cho_solve((lower.T, True), lower_new_Y_train)
+
         first_term = -0.5 * np.dot(new_Y_train.T, alpha)
         second_term = -1.0 * np.sum(np.log(np.diagonal(lower) + constants.JITTER_LOG))
     else:
@@ -192,8 +189,8 @@ def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov,
         neg_log_ml = lambda hyps: -1.0 * log_ml(X_train, Y_train, hyps, str_cov, prior_mu_train, is_fixed_noise=is_fixed_noise, debug=debug)
     elif str_modelselection_method == 'loocv':
         neg_log_ml = lambda hyps: -1.0 * log_pseudo_l_loocv(X_train, Y_train, hyps, str_cov, prior_mu_train, is_fixed_noise=is_fixed_noise, debug=debug)
-    else:
-        raise ValueError('get_optimized_kernel: missing condition for str_modelselection_method.')
+    else: # pragma: no cover
+        raise ValueError('get_optimized_kernel: missing conditions for str_modelselection_method.')
 
     hyps_converted = utils_covariance.convert_hyps(
         str_cov,
@@ -210,9 +207,9 @@ def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov,
         result_optimized = result_optimized.x
     # TODO: Fill this conditions
     elif str_optimizer_method == 'DIRECT':
-        pass
+        raise NotImplementedError('get_optimized_kernel: allowed str_optimizer_method, but it is not implemented.')
     elif str_optimizer_method == 'CMA-ES':
-        pass
+        raise NotImplementedError('get_optimized_kernel: allowed str_optimizer_method, but it is not implemented.')
     else:
         raise ValueError('get_optimized_kernel: missing condition for str_optimizer_method')
 

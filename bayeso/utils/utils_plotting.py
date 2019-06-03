@@ -112,7 +112,7 @@ def plot_gp(X_train, Y_train, X_test, mu, sigma,
             format='pdf',
             transparent=True,
             bbox_inches='tight',
-            frameon=False
+#            frameon=False
         )
     plt.ion()
     if is_pause:
@@ -197,12 +197,12 @@ def plot_minimum(arr_minima, list_str_label, int_init, is_std,
             str_figure = 'minimum_mean_std_' + str_postfix
         else:
             str_figure = 'minimum_mean_only_' + str_postfix
-        plt.savefig(os.path.join(path_save, str_figure + '.pdf'), format='pdf', transparent=True, bbox_inches='tight', frameon=False)
+        plt.savefig(os.path.join(path_save, str_figure + '.pdf'), format='pdf', transparent=True, bbox_inches='tight')#, frameon=False)
 
         if not is_legend:
             fig_legend = pylab.figure(figsize=(3, 2))
             fig_legend.legend(lines, list_str_label, 'center', fancybox=False, edgecolor='black', fontsize=32)
-            fig_legend.savefig(os.path.join(path_save, 'legend_{}.pdf'.format(str_postfix)), format='pdf', transparent=True, bbox_inches='tight', frameon=False)
+            fig_legend.savefig(os.path.join(path_save, 'legend_{}.pdf'.format(str_postfix)), format='pdf', transparent=True, bbox_inches='tight')#, frameon=False)
     plt.ion()
     plt.pause(time_pause)
     plt.close('all')
@@ -295,12 +295,12 @@ def plot_minimum_time(arr_times, arr_minima, list_str_label, int_init, is_std,
             str_figure = 'minimum_time_mean_std_' + str_postfix
         else:
             str_figure = 'minimum_time_mean_only_' + str_postfix
-        plt.savefig(os.path.join(path_save, str_figure + '.pdf'), format='pdf', transparent=True, bbox_inches='tight', frameon=False)
+        plt.savefig(os.path.join(path_save, str_figure + '.pdf'), format='pdf', transparent=True, bbox_inches='tight')#, frameon=False)
 
         if not is_legend:
             fig_legend = pylab.figure(figsize=(3, 2))
             fig_legend.legend(lines, list_str_label, 'center', fancybox=False, edgecolor='black', fontsize=32)
-            fig_legend.savefig(os.path.join(path_save, 'legend_{}.pdf'.format(str_postfix)), format='pdf', transparent=True, bbox_inches='tight', frameon=False)
+            fig_legend.savefig(os.path.join(path_save, 'legend_{}.pdf'.format(str_postfix)), format='pdf', transparent=True, bbox_inches='tight')#, frameon=False)
     plt.ion()
     plt.pause(time_pause)
     plt.close('all')
@@ -380,7 +380,7 @@ def plot_bo_step(X_train, Y_train, X_test, Y_test, mean_test, std_test,
     ax.set_xlim([np.min(X_test), np.max(X_test)])
     ax.tick_params(labelsize=22)
     if path_save is not None and str_postfix is not None:
-        plt.savefig(os.path.join(path_save, 'bo_step_{}.pdf'.format(str_postfix)), format='pdf', transparent=True, bbox_inches='tight', frameon=False)
+        plt.savefig(os.path.join(path_save, 'bo_step_{}.pdf'.format(str_postfix)), format='pdf', transparent=True, bbox_inches='tight')#, frameon=False)
     plt.ion()
     plt.pause(time_pause)
     plt.close('all')
@@ -473,7 +473,7 @@ def plot_bo_step_acq(X_train, Y_train, X_test, Y_test, mean_test, std_test, acq_
     if is_acq_axis_small:
         ax2.tick_params('y', labelsize=14)
     if path_save is not None and str_postfix is not None:
-        plt.savefig(os.path.join(path_save, 'bo_step_acq_{}.pdf'.format(str_postfix)), format='pdf', transparent=True, bbox_inches='tight', frameon=False)
+        plt.savefig(os.path.join(path_save, 'bo_step_acq_{}.pdf'.format(str_postfix)), format='pdf', transparent=True, bbox_inches='tight')#, frameon=False)
     plt.ion()
     plt.pause(time_pause)
     plt.close('all')
