@@ -24,13 +24,13 @@ def _set_ax_config(ax, str_x_axis, str_y_axis,
     ax.spines['top'].set_color('none')
     ax.spines['right'].set_color('none')
 
-    if xlim_min is not None and xlim_max is not None:
+    if xlim_min is not None and xlim_max is not None: # pragma: no cover
         ax.set_xlim([xlim_min, xlim_max])
 
     if is_zero_axis:
         ax.spines['bottom'].set_position('zero')
 
-    return
+    return # pragma: no cover
 
 def plot_gp(X_train, Y_train, X_test, mu, sigma,
     Y_test_truth=None,
