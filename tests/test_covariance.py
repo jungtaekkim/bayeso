@@ -68,6 +68,32 @@ def test_cov_matern52():
     truth_cov_ = 0.20532087608359792
     assert np.abs(cov_ - truth_cov_) < TEST_EPSILON
 
+def test_cov_set():
+    num_instances = 5
+    num_dim = 3
+    str_cov = 'matern52'
+    with pytest.raises(AssertionError) as error:
+        covariance.cov_set(1, np.zeros((num_instances, num_dim)), np.zeros((num_instances, num_dim)), np.array([1.0, 1.0, 1.0]), 0.1)
+    with pytest.raises(AssertionError) as error:
+        covariance.cov_set('abc', np.zeros((num_instances, num_dim)), np.zeros((num_instances, num_dim)), np.array([1.0, 1.0, 1.0]), 0.1)
+    with pytest.raises(AssertionError) as error:
+        covariance.cov_set(str_cov, np.zeros((num_instances, num_dim)), np.zeros((num_instances, num_dim)), np.array([1.0, 1.0, 1.0, 1.0]), 0.1)
+    with pytest.raises(AssertionError) as error:
+        covariance.cov_set(str_cov, np.zeros((num_instances, num_dim+1)), np.zeros((num_instances, num_dim)), np.array([1.0, 1.0, 1.0]), 0.1)
+    with pytest.raises(AssertionError) as error:
+        covariance.cov_set(str_cov, np.zeros((num_instances, num_dim)), np.zeros((num_instances, num_dim+1)), np.array([1.0, 1.0, 1.0]), 0.1)
+    with pytest.raises(AssertionError) as error:
+        covariance.cov_set(str_cov, np.zeros((num_instances, num_dim)), np.zeros((num_instances, num_dim)), np.array([1.0, 1.0, 1.0]), 1)
+    assert np.abs(covariance.cov_set(str_cov, np.zeros((num_instances, num_dim)), np.zeros((num_instances, num_dim)), 1.0, 0.1) - 0.01) < TEST_EPSILON
+
+    bx = np.array([[1.0, 2.0, 0.0], [2.0, 1.0, 0.0]])
+    bxp = np.array([[2.0, 1.0, 1.0], [2.0, 2.0, 2.0]])
+    cur_hyps = utils_covariance.get_hyps('matern52', 3)
+    cov_ = covariance.cov_set(str_cov, bx, bxp, cur_hyps['lengthscales'], cur_hyps['signal'])
+    print(cov_)
+    truth_cov_ = 0.23061736638896702
+    assert np.abs(cov_ - truth_cov_) < TEST_EPSILON
+
 def test_cov_main():
     cur_hyps = utils_covariance.get_hyps('se', 3)
     with pytest.raises(AssertionError) as error:

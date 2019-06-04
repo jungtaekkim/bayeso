@@ -57,14 +57,18 @@ def cov_matern52(bx, bxp, lengthscales, signal):
     return signal**2 * (1.0 + np.sqrt(5.0) * dist + 5.0 / 3.0 * dist**2) * np.exp(-1.0 * np.sqrt(5.0) * dist)
 
 def cov_set(str_cov, X, Xs, lengthscales, signal):
+    assert isinstance(str_cov, str)
     assert isinstance(X, np.ndarray)
     assert isinstance(Xs, np.ndarray)
     assert isinstance(lengthscales, np.ndarray) or isinstance(lengthscales, float)
     assert isinstance(signal, float)
+    assert len(X.shape) == 2
+    assert len(Xs.shape) == 2
     if isinstance(lengthscales, np.ndarray):
         assert X.shape[1] == Xs.shape[1] == lengthscales.shape[0]
     else:
         assert X.shape[1] == Xs.shape[1]
+    assert str_cov in constants.ALLOWED_GP_COV_BASE
     num_X = X.shape[0]
     num_Xs = Xs.shape[0]
     num_d_X = X.shape[1]
@@ -123,7 +127,8 @@ def cov_main(str_cov, X, Xs, hyps,
         assert num_d_X == num_d_Xs
 
         hyps, is_valid = utils_covariance.validate_hyps_dict(hyps, str_cov, num_d_X)
-        if not is_valid:
+        # TODO: Please check this is_valid.
+        if not is_valid: # pragma: no cover
             raise ValueError('cov_main: invalid hyperparameters.')
 
         for ind_X in range(0, num_X):
