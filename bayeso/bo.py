@@ -311,11 +311,12 @@ class BO():
             if self.is_optimize_hyps:
                 cov_X_X, inv_cov_X_X, hyps = gp.get_optimized_kernel(X_train, Y_train, self.prior_mu, self.str_cov, str_optimizer_method=self.str_optimizer_method_gp, str_modelselection_method=str_modelselection_method, debug=self.debug)
                 self.is_optimize_hyps = not _check_hyps_convergence(self.historical_hyps, hyps, self.str_cov, constants.IS_FIXED_GP_NOISE)
-            else:
+            # TODO: Can we test this else statement?
+            else: # pragma: no cover
                 print('[DEBUG] optimize in bo.py: hyps are converged.')
                 hyps = self.historical_hyps[-1]
                 cov_X_X, inv_cov_X_X = gp.get_kernel_inverse(X_train, hyps, self.str_cov, debug=self.debug)
-        elif str_mlm_method == 'probabilistic':
+        elif str_mlm_method == 'probabilistic': # pragma: no cover
             raise NotImplementedError('optimize: it will be added.')
         else: # pragma: no cover
             raise ValueError('optimize: missing condition for str_mlm_method.')
