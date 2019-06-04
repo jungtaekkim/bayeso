@@ -76,6 +76,10 @@ def _check_optimizer_method_bo(str_optimizer_method_bo, num_dim, debug):
     return str_optimizer_method_bo
 
 def _choose_fun_acquisition(str_acq, hyps):
+    assert isinstance(str_acq, str)
+    assert isinstance(hyps, dict)
+    assert str_acq in constants.ALLOWED_BO_ACQ
+
     if str_acq == 'pi':
         fun_acquisition = acquisition.pi
     elif str_acq == 'ei':
@@ -93,6 +97,13 @@ def _choose_fun_acquisition(str_acq, hyps):
     return fun_acquisition
 
 def _check_hyps_convergence(list_hyps, hyps, str_cov, is_fixed_noise, ratio_threshold=0.05):
+    assert isinstance(list_hyps, list)
+    assert isinstance(hyps, dict)
+    assert isinstance(str_cov, str)
+    assert isinstance(is_fixed_noise, bool)
+    assert isinstance(ratio_threshold, float)
+    assert len(list_hyps) > 0
+
     is_converged = False
     if len(list_hyps) > 0:
         hyps_converted = utils_covariance.convert_hyps(str_cov, hyps, is_fixed_noise=is_fixed_noise)
@@ -306,8 +317,8 @@ class BO():
                 hyps = self.historical_hyps[-1]
                 cov_X_X, inv_cov_X_X = gp.get_kernel_inverse(X_train, hyps, self.str_cov, debug=self.debug)
         elif str_mlm_method == 'probabilistic':
-            pass
-        else:
+            raise NotImplementedError('optimize: it will be added.')
+        else: # pragma: no cover
             raise ValueError('optimize: missing condition for str_mlm_method.')
 
         self.historical_hyps.append(hyps)

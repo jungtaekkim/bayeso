@@ -128,6 +128,32 @@ def test_check_optimizer_method_bo():
     with pytest.raises(AssertionError) as error:
         bo._check_optimizer_method_bo('ABC', 2, True)
 
+def test_choose_fun_acquisition():
+    with pytest.raises(AssertionError) as error:
+        bo._choose_fun_acquisition(1, {'noise': 0.01})
+    with pytest.raises(AssertionError) as error:
+        bo._choose_fun_acquisition('abc', {'noise': 0.01})
+    with pytest.raises(AssertionError) as error:
+        bo._choose_fun_acquisition('pi', 1)
+
+def test_choose_fun_acquisition():
+    dict_hyps_1 = {'lengthscales': np.array([1.0, 1.0]), 'signal': 1.0, 'noise': 0.01}
+    dict_hyps_2 = {'lengthscales': np.array([2.0, 1.0]), 'signal': 1.0, 'noise': 0.01}
+
+    with pytest.raises(AssertionError) as error:
+        bo._check_hyps_convergence(1, dict_hyps_1, 'se', True)
+    with pytest.raises(AssertionError) as error:
+        bo._check_hyps_convergence([], dict_hyps_1, 'se', True)
+    with pytest.raises(AssertionError) as error:
+        bo._check_hyps_convergence([dict_hyps_1], 1, 'se', True)
+    with pytest.raises(AssertionError) as error:
+        bo._check_hyps_convergence([dict_hyps_1], dict_hyps_1, 1, True)
+    with pytest.raises(AssertionError) as error:
+        bo._check_hyps_convergence([dict_hyps_1], dict_hyps_1, 1, 'abc')
+    
+    assert bo._check_hyps_convergence([dict_hyps_1], dict_hyps_1, 'se', False)
+    assert not bo._check_hyps_convergence([dict_hyps_2], dict_hyps_1, 'se', False)
+
 def test_load_bo():
     # legitimate cases
     arr_range_1 = np.array([
