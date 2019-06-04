@@ -102,7 +102,6 @@ def _check_hyps_convergence(list_hyps, hyps, str_cov, is_fixed_noise, ratio_thre
     assert isinstance(str_cov, str)
     assert isinstance(is_fixed_noise, bool)
     assert isinstance(ratio_threshold, float)
-    assert len(list_hyps) > 0
 
     is_converged = False
     if len(list_hyps) > 0:
