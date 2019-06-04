@@ -1,6 +1,6 @@
 # utils_bo
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: April 26, 2019
+# last updated: June 04, 2019
 
 import numpy as np
 import time
@@ -72,7 +72,7 @@ def optimize_many_(model_bo, fun_target, X_train, Y_train, int_iter,
             print('[DEBUG] optimize_many_ in utils_bo.py: next_point', next_point)
         # TODO: check this code, which uses norm.
 #        if np.where(np.sum(next_point == X_final, axis=1) == X_final.shape[1])[0].shape[0] > 0:
-        if np.where(np.linalg.norm(next_point - X_final, axis=1) < 1e-3)[0].shape[0] > 0:
+        if np.where(np.linalg.norm(next_point - X_final, axis=1) < 1e-3)[0].shape[0] > 0: # pragma: no cover
             next_point = get_next_best_acquisition(next_points, acquisitions, X_final)
             if model_bo.debug:
                 print('[DEBUG] optimize_many_ in utils_bo.py: next_point is repeated, so next best is selected. next_point', next_point)

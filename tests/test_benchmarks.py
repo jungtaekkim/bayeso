@@ -11,39 +11,40 @@ from bayeso import benchmarks
 TEST_EPSILON = 1e-5
 
 def test_branin():
+    fun_target = benchmarks.branin
     with pytest.raises(AssertionError) as error:
-        benchmarks.branin(1)
+        fun_target(1)
     with pytest.raises(AssertionError) as error:
-        benchmarks.branin(np.arange(0, 10))
+        fun_target(np.arange(0, 10))
     with pytest.raises(AssertionError) as error:
-        benchmarks.branin(np.zeros((10, 3)))
+        fun_target(np.zeros((10, 3)))
     with pytest.raises(AssertionError) as error:
-        benchmarks.branin(np.zeros((10, 2, 1)))
+        fun_target(np.zeros((10, 2, 1)))
     with pytest.raises(AssertionError) as error:
-        benchmarks.branin(np.zeros((10, 2)), a='abc')
+        fun_target(np.zeros((10, 2)), a='abc')
     with pytest.raises(AssertionError) as error:
-        benchmarks.branin(np.zeros((10, 2)), b='abc')
+        fun_target(np.zeros((10, 2)), b='abc')
     with pytest.raises(AssertionError) as error:
-        benchmarks.branin(np.zeros((10, 2)), c='abc')
+        fun_target(np.zeros((10, 2)), c='abc')
     with pytest.raises(AssertionError) as error:
-        benchmarks.branin(np.zeros((10, 2)), r='abc')
+        fun_target(np.zeros((10, 2)), r='abc')
     with pytest.raises(AssertionError) as error:
-        benchmarks.branin(np.zeros((10, 2)), s='abc')
+        fun_target(np.zeros((10, 2)), s='abc')
     with pytest.raises(AssertionError) as error:
-        benchmarks.branin(np.zeros((10, 2)), t='abc')
+        fun_target(np.zeros((10, 2)), t='abc')
 
     X = np.array([0.0, 0.0])
-    val_fun = benchmarks.branin(X)
+    val_fun = fun_target(X)
     truth_val_fun = np.array([55.60211264])
     assert (np.abs(val_fun - truth_val_fun) < TEST_EPSILON).all()
 
     X = np.array([[0.0, 0.0]])
-    val_fun = benchmarks.branin(X)
+    val_fun = fun_target(X)
     truth_val_fun = np.array([55.60211264])
     assert (np.abs(val_fun - truth_val_fun) < TEST_EPSILON).all()
 
     X = np.array([[0.0, 0.0], [1.0, 1.0]])
-    val_fun = benchmarks.branin(X)
+    val_fun = fun_target(X)
     assert len(val_fun.shape) == 1
     assert val_fun.shape[0] == X.shape[0]
 
