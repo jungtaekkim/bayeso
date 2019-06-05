@@ -10,13 +10,8 @@ if (sys.version_info.major == 2 and sys.version_info.minor == 7) or\
 else:
     sys.exit('[ERROR] bayeso does not support Python {}.{} version in this system.'.format(sys.version_info.major, sys.version_info.minor))
 
-if sys.version_info.major == 2 and sys.version_info.minor == 7:
-    dir_files = os.path.dirname(os.path.abspath(__file__))
-    path_requirements = os.path.join(dir_files, 'requirements.txt')
-    list_packages = [os.path.join(dir_files, 'bayeso'), os.path.join(dir_files, 'bayeso.utils')]
-else:
-    path_requirements = 'requirements.txt'
-    list_packages = ['bayeso', 'bayeso.utils']
+path_requirements = 'requirements.txt'
+list_packages = ['bayeso', 'bayeso.utils']
 
 with open(path_requirements) as f:
     required = f.read().splitlines()
