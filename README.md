@@ -47,6 +47,14 @@ If you would like to uninstall bayeso, command it.
 $ pip uninstall bayeso
 ```
 
+## Required Packages
+Mandatory pacakges are inlcuded in `requirements.txt`.
+The following `requirements` files include the package list, the purpose of which is described as follows.
+
+* `requirements-optional.txt`: It is an optional package list, but it needs to be installed to execute some features of `bayeso`.
+* `requirements-dev.txt`: It is for developing the `bayeso` package.
+* `requirements-examples.txt`: It needs to be installed to execute the examples included in the `bayeso` repository.
+
 ## Supported Python Version
 We test our package in the following versions.
 
