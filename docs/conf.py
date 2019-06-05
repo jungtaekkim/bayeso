@@ -20,11 +20,11 @@
 # -- Project information -----------------------------------------------------
 
 project = 'bayeso'
-copyright = '2018, Jungtaek Kim and Seungjin Choi'
+copyright = '2019, Jungtaek Kim and Seungjin Choi'
 author = 'Jungtaek Kim and Seungjin Choi'
 
 # The short X.Y version
-version = '0.1.0'
+version = '0.3.2'
 # The full version, including alpha/beta/rc tags
 release = 'alpha'
 
