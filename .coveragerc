@@ -8,6 +8,8 @@ exclude_lines =
     pragma: no cover
     raise NotImplementedError
     print
+    return
+    _set_ax_config
     plt.figure
     plt.rc
     plt.gca
@@ -37,3 +39,4 @@ exclude_lines =
     if is_zero_axis:
     if is_acq_axis_small:
     if int_init is not None:
+    if is_pause:

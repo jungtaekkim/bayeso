@@ -4,7 +4,8 @@ import sys
 
 if (sys.version_info.major == 2 and sys.version_info.minor == 7) or\
     (sys.version_info.major == 3 and sys.version_info.minor == 5) or\
-    (sys.version_info.major == 3 and sys.version_info.minor == 6):
+    (sys.version_info.major == 3 and sys.version_info.minor == 6) or\
+    (sys.version_info.major == 3 and sys.version_info.minor == 7):
     print('[SETUP] bayeso supports Python {}.{} version in this system.'.format(sys.version_info.major, sys.version_info.minor))
 else:
     sys.exit('[ERROR] bayeso does not support Python {}.{} version in this system.'.format(sys.version_info.major, sys.version_info.minor))
@@ -14,7 +15,7 @@ with open('requirements.txt') as f:
 
 setup(
     name='bayeso',
-    version='0.3.1',
+    version='0.3.2',
     author='Jungtaek Kim',
     author_email='jtkim@postech.ac.kr',
     url='https://github.com/jungtaekkim/bayeso',

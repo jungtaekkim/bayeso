@@ -6,10 +6,32 @@ import numpy as np
 import pytest
 
 from bayeso import gp
+from bayeso import constants
 from bayeso.utils import utils_covariance
 
 
 TEST_EPSILON = 1e-7
+
+def test_check_str_cov():
+    with pytest.raises(AssertionError) as error:
+        gp._check_str_cov(1, 'se', (2, 1))
+    with pytest.raises(AssertionError) as error:
+        gp._check_str_cov('test', 1, (2, 1))
+    with pytest.raises(AssertionError) as error:
+        gp._check_str_cov('test', 'se', 1)
+    with pytest.raises(AssertionError) as error:
+        gp._check_str_cov('test', 'se', (2, 100, 100))
+    with pytest.raises(AssertionError) as error:
+        gp._check_str_cov('test', 'se', (2, 100), shape_X2=(2, 100, 100))
+    with pytest.raises(AssertionError) as error:
+        gp._check_str_cov('test', 'set_se', (2, 100), shape_X2=(2, 100, 100))
+    with pytest.raises(AssertionError) as error:
+        gp._check_str_cov('test', 'set_se', (2, 100, 100), shape_X2=(2, 100))
+    with pytest.raises(AssertionError) as error:
+        gp._check_str_cov('test', 'se', (2, 1), shape_X2=1)
+
+    with pytest.raises(ValueError) as error:
+        gp._check_str_cov('test', 'abc', (2, 1))
 
 def test_get_prior_mu():
     fun_prior = lambda X: np.expand_dims(np.linalg.norm(X, axis=1), axis=1)
@@ -30,25 +52,25 @@ def test_get_prior_mu():
     assert (gp.get_prior_mu(None, X) == np.zeros((X.shape[0], 1))).all()
     assert (gp.get_prior_mu(fun_prior, X) == fun_prior(X)).all()
 
-def test_get_kernels():
+def test_get_kernel_inverse():
     dim_X = 3
     X = np.reshape(np.arange(0, 9), (3, dim_X))
     hyps = utils_covariance.get_hyps('se', dim_X)
 
     with pytest.raises(AssertionError) as error:
-        gp.get_kernels(1, hyps, 'se')
+        gp.get_kernel_inverse(1, hyps, 'se')
     with pytest.raises(AssertionError) as error:
-        gp.get_kernels(np.arange(0, 100), hyps, 'se')
+        gp.get_kernel_inverse(np.arange(0, 100), hyps, 'se')
     with pytest.raises(AssertionError) as error:
-        gp.get_kernels(X, 1, 'se')
+        gp.get_kernel_inverse(X, 1, 'se')
     with pytest.raises(AssertionError) as error:
-        gp.get_kernels(X, hyps, 1)
+        gp.get_kernel_inverse(X, hyps, 1)
+    with pytest.raises(ValueError) as error:
+        gp.get_kernel_inverse(X, hyps, 'abc')
     with pytest.raises(AssertionError) as error:
-        gp.get_kernels(X, hyps, 'abc')
-    with pytest.raises(AssertionError) as error:
-        gp.get_kernels(X, hyps, 'se', debug=1)
+        gp.get_kernel_inverse(X, hyps, 'se', debug=1)
 
-    cov_X_X, inv_cov_X_X = gp.get_kernels(X, hyps, 'se')
+    cov_X_X, inv_cov_X_X = gp.get_kernel_inverse(X, hyps, 'se')
     print(cov_X_X)
     print(inv_cov_X_X)
     truth_cov_X_X = [
@@ -78,7 +100,7 @@ def test_get_kernel_cholesky():
         gp.get_kernel_cholesky(X, 1, 'se')
     with pytest.raises(AssertionError) as error:
         gp.get_kernel_cholesky(X, hyps, 1)
-    with pytest.raises(AssertionError) as error:
+    with pytest.raises(ValueError) as error:
         gp.get_kernel_cholesky(X, hyps, 'abc')
     with pytest.raises(AssertionError) as error:
         gp.get_kernel_cholesky(X, hyps, 'se', debug=1)
@@ -106,7 +128,7 @@ def test_log_ml():
     X = np.reshape(np.arange(0, 9), (3, dim_X))
     Y = np.expand_dims(np.arange(3, 10, 3), axis=1)
     dict_hyps = utils_covariance.get_hyps(str_cov, dim_X)
-    arr_hyps = utils_covariance.convert_hyps(str_cov, dict_hyps)
+    arr_hyps = utils_covariance.convert_hyps(str_cov, dict_hyps, is_fixed_noise=constants.IS_FIXED_GP_NOISE)
     prior_mu_X = np.zeros((3, 1))
 
     with pytest.raises(AssertionError) as error:
@@ -117,7 +139,7 @@ def test_log_ml():
         gp.log_ml(X, Y, dict_hyps, str_cov, prior_mu_X)
     with pytest.raises(AssertionError) as error:
         gp.log_ml(X, Y, arr_hyps, 1, prior_mu_X)
-    with pytest.raises(AssertionError) as error:
+    with pytest.raises(ValueError) as error:
         gp.log_ml(X, Y, arr_hyps, 'abc', prior_mu_X)
     with pytest.raises(AssertionError) as error:
         gp.log_ml(X, Y, arr_hyps, str_cov, np.arange(0, 3))
@@ -127,6 +149,8 @@ def test_log_ml():
         gp.log_ml(X, np.expand_dims(np.arange(0, 4), axis=1), arr_hyps, str_cov, prior_mu_X)
     with pytest.raises(AssertionError) as error:
         gp.log_ml(X, Y, arr_hyps, str_cov, np.expand_dims(np.arange(0, 4), axis=1))
+    with pytest.raises(AssertionError) as error:
+        gp.log_ml(X, Y, arr_hyps, str_cov, prior_mu_X, is_cholesky=1)
     with pytest.raises(AssertionError) as error:
         gp.log_ml(X, Y, arr_hyps, str_cov, prior_mu_X, is_fixed_noise=1)
     with pytest.raises(AssertionError) as error:
@@ -142,11 +166,50 @@ def test_log_ml():
     truth_log_ml = -65.74995266566506
     assert np.abs(log_ml - truth_log_ml) < TEST_EPSILON
 
+def test_log_pseudo_l_loocv():
+    dim_X = 3
+    str_cov = 'se'
+    X = np.reshape(np.arange(0, 9), (3, dim_X))
+    Y = np.expand_dims(np.arange(3, 10, 3), axis=1)
+    dict_hyps = utils_covariance.get_hyps(str_cov, dim_X)
+    arr_hyps = utils_covariance.convert_hyps(str_cov, dict_hyps, is_fixed_noise=constants.IS_FIXED_GP_NOISE)
+    prior_mu_X = np.zeros((3, 1))
+
+    with pytest.raises(AssertionError) as error:
+        gp.log_pseudo_l_loocv(np.arange(0, 3), Y, arr_hyps, str_cov, prior_mu_X)
+    with pytest.raises(AssertionError) as error:
+        gp.log_pseudo_l_loocv(X, np.arange(0, 3), arr_hyps, str_cov, prior_mu_X)
+    with pytest.raises(AssertionError) as error:
+        gp.log_pseudo_l_loocv(X, Y, dict_hyps, str_cov, prior_mu_X)
+    with pytest.raises(AssertionError) as error:
+        gp.log_pseudo_l_loocv(X, Y, arr_hyps, 1, prior_mu_X)
+    with pytest.raises(ValueError) as error:
+        gp.log_pseudo_l_loocv(X, Y, arr_hyps, 'abc', prior_mu_X)
+    with pytest.raises(AssertionError) as error:
+        gp.log_pseudo_l_loocv(X, Y, arr_hyps, str_cov, np.arange(0, 3))
+    with pytest.raises(AssertionError) as error:
+        gp.log_pseudo_l_loocv(np.reshape(np.arange(0, 12), (4, dim_X)), Y, arr_hyps, str_cov, prior_mu_X)
+    with pytest.raises(AssertionError) as error:
+        gp.log_pseudo_l_loocv(X, np.expand_dims(np.arange(0, 4), axis=1), arr_hyps, str_cov, prior_mu_X)
+    with pytest.raises(AssertionError) as error:
+        gp.log_pseudo_l_loocv(X, Y, arr_hyps, str_cov, np.expand_dims(np.arange(0, 4), axis=1))
+    with pytest.raises(AssertionError) as error:
+        gp.log_pseudo_l_loocv(X, Y, arr_hyps, str_cov, prior_mu_X, is_fixed_noise=1)
+    with pytest.raises(AssertionError) as error:
+        gp.log_pseudo_l_loocv(X, Y, arr_hyps, str_cov, prior_mu_X, debug=1)
+
+    log_pseudo_l = gp.log_pseudo_l_loocv(X, Y, arr_hyps, str_cov, prior_mu_X)
+    print(log_pseudo_l)
+    truth_log_pseudo_l = -65.75046897497609
+    assert np.abs(log_pseudo_l - truth_log_pseudo_l) < TEST_EPSILON
+
 def test_get_optimized_kernel():
     np.random.seed(42)
     dim_X = 3
     num_X = 10
+    num_instances = 5
     X = np.random.randn(num_X, dim_X)
+    X_set = np.random.randn(num_X, num_instances, dim_X)
     Y = np.random.randn(num_X, 1)
     prior_mu = None
 
@@ -166,14 +229,31 @@ def test_get_optimized_kernel():
         gp.get_optimized_kernel(np.ones((50, 3)), Y, prior_mu, 'se')
     with pytest.raises(AssertionError) as error:
         gp.get_optimized_kernel(X, np.ones((50, 1)), prior_mu, 'se')
-    with pytest.raises(AssertionError) as error:
+    with pytest.raises(ValueError) as error:
         gp.get_optimized_kernel(X, Y, prior_mu, 'abc')
     with pytest.raises(AssertionError) as error:
         gp.get_optimized_kernel(X, Y, prior_mu, 'se', str_optimizer_method=1)
     with pytest.raises(AssertionError) as error:
+        gp.get_optimized_kernel(X, Y, prior_mu, 'se', str_modelselection_method=1)
+    with pytest.raises(AssertionError) as error:
         gp.get_optimized_kernel(X, Y, prior_mu, 'se', is_fixed_noise=1)
     with pytest.raises(AssertionError) as error:
         gp.get_optimized_kernel(X, Y, prior_mu, 'se', debug=1)
+
+    # INFO: tests for set inputs
+    with pytest.raises(AssertionError) as error:
+        gp.get_optimized_kernel(X_set, Y, prior_mu, 'se')
+    with pytest.raises(AssertionError) as error:
+        gp.get_optimized_kernel(X, Y, prior_mu, 'set_se')
+    with pytest.raises(AssertionError) as error:
+        gp.get_optimized_kernel(X_set, Y, prior_mu, 'set_se', debug=1)
+
+    gp.get_optimized_kernel(X, Y, prior_mu, 'se')
+    gp.get_optimized_kernel(X, Y, prior_mu, 'se', str_optimizer_method='L-BFGS-B')
+    gp.get_optimized_kernel(X, Y, prior_mu, 'se', str_modelselection_method='loocv')
+    gp.get_optimized_kernel(X_set, Y, prior_mu, 'set_se')
+    gp.get_optimized_kernel(X_set, Y, prior_mu, 'set_se', str_optimizer_method='L-BFGS-B')
+    gp.get_optimized_kernel(X_set, Y, prior_mu, 'set_se', str_modelselection_method='loocv')
 
 def test_predict_test_():
     np.random.seed(42)

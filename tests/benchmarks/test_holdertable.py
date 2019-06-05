@@ -1,6 +1,6 @@
-# test_eggholder
+# test_holdertable
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: July 20, 2018
+# last updated: December 17, 2018
 
 import numpy as np
 import copy
@@ -10,9 +10,9 @@ from bayeso import benchmarks
 from bayeso.utils import utils_benchmarks
 
 
-TEST_EPSILON = 1e-3
-FUN_TARGET = benchmarks.eggholder
-INFO_FUN = benchmarks.INFO_EGGHOLDER
+TEST_EPSILON = 1e-5
+FUN_TARGET = benchmarks.holdertable
+INFO_FUN = benchmarks.INFO_HOLDERTABLE
 INT_DIM = 2
 
 def test_validate_info():
@@ -34,4 +34,4 @@ def test_function():
         FUN_TARGET(np.ones((2, 3)))
     with pytest.raises(AssertionError) as error:
         FUN_TARGET(np.ones(3))
-    assert (np.abs(FUN_TARGET(np.ones(2)) - (-30.7614122)) < TEST_EPSILON).all()
+    assert (np.abs(FUN_TARGET(np.ones(2)) - (-0.78789663)) < TEST_EPSILON).all()

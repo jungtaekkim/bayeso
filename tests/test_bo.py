@@ -115,6 +115,44 @@ def test_get_best_acquisition():
     assert best_initial.shape[1] == arr_initials.shape[1]
     assert best_initial == np.array([[1]])
 
+def test_check_optimizer_method_bo():
+    directminimize = None
+    cma = None
+
+    with pytest.raises(AssertionError) as error:
+        bo._check_optimizer_method_bo(2, 2, True)
+    with pytest.raises(AssertionError) as error:
+        bo._check_optimizer_method_bo('DIRECT', 'abc', True)
+    with pytest.raises(AssertionError) as error:
+        bo._check_optimizer_method_bo('DIRECT', 2, 'abc')
+    with pytest.raises(AssertionError) as error:
+        bo._check_optimizer_method_bo('ABC', 2, True)
+
+def test_choose_fun_acquisition():
+    dict_hyps = {'lengthscales': np.array([1.0, 1.0]), 'signal': 1.0, 'noise': 0.01}
+    with pytest.raises(AssertionError) as error:
+        bo._choose_fun_acquisition(1, dict_hyps)
+    with pytest.raises(AssertionError) as error:
+        bo._choose_fun_acquisition('abc', dict_hyps)
+    with pytest.raises(AssertionError) as error:
+        bo._choose_fun_acquisition('pi', 1)
+
+def test_check_hyps_convergence():
+    dict_hyps_1 = {'lengthscales': np.array([1.0, 1.0]), 'signal': 1.0, 'noise': 0.01}
+    dict_hyps_2 = {'lengthscales': np.array([2.0, 1.0]), 'signal': 1.0, 'noise': 0.01}
+
+    with pytest.raises(AssertionError) as error:
+        bo._check_hyps_convergence(1, dict_hyps_1, 'se', True)
+    with pytest.raises(AssertionError) as error:
+        bo._check_hyps_convergence([dict_hyps_1], 1, 'se', True)
+    with pytest.raises(AssertionError) as error:
+        bo._check_hyps_convergence([dict_hyps_1], dict_hyps_1, 1, True)
+    with pytest.raises(AssertionError) as error:
+        bo._check_hyps_convergence([dict_hyps_1], dict_hyps_1, 1, 'abc')
+    
+    assert bo._check_hyps_convergence([dict_hyps_1], dict_hyps_1, 'se', False)
+    assert not bo._check_hyps_convergence([dict_hyps_2], dict_hyps_1, 'se', False)
+
 def test_load_bo():
     # legitimate cases
     arr_range_1 = np.array([
@@ -247,6 +285,14 @@ def test_optimize():
     with pytest.raises(AssertionError) as error:
         model_bo.optimize(X, Y, str_initial_method='abc')
     with pytest.raises(AssertionError) as error:
+        model_bo.optimize(X, Y, str_mlm_method=1)
+    with pytest.raises(AssertionError) as error:
+        model_bo.optimize(X, Y, str_mlm_method='abc')
+    with pytest.raises(AssertionError) as error:
+        model_bo.optimize(X, Y, str_modelselection_method=1)
+    with pytest.raises(AssertionError) as error:
+        model_bo.optimize(X, Y, str_modelselection_method='abc')
+    with pytest.raises(AssertionError) as error:
         model_bo.optimize(X, Y, int_samples='abc')
     with pytest.raises(AssertionError) as error:
         model_bo.optimize(X, Y, is_normalized='abc')
@@ -264,6 +310,18 @@ def test_optimize():
     assert next_point.shape[0] == dim_X
     assert next_points.shape[1] == dim_X
     assert next_points.shape[0] == acquisitions.shape[0]
+
+def test_optimize_str_acq():
+    np.random.seed(42)
+    arr_range_1 = np.array([
+        [0.0, 10.0],
+        [-2.0, 2.0],
+        [-5.0, 5.0],
+    ])
+    dim_X = arr_range_1.shape[0]
+    num_X = 5
+    X = np.random.randn(num_X, dim_X)
+    Y = np.random.randn(num_X, 1)
 
     model_bo = bo.BO(arr_range_1, str_acq='pi')
     next_point, next_points, acquisitions, cov_X_X, inv_cov_X_X, hyps = model_bo.optimize(X, Y)
@@ -339,3 +397,102 @@ def test_optimize():
     assert next_point.shape[0] == dim_X
     assert next_points.shape[1] == dim_X
     assert next_points.shape[0] == acquisitions.shape[0]
+
+def test_optimize_str_optimize_method_bo():
+    np.random.seed(42)
+    arr_range_1 = np.array([
+        [0.0, 10.0],
+        [-2.0, 2.0],
+        [-5.0, 5.0],
+    ])
+    dim_X = arr_range_1.shape[0]
+    num_X = 5
+    X = np.random.randn(num_X, dim_X)
+    Y = np.random.randn(num_X, 1)
+
+    model_bo = bo.BO(arr_range_1, str_optimizer_method_bo='L-BFGS-B')
+    next_point, next_points, acquisitions, cov_X_X, inv_cov_X_X, hyps = model_bo.optimize(X, Y)
+    assert isinstance(next_point, np.ndarray)
+    assert isinstance(next_points, np.ndarray)
+    assert isinstance(acquisitions, np.ndarray)
+    assert isinstance(cov_X_X, np.ndarray)
+    assert isinstance(inv_cov_X_X, np.ndarray)
+    assert isinstance(hyps, dict)
+    assert len(next_point.shape) == 1
+    assert len(next_points.shape) == 2
+    assert len(acquisitions.shape) == 1
+    assert next_point.shape[0] == dim_X
+    assert next_points.shape[1] == dim_X
+    assert next_points.shape[0] == acquisitions.shape[0]
+
+    # TODO: add DIRECT test, now it causes an error.
+
+    model_bo = bo.BO(arr_range_1, str_optimizer_method_bo='CMA-ES')
+    next_point, next_points, acquisitions, cov_X_X, inv_cov_X_X, hyps = model_bo.optimize(X, Y)
+    assert isinstance(next_point, np.ndarray)
+    assert isinstance(next_points, np.ndarray)
+    assert isinstance(acquisitions, np.ndarray)
+    assert isinstance(cov_X_X, np.ndarray)
+    assert isinstance(inv_cov_X_X, np.ndarray)
+    assert isinstance(hyps, dict)
+    assert len(next_point.shape) == 1
+    assert len(next_points.shape) == 2
+    assert len(acquisitions.shape) == 1
+    assert next_point.shape[0] == dim_X
+    assert next_points.shape[1] == dim_X
+    assert next_points.shape[0] == acquisitions.shape[0]
+
+def test_optimize_str_mlm_method():
+    np.random.seed(42)
+    arr_range_1 = np.array([
+        [0.0, 10.0],
+        [-2.0, 2.0],
+        [-5.0, 5.0],
+    ])
+    dim_X = arr_range_1.shape[0]
+    num_X = 5
+    X = np.random.randn(num_X, dim_X)
+    Y = np.random.randn(num_X, 1)
+
+    model_bo = bo.BO(arr_range_1)
+    next_point, next_points, acquisitions, cov_X_X, inv_cov_X_X, hyps = model_bo.optimize(X, Y, str_mlm_method='converged')
+    assert isinstance(next_point, np.ndarray)
+    assert isinstance(next_points, np.ndarray)
+    assert isinstance(acquisitions, np.ndarray)
+    assert isinstance(cov_X_X, np.ndarray)
+    assert isinstance(inv_cov_X_X, np.ndarray)
+    assert isinstance(hyps, dict)
+    assert len(next_point.shape) == 1
+    assert len(next_points.shape) == 2
+    assert len(acquisitions.shape) == 1
+    assert next_point.shape[0] == dim_X
+    assert next_points.shape[1] == dim_X
+    assert next_points.shape[0] == acquisitions.shape[0]
+
+def test_optimize_str_modelselection_method():
+    np.random.seed(42)
+    arr_range_1 = np.array([
+        [0.0, 10.0],
+        [-2.0, 2.0],
+        [-5.0, 5.0],
+    ])
+    dim_X = arr_range_1.shape[0]
+    num_X = 5
+    X = np.random.randn(num_X, dim_X)
+    Y = np.random.randn(num_X, 1)
+
+    model_bo = bo.BO(arr_range_1)
+    next_point, next_points, acquisitions, cov_X_X, inv_cov_X_X, hyps = model_bo.optimize(X, Y, str_modelselection_method='loocv')
+    assert isinstance(next_point, np.ndarray)
+    assert isinstance(next_points, np.ndarray)
+    assert isinstance(acquisitions, np.ndarray)
+    assert isinstance(cov_X_X, np.ndarray)
+    assert isinstance(inv_cov_X_X, np.ndarray)
+    assert isinstance(hyps, dict)
+    assert len(next_point.shape) == 1
+    assert len(next_points.shape) == 2
+    assert len(acquisitions.shape) == 1
+    assert next_point.shape[0] == dim_X
+    assert next_points.shape[1] == dim_X
+    assert next_points.shape[0] == acquisitions.shape[0]
+

@@ -23,7 +23,7 @@ def main():
     is_fixed_noise = False
     model_bo = bo.BO(INFO_TARGET.get('bounds'), debug=True)
     X_init = model_bo.get_initial('uniform', fun_objective=fun_target, int_samples=num_points)
-    X_test = utils_bo.get_grid(INFO_TARGET.get('bounds'), 50)
+    X_test = bo.get_grid(INFO_TARGET.get('bounds'), 50)
     mu, sigma = gp.predict_optimized(X_init, np.expand_dims(fun_target(X_init), axis=1), X_test, is_fixed_noise=is_fixed_noise, debug=True)
 
 if __name__ == '__main__':

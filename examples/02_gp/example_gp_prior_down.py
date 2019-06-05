@@ -11,7 +11,7 @@ from bayeso.utils import utils_plotting
 
 PATH_SAVE = '../figures/gp/'
 
-def linear_up(X):
+def linear_down(X):
     list_up = []
     for elem_X in X:
         list_up.append([-0.5 * np.sum(elem_X)])
@@ -28,7 +28,7 @@ def main():
     X_test = np.linspace(-3, 6, num_test)
     X_test = X_test.reshape((num_test, 1))
     Y_test_truth = np.cos(X_test) + 2.0
-    prior_mu = linear_up
+    prior_mu = linear_down
     mu, sigma = gp.predict_optimized(X_train, Y_train, X_test, prior_mu=prior_mu)
     utils_plotting.plot_gp(X_train, Y_train, X_test, mu, sigma, Y_test_truth, PATH_SAVE, 'optimized_prior_down')
 

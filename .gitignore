@@ -107,3 +107,4 @@ __MACOSX/
 results/
 figures/
 .pytest_cache/
+*.dat

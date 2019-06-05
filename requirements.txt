@@ -2,3 +2,5 @@ numpy
 scipy
 matplotlib
 sobol_seq
+cma
+scipydirect
