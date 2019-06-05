@@ -53,6 +53,7 @@ We test our package in the following versions.
 * Python 2.7
 * Python 3.5
 * Python 3.6
+* Python 3.7
 
 ## Author
 * [Jungtaek Kim](http://mlg.postech.ac.kr/~jtkim/) (POSTECH)
