@@ -10,7 +10,15 @@ if (sys.version_info.major == 2 and sys.version_info.minor == 7) or\
 else:
     sys.exit('[ERROR] bayeso does not support Python {}.{} version in this system.'.format(sys.version_info.major, sys.version_info.minor))
 
-with open('requirements.txt') as f:
+if sys.version_info.major == 2 and sys.version_info.minor == 7:
+    dir_files = os.path.dirname(os.path.abspath(__file__))
+    path_requirements = os.path.join(dir_files, 'requirements.txt')
+    list_packages = [os.path.join(dir_files, 'bayeso'), os.path.join(dir_files, 'bayeso.utils')]
+else:
+    path_requirements = 'requirements.txt'
+    list_packages = ['bayeso', 'bayeso.utils']
+
+with open(path_requirements) as f:
     required = f.read().splitlines()
 
 setup(
@@ -21,7 +29,7 @@ setup(
     url='https://github.com/jungtaekkim/bayeso',
     license='MIT',
     description='Bayesian optimization package',
-    packages=['bayeso', 'bayeso.utils'],
+    packages=list_packages,
     python_requires='>=2.7, !=3.0.*, !=3.1.*, !=3.2.*, != 3.3.*, !=3.4.*, <4',
     install_requires=required,
 )
