@@ -47,18 +47,26 @@ def get_prior_mu(prior_mu, X):
     return prior_mu_X
 
 def get_kernel_inverse(X_train, hyps, str_cov,
+    is_gradient=False,
     debug=False
 ):
     assert isinstance(X_train, np.ndarray)
     assert isinstance(hyps, dict)
     assert isinstance(str_cov, str)
+    assert isinstance(is_gradient, bool)
     assert isinstance(debug, bool)
     _check_str_cov('get_kernel_inverse', str_cov, X_train.shape)
 
     cov_X_X = covariance.cov_main(str_cov, X_train, X_train, hyps) + hyps['noise']**2 * np.eye(X_train.shape[0])
     cov_X_X = (cov_X_X + cov_X_X.T) / 2.0
     inv_cov_X_X = np.linalg.inv(cov_X_X)
-    return cov_X_X, inv_cov_X_X
+
+    if is_gradient:
+        grad_cov_X_X = covariance.grad_cov_main(str_cov, X_train, X_train, hyps, is_fixed_noise)
+    else:
+        grad_cov_X_X = None
+
+    return cov_X_X, inv_cov_X_X, grad_cov_X_X
 
 def get_kernel_cholesky(X_train, hyps, str_cov,
     is_fixed_noise=False,
@@ -124,7 +132,7 @@ def neg_log_ml(X_train, Y_train, hyps, str_cov, prior_mu_train,
     else:
         # TODO: is_gradient is fixed.
         is_gradient = False
-        cov_X_X, inv_cov_X_X = get_kernel_inverse(X_train, hyps, str_cov, debug=debug)
+        cov_X_X, inv_cov_X_X, grad_cov_X_X = get_kernel_inverse(X_train, hyps, str_cov, debug=debug)
 
         first_term = -0.5 * np.dot(np.dot(new_Y_train.T, inv_cov_X_X), new_Y_train)
         second_term = -0.5 * np.log(np.linalg.det(cov_X_X) + constants.JITTER_LOG)
@@ -156,7 +164,7 @@ def neg_log_pseudo_l_loocv(X_train, Y_train, hyps, str_cov, prior_mu_train,
     num_data = X_train.shape[0]
     hyps = utils_covariance.restore_hyps(str_cov, hyps, is_fixed_noise=is_fixed_noise)
 
-    cov_X_X, inv_cov_X_X = get_kernel_inverse(X_train, hyps, str_cov, debug=debug)
+    cov_X_X, inv_cov_X_X, grad_cov_X_X = get_kernel_inverse(X_train, hyps, str_cov, debug=debug)
 
     log_pseudo_l_ = 0.0
     for ind_data in range(0, num_data):
@@ -246,7 +254,7 @@ def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov,
     hyps = utils_covariance.restore_hyps(str_cov, result_optimized, is_fixed_noise=is_fixed_noise)
 
     hyps, _ = utils_covariance.validate_hyps_dict(hyps, str_cov, num_dim)
-    cov_X_X, inv_cov_X_X = get_kernel_inverse(X_train, hyps, str_cov, debug=debug)
+    cov_X_X, inv_cov_X_X, grad_cov_X_X = get_kernel_inverse(X_train, hyps, str_cov, debug=debug)
 
     time_end = time.time()
 
@@ -304,7 +312,7 @@ def predict_test(X_train, Y_train, X_test, hyps,
     assert X_train.shape[0] == Y_train.shape[0]
     assert X_train.shape[1] == X_test.shape[1]
     
-    cov_X_X, inv_cov_X_X = get_kernel_inverse(X_train, hyps, str_cov, debug=debug)
+    cov_X_X, inv_cov_X_X, grad_cov_X_X = get_kernel_inverse(X_train, hyps, str_cov, debug=debug)
     mu_Xs, sigma_Xs = predict_test_(X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps, str_cov=str_cov, prior_mu=prior_mu, debug=debug)
     return mu_Xs, sigma_Xs
 

@@ -70,7 +70,7 @@ def test_get_kernel_inverse():
     with pytest.raises(AssertionError) as error:
         gp.get_kernel_inverse(X, hyps, 'se', debug=1)
 
-    cov_X_X, inv_cov_X_X = gp.get_kernel_inverse(X, hyps, 'se')
+    cov_X_X, inv_cov_X_X, grad_cov_X_X = gp.get_kernel_inverse(X, hyps, 'se')
     print(cov_X_X)
     print(inv_cov_X_X)
     truth_cov_X_X = [
