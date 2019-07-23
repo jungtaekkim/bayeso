@@ -105,7 +105,7 @@ def test_get_kernel_cholesky():
     with pytest.raises(AssertionError) as error:
         gp.get_kernel_cholesky(X, hyps, 'se', debug=1)
 
-    cov_X_X, lower = gp.get_kernel_cholesky(X, hyps, 'se')
+    cov_X_X, lower, _ = gp.get_kernel_cholesky(X, hyps, 'se')
     print(cov_X_X)
     print(lower)
     truth_cov_X_X = [
@@ -122,7 +122,7 @@ def test_get_kernel_cholesky():
     assert (np.abs(lower - truth_lower) < TEST_EPSILON).all()
     assert cov_X_X.shape == lower.shape
 
-def test_log_ml():
+def test_neg_log_ml():
     dim_X = 3
     str_cov = 'se'
     X = np.reshape(np.arange(0, 9), (3, dim_X))
@@ -132,41 +132,41 @@ def test_log_ml():
     prior_mu_X = np.zeros((3, 1))
 
     with pytest.raises(AssertionError) as error:
-        gp.log_ml(np.arange(0, 3), Y, arr_hyps, str_cov, prior_mu_X)
+        gp.neg_log_ml(np.arange(0, 3), Y, arr_hyps, str_cov, prior_mu_X)
     with pytest.raises(AssertionError) as error:
-        gp.log_ml(X, np.arange(0, 3), arr_hyps, str_cov, prior_mu_X)
+        gp.neg_log_ml(X, np.arange(0, 3), arr_hyps, str_cov, prior_mu_X)
     with pytest.raises(AssertionError) as error:
-        gp.log_ml(X, Y, dict_hyps, str_cov, prior_mu_X)
+        gp.neg_log_ml(X, Y, dict_hyps, str_cov, prior_mu_X)
     with pytest.raises(AssertionError) as error:
-        gp.log_ml(X, Y, arr_hyps, 1, prior_mu_X)
+        gp.neg_log_ml(X, Y, arr_hyps, 1, prior_mu_X)
     with pytest.raises(ValueError) as error:
-        gp.log_ml(X, Y, arr_hyps, 'abc', prior_mu_X)
+        gp.neg_log_ml(X, Y, arr_hyps, 'abc', prior_mu_X)
     with pytest.raises(AssertionError) as error:
-        gp.log_ml(X, Y, arr_hyps, str_cov, np.arange(0, 3))
+        gp.neg_log_ml(X, Y, arr_hyps, str_cov, np.arange(0, 3))
     with pytest.raises(AssertionError) as error:
-        gp.log_ml(np.reshape(np.arange(0, 12), (4, dim_X)), Y, arr_hyps, str_cov, prior_mu_X)
+        gp.neg_log_ml(np.reshape(np.arange(0, 12), (4, dim_X)), Y, arr_hyps, str_cov, prior_mu_X)
     with pytest.raises(AssertionError) as error:
-        gp.log_ml(X, np.expand_dims(np.arange(0, 4), axis=1), arr_hyps, str_cov, prior_mu_X)
+        gp.neg_log_ml(X, np.expand_dims(np.arange(0, 4), axis=1), arr_hyps, str_cov, prior_mu_X)
     with pytest.raises(AssertionError) as error:
-        gp.log_ml(X, Y, arr_hyps, str_cov, np.expand_dims(np.arange(0, 4), axis=1))
+        gp.neg_log_ml(X, Y, arr_hyps, str_cov, np.expand_dims(np.arange(0, 4), axis=1))
     with pytest.raises(AssertionError) as error:
-        gp.log_ml(X, Y, arr_hyps, str_cov, prior_mu_X, is_cholesky=1)
+        gp.neg_log_ml(X, Y, arr_hyps, str_cov, prior_mu_X, is_cholesky=1)
     with pytest.raises(AssertionError) as error:
-        gp.log_ml(X, Y, arr_hyps, str_cov, prior_mu_X, is_fixed_noise=1)
+        gp.neg_log_ml(X, Y, arr_hyps, str_cov, prior_mu_X, is_fixed_noise=1)
     with pytest.raises(AssertionError) as error:
-        gp.log_ml(X, Y, arr_hyps, str_cov, prior_mu_X, debug=1)
+        gp.neg_log_ml(X, Y, arr_hyps, str_cov, prior_mu_X, debug=1)
 
-    log_ml = gp.log_ml(X, Y, arr_hyps, str_cov, prior_mu_X)
-    print(log_ml)
-    truth_log_ml = -65.74995266591506
-    assert np.abs(log_ml - truth_log_ml) < TEST_EPSILON
+    neg_log_ml_ = gp.neg_log_ml(X, Y, arr_hyps, str_cov, prior_mu_X, is_gradient=False)
+    print(neg_log_ml_)
+    truth_log_ml_ = 65.74995266591506
+    assert np.abs(neg_log_ml_ - truth_log_ml_) < TEST_EPSILON
 
-    log_ml = gp.log_ml(X, Y, arr_hyps, str_cov, prior_mu_X, is_cholesky=False)
-    print(log_ml)
-    truth_log_ml = -65.74995266566506
-    assert np.abs(log_ml - truth_log_ml) < TEST_EPSILON
+    log_ml_ = gp.neg_log_ml(X, Y, arr_hyps, str_cov, prior_mu_X, is_cholesky=False)
+    print(neg_log_ml_)
+    truth_log_ml_ = 65.74995266566506
+    assert np.abs(neg_log_ml_ - truth_log_ml_) < TEST_EPSILON
 
-def test_log_pseudo_l_loocv():
+def test_neg_log_pseudo_l_loocv():
     dim_X = 3
     str_cov = 'se'
     X = np.reshape(np.arange(0, 9), (3, dim_X))
@@ -176,32 +176,32 @@ def test_log_pseudo_l_loocv():
     prior_mu_X = np.zeros((3, 1))
 
     with pytest.raises(AssertionError) as error:
-        gp.log_pseudo_l_loocv(np.arange(0, 3), Y, arr_hyps, str_cov, prior_mu_X)
+        gp.neg_log_pseudo_l_loocv(np.arange(0, 3), Y, arr_hyps, str_cov, prior_mu_X)
     with pytest.raises(AssertionError) as error:
-        gp.log_pseudo_l_loocv(X, np.arange(0, 3), arr_hyps, str_cov, prior_mu_X)
+        gp.neg_log_pseudo_l_loocv(X, np.arange(0, 3), arr_hyps, str_cov, prior_mu_X)
     with pytest.raises(AssertionError) as error:
-        gp.log_pseudo_l_loocv(X, Y, dict_hyps, str_cov, prior_mu_X)
+        gp.neg_log_pseudo_l_loocv(X, Y, dict_hyps, str_cov, prior_mu_X)
     with pytest.raises(AssertionError) as error:
-        gp.log_pseudo_l_loocv(X, Y, arr_hyps, 1, prior_mu_X)
+        gp.neg_log_pseudo_l_loocv(X, Y, arr_hyps, 1, prior_mu_X)
     with pytest.raises(ValueError) as error:
-        gp.log_pseudo_l_loocv(X, Y, arr_hyps, 'abc', prior_mu_X)
+        gp.neg_log_pseudo_l_loocv(X, Y, arr_hyps, 'abc', prior_mu_X)
     with pytest.raises(AssertionError) as error:
-        gp.log_pseudo_l_loocv(X, Y, arr_hyps, str_cov, np.arange(0, 3))
+        gp.neg_log_pseudo_l_loocv(X, Y, arr_hyps, str_cov, np.arange(0, 3))
     with pytest.raises(AssertionError) as error:
-        gp.log_pseudo_l_loocv(np.reshape(np.arange(0, 12), (4, dim_X)), Y, arr_hyps, str_cov, prior_mu_X)
+        gp.neg_log_pseudo_l_loocv(np.reshape(np.arange(0, 12), (4, dim_X)), Y, arr_hyps, str_cov, prior_mu_X)
     with pytest.raises(AssertionError) as error:
-        gp.log_pseudo_l_loocv(X, np.expand_dims(np.arange(0, 4), axis=1), arr_hyps, str_cov, prior_mu_X)
+        gp.neg_log_pseudo_l_loocv(X, np.expand_dims(np.arange(0, 4), axis=1), arr_hyps, str_cov, prior_mu_X)
     with pytest.raises(AssertionError) as error:
-        gp.log_pseudo_l_loocv(X, Y, arr_hyps, str_cov, np.expand_dims(np.arange(0, 4), axis=1))
+        gp.neg_log_pseudo_l_loocv(X, Y, arr_hyps, str_cov, np.expand_dims(np.arange(0, 4), axis=1))
     with pytest.raises(AssertionError) as error:
-        gp.log_pseudo_l_loocv(X, Y, arr_hyps, str_cov, prior_mu_X, is_fixed_noise=1)
+        gp.neg_log_pseudo_l_loocv(X, Y, arr_hyps, str_cov, prior_mu_X, is_fixed_noise=1)
     with pytest.raises(AssertionError) as error:
-        gp.log_pseudo_l_loocv(X, Y, arr_hyps, str_cov, prior_mu_X, debug=1)
+        gp.neg_log_pseudo_l_loocv(X, Y, arr_hyps, str_cov, prior_mu_X, debug=1)
 
-    log_pseudo_l = gp.log_pseudo_l_loocv(X, Y, arr_hyps, str_cov, prior_mu_X)
-    print(log_pseudo_l)
-    truth_log_pseudo_l = -65.75046897497609
-    assert np.abs(log_pseudo_l - truth_log_pseudo_l) < TEST_EPSILON
+    neg_log_pseudo_l_ = gp.neg_log_pseudo_l_loocv(X, Y, arr_hyps, str_cov, prior_mu_X)
+    print(neg_log_pseudo_l_)
+    truth_log_pseudo_l_ = -65.75046897497609
+    assert np.abs(neg_log_pseudo_l_ - truth_log_pseudo_l_) < TEST_EPSILON
 
 def test_get_optimized_kernel():
     np.random.seed(42)

@@ -211,11 +211,13 @@ def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov,
         num_dim = X_train.shape[1]
     elif str_cov in constants.ALLOWED_GP_COV_SET:
         num_dim = X_train.shape[2]
+        is_gradient = False
 
     if str_modelselection_method == 'ml':
         neg_log_ml_ = lambda hyps: neg_log_ml(X_train, Y_train, hyps, str_cov, prior_mu_train, is_fixed_noise=is_fixed_noise, is_gradient=is_gradient, debug=debug)
     elif str_modelselection_method == 'loocv':
-        neg_log_ml_ = lambda hyps: neg_log_pseudo_l_loocv(X_train, Y_train, hyps, str_cov, prior_mu_train, is_fixed_noise=is_fixed_noise, is_gradient=is_gradient, debug=debug)
+        neg_log_ml_ = lambda hyps: neg_log_pseudo_l_loocv(X_train, Y_train, hyps, str_cov, prior_mu_train, is_fixed_noise=is_fixed_noise, debug=debug)
+        is_gradient = False
     else: # pragma: no cover
         raise ValueError('get_optimized_kernel: missing conditions for str_modelselection_method.')
 
