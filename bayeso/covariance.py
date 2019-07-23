@@ -3,6 +3,7 @@
 # last updated: April 11, 2019
 
 import numpy as np
+import scipy.spatial.distance as scisd
 
 from bayeso import constants
 from bayeso.utils import utils_covariance
@@ -137,3 +138,74 @@ def cov_main(str_cov, X, Xs, hyps,
     else:
         raise NotImplementedError('cov_main: allowed str_cov, but it is not implemented.')
     return cov_
+
+def grad_cov_main(str_cov, X, Xs, hyps, is_fixed_noise,
+    jitter=constants.JITTER_COV,
+):
+    # TODO: X and Xs should be same?
+    assert isinstance(str_cov, str)
+    assert isinstance(X, np.ndarray)
+    assert isinstance(Xs, np.ndarray)
+    assert isinstance(hyps, dict)
+    assert isinstance(is_fixed_noise, bool)
+    assert isinstance(jitter, float)
+    assert str_cov in constants.ALLOWED_GP_COV
+
+    num_X = X.shape[0]
+    num_Xs = Xs.shape[0]
+    num_dim = X.shape[1]
+    if isinstance(hyps['lengthscales'], np.ndarray):
+        is_scalar_lengthscales = False
+        num_hyps = num_dim + 1
+    else:
+        is_scalar_lengthscales = True
+        num_hyps = 2
+    if not is_fixed_noise:
+        num_hyps += 1
+
+    cov_ = cov_main(str_cov, X, Xs, hyps, jitter=jitter)
+    grad_cov_ = np.zeros((num_X, num_Xs, num_hyps))
+
+    # TODO: I guess some gradients are wrong.
+    if str_cov == 'se':
+        for ind_X in range(0, num_X):
+            for ind_Xs in range(0, num_Xs):
+                X_Xs_l = (X[ind_X] - Xs[ind_Xs]) / hyps['lengthscales']
+                dist = np.linalg.norm(X_Xs_l, ord=2)
+
+                ind_next = 0
+                if not is_fixed_noise:
+                    # TODO: is it 1.0?
+                    grad_cov_[ind_X, ind_Xs, 0] = 1.0
+                    ind_next += 1
+                grad_cov_[ind_X, ind_Xs, ind_next] = cov_[ind_X, ind_Xs] / hyps['signal']**2
+                grad_cov_[ind_X, ind_Xs, ind_next+1:] = cov_[ind_X, ind_Xs] * dist**2
+    elif str_cov == 'matern32':
+        for ind_X in range(0, num_X):
+            for ind_Xs in range(0, num_Xs):
+                X_Xs_l = (X[ind_X] - Xs[ind_Xs]) / hyps['lengthscales']
+                dist = np.linalg.norm(X_Xs_l, ord=2)
+
+                ind_next = 0
+                if not is_fixed_noise:
+                    grad_cov_[ind_X, ind_Xs, 0] = 1.0
+                    ind_next += 1
+                grad_cov_[ind_X, ind_Xs, ind_next] = cov_[ind_X, ind_Xs] / hyps['signal']**2
+                grad_cov_[ind_X, ind_Xs, ind_next+1:] = 3.0 * hyps['signal']**2 * np.exp(-np.sqrt(3) * dist) * dist**2
+    elif str_cov == 'matern52':
+        for ind_X in range(0, num_X):
+            for ind_Xs in range(0, num_Xs):
+                X_Xs_l = (X[ind_X] - Xs[ind_Xs]) / hyps['lengthscales']
+                dist = np.linalg.norm((X[ind_X] - Xs[ind_Xs]) / hyps['lengthscales'], ord=2)
+
+                ind_next = 0
+                if not is_fixed_noise:
+                    grad_cov_[ind_X, ind_Xs, 0] = 1.0
+                    ind_next += 1
+
+                grad_cov_[ind_X, ind_Xs, ind_next] = cov_[ind_X, ind_Xs] / hyps['signal']**2
+                grad_cov_[ind_X, ind_Xs, ind_next+1:] = 5.0 / 3.0 * hyps['signal']**2 * (1 + np.sqrt(5) * dist) * np.exp(-np.sqrt(5) * dist) * dist**2
+    else:
+        raise NotImplementedError('grad_cov_main: a missing str_cov')
+
+    return grad_cov_
