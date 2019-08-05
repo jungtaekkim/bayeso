@@ -41,6 +41,30 @@ INFO_EGGHOLDER = {
     'global_minimum_y': -959.6407,
 }
 
+INFO_EGGHOLDER_1_4 = {
+    'dim_fun': 2,
+    'bounds': np.array([
+        [0.0, 512.0],
+        [0.0, 512.0],
+    ]),
+    'global_minimum_X': np.array([
+        [512.0, 404.2319],
+    ]),
+    'global_minimum_y': -959.6407,
+}
+
+INFO_EGGHOLDER_1_16 = {
+    'dim_fun': 2,
+    'bounds': np.array([
+        [256.0, 512.0],
+        [256.0, 512.0],
+    ]),
+    'global_minimum_X': np.array([
+        [512.0, 404.2319],
+    ]),
+    'global_minimum_y': -959.6407,
+}
+
 INFO_SIXHUMPCAMEL = {
     'dim_fun': 2,
     'bounds': np.array([

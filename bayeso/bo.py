@@ -267,7 +267,8 @@ class BO():
                     return f(bx)[0]
                 return g
             arr_initials = self.get_initial(str_initial_method, fun_objective=fun_negative_acquisition, int_samples=1)
-            next_point_x = cma.fmin(fun_wrapper(fun_negative_acquisition), arr_initials[0], 0.5, options={'bounds': [list_bounds[:, 0], list_bounds[:, 1]], 'verbose': -1})[0]
+            cur_sigma0 = np.mean(list_bounds[:, 1] - list_bounds[:, 0]) / 4.0
+            next_point_x = cma.fmin(fun_wrapper(fun_negative_acquisition), arr_initials[0], cur_sigma0, options={'bounds': [list_bounds[:, 0], list_bounds[:, 1]], 'verbose': -1, 'maxfevals': 1e5})[0]
             list_next_point.append(next_point_x)
 
         next_points = np.array(list_next_point)
