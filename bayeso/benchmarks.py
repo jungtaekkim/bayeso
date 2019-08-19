@@ -145,6 +145,28 @@ INFO_HOLDERTABLE = {
     'global_minimum_y': -19.2085,
 }
 
+# TODO: fill the global minimum.
+INFO_GRAMACYANDLEE2012 = {
+    'dim_fun': 1,
+    'bounds': np.array([
+        [0.5, 2.5],
+    ]),
+    'global_minimum_X': None,
+    'global_minimum_y': None,
+}
+
+INFO_ROSENBROCK = {
+    'dim_fun': np.inf,
+    'bounds': np.array([
+        [-2.048, 2.048],
+    ]),
+    'global_minimum_X': np.array([
+        [1.0],
+    ]),
+    'global_minimum_y': 0.0,
+}
+
+
 def branin(X,
     a=1.0,
     b=5.1 / (4.0 * np.pi**2),
@@ -299,5 +321,32 @@ def holdertable(X):
         assert X.shape[1] == 2
 
     Y = -1.0 * np.abs(np.sin(X[:, 0]) * np.cos(X[:, 1]) * np.exp(np.abs(1.0 - np.sqrt(X[:, 0]**2 + X[:, 1]**2) / np.pi)))
+    return Y
+
+def gramacyandlee2012(X):
+    assert isinstance(X, np.ndarray)
+    assert len(X.shape) == 1 or len(X.shape) == 2
+    if len(X.shape) == 1:
+        assert X.shape[0] == 1
+        X = np.expand_dims(X, axis=0)
+    elif len(X.shape) == 2:
+        assert X.shape[1] == 1
+
+    Y = np.sin(10.0 * np.pi * X[:, 0]) / (2 * X[:, 0]) + (X[:, 0] - 1.0)**4
+
+    return Y
+
+def rosenbrock(X):
+    assert isinstance(X, np.ndarray)
+    assert len(X.shape) == 1 or len(X.shape) == 2
+    if len(X.shape) == 1:
+        X = np.expand_dims(X, axis=0)
+
+    dim_X = X.shape[1]
+    Y = np.zeros((X.shape[0], 1))
+
+    for ind in range(0, dim_X - 1):
+        Y += 100 * (X[:, ind+1] - X[:, ind]**2)**2 + (X[:, ind] - 1.0)**2
+
     return Y
 
