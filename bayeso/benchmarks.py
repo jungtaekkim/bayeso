@@ -343,7 +343,7 @@ def rosenbrock(X):
         X = np.expand_dims(X, axis=0)
 
     dim_X = X.shape[1]
-    Y = np.zeros((X.shape[0], 1))
+    Y = np.zeros((X.shape[0], ))
 
     for ind in range(0, dim_X - 1):
         Y += 100 * (X[:, ind+1] - X[:, ind]**2)**2 + (X[:, ind] - 1.0)**2
