@@ -166,6 +166,17 @@ INFO_ROSENBROCK = {
     'global_minimum_y': 0.0,
 }
 
+INFO_SPHERE = {
+    'dim_fun': np.inf,
+    'bounds': np.array([
+        [-5.12, 5.12],
+    ]),
+    'global_minimum_X': np.array([
+        [0.0],
+    ]),
+    'global_minimum_y': 0.0,
+}
+
 
 def branin(X,
     a=1.0,
@@ -347,6 +358,20 @@ def rosenbrock(X):
 
     for ind in range(0, dim_X - 1):
         Y += 100 * (X[:, ind+1] - X[:, ind]**2)**2 + (X[:, ind] - 1.0)**2
+
+    return Y
+
+def sphere(X):
+    assert isinstance(X, np.ndarray)
+    assert len(X.shape) == 1 or len(X.shape) == 2
+    if len(X.shape) == 1:
+        X = np.expand_dims(X, axis=0)
+
+    dim_X = X.shape[1]
+    Y = np.zeros((X.shape[0], ))
+
+    for ind in range(0, dim_X):
+        Y += X[:, ind]**2
 
     return Y
 
