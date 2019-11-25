@@ -69,23 +69,51 @@ def test_get_kernel_inverse():
         gp.get_kernel_inverse(X, hyps, 'abc')
     with pytest.raises(AssertionError) as error:
         gp.get_kernel_inverse(X, hyps, 'se', debug=1)
+    with pytest.raises(AssertionError) as error:
+        gp.get_kernel_inverse(X, hyps, 'se', is_gradient='abc')
+    with pytest.raises(AssertionError) as error:
+        gp.get_kernel_inverse(X, hyps, 'se', is_fixed_noise='abc')
 
     cov_X_X, inv_cov_X_X, grad_cov_X_X = gp.get_kernel_inverse(X, hyps, 'se')
     print(cov_X_X)
     print(inv_cov_X_X)
-    truth_cov_X_X = [
+    truth_cov_X_X = np.array([
         [1.00011000e+00, 1.37095909e-06, 3.53262857e-24],
         [1.37095909e-06, 1.00011000e+00, 1.37095909e-06],
         [3.53262857e-24, 1.37095909e-06, 1.00011000e+00]
-    ]
-    truth_inv_cov_X_X = [
+    ])
+    truth_inv_cov_X_X = np.array([
         [9.99890012e-01, -1.37065753e-06, 1.87890871e-12],
         [-1.37065753e-06, 9.99890012e-01, -1.37065753e-06],
         [1.87890871e-12, -1.37065753e-06, 9.99890012e-01]
-    ]
+    ])
     assert (np.abs(cov_X_X - truth_cov_X_X) < TEST_EPSILON).all()
     assert (np.abs(inv_cov_X_X - truth_inv_cov_X_X) < TEST_EPSILON).all()
     assert cov_X_X.shape == inv_cov_X_X.shape
+
+    cov_X_X, inv_cov_X_X, grad_cov_X_X = gp.get_kernel_inverse(X, hyps, 'se', is_gradient=True)
+    print(grad_cov_X_X)
+    print(grad_cov_X_X.shape)
+
+    truth_grad_cov_X_X = np.array([
+        [
+            [2.00002000e+00, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00],
+            [2.74191817e-06, 3.70158953e-05, 3.70158953e-05, 3.70158953e-05],
+            [7.06525714e-24, 3.81523886e-22, 3.81523886e-22, 3.81523886e-22]
+        ], [
+            [2.74191817e-06, 3.70158953e-05, 3.70158953e-05, 3.70158953e-05],
+            [2.00002000e+00, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00],
+            [2.74191817e-06, 3.70158953e-05, 3.70158953e-05, 3.70158953e-05]
+        ], [
+            [7.06525714e-24, 3.81523886e-22, 3.81523886e-22, 3.81523886e-22],
+            [2.74191817e-06, 3.70158953e-05, 3.70158953e-05, 3.70158953e-05],
+            [2.00002000e+00, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00]
+        ]
+    ])
+    assert (np.abs(cov_X_X - truth_cov_X_X) < TEST_EPSILON).all()
+    assert (np.abs(inv_cov_X_X - truth_inv_cov_X_X) < TEST_EPSILON).all()
+    assert (np.abs(grad_cov_X_X - truth_grad_cov_X_X) < TEST_EPSILON).all()
+    assert cov_X_X.shape == inv_cov_X_X.shape == grad_cov_X_X.shape[:2]
 
 def test_get_kernel_cholesky():
     dim_X = 3

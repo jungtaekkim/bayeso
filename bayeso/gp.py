@@ -47,6 +47,7 @@ def get_prior_mu(prior_mu, X):
     return prior_mu_X
 
 def get_kernel_inverse(X_train, hyps, str_cov,
+    is_fixed_noise=constants.IS_FIXED_GP_NOISE,
     is_gradient=False,
     debug=False
 ):
@@ -54,6 +55,7 @@ def get_kernel_inverse(X_train, hyps, str_cov,
     assert isinstance(hyps, dict)
     assert isinstance(str_cov, str)
     assert isinstance(is_gradient, bool)
+    assert isinstance(is_fixed_noise, bool)
     assert isinstance(debug, bool)
     _check_str_cov('get_kernel_inverse', str_cov, X_train.shape)
 
@@ -69,7 +71,7 @@ def get_kernel_inverse(X_train, hyps, str_cov,
     return cov_X_X, inv_cov_X_X, grad_cov_X_X
 
 def get_kernel_cholesky(X_train, hyps, str_cov,
-    is_fixed_noise=False,
+    is_fixed_noise=constants.IS_FIXED_GP_NOISE,
     is_gradient=False,
     debug=False
 ):
@@ -132,7 +134,7 @@ def neg_log_ml(X_train, Y_train, hyps, str_cov, prior_mu_train,
     else:
         # TODO: is_gradient is fixed.
         is_gradient = False
-        cov_X_X, inv_cov_X_X, grad_cov_X_X = get_kernel_inverse(X_train, hyps, str_cov, debug=debug)
+        cov_X_X, inv_cov_X_X, grad_cov_X_X = get_kernel_inverse(X_train, hyps, str_cov, is_fixed_noise=is_fixed_noise, debug=debug)
 
         first_term = -0.5 * np.dot(np.dot(new_Y_train.T, inv_cov_X_X), new_Y_train)
         second_term = -0.5 * np.log(np.linalg.det(cov_X_X) + constants.JITTER_LOG)
@@ -164,7 +166,7 @@ def neg_log_pseudo_l_loocv(X_train, Y_train, hyps, str_cov, prior_mu_train,
     num_data = X_train.shape[0]
     hyps = utils_covariance.restore_hyps(str_cov, hyps, is_fixed_noise=is_fixed_noise)
 
-    cov_X_X, inv_cov_X_X, grad_cov_X_X = get_kernel_inverse(X_train, hyps, str_cov, debug=debug)
+    cov_X_X, inv_cov_X_X, grad_cov_X_X = get_kernel_inverse(X_train, hyps, str_cov, is_fixed_noise=is_fixed_noise, debug=debug)
 
     log_pseudo_l_ = 0.0
     for ind_data in range(0, num_data):
@@ -247,14 +249,13 @@ def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov,
         raise NotImplementedError('get_optimized_kernel: allowed str_optimizer_method, but it is not implemented.')
     elif str_optimizer_method == 'CMA-ES': # pragma: no cover
         raise NotImplementedError('get_optimized_kernel: allowed str_optimizer_method, but it is not implemented.')
-    # INFO: It is allowed, but a condition is missed.
     else: # pragma: no cover
         raise ValueError('get_optimized_kernel: missing conditions for str_optimizer_method')
 
     hyps = utils_covariance.restore_hyps(str_cov, result_optimized, is_fixed_noise=is_fixed_noise)
 
     hyps, _ = utils_covariance.validate_hyps_dict(hyps, str_cov, num_dim)
-    cov_X_X, inv_cov_X_X, grad_cov_X_X = get_kernel_inverse(X_train, hyps, str_cov, debug=debug)
+    cov_X_X, inv_cov_X_X, grad_cov_X_X = get_kernel_inverse(X_train, hyps, str_cov, is_fixed_noise=is_fixed_noise, debug=debug)
 
     time_end = time.time()
 

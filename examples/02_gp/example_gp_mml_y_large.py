@@ -25,7 +25,7 @@ def main():
     X_test = np.linspace(-3, 3, num_test)
     X_test = X_test.reshape((num_test, 1))
     Y_test_truth = np.cos(X_test) * 100000.0
-    mu, sigma = gp.predict_optimized(X_train, Y_train, X_test)
+    mu, sigma = gp.predict_optimized(X_train, Y_train, X_test, is_fixed_noise=True)
     utils_plotting.plot_gp(X_train, Y_train, X_test, mu, sigma, Y_test_truth, PATH_SAVE, 'test_optimized_large_y')
 
 
