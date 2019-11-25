@@ -42,7 +42,7 @@ def _set_ax_config(ax, str_x_axis, str_y_axis,
         ax.grid()
     return
 
-def _save_figure(path_save, str_postfix, str_prefix=''):
+def _save_figure(path_save, str_postfix, str_prefix=''): # pragma: no cover
     if path_save is not None and str_postfix is not None:
         str_figure = str_prefix + str_postfix
         plt.savefig(os.path.join(path_save, str_figure + '.pdf'),
@@ -52,7 +52,7 @@ def _save_figure(path_save, str_postfix, str_prefix=''):
         )
     return
 
-def _show_figure(is_pause, time_pause):
+def _show_figure(is_pause, time_pause): # pragma: no cover
     plt.ion()
     if is_pause:
         plt.pause(time_pause)
