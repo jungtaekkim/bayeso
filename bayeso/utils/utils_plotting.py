@@ -17,20 +17,20 @@ def _set_ax_config(ax, str_x_axis, str_y_axis,
     xlim_min=None,
     xlim_max=None,
     is_zero_axis=False,
-):
+): # pragma: no cover
     ax.set_xlabel(str_x_axis, fontsize=size_labels)
     ax.set_ylabel(str_y_axis, fontsize=size_labels)
     ax.tick_params(labelsize=size_ticks)
     ax.spines['top'].set_color('none')
     ax.spines['right'].set_color('none')
 
-    if xlim_min is not None and xlim_max is not None: # pragma: no cover
+    if xlim_min is not None and xlim_max is not None:
         ax.set_xlim([xlim_min, xlim_max])
 
     if is_zero_axis:
         ax.spines['bottom'].set_position('zero')
 
-    return # pragma: no cover
+    return
 
 def plot_gp(X_train, Y_train, X_test, mu, sigma,
     Y_test_truth=None,
@@ -44,7 +44,7 @@ def plot_gp(X_train, Y_train, X_test, mu, sigma,
     time_pause=constants.TIME_PAUSE,
     range_shade=constants.RANGE_SHADE,
     colors=constants.COLORS,
-):
+): # pragma: no cover
     assert isinstance(X_train, np.ndarray)
     assert isinstance(Y_train, np.ndarray)
     assert isinstance(X_test, np.ndarray)
@@ -84,7 +84,7 @@ def plot_gp(X_train, Y_train, X_test, mu, sigma,
     fig = plt.figure(figsize=(8, 6))
     ax = plt.gca()
 
-    if Y_test_truth is not None: # pragma: no cover
+    if Y_test_truth is not None:
         ax.plot(X_test.flatten(), Y_test_truth.flatten(),
             c=colors[1],
             linewidth=4,
@@ -131,7 +131,7 @@ def plot_minimum(arr_minima, list_str_label, int_init, is_std,
     range_shade=constants.RANGE_SHADE,
     markers=constants.MARKERS,
     colors=constants.COLORS,
-):
+): # pragma: no cover
     assert isinstance(arr_minima, np.ndarray)
     assert isinstance(list_str_label, list)
     assert isinstance(int_init, int)
@@ -157,7 +157,7 @@ def plot_minimum(arr_minima, list_str_label, int_init, is_std,
         plt.rc('pdf', fonttype=42)
     fig = plt.figure(figsize=(8, 6))
     ax = plt.gca()
-    for ind_minimum, arr_minimum in enumerate(arr_minima): # pragma: no cover
+    for ind_minimum, arr_minimum in enumerate(arr_minima):
         ind_color = ind_minimum % len(colors)
         ind_marker = ind_minimum % len(markers)
         _, mean_min, std_min = utils_common.get_minimum(arr_minimum, int_init)
@@ -219,7 +219,7 @@ def plot_minimum_time(arr_times, arr_minima, list_str_label, int_init, is_std,
     range_shade=constants.RANGE_SHADE,
     markers=constants.MARKERS,
     colors=constants.COLORS,
-):
+): # pragma: no cover
     assert isinstance(arr_times, np.ndarray)
     assert isinstance(arr_minima, np.ndarray)
     assert isinstance(list_str_label, list)
@@ -250,8 +250,8 @@ def plot_minimum_time(arr_times, arr_minima, list_str_label, int_init, is_std,
     fig = plt.figure(figsize=(8, 6))
     ax = plt.gca()
 
-    list_x_data = [] # pragma: no cover
-    for ind_minimum, arr_minimum in enumerate(arr_minima): # pragma: no cover
+    list_x_data = []
+    for ind_minimum, arr_minimum in enumerate(arr_minima):
         ind_color = ind_minimum % len(colors)
         ind_marker = ind_minimum % len(markers)
         _, mean_min, std_min = utils_common.get_minimum(arr_minimum, int_init)
@@ -315,7 +315,7 @@ def plot_bo_step(X_train, Y_train, X_test, Y_test, mean_test, std_test,
     is_zero_axis=False,
     time_pause=constants.TIME_PAUSE,
     range_shade=constants.RANGE_SHADE,
-):
+): # pragma: no cover
     assert isinstance(X_train, np.ndarray)
     assert isinstance(Y_train, np.ndarray)
     assert isinstance(X_test, np.ndarray)
@@ -397,7 +397,7 @@ def plot_bo_step_acq(X_train, Y_train, X_test, Y_test, mean_test, std_test, acq_
     is_acq_axis_small=False,
     time_pause=constants.TIME_PAUSE,
     range_shade=constants.RANGE_SHADE,
-):
+): # pragma: no cover
     assert isinstance(X_train, np.ndarray)
     assert isinstance(Y_train, np.ndarray)
     assert isinstance(X_test, np.ndarray)

@@ -1,18 +1,18 @@
 # utils_common
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: July 06, 2018
+# last updated: November 25, 2019
 
 import numpy as np
 
 
-def get_minimum(all_data, int_init):
-    assert isinstance(all_data, np.ndarray)
+def get_minimum(data_all, int_init):
+    assert isinstance(data_all, np.ndarray)
     assert isinstance(int_init, int)
-    assert len(all_data.shape) == 2
-    assert all_data.shape[1] > int_init
+    assert len(data_all.shape) == 2
+    assert data_all.shape[1] > int_init
 
     list_minimum = []
-    for cur_data in all_data:
+    for cur_data in data_all:
         cur_minimum = np.inf
         cur_list = []
         for cur_elem in cur_data[:int_init]:

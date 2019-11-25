@@ -2,4 +2,3 @@ numpy
 scipy
 sobol_seq
 cma
-matplotlib
