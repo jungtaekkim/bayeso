@@ -62,8 +62,9 @@ def grad_cov_se(cov_, X, Xs, hyps, num_hyps, is_fixed_noise):
             dist = np.linalg.norm(X_Xs_l, ord=2)
 
             ind_next = 0
-            if not is_fixed_noise and ind_X == ind_Xs:
-                grad_cov_[ind_X, ind_Xs, 0] = 2.0 * hyps['noise']
+            if not is_fixed_noise:
+                if ind_X == ind_Xs:
+                    grad_cov_[ind_X, ind_Xs, 0] = 2.0 * hyps['noise']
                 ind_next += 1
             grad_cov_[ind_X, ind_Xs, ind_next] = 2.0 * cov_[ind_X, ind_Xs] / hyps['signal']
             grad_cov_[ind_X, ind_Xs, ind_next+1:] = cov_[ind_X, ind_Xs] * dist**2 * hyps['lengthscales']**(-1)
@@ -102,8 +103,9 @@ def grad_cov_matern32(cov_, X, Xs, hyps, num_hyps, is_fixed_noise):
             dist = np.linalg.norm(X_Xs_l, ord=2)
 
             ind_next = 0
-            if not is_fixed_noise and ind_X == ind_Xs:
-                grad_cov_[ind_X, ind_Xs, 0] = 2.0 * hyps['noise']
+            if not is_fixed_noise:
+                if ind_X == ind_Xs:
+                    grad_cov_[ind_X, ind_Xs, 0] = 2.0 * hyps['noise']
                 ind_next += 1
             grad_cov_[ind_X, ind_Xs, ind_next] = 2.0 * cov_[ind_X, ind_Xs] / hyps['signal']
             grad_cov_[ind_X, ind_Xs, ind_next+1:] = 3.0 * hyps['signal']**2 * np.exp(-np.sqrt(3) * dist) * dist**2 * hyps['lengthscales']**(-1)
@@ -142,8 +144,9 @@ def grad_cov_matern52(cov_, X, Xs, hyps, num_hyps, is_fixed_noise):
             dist = np.linalg.norm((X[ind_X] - Xs[ind_Xs]) / hyps['lengthscales'], ord=2)
 
             ind_next = 0
-            if not is_fixed_noise and ind_X == ind_Xs:
-                grad_cov_[ind_X, ind_Xs, 0] = 2.0 * hyps['noise']
+            if not is_fixed_noise:
+                if ind_X == ind_Xs:
+                    grad_cov_[ind_X, ind_Xs, 0] = 2.0 * hyps['noise']
                 ind_next += 1
             grad_cov_[ind_X, ind_Xs, ind_next] = 2.0 * cov_[ind_X, ind_Xs] / hyps['signal']
             grad_cov_[ind_X, ind_Xs, ind_next+1:] = 5.0 / 3.0 * hyps['signal']**2 * (1.0 + np.sqrt(5) * dist) * np.exp(-np.sqrt(5) * dist) * dist**3 * hyps['lengthscales']**(-1)
