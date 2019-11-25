@@ -145,14 +145,15 @@ INFO_HOLDERTABLE = {
     'global_minimum_y': -19.2085,
 }
 
-# TODO: fill the global minimum.
 INFO_GRAMACYANDLEE2012 = {
     'dim_fun': 1,
     'bounds': np.array([
         [0.5, 2.5],
     ]),
-    'global_minimum_X': None,
-    'global_minimum_y': None,
+    'global_minimum_X': np.array([
+        [0.54856405],
+    ]),
+    'global_minimum_y': -0.86901113,
 }
 
 INFO_ROSENBROCK = {
