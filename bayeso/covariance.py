@@ -1,6 +1,6 @@
 # covariance
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: April 11, 2019
+# last updated: November 25, 2019
 
 import numpy as np
 import scipy.spatial.distance as scisd
@@ -9,15 +9,27 @@ from bayeso import constants
 from bayeso.utils import utils_covariance
 
 
-def choose_fun_cov(str_cov):
+def choose_fun_cov(str_cov, is_grad=False):
+    assert isinstance(str_cov, str)
+    assert isinstance(is_grad, bool)
+
     if str_cov == 'se':
-        fun_cov = cov_se
+        if is_grad:
+            fun_cov = grad_cov_se
+        else:
+            fun_cov = cov_se
     elif str_cov == 'matern32':
-        fun_cov = cov_matern32
+        if is_grad:
+            fun_cov = grad_cov_matern32
+        else:
+            fun_cov = cov_matern32
     elif str_cov == 'matern52':
-        fun_cov = cov_matern52
+        if is_grad:
+            fun_cov = grad_cov_matern52
+        else:
+            fun_cov = cov_matern52
     else:
-        raise NotImplementedError('cov_main: allowed str_cov condition, but it is not implemented.')
+        raise NotImplementedError('cov_main: allowed str_cov and is_grad conditions, but it is not implemented.')
     return fun_cov
 
 def cov_se(bx, bxp, lengthscales, signal):
@@ -30,6 +42,33 @@ def cov_se(bx, bxp, lengthscales, signal):
     else:
         assert bx.shape[0] == bxp.shape[0]
     return signal**2 * np.exp(-0.5 * np.linalg.norm((bx - bxp) / lengthscales, ord=2)**2)
+
+def grad_cov_se(cov_, X, Xs, hyps, num_hyps, is_fixed_noise):
+    assert isinstance(cov_, np.ndarray)
+    assert isinstance(X, np.ndarray)
+    assert isinstance(Xs, np.ndarray)
+    assert isinstance(hyps, dict)
+    assert isinstance(num_hyps, int)
+    assert isinstance(is_fixed_noise, bool)
+
+    num_X = X.shape[0]
+    num_Xs = Xs.shape[0]
+
+    grad_cov_ = np.zeros((num_X, num_Xs, num_hyps))
+
+    for ind_X in range(0, num_X):
+        for ind_Xs in range(0, num_Xs):
+            X_Xs_l = (X[ind_X] - Xs[ind_Xs]) / hyps['lengthscales']
+            dist = np.linalg.norm(X_Xs_l, ord=2)
+
+            ind_next = 0
+            if not is_fixed_noise and ind_X == ind_Xs:
+                grad_cov_[ind_X, ind_Xs, 0] = 2.0 * hyps['noise']
+                ind_next += 1
+            grad_cov_[ind_X, ind_Xs, ind_next] = 2.0 * cov_[ind_X, ind_Xs] / hyps['signal']
+            grad_cov_[ind_X, ind_Xs, ind_next+1:] = cov_[ind_X, ind_Xs] * dist**2 * hyps['lengthscales']**(-1)
+
+    return grad_cov_
 
 def cov_matern32(bx, bxp, lengthscales, signal):
     assert isinstance(bx, np.ndarray)
@@ -44,6 +83,33 @@ def cov_matern32(bx, bxp, lengthscales, signal):
     dist = np.linalg.norm((bx - bxp) / lengthscales, ord=2)
     return signal**2 * (1.0 + np.sqrt(3.0) * dist) * np.exp(-1.0 * np.sqrt(3.0) * dist)
 
+def grad_cov_matern32(cov_, X, Xs, hyps, num_hyps, is_fixed_noise):
+    assert isinstance(cov_, np.ndarray)
+    assert isinstance(X, np.ndarray)
+    assert isinstance(Xs, np.ndarray)
+    assert isinstance(hyps, dict)
+    assert isinstance(num_hyps, int)
+    assert isinstance(is_fixed_noise, bool)
+
+    num_X = X.shape[0]
+    num_Xs = Xs.shape[0]
+
+    grad_cov_ = np.zeros((num_X, num_Xs, num_hyps))
+
+    for ind_X in range(0, num_X):
+        for ind_Xs in range(0, num_Xs):
+            X_Xs_l = (X[ind_X] - Xs[ind_Xs]) / hyps['lengthscales']
+            dist = np.linalg.norm(X_Xs_l, ord=2)
+
+            ind_next = 0
+            if not is_fixed_noise and ind_X == ind_Xs:
+                grad_cov_[ind_X, ind_Xs, 0] = 2.0 * hyps['noise']
+                ind_next += 1
+            grad_cov_[ind_X, ind_Xs, ind_next] = 2.0 * cov_[ind_X, ind_Xs] / hyps['signal']
+            grad_cov_[ind_X, ind_Xs, ind_next+1:] = 3.0 * hyps['signal']**2 * np.exp(-np.sqrt(3) * dist) * dist**2 * hyps['lengthscales']**(-1)
+
+    return grad_cov_
+
 def cov_matern52(bx, bxp, lengthscales, signal):
     assert isinstance(bx, np.ndarray)
     assert isinstance(bxp, np.ndarray)
@@ -56,6 +122,33 @@ def cov_matern52(bx, bxp, lengthscales, signal):
 
     dist = np.linalg.norm((bx - bxp) / lengthscales, ord=2)
     return signal**2 * (1.0 + np.sqrt(5.0) * dist + 5.0 / 3.0 * dist**2) * np.exp(-1.0 * np.sqrt(5.0) * dist)
+
+def grad_cov_matern52(cov_, X, Xs, hyps, num_hyps, is_fixed_noise):
+    assert isinstance(cov_, np.ndarray)
+    assert isinstance(X, np.ndarray)
+    assert isinstance(Xs, np.ndarray)
+    assert isinstance(hyps, dict)
+    assert isinstance(num_hyps, int)
+    assert isinstance(is_fixed_noise, bool)
+
+    num_X = X.shape[0]
+    num_Xs = Xs.shape[0]
+
+    grad_cov_ = np.zeros((num_X, num_Xs, num_hyps))
+
+    for ind_X in range(0, num_X):
+        for ind_Xs in range(0, num_Xs):
+            X_Xs_l = (X[ind_X] - Xs[ind_Xs]) / hyps['lengthscales']
+            dist = np.linalg.norm((X[ind_X] - Xs[ind_Xs]) / hyps['lengthscales'], ord=2)
+
+            ind_next = 0
+            if not is_fixed_noise and ind_X == ind_Xs:
+                grad_cov_[ind_X, ind_Xs, 0] = 2.0 * hyps['noise']
+                ind_next += 1
+            grad_cov_[ind_X, ind_Xs, ind_next] = 2.0 * cov_[ind_X, ind_Xs] / hyps['signal']
+            grad_cov_[ind_X, ind_Xs, ind_next+1:] = 5.0 / 3.0 * hyps['signal']**2 * (1.0 + np.sqrt(5) * dist) * np.exp(-np.sqrt(5) * dist) * dist**3 * hyps['lengthscales']**(-1)
+
+    return grad_cov_
 
 def cov_set(str_cov, X, Xs, lengthscales, signal):
     assert isinstance(str_cov, str)
@@ -151,9 +244,8 @@ def grad_cov_main(str_cov, X, Xs, hyps, is_fixed_noise,
     assert isinstance(jitter, float)
     assert str_cov in constants.ALLOWED_GP_COV
 
-    num_X = X.shape[0]
-    num_Xs = Xs.shape[0]
     num_dim = X.shape[1]
+
     if isinstance(hyps['lengthscales'], np.ndarray):
         is_scalar_lengthscales = False
         num_hyps = num_dim + 1
@@ -164,48 +256,9 @@ def grad_cov_main(str_cov, X, Xs, hyps, is_fixed_noise,
         num_hyps += 1
 
     cov_ = cov_main(str_cov, X, Xs, hyps, jitter=jitter)
-    grad_cov_ = np.zeros((num_X, num_Xs, num_hyps))
+    fun_grad_cov = choose_fun_cov(str_cov, is_grad=True)
 
     # TODO: I guess some gradients are wrong.
-    if str_cov == 'se':
-        for ind_X in range(0, num_X):
-            for ind_Xs in range(0, num_Xs):
-                X_Xs_l = (X[ind_X] - Xs[ind_Xs]) / hyps['lengthscales']
-                dist = np.linalg.norm(X_Xs_l, ord=2)
-
-                ind_next = 0
-                if not is_fixed_noise:
-                    # TODO: is it 1.0?
-                    grad_cov_[ind_X, ind_Xs, 0] = 1.0
-                    ind_next += 1
-                grad_cov_[ind_X, ind_Xs, ind_next] = cov_[ind_X, ind_Xs] / hyps['signal']**2
-                grad_cov_[ind_X, ind_Xs, ind_next+1:] = cov_[ind_X, ind_Xs] * dist**2
-    elif str_cov == 'matern32':
-        for ind_X in range(0, num_X):
-            for ind_Xs in range(0, num_Xs):
-                X_Xs_l = (X[ind_X] - Xs[ind_Xs]) / hyps['lengthscales']
-                dist = np.linalg.norm(X_Xs_l, ord=2)
-
-                ind_next = 0
-                if not is_fixed_noise:
-                    grad_cov_[ind_X, ind_Xs, 0] = 1.0
-                    ind_next += 1
-                grad_cov_[ind_X, ind_Xs, ind_next] = cov_[ind_X, ind_Xs] / hyps['signal']**2
-                grad_cov_[ind_X, ind_Xs, ind_next+1:] = 3.0 * hyps['signal']**2 * np.exp(-np.sqrt(3) * dist) * dist**2
-    elif str_cov == 'matern52':
-        for ind_X in range(0, num_X):
-            for ind_Xs in range(0, num_Xs):
-                X_Xs_l = (X[ind_X] - Xs[ind_Xs]) / hyps['lengthscales']
-                dist = np.linalg.norm((X[ind_X] - Xs[ind_Xs]) / hyps['lengthscales'], ord=2)
-
-                ind_next = 0
-                if not is_fixed_noise:
-                    grad_cov_[ind_X, ind_Xs, 0] = 1.0
-                    ind_next += 1
-
-                grad_cov_[ind_X, ind_Xs, ind_next] = cov_[ind_X, ind_Xs] / hyps['signal']**2
-                grad_cov_[ind_X, ind_Xs, ind_next+1:] = 5.0 / 3.0 * hyps['signal']**2 * (1 + np.sqrt(5) * dist) * np.exp(-np.sqrt(5) * dist) * dist**2
-    else:
-        raise NotImplementedError('grad_cov_main: a missing str_cov')
+    grad_cov_ = fun_grad_cov(cov_, X, Xs, hyps, num_hyps, is_fixed_noise)
 
     return grad_cov_

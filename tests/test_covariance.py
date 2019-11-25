@@ -1,6 +1,6 @@
 # test_covariance
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: June 01, 2018
+# last updated: November 25, 2019
 
 import pytest
 import numpy as np
@@ -10,6 +10,21 @@ from bayeso.utils import utils_covariance
 
 
 TEST_EPSILON = 1e-5
+
+def test_choose_fun_cov():
+    with pytest.raises(AssertionError) as error:
+        covariance.choose_fun_cov(123)
+    with pytest.raises(AssertionError) as error:
+        covariance.choose_fun_cov('se', 'abc')
+    with pytest.raises(NotImplementedError) as error:
+        covariance.choose_fun_cov('abc')
+
+    assert covariance.choose_fun_cov('se') == covariance.cov_se
+    assert covariance.choose_fun_cov('matern32') == covariance.cov_matern32
+    assert covariance.choose_fun_cov('matern52') == covariance.cov_matern52
+    assert covariance.choose_fun_cov('se', is_grad=True) == covariance.grad_cov_se
+    assert covariance.choose_fun_cov('matern32', is_grad=True) == covariance.grad_cov_matern32
+    assert covariance.choose_fun_cov('matern52', is_grad=True) == covariance.grad_cov_matern52
 
 def test_cov_se():
     with pytest.raises(AssertionError) as error:

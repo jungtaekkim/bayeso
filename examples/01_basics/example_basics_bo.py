@@ -37,7 +37,7 @@ def main():
         X_train = np.vstack((X_train, next_x))
         Y_train = fun_target(X_train)
         utils_plotting.plot_bo_step(X_train, Y_train, X_test, fun_target(X_test), mu_test, sigma_test, path_save=PATH_SAVE, str_postfix='basics_bo_' + str(ind_), int_init=num_init)
-        utils_plotting.plot_bo_step_acq(X_train, Y_train, X_test, fun_target(X_test), mu_test, sigma_test, acq_test, path_save=PATH_SAVE, str_postfix='basics_bo_' + str(ind_), int_init=num_init, is_acq_axis_small=True)
+        utils_plotting.plot_bo_step_acq(X_train, Y_train, X_test, fun_target(X_test), mu_test, sigma_test, acq_test, path_save=PATH_SAVE, str_postfix='basics_bo_' + str(ind_), int_init=num_init)
 
 
 if __name__ == '__main__':
