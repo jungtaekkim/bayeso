@@ -29,6 +29,9 @@ def test_import_utils_common():
 def test_import_utils_covariance():
     import bayeso.utils.utils_covariance
 
+def test_import_utils_plotting():
+    import bayeso.utils.utils_plotting
+
 def test_import_benchmarks():
     import bayeso.benchmarks
 

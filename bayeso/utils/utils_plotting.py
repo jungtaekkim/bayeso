@@ -4,8 +4,14 @@
 
 import os
 import numpy as np
-import matplotlib.pyplot as plt
-import pylab
+try:
+    import matplotlib.pyplot as plt
+except:
+    plt = None
+try:
+    import pylab
+except:
+    pylab = None
 
 from bayeso import constants
 from bayeso.utils import utils_common
@@ -77,6 +83,9 @@ def plot_gp(X_train, Y_train, X_test, mu, sigma,
         assert Y_test_truth.shape[1] == 1
         assert X_test.shape[0] == Y_test_truth.shape[0]
 
+    if plt is None or pylab is None:
+        return
+
     if is_tex:
         plt.rc('text', usetex=True)
     else:
@@ -119,6 +128,8 @@ def plot_gp(X_train, Y_train, X_test, mu, sigma,
         plt.pause(time_pause)
     plt.close('all')
 
+    return
+
 def plot_minimum(arr_minima, list_str_label, int_init, is_std,
     is_marker=True,
     is_legend=False,
@@ -150,6 +161,9 @@ def plot_minimum(arr_minima, list_str_label, int_init, is_std,
     assert len(arr_minima.shape) == 3
     assert arr_minima.shape[0] == len(list_str_label)
     assert arr_minima.shape[2] >= int_init
+
+    if plt is None or pylab is None:
+        return
 
     if is_tex:
         plt.rc('text', usetex=True)
@@ -207,6 +221,8 @@ def plot_minimum(arr_minima, list_str_label, int_init, is_std,
     plt.pause(time_pause)
     plt.close('all')
 
+    return
+
 def plot_minimum_time(arr_times, arr_minima, list_str_label, int_init, is_std,
     is_marker=True,
     is_legend=False,
@@ -242,6 +258,9 @@ def plot_minimum_time(arr_times, arr_minima, list_str_label, int_init, is_std,
     assert arr_times.shape[1] == arr_minima.shape[1]
     assert arr_minima.shape[2] >= int_init
     assert arr_times.shape[2] == arr_minima.shape[2] or arr_times.shape[2] + int_init == arr_minima.shape[2]
+
+    if plt is None or pylab is None:
+        return
 
     if is_tex:
         plt.rc('text', usetex=True)
@@ -305,6 +324,8 @@ def plot_minimum_time(arr_times, arr_minima, list_str_label, int_init, is_std,
     plt.pause(time_pause)
     plt.close('all')
 
+    return
+
 def plot_bo_step(X_train, Y_train, X_test, Y_test, mean_test, std_test,
     path_save=None,
     str_postfix=None,
@@ -346,6 +367,9 @@ def plot_bo_step(X_train, Y_train, X_test, Y_test, mean_test, std_test,
     if int_init is not None:
         assert X_train.shape[0] >= int_init
 
+    if plt is None or pylab is None:
+        return
+
     if is_tex:
         plt.rc('text', usetex=True)
     else:
@@ -384,6 +408,8 @@ def plot_bo_step(X_train, Y_train, X_test, Y_test, mean_test, std_test,
     plt.ion()
     plt.pause(time_pause)
     plt.close('all')
+
+    return
 
 def plot_bo_step_acq(X_train, Y_train, X_test, Y_test, mean_test, std_test, acq_test,
     path_save=None,
@@ -432,6 +458,9 @@ def plot_bo_step_acq(X_train, Y_train, X_test, Y_test, mean_test, std_test, acq_
     if int_init is not None:
         assert X_train.shape[0] >= int_init
 
+    if plt is None or pylab is None:
+        return
+
     if is_tex:
         plt.rc('text', usetex=True)
     else:
@@ -477,3 +506,5 @@ def plot_bo_step_acq(X_train, Y_train, X_test, Y_test, mean_test, std_test, acq_
     plt.ion()
     plt.pause(time_pause)
     plt.close('all')
+
+    return
