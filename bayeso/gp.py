@@ -134,16 +134,17 @@ def neg_log_ml(X_train, Y_train, hyps, str_cov, prior_mu_train,
     else:
         # TODO: is_gradient is fixed.
         is_gradient = False
-        cov_X_X, inv_cov_X_X, grad_cov_X_X = get_kernel_inverse(X_train, hyps, str_cov, is_fixed_noise=is_fixed_noise, debug=debug)
+        cov_X_X, inv_cov_X_X, grad_cov_X_X = get_kernel_inverse(X_train, hyps, str_cov, is_fixed_noise=is_fixed_noise, is_gradient=is_gradient, debug=debug)
 
         first_term = -0.5 * np.dot(np.dot(new_Y_train.T, inv_cov_X_X), new_Y_train)
         second_term = -0.5 * np.log(np.linalg.det(cov_X_X) + constants.JITTER_LOG)
-        
+
     third_term = -float(X_train.shape[0]) / 2.0 * np.log(2.0 * np.pi)
     log_ml_ = np.squeeze(first_term + second_term + third_term)
+    log_ml_ /= X_train.shape[0]
 
     if is_gradient:
-        return -1.0 * log_ml_, -1.0 * grad_log_ml_
+        return -1.0 * log_ml_, -1.0 * grad_log_ml_ / X_train.shape[0]
     else:
         return -1.0 * log_ml_
 
@@ -238,7 +239,7 @@ def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov,
     )
 
     if str_optimizer_method == 'BFGS':
-        result_optimized = scipy.optimize.minimize(neg_log_ml_, hyps_converted, method=str_optimizer_method, jac=is_gradient)
+        result_optimized = scipy.optimize.minimize(neg_log_ml_, hyps_converted, method=str_optimizer_method, jac=is_gradient, options={'disp': False})
         result_optimized = result_optimized.x
     elif str_optimizer_method == 'L-BFGS-B':
         bounds = utils_covariance.get_range_hyps(str_cov, num_dim, is_fixed_noise=is_fixed_noise)

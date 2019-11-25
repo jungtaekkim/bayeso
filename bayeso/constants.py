@@ -1,13 +1,13 @@
 # constants
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: April 26, 2019
+# last updated: November 26, 2019
 
 import numpy as np
 
 
 JITTER_ACQ = 1e-5
 JITTER_COV = 1e-5
-JITTER_LOG = 1e-10
+JITTER_LOG = 1e-7
 
 STR_OPTIMIZER_METHOD_GP = 'BFGS'
 STR_OPTIMIZER_METHOD_BO = 'L-BFGS-B'
