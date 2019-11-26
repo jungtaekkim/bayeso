@@ -246,7 +246,7 @@ def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov,
         result_optimized = result_optimized.x
     elif str_optimizer_method == 'L-BFGS-B':
         bounds = utils_covariance.get_range_hyps(str_cov, num_dim, is_fixed_noise=is_fixed_noise)
-        result_optimized = scipy.optimize.minimize(neg_log_ml_, hyps_converted, method=str_optimizer_method, bounds=bounds, jac=is_gradient)
+        result_optimized = scipy.optimize.minimize(neg_log_ml_, hyps_converted, method=str_optimizer_method, bounds=bounds, jac=is_gradient, options={'disp': False})
         result_optimized = result_optimized.x
     # TODO: Fill this conditions
     elif str_optimizer_method == 'DIRECT': # pragma: no cover
