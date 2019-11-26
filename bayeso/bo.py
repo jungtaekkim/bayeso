@@ -128,7 +128,6 @@ class BO():
         debug=False
     ):
         # TODO: use is_ard.
-        # TODO: add debug cases.
         assert isinstance(arr_range, np.ndarray)
         assert isinstance(str_cov, str)
         assert isinstance(str_acq, str)
