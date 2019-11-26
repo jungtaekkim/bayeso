@@ -184,15 +184,33 @@ def test_neg_log_ml():
     with pytest.raises(AssertionError) as error:
         gp.neg_log_ml(X, Y, arr_hyps, str_cov, prior_mu_X, debug=1)
 
-    neg_log_ml_ = gp.neg_log_ml(X, Y, arr_hyps, str_cov, prior_mu_X, is_gradient=False)
+    neg_log_ml_ = gp.neg_log_ml(X, Y, arr_hyps, str_cov, prior_mu_X, is_gradient=False, is_cholesky=True)
     print(neg_log_ml_)
-    truth_log_ml_ = 65.74995266591506
+    truth_log_ml_ = 21.916650988532854
     assert np.abs(neg_log_ml_ - truth_log_ml_) < TEST_EPSILON
 
-    log_ml_ = gp.neg_log_ml(X, Y, arr_hyps, str_cov, prior_mu_X, is_cholesky=False)
+    neg_log_ml_ = gp.neg_log_ml(X, Y, arr_hyps, str_cov, prior_mu_X, is_gradient=False, is_cholesky=False)
     print(neg_log_ml_)
-    truth_log_ml_ = 65.74995266566506
+    truth_log_ml_ = 21.91665090519953
     assert np.abs(neg_log_ml_ - truth_log_ml_) < TEST_EPSILON
+
+    neg_log_ml_ = gp.neg_log_ml(X, Y, arr_hyps, str_cov, prior_mu_X, is_gradient=True, is_cholesky=False)
+    print(neg_log_ml_)
+    truth_log_ml_ = 21.91665090519953
+    assert np.abs(neg_log_ml_ - truth_log_ml_) < TEST_EPSILON
+
+    neg_log_ml_, neg_grad_log_ml_ = gp.neg_log_ml(X, Y, arr_hyps, str_cov, prior_mu_X, is_gradient=True, is_cholesky=True)
+    print(neg_log_ml_)
+
+    truth_log_ml_ = 21.916650988532854
+    truth_grad_log_ml_ = np.array([
+        -4.09912156e+01,
+        -8.88182458e-04,
+        -8.88182458e-04,
+        -8.88182458e-04,
+    ])
+    assert np.abs(neg_log_ml_ - truth_log_ml_) < TEST_EPSILON
+    assert np.all(np.abs(neg_grad_log_ml_ - truth_grad_log_ml_) < TEST_EPSILON)
 
 def test_neg_log_pseudo_l_loocv():
     dim_X = 3
@@ -228,7 +246,7 @@ def test_neg_log_pseudo_l_loocv():
 
     neg_log_pseudo_l_ = gp.neg_log_pseudo_l_loocv(X, Y, arr_hyps, str_cov, prior_mu_X)
     print(neg_log_pseudo_l_)
-    truth_log_pseudo_l_ = -65.75046897497609
+    truth_log_pseudo_l_ = 21.916822991658695
     assert np.abs(neg_log_pseudo_l_ - truth_log_pseudo_l_) < TEST_EPSILON
 
 def test_get_optimized_kernel():

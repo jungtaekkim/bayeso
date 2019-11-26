@@ -186,6 +186,9 @@ def neg_log_pseudo_l_loocv(X_train, Y_train, hyps, str_cov, prior_mu_train,
         cur_log_pseudo_l_ = first_term + second_term + third_term
         log_pseudo_l_ += cur_log_pseudo_l_
 
+    log_pseudo_l_ /= num_data
+    log_pseudo_l_ *= -1.0
+
     return log_pseudo_l_
 
 def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov,
