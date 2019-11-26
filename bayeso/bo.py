@@ -119,10 +119,12 @@ class BO():
     def __init__(self, arr_range,
         str_cov=constants.STR_GP_COV,
         str_acq=constants.STR_BO_ACQ,
+        is_normalized=constants.IS_NORMALIZED_RESPONSE,
         is_ard=True,
         prior_mu=None,
         str_optimizer_method_gp=constants.STR_OPTIMIZER_METHOD_GP,
         str_optimizer_method_bo=constants.STR_OPTIMIZER_METHOD_BO,
+        str_modelselection_method=constants.STR_MODELSELECTION_METHOD,
         debug=False
     ):
         # TODO: use is_ard.
@@ -130,9 +132,11 @@ class BO():
         assert isinstance(arr_range, np.ndarray)
         assert isinstance(str_cov, str)
         assert isinstance(str_acq, str)
+        assert isinstance(is_normalized, bool)
         assert isinstance(is_ard, bool)
         assert isinstance(str_optimizer_method_bo, str)
         assert isinstance(str_optimizer_method_gp, str)
+        assert isinstance(str_modelselection_method, str)
         assert isinstance(debug, bool)
         assert callable(prior_mu) or prior_mu is None
         assert len(arr_range.shape) == 2
@@ -142,14 +146,17 @@ class BO():
         assert str_acq in constants.ALLOWED_BO_ACQ
         assert str_optimizer_method_gp in constants.ALLOWED_OPTIMIZER_METHOD_GP
         assert str_optimizer_method_bo in constants.ALLOWED_OPTIMIZER_METHOD_BO
+        assert str_modelselection_method in constants.ALLOWED_MODELSELECTION_METHOD
 
         self.arr_range = arr_range
         self.num_dim = arr_range.shape[0]
         self.str_cov = str_cov
         self.str_acq = str_acq
         self.is_ard = is_ard
+        self.is_normalized = is_normalized
         self.str_optimizer_method_bo = _check_optimizer_method_bo(str_optimizer_method_bo, arr_range.shape[0], debug)
         self.str_optimizer_method_gp = str_optimizer_method_gp
+        self.str_modelselection_method = str_modelselection_method
         self.debug = debug
         self.prior_mu = prior_mu
 
@@ -275,63 +282,70 @@ class BO():
         next_point = get_best_acquisition(next_points, fun_negative_acquisition)
         return next_point.flatten(), next_points
 
-    # TODO: str_mlm_method should be moved to __init__.
     def optimize(self, X_train, Y_train,
-        str_initial_method=constants.STR_AO_INITIALIZATION,
+        str_initial_method_ao=constants.STR_AO_INITIALIZATION,
         int_samples=constants.NUM_ACQ_SAMPLES,
-        is_normalized=constants.IS_NORMALIZED_RESPONSE,
         str_mlm_method=constants.STR_MLM_METHOD,
-        str_modelselection_method=constants.STR_MODELSELECTION_METHOD
     ):
-        # TODO: is_normalized cases
         assert isinstance(X_train, np.ndarray)
         assert isinstance(Y_train, np.ndarray)
-        assert isinstance(str_initial_method, str)
+        assert isinstance(str_initial_method_ao, str)
         assert isinstance(int_samples, int)
-        assert isinstance(is_normalized, bool)
         assert isinstance(str_mlm_method, str)
-        assert isinstance(str_modelselection_method, str)
         assert len(X_train.shape) == 2
         assert len(Y_train.shape) == 2
         assert Y_train.shape[1] == 1
         assert X_train.shape[0] == Y_train.shape[0]
         assert X_train.shape[1] == self.num_dim
         assert int_samples > 0
-        assert str_initial_method in constants.ALLOWED_INITIALIZATIONS_AO
+        assert str_initial_method_ao in constants.ALLOWED_INITIALIZATIONS_AO
         assert str_mlm_method in constants.ALLOWED_MLM_METHOD
-        assert str_modelselection_method in constants.ALLOWED_MODELSELECTION_METHOD
 
         time_start = time.time()
 
-        if is_normalized:
+        if self.is_normalized:
             Y_train = (Y_train - np.min(Y_train)) / (np.max(Y_train) - np.min(Y_train)) * constants.MULTIPLIER_RESPONSE
 
+        time_start_gp = time.time()
         if str_mlm_method == 'regular':
-            cov_X_X, inv_cov_X_X, hyps = gp.get_optimized_kernel(X_train, Y_train, self.prior_mu, self.str_cov, str_optimizer_method=self.str_optimizer_method_gp, str_modelselection_method=str_modelselection_method, debug=self.debug)
+            cov_X_X, inv_cov_X_X, hyps = gp.get_optimized_kernel(X_train, Y_train, self.prior_mu, self.str_cov, str_optimizer_method=self.str_optimizer_method_gp, str_modelselection_method=self.str_modelselection_method, debug=self.debug)
         elif str_mlm_method == 'converged':
+            is_fixed_noise = constants.IS_FIXED_GP_NOISE
+
             if self.is_optimize_hyps:
-                cov_X_X, inv_cov_X_X, hyps = gp.get_optimized_kernel(X_train, Y_train, self.prior_mu, self.str_cov, str_optimizer_method=self.str_optimizer_method_gp, str_modelselection_method=str_modelselection_method, debug=self.debug)
-                self.is_optimize_hyps = not _check_hyps_convergence(self.historical_hyps, hyps, self.str_cov, constants.IS_FIXED_GP_NOISE)
+                cov_X_X, inv_cov_X_X, hyps = gp.get_optimized_kernel(X_train, Y_train, self.prior_mu, self.str_cov, str_optimizer_method=self.str_optimizer_method_gp, str_modelselection_method=self.str_modelselection_method, debug=self.debug)
+                self.is_optimize_hyps = not _check_hyps_convergence(self.historical_hyps, hyps, self.str_cov, is_fixed_noise)
             # TODO: Can we test this else statement?
             else: # pragma: no cover
                 print('[DEBUG] optimize in bo.py: hyps are converged.')
                 hyps = self.historical_hyps[-1]
-                cov_X_X, inv_cov_X_X = gp.get_kernel_inverse(X_train, hyps, self.str_cov, debug=self.debug)
+                cov_X_X, inv_cov_X_X, _ = gp.get_kernel_inverse(X_train, hyps, self.str_cov, is_fixed_noise=is_fixed_noise, debug=self.debug)
         elif str_mlm_method == 'probabilistic': # pragma: no cover
             raise NotImplementedError('optimize: it will be added.')
         else: # pragma: no cover
             raise ValueError('optimize: missing condition for str_mlm_method.')
+        time_end_gp = time.time()
 
         self.historical_hyps.append(hyps)
 
         fun_acquisition = _choose_fun_acquisition(self.str_acq, hyps)
-      
+
+        time_start_acq = time.time()
         fun_negative_acquisition = lambda X_test: -1.0 * constants.MULTIPLIER_ACQ * self._optimize_objective(fun_acquisition, X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps)
-        next_point, next_points = self._optimize(fun_negative_acquisition, str_initial_method=str_initial_method, int_samples=int_samples)
+        next_point, next_points = self._optimize(fun_negative_acquisition, str_initial_method=str_initial_method_ao, int_samples=int_samples)
+        time_end_acq = time.time()
+
         acquisitions = fun_negative_acquisition(next_points)
 
         time_end = time.time()
 
+        times = {
+            'overall': time_end - time_start,
+            'gp': time_end_gp - time_start_gp,
+            'acq': time_end_acq - time_start_acq,
+        }
+
         if self.debug:
             print('[DEBUG] optimize in bo.py: time consumed', time_end - time_start, 'sec.')
-        return next_point, next_points, acquisitions, cov_X_X, inv_cov_X_X, hyps
+
+        return next_point, next_points, acquisitions, cov_X_X, inv_cov_X_X, hyps, times
