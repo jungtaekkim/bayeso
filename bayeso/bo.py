@@ -262,6 +262,7 @@ class BO():
             next_point = directminimize(
                 fun_negative_acquisition,
                 bounds=list_bounds,
+                maxf=88888,
             )
             next_point_x = next_point.x
             list_next_point.append(next_point_x)
