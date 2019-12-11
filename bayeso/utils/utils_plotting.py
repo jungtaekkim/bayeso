@@ -222,11 +222,12 @@ def plot_minimum(arr_minima, list_str_label, int_init, is_std,
 
     if path_save is not None and str_postfix is not None:
         str_figure = 'minimum_mean_std_' + str_postfix if is_std else 'minimum_mean_only_' + str_postfix
+        _save_figure(path_save, str_figure)
+
         fig_legend = pylab.figure(figsize=(3, 2))
         fig_legend.legend(lines, list_str_label, 'center', fancybox=False, edgecolor='black', fontsize=32)
         fig_legend.savefig(os.path.join(path_save, 'legend_{}.pdf'.format(str_postfix)), format='pdf', transparent=True, bbox_inches='tight')
 
-        _save_figure(path_save, str_figure)
     _show_figure(is_pause, time_pause)
     return
 
@@ -317,11 +318,12 @@ def plot_minimum_time(arr_times, arr_minima, list_str_label, int_init, is_std,
 
     if path_save is not None and str_postfix is not None:
         str_figure = 'minimum_time_mean_std_' + str_postfix if is_std else 'minimum_time_mean_only_' + str_postfix
+        _save_figure(path_save, str_figure)
+
         fig_legend = pylab.figure(figsize=(3, 2))
         fig_legend.legend(lines, list_str_label, 'center', fancybox=False, edgecolor='black', fontsize=32)
         fig_legend.savefig(os.path.join(path_save, 'legend_{}.pdf'.format(str_postfix)), format='pdf', transparent=True, bbox_inches='tight')
 
-        _save_figure(path_save, str_figure)
     _show_figure(is_pause, time_pause)
     return
 
