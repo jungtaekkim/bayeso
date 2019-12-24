@@ -1,38 +1,36 @@
 # example_benchmarks_hartmann6d_bo_ei
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: October 04, 2018
+# last updated: December 24, 2019
 
 import numpy as np
 import os
 
 from bayeso import bo
-from bayeso import benchmarks
+from benchmarks.six_dim_hartmann6d import Hartmann6D
 from bayeso.utils import utils_bo
 from bayeso.utils import utils_plotting
-from bayeso.utils import utils_benchmarks
 
-INFO_TARGET = benchmarks.INFO_HARTMANN6D
 STR_FUN_TARGET = 'hartmann6d'
 PATH_SAVE = '../figures/benchmarks/'
 
+obj_fun = Hartmann6D()
+
 
 def fun_target(X):
-    return benchmarks.hartmann6d(X)
+    return obj_fun.output(X)
 
 def main():
     int_bo = 5
-    int_iter = 100
+    int_iter = 20
     int_init = 3
-    
-    int_dim = 6
 
-    bounds = utils_benchmarks.get_bounds(INFO_TARGET, int_dim)
+    bounds = obj_fun.bounds
     model_bo = bo.BO(bounds, debug=True)
     list_Y = []
     list_time = []
     for ind_bo in range(0, int_bo):
         print('BO Iteration', ind_bo)
-        X_final, Y_final, time_final = utils_bo.optimize_many_with_random_init(model_bo, fun_target, int_init, int_iter, str_initial_method_bo='uniform', str_initial_method_ao='uniform', int_samples_ao=100)
+        X_final, Y_final, time_final, _, _ = utils_bo.optimize_many_with_random_init(model_bo, fun_target, int_init, int_iter, str_initial_method_bo='uniform', str_initial_method_ao='uniform', int_samples_ao=100)
         print(X_final)
         print(Y_final)
         print(time_final)

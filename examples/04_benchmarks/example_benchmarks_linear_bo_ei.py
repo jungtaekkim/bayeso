@@ -6,15 +6,15 @@ import numpy as np
 import os
 
 from bayeso import bo
-from benchmarks.two_dim_branin import Branin
+from benchmarks.one_dim_linear import Linear
 from bayeso.utils import utils_bo
 from bayeso.utils import utils_plotting
 
 
-STR_FUN_TARGET = 'branin'
+STR_FUN_TARGET = 'linear'
 PATH_SAVE = '../figures/benchmarks/'
 
-obj_fun = Branin()
+obj_fun = Linear(2.0)
 
 
 def fun_target(X):
