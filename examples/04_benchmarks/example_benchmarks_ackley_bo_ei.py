@@ -1,32 +1,31 @@
 # example_benchmarks_ackley_ei
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: July 12, 2018
+# last updated: January 06, 2020
 
 import numpy as np
 import os
 
 from bayeso import bo
-from bayeso import benchmarks
+from benchmarks.inf_dim_ackley import Ackley
 from bayeso.utils import utils_bo
 from bayeso.utils import utils_plotting
-from bayeso.utils import utils_benchmarks
 
-INFO_TARGET = benchmarks.INFO_ACKLEY
 STR_FUN_TARGET = 'ackley'
 PATH_SAVE = '../figures/benchmarks/'
+NUM_DIM = 3
+
+obj_fun = Ackley(NUM_DIM)
 
 
 def fun_target(X):
-    return benchmarks.ackley(X)
+    return obj_fun.output(X)
 
 def main():
     int_bo = 5
     int_iter = 100
     int_init = 3
-    
-    int_dim = 3
 
-    bounds = utils_benchmarks.get_bounds(INFO_TARGET, int_dim)
+    bounds = obj_fun.get_bounds()
     model_bo = bo.BO(bounds, debug=True)
     list_Y = []
     list_time = []
@@ -45,6 +44,7 @@ def main():
     arr_time = np.expand_dims(arr_time, axis=0)
     utils_plotting.plot_minimum(arr_Y, [STR_FUN_TARGET], int_init, True, path_save=PATH_SAVE, str_postfix=STR_FUN_TARGET)
     utils_plotting.plot_minimum_time(arr_time, arr_Y, [STR_FUN_TARGET], int_init, True, path_save=PATH_SAVE, str_postfix=STR_FUN_TARGET)
+
 
 if __name__ == '__main__':
     if not os.path.isdir(PATH_SAVE):

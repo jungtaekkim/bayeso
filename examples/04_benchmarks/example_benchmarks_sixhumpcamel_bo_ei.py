@@ -1,6 +1,6 @@
 # example_benchmarks_sixhumpcamel_ei
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: December 24, 2019
+# last updated: January 06, 2020
 
 import numpy as np
 import os
@@ -24,7 +24,7 @@ def main():
     int_iter = 20
     int_init = 3
     
-    bounds = obj_fun.bounds
+    bounds = obj_fun.get_bounds()
     model_bo = bo.BO(bounds, debug=True)
     list_Y = []
     list_time = []

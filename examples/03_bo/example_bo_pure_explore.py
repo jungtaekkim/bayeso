@@ -1,6 +1,6 @@
 # example_bo_pure_explore
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: July 12, 2018
+# last updated: January 06, 2020
 
 import numpy as np
 import os
@@ -31,14 +31,14 @@ def main():
     X_test = np.reshape(X_test, (400, 1))
     for ind_ in range(1, num_iter + 1):
         Y_train = fun_target(X_train)
-        next_x, _, _, cov_X_X, inv_cov_X_X, hyps = model_bo.optimize(X_train, fun_target(X_train), str_initial_method='uniform')
+        next_x, _, _, cov_X_X, inv_cov_X_X, hyps, _ = model_bo.optimize(X_train, fun_target(X_train), str_initial_method_ao='uniform')
         mu_test, sigma_test = gp.predict_test_(X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps)
         acq_test = acquisition.pure_explore(sigma_test.flatten())
         acq_test = np.expand_dims(acq_test, axis=1)
         X_train = np.vstack((X_train, next_x))
         Y_train = fun_target(X_train)
         utils_plotting.plot_bo_step(X_train, Y_train, X_test, fun_target(X_test), mu_test, sigma_test, path_save=PATH_SAVE, str_postfix='bo_{}_'.format(str_acq) + str(ind_), int_init=num_init)
-        utils_plotting.plot_bo_step_acq(X_train, Y_train, X_test, fun_target(X_test), mu_test, sigma_test, acq_test, path_save=PATH_SAVE, str_postfix='bo_{}_'.format(str_acq) + str(ind_), int_init=num_init, is_acq_axis_small=True)
+        utils_plotting.plot_bo_step_acq(X_train, Y_train, X_test, fun_target(X_test), mu_test, sigma_test, acq_test, path_save=PATH_SAVE, str_postfix='bo_{}_'.format(str_acq) + str(ind_), int_init=num_init)
 
 
 if __name__ == '__main__':
