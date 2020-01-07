@@ -194,12 +194,9 @@ def cov_main(str_cov, X, Xs, hyps, same_X_Xs,
     num_X = X.shape[0]
     num_Xs = Xs.shape[0]
 
+    cov_ = np.zeros((num_X, num_Xs))
     if same_X_Xs:
         assert num_X == num_Xs
-
-    cov_ = np.zeros((num_X, num_Xs))
-    # TODO: eliminate num_X == num_Xs
-    if same_X_Xs or num_X == num_Xs:
         cov_ += np.eye(num_X) * jitter
 
     if str_cov == 'se' or str_cov == 'matern32' or str_cov == 'matern52':
@@ -236,8 +233,7 @@ def cov_main(str_cov, X, Xs, hyps, same_X_Xs,
         assert num_d_X == num_d_Xs
 
         hyps, is_valid = utils_covariance.validate_hyps_dict(hyps, str_cov, num_d_X)
-        # TODO: Please check this is_valid.
-        if not is_valid: # pragma: no cover
+        if not is_valid:
             raise ValueError('cov_main: invalid hyperparameters.')
 
         if not same_X_Xs:
@@ -255,16 +251,19 @@ def cov_main(str_cov, X, Xs, hyps, same_X_Xs,
     return cov_
 
 def grad_cov_main(str_cov, X, Xs, hyps, is_fixed_noise,
+    same_X_Xs=True,
     jitter=constants.JITTER_COV,
 ):
-    # TODO: X and Xs should be same?
     assert isinstance(str_cov, str)
     assert isinstance(X, np.ndarray)
     assert isinstance(Xs, np.ndarray)
     assert isinstance(hyps, dict)
     assert isinstance(is_fixed_noise, bool)
+    assert isinstance(same_X_Xs, bool)
     assert isinstance(jitter, float)
     assert str_cov in constants.ALLOWED_GP_COV
+    # TODO: X and Xs should be same?
+    assert same_X_Xs
 
     num_dim = X.shape[1]
 
@@ -277,7 +276,7 @@ def grad_cov_main(str_cov, X, Xs, hyps, is_fixed_noise,
     if not is_fixed_noise:
         num_hyps += 1
 
-    cov_ = cov_main(str_cov, X, Xs, hyps, False, jitter=jitter)
+    cov_ = cov_main(str_cov, X, Xs, hyps, same_X_Xs, jitter=jitter)
     fun_grad_cov = choose_fun_cov(str_cov, is_grad=True)
 
     # TODO: I guess some gradients are wrong.

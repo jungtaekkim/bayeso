@@ -64,7 +64,7 @@ def get_kernel_inverse(X_train, hyps, str_cov,
     inv_cov_X_X = np.linalg.inv(cov_X_X)
 
     if is_gradient:
-        grad_cov_X_X = covariance.grad_cov_main(str_cov, X_train, X_train, hyps, is_fixed_noise)
+        grad_cov_X_X = covariance.grad_cov_main(str_cov, X_train, X_train, hyps, is_fixed_noise, same_X_Xs=True)
     else:
         grad_cov_X_X = None
 
@@ -88,7 +88,7 @@ def get_kernel_cholesky(X_train, hyps, str_cov,
     lower = scipy.linalg.cholesky(cov_X_X, lower=True)
 
     if is_gradient:
-        grad_cov_X_X = covariance.grad_cov_main(str_cov, X_train, X_train, hyps, is_fixed_noise)
+        grad_cov_X_X = covariance.grad_cov_main(str_cov, X_train, X_train, hyps, is_fixed_noise, same_X_Xs=True)
     else:
         grad_cov_X_X = None
     return cov_X_X, lower, grad_cov_X_X
