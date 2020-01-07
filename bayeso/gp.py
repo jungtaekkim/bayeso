@@ -59,7 +59,7 @@ def get_kernel_inverse(X_train, hyps, str_cov,
     assert isinstance(debug, bool)
     _check_str_cov('get_kernel_inverse', str_cov, X_train.shape)
 
-    cov_X_X = covariance.cov_main(str_cov, X_train, X_train, hyps) + hyps['noise']**2 * np.eye(X_train.shape[0])
+    cov_X_X = covariance.cov_main(str_cov, X_train, X_train, hyps, True) + hyps['noise']**2 * np.eye(X_train.shape[0])
     cov_X_X = (cov_X_X + cov_X_X.T) / 2.0
     inv_cov_X_X = np.linalg.inv(cov_X_X)
 
@@ -83,7 +83,7 @@ def get_kernel_cholesky(X_train, hyps, str_cov,
     assert isinstance(debug, bool)
     _check_str_cov('get_kernel_cholesky', str_cov, X_train.shape)
    
-    cov_X_X = covariance.cov_main(str_cov, X_train, X_train, hyps) + hyps['noise']**2 * np.eye(X_train.shape[0])
+    cov_X_X = covariance.cov_main(str_cov, X_train, X_train, hyps, True) + hyps['noise']**2 * np.eye(X_train.shape[0])
     cov_X_X = (cov_X_X + cov_X_X.T) / 2.0
     lower = scipy.linalg.cholesky(cov_X_X, lower=True)
 
@@ -292,8 +292,8 @@ def predict_test_(X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps,
 
     prior_mu_train = get_prior_mu(prior_mu, X_train)
     prior_mu_test = get_prior_mu(prior_mu, X_test)
-    cov_X_Xs = covariance.cov_main(str_cov, X_train, X_test, hyps)
-    cov_Xs_Xs = covariance.cov_main(str_cov, X_test, X_test, hyps)
+    cov_X_Xs = covariance.cov_main(str_cov, X_train, X_test, hyps, False)
+    cov_Xs_Xs = covariance.cov_main(str_cov, X_test, X_test, hyps, True)
     cov_Xs_Xs = (cov_Xs_Xs + cov_Xs_Xs.T) / 2.0
 
     mu_Xs = np.dot(np.dot(cov_X_Xs.T, inv_cov_X_X), Y_train - prior_mu_train) + prior_mu_test

@@ -53,7 +53,7 @@ def test_grad_cov_se():
         [1.0, 1.0],
     ])
     num_hyps = X_train.shape[1] + 1
-    cov_ = covariance.cov_main(str_cov, X_train, X_train, cur_hyps)
+    cov_ = covariance.cov_main(str_cov, X_train, X_train, cur_hyps, True)
     print(cov_)
 
     with pytest.raises(AssertionError) as error:
@@ -112,7 +112,7 @@ def test_grad_cov_matern32():
         [1.0, 1.0],
     ])
     num_hyps = X_train.shape[1] + 1
-    cov_ = covariance.cov_main(str_cov, X_train, X_train, cur_hyps)
+    cov_ = covariance.cov_main(str_cov, X_train, X_train, cur_hyps, True)
     print(cov_)
 
     with pytest.raises(AssertionError) as error:
@@ -171,7 +171,7 @@ def test_grad_cov_matern52():
         [1.0, 1.0],
     ])
     num_hyps = X_train.shape[1] + 1
-    cov_ = covariance.cov_main(str_cov, X_train, X_train, cur_hyps)
+    cov_ = covariance.cov_main(str_cov, X_train, X_train, cur_hyps, True)
     print(cov_)
 
     with pytest.raises(AssertionError) as error:
@@ -232,36 +232,39 @@ def test_cov_set():
 def test_cov_main():
     cur_hyps = utils_covariance.get_hyps('se', 3)
     with pytest.raises(AssertionError) as error:
-        covariance.cov_main('se', np.zeros((10, 2)), np.zeros((20, 3)), cur_hyps, jitter=0.001)
+        covariance.cov_main('se', np.zeros((10, 2)), np.zeros((20, 3)), cur_hyps, False, jitter=0.001)
     with pytest.raises(AssertionError) as error:
-        covariance.cov_main('se', np.zeros((10, 3)), np.zeros((20, 2)), cur_hyps, jitter=0.001)
+        covariance.cov_main('se', np.zeros((10, 3)), np.zeros((20, 2)), cur_hyps, False, jitter=0.001)
     with pytest.raises(ValueError) as error:
-        covariance.cov_main('se', np.zeros((10, 2)), np.zeros((20, 2)), cur_hyps, jitter=0.001)
+        covariance.cov_main('se', np.zeros((10, 2)), np.zeros((20, 2)), cur_hyps, False, jitter=0.001)
     with pytest.raises(AssertionError) as error:
-        covariance.cov_main('se', 1.0, np.zeros((20, 3)), cur_hyps, jitter=0.001)
+        covariance.cov_main('se', 1.0, np.zeros((20, 3)), cur_hyps, False, jitter=0.001)
     with pytest.raises(AssertionError) as error:
-        covariance.cov_main('se', np.zeros((10, 2)), 1.0, cur_hyps, jitter=0.001)
+        covariance.cov_main('se', np.zeros((10, 2)), 1.0, cur_hyps, False, jitter=0.001)
     with pytest.raises(AssertionError) as error:
-        covariance.cov_main(1.0, np.zeros((10, 3)), np.zeros((20, 3)), cur_hyps, jitter=0.001)
+        covariance.cov_main(1.0, np.zeros((10, 3)), np.zeros((20, 3)), cur_hyps, False, jitter=0.001)
     with pytest.raises(AssertionError) as error:
-        covariance.cov_main('se', np.zeros((10, 3)), np.zeros((20, 3)), 2.1, jitter=0.001)
+        covariance.cov_main('se', np.zeros((10, 3)), np.zeros((20, 3)), 2.1, False, jitter=0.001)
     with pytest.raises(AssertionError) as error:
-        covariance.cov_main('se', np.zeros((10, 3)), np.zeros((20, 3)), cur_hyps, jitter=1)
-
+        covariance.cov_main('se', np.zeros((10, 3)), np.zeros((20, 3)), cur_hyps, 'abc', jitter=0.001)
     with pytest.raises(AssertionError) as error:
-        covariance.cov_main('abc', np.zeros((10, 3)), np.zeros((20, 3)), cur_hyps, jitter=0.001)
+        covariance.cov_main('se', np.zeros((10, 3)), np.zeros((12, 3)), cur_hyps, True, jitter=0.001)
+    with pytest.raises(AssertionError) as error:
+        covariance.cov_main('se', np.zeros((10, 3)), np.zeros((20, 3)), cur_hyps, False, jitter=1)
+    with pytest.raises(AssertionError) as error:
+        covariance.cov_main('abc', np.zeros((10, 3)), np.zeros((20, 3)), cur_hyps, False, jitter=0.001)
 
     cur_hyps.pop('signal', None)
     with pytest.raises(ValueError) as error:
-        covariance.cov_main('se', np.zeros((10, 3)), np.zeros((20, 3)), cur_hyps)
+        covariance.cov_main('se', np.zeros((10, 3)), np.zeros((20, 3)), cur_hyps, False)
     cur_hyps = utils_covariance.get_hyps('se', 3)
-    cov_ = covariance.cov_main('se', np.zeros((10, 3)), np.zeros((20, 3)), cur_hyps, jitter=0.001)
+    cov_ = covariance.cov_main('se', np.zeros((10, 3)), np.zeros((20, 3)), cur_hyps, False, jitter=0.001)
 
     cur_hyps = utils_covariance.get_hyps('matern32', 3)
-    cov_ = covariance.cov_main('matern32', np.zeros((10, 3)), np.zeros((20, 3)), cur_hyps, jitter=0.001)
+    cov_ = covariance.cov_main('matern32', np.zeros((10, 3)), np.zeros((20, 3)), cur_hyps, False, jitter=0.001)
 
     cur_hyps = utils_covariance.get_hyps('matern52', 3)
-    cov_ = covariance.cov_main('matern52', np.zeros((10, 3)), np.zeros((20, 3)), cur_hyps, jitter=0.001)
+    cov_ = covariance.cov_main('matern52', np.zeros((10, 3)), np.zeros((20, 3)), cur_hyps, False, jitter=0.001)
 
 def test_grad_cov_main():
     cur_hyps = utils_covariance.get_hyps('se', 2)
