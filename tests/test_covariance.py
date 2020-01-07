@@ -259,12 +259,41 @@ def test_cov_main():
         covariance.cov_main('se', np.zeros((10, 3)), np.zeros((20, 3)), cur_hyps, False)
     cur_hyps = utils_covariance.get_hyps('se', 3)
     cov_ = covariance.cov_main('se', np.zeros((10, 3)), np.zeros((20, 3)), cur_hyps, False, jitter=0.001)
+    cov_ = covariance.cov_main('se', np.zeros((10, 3)), np.zeros((20, 3)), cur_hyps, False, jitter=0.001)
 
     cur_hyps = utils_covariance.get_hyps('matern32', 3)
     cov_ = covariance.cov_main('matern32', np.zeros((10, 3)), np.zeros((20, 3)), cur_hyps, False, jitter=0.001)
+    print(cov_)
+    assert np.all(cov_ == np.ones((10, 20)))
+
+    cov_ = covariance.cov_main('set_matern32', np.zeros((10, 5, 3)), np.zeros((20, 5, 3)), cur_hyps, False, jitter=0.001)
+    print(cov_)
+    assert np.all(cov_ == np.ones((10, 20)))
+
+    cov_ = covariance.cov_main('set_matern32', np.zeros((10, 5, 3)), np.zeros((10, 5, 3)), cur_hyps, False, jitter=0.001)
+    print(cov_)
+    assert np.all(cov_ == np.ones((10, 10)) + np.eye(10) * 1e-3)
+
+    cov_ = covariance.cov_main('set_matern32', np.zeros((10, 5, 3)), np.zeros((10, 5, 3)), cur_hyps, True, jitter=0.001)
+    print(cov_)
+    assert np.all(cov_ == np.ones((10, 10)) + np.eye(10) * 1e-3)
 
     cur_hyps = utils_covariance.get_hyps('matern52', 3)
     cov_ = covariance.cov_main('matern52', np.zeros((10, 3)), np.zeros((20, 3)), cur_hyps, False, jitter=0.001)
+    print(cov_)
+    assert np.all(cov_ == np.ones((10, 20)))
+
+    cov_ = covariance.cov_main('set_matern52', np.zeros((10, 5, 3)), np.zeros((20, 5, 3)), cur_hyps, False, jitter=0.001)
+    print(cov_)
+    assert np.all(cov_ == np.ones((10, 20)))
+
+    cov_ = covariance.cov_main('set_matern52', np.zeros((10, 5, 3)), np.zeros((10, 5, 3)), cur_hyps, False, jitter=0.001)
+    print(cov_)
+    assert np.all(cov_ == np.ones((10, 10)) + np.eye(10) * 1e-3)
+
+    cov_ = covariance.cov_main('set_matern52', np.zeros((10, 5, 3)), np.zeros((10, 5, 3)), cur_hyps, True, jitter=0.001)
+    print(cov_)
+    assert np.all(cov_ == np.ones((10, 10)) + np.eye(10) * 1e-3)
 
 def test_grad_cov_main():
     cur_hyps = utils_covariance.get_hyps('se', 2)
