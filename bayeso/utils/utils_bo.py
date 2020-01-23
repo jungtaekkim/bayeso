@@ -62,12 +62,12 @@ def optimize_many_(model_bo, fun_target, X_train, Y_train, int_iter,
     time_gp_final = []
     time_acq_final = []
     for ind_iter in range(0, int_iter):
+        print('Iteration {}'.format(ind_iter + 1))
         time_iter_start = time.time()
 
         next_point, next_points, acquisitions, _, _, _, times = model_bo.optimize(X_final, Y_final, str_initial_method_ao=str_initial_method_ao, int_samples=int_samples_ao, str_mlm_method=str_mlm_method)
 
         if model_bo.debug:
-            print('[DEBUG] optimize_many_ in utils_bo.py: current iteration', ind_iter + 1)
             print('[DEBUG] optimize_many_ in utils_bo.py: next_point', next_point)
 
         # TODO: check this code, which uses norm.

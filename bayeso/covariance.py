@@ -279,7 +279,7 @@ def grad_cov_main(str_cov, X, Xs, hyps, is_fixed_noise,
     cov_ = cov_main(str_cov, X, Xs, hyps, same_X_Xs, jitter=jitter)
     fun_grad_cov = choose_fun_cov(str_cov, is_grad=True)
 
-    # TODO: I guess some gradients are wrong.
+    # TODO: I guess some gradients might be wrong.
     grad_cov_ = fun_grad_cov(cov_, X, Xs, hyps, num_hyps, is_fixed_noise)
 
     return grad_cov_
