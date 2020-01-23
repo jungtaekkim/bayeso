@@ -13,9 +13,12 @@ The code can be found in `our GitHub repository <https://github.com/jungtaekkim/
 It is still under construction. We will update soon.
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
-
    self
-   gpr_simple
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Python API:
+
+   python_api/bayeso
+   python_api/bayeso.utils
 
