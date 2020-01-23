@@ -1,5 +1,5 @@
-bayeso.gp module
-================
+bayeso.gp
+=========
 
 .. automodule:: bayeso.gp
    :members:

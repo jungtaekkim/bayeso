@@ -1,5 +1,5 @@
-bayeso.bo module
-================
+bayeso.bo
+=========
 
 .. automodule:: bayeso.bo
    :members:

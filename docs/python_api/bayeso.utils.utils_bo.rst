@@ -1,7 +1,8 @@
-bayeso.utils.utils\_bo module
-=============================
+bayeso.utils.utils\_bo
+======================
 
 .. automodule:: bayeso.utils.utils_bo
    :members:
+   :private-members:
    :undoc-members:
    :show-inheritance:

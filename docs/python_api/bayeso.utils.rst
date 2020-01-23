@@ -1,8 +1,9 @@
-bayeso.utils package
-====================
+bayeso.utils
+============
 
 .. automodule:: bayeso.utils
    :members:
+   :private-members:
    :undoc-members:
    :show-inheritance:
 
