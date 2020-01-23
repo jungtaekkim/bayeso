@@ -6,16 +6,6 @@ bayeso package
    :undoc-members:
    :show-inheritance:
 
-Subpackages
------------
-
-.. toctree::
-
-   bayeso.utils
-
-Submodules
-----------
-
 .. toctree::
 
    bayeso.acquisition

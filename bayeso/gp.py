@@ -14,32 +14,6 @@ from bayeso.utils import utils_covariance
 
 
 def _check_str_cov(str_fun, str_cov, shape_X1, shape_X2=None):
-    """This function does something.
-
-    Args:
-       name (str):  The name to use.
-
-    Kwargs:
-       state (bool): Current state to be in.
-
-    Returns:
-       int.  The return code::
-
-          0 -- Success!
-          1 -- No good.
-          2 -- Try again.
-
-    Raises:
-       AttributeError, KeyError
-
-    A really great idea.  A way you might use me is
-
-    >>> print public_fn_with_googley_docstring(name='foo', state=None)
-    0
-
-    BTW, this always returns 0.  **NEVER** use with :class:`MyPublicClass`.
-
-    """
     assert isinstance(str_fun, str)
     assert isinstance(str_cov, str)
     assert isinstance(shape_X1, tuple)
@@ -60,6 +34,17 @@ def _check_str_cov(str_fun, str_cov, shape_X1, shape_X2=None):
     return
 
 def get_prior_mu(prior_mu, X):
+    """This function does something.
+
+    :param name: The name to use.
+    :type name: str.
+    :param state: Current state to be in.
+    :type state: bool.
+    :returns:  int -- the return code.
+    :raises: AttributeError, KeyError
+
+    """
+
     assert isinstance(X, np.ndarray)
     assert callable(prior_mu) or prior_mu is None
     assert len(X.shape) == 2 or len(X.shape) == 3

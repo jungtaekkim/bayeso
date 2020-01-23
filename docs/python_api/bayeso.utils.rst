@@ -6,9 +6,6 @@ bayeso.utils package
    :undoc-members:
    :show-inheritance:
 
-Submodules
-----------
-
 .. toctree::
 
    bayeso.utils.utils_bo
