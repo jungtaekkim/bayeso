@@ -14,6 +14,23 @@ from bayeso.utils import utils_covariance
 
 
 def _check_str_cov(str_fun, str_cov, shape_X1, shape_X2=None):
+    """
+    It is for validating the shape of X1 (and optionally the shape of X2).
+
+    :param str_fun: the name of function.
+    :type str_fun: str.
+    :param str_cov: the name of covariance function.
+    :type str_cov: str.
+    :param shape_X1: the shape of X1.
+    :type shape_X1: tuple
+    :param shape_X2: None, or the shape of X2.
+    :type shape_X2: NoneType or tuple, optional
+    :returns: None, if it is valid. Raise an error, otherwise.
+    :rtype: NoneType
+    :raises: AssertionError, ValueError
+
+    """
+
     assert isinstance(str_fun, str)
     assert isinstance(str_cov, str)
     assert isinstance(shape_X1, tuple)
@@ -34,14 +51,16 @@ def _check_str_cov(str_fun, str_cov, shape_X1, shape_X2=None):
     return
 
 def get_prior_mu(prior_mu, X):
-    """This function does something.
+    """
+    It computes the prior mean function values over inputs X.
 
-    :param name: The name to use.
-    :type name: str.
-    :param state: Current state to be in.
-    :type state: bool.
-    :returns:  int -- the return code.
-    :raises: AttributeError, KeyError
+    :param prior_mu: prior mean function or None
+    :type prior_mu: function or NoneType
+    :param X: the inputs for prior mean function.
+    :type X: numpy.ndarray
+    :returns: zero array (size: (X.shape[0], 1)), or array of prior mean function values (size: (X.shape[0], 1)).
+    :rtype: numpy.ndarray
+    :raises: AssertionError
 
     """
 

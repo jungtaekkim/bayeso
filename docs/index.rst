@@ -8,17 +8,19 @@ The code can be found in `our GitHub repository <https://github.com/jungtaekkim/
 It is still under construction. We will update soon.
 
 .. toctree::
+   :maxdepth: 1
+
    about_bayeso
    about_bo
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: Getting Started:
 
    getting_started/installation
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: Example:
 
    example/branin
