@@ -26,7 +26,7 @@ author = 'Jungtaek Kim and Seungjin Choi'
 # The short X.Y version
 version = '0.4.0'
 # The full version, including alpha/beta/rc tags
-release = 'alpha'
+release = '{} alpha'.format(version)
 
 
 # -- General configuration ---------------------------------------------------
@@ -152,6 +152,6 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
     (master_doc, 'bayeso', 'bayeso Documentation',
-     author, 'bayeso', 'One line description of project.',
-     'Miscellaneous'),
+     author, 'bayeso', 'Simple, but essential Bayesian optimization package.',
+     'Machine learning, Global optimization, Bayesian optimization, Hyperparameter optimization'),
 ]
