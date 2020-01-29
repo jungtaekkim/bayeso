@@ -25,8 +25,10 @@ def _check_str_cov(str_fun, str_cov, shape_X1, shape_X2=None):
     :type shape_X1: tuple
     :param shape_X2: None, or the shape of X2.
     :type shape_X2: NoneType or tuple, optional
+
     :returns: None, if it is valid. Raise an error, otherwise.
     :rtype: NoneType
+
     :raises: AssertionError, ValueError
 
     """
@@ -56,10 +58,12 @@ def get_prior_mu(prior_mu, X):
 
     :param prior_mu: prior mean function or None
     :type prior_mu: function or NoneType
-    :param X: the inputs for prior mean function.
+    :param X: inputs for prior mean function. Shape: (n, d) or (n, m, d)
     :type X: numpy.ndarray
-    :returns: zero array (size: (X.shape[0], 1)), or array of prior mean function values (size: (X.shape[0], 1)).
+
+    :returns: zero array, or array of prior mean function values. Shape: (n, 1)
     :rtype: numpy.ndarray
+
     :raises: AssertionError
 
     """
@@ -129,6 +133,35 @@ def neg_log_ml(X_train, Y_train, hyps, str_cov, prior_mu_train,
     is_gradient=True,
     debug=False
 ):
+    """
+    This function computes a negative log marginal likelihood.
+
+    :param X_train: inputs. Shape: (n, d) or (n, m, d).
+    :type X_train: numpy.ndarray
+    :param Y_train: outputs. Shape: (n, 1).
+    :type Y_train: numpy.ndarray
+    :param hyps: hyperparameters for Gaussian process. Shape: (h, ).
+    :type hyps: numpy.ndarray
+    :param str_cov: the name of covariance function
+    :type str_cov: str.
+    :param prior_mu_train: the prior values computed by get_prior_mu(). Shape: (n, 1)
+    :type prior_mu_train: numpy.ndarray
+    :param is_fixed_noise: flag for fixing a noise.
+    :type is_fixed_noise: bool., optional
+    :param is_cholesky: flag for using a cholesky decomposition.
+    :type is_cholesky: bool., optional
+    :param is_gradient: flag for computing and returning gradients of negative log marginal likelihood.
+    :type is_gradient: bool., optional
+    :param debug: flag for printing log messages.
+    :type debug: bool., optional
+
+    :returns: negative log marginal likelihood, or (negative log marginal likelihood, gradients of the likelihood).
+    :rtype: float, or (float, float)
+
+    :raises: AssertionError
+
+    """
+
     assert isinstance(X_train, np.ndarray)
     assert isinstance(Y_train, np.ndarray)
     assert isinstance(hyps, np.ndarray)

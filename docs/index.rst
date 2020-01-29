@@ -5,13 +5,12 @@ bayeso: A Bayesian optimization framework in Python
 
 The code can be found in `our GitHub repository <https://github.com/jungtaekkim/bayeso>`_.
 
-It is still under construction. We will update soon.
 
 .. toctree::
    :maxdepth: 1
 
-   about_bayeso
-   about_bo
+   about/about_bayeso
+   about/about_bo
 
 .. toctree::
    :maxdepth: 1
@@ -23,6 +22,7 @@ It is still under construction. We will update soon.
    :maxdepth: 1
    :caption: Example:
 
+   example/simple_gp_regression
    example/branin
 
 .. toctree::
