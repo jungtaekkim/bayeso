@@ -2,6 +2,9 @@ About bayeso
 ############
 
 Simple, but essential Bayesian optimization package.
+It is designed to run advanced Bayesian optimization with implementation-specific and application-specific modifications as well as to run Bayesian optimization in various applications simply.
+This package contains the codes for Gaussian process regression and Gaussian process-based Bayesian optimization.
+Some famous benchmark and custom benchmark functions for Bayesian optimization are included in `bayeso-benchmarks <https://github.com/jungtaekkim/bayeso-benchmarks>`_, which can be used to test the Bayesian optimization strategy. If you are interested in this package, please refer that repository.
 
 Supported Python Version
 ========================

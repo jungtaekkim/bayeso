@@ -56,9 +56,9 @@ def get_prior_mu(prior_mu, X):
     """
     It computes the prior mean function values over inputs X.
 
-    :param prior_mu: prior mean function or None
+    :param prior_mu: prior mean function or None.
     :type prior_mu: function or NoneType
-    :param X: inputs for prior mean function. Shape: (n, d) or (n, m, d)
+    :param X: inputs for prior mean function. Shape: (n, d) or (n, m, d).
     :type X: numpy.ndarray
 
     :returns: zero array, or array of prior mean function values. Shape: (n, 1)
@@ -85,6 +85,29 @@ def get_kernel_inverse(X_train, hyps, str_cov,
     is_gradient=False,
     debug=False
 ):
+    """
+    This function computes a kernel inverse without any matrix decomposition techniques.
+
+    :param X_train: inputs. Shape: (n, d) or (n, m, d).
+    :type X_train: numpy.ndarray
+    :param hyps: dictionary of hyperparameters for Gaussian process.
+    :type hyps: dict.
+    :param str_cov: the name of covariance function.
+    :type str_cov: str.
+    :param is_fixed_noise: flag for fixing a noise.
+    :type is_fixed_noise: bool., optional
+    :param is_gradient: flag for computing and returning gradients of negative log marginal likelihood.
+    :type is_gradient: bool., optional
+    :param debug: flag for printing log messages.
+    :type debug: bool., optional
+
+    :returns: a tuple of kernel matrix over X_train, kernel matrix inverse, and gradients of kernel matrix. If is_gradient is False, gradients of kernel matrix would be None.
+    :rtype: tuple of (numpy.ndarray, numpy.ndarray, numpy.ndarray)
+
+    :raises: AssertionError
+
+    """
+
     assert isinstance(X_train, np.ndarray)
     assert isinstance(hyps, dict)
     assert isinstance(str_cov, str)
@@ -109,6 +132,29 @@ def get_kernel_cholesky(X_train, hyps, str_cov,
     is_gradient=False,
     debug=False
 ):
+    """
+    This function computes a kernel inverse with Cholesky decomposition.
+
+    :param X_train: inputs. Shape: (n, d) or (n, m, d).
+    :type X_train: numpy.ndarray
+    :param hyps: dictionary of hyperparameters for Gaussian process.
+    :type hyps: dict.
+    :param str_cov: the name of covariance function.
+    :type str_cov: str.
+    :param is_fixed_noise: flag for fixing a noise.
+    :type is_fixed_noise: bool., optional
+    :param is_gradient: flag for computing and returning gradients of negative log marginal likelihood.
+    :type is_gradient: bool., optional
+    :param debug: flag for printing log messages.
+    :type debug: bool., optional
+
+    :returns: a tuple of kernel matrix over X_train, lower matrix computed by Cholesky decomposition, and gradients of kernel matrix. If is_gradient is False, gradients of kernel matrix would be None.
+    :rtype: tuple of (numpy.ndarray, numpy.ndarray, numpy.ndarray)
+
+    :raises: AssertionError
+
+    """
+
     assert isinstance(X_train, np.ndarray)
     assert isinstance(hyps, dict)
     assert isinstance(str_cov, str)
@@ -142,9 +188,9 @@ def neg_log_ml(X_train, Y_train, hyps, str_cov, prior_mu_train,
     :type Y_train: numpy.ndarray
     :param hyps: hyperparameters for Gaussian process. Shape: (h, ).
     :type hyps: numpy.ndarray
-    :param str_cov: the name of covariance function
+    :param str_cov: the name of covariance function.
     :type str_cov: str.
-    :param prior_mu_train: the prior values computed by get_prior_mu(). Shape: (n, 1)
+    :param prior_mu_train: the prior values computed by get_prior_mu(). Shape: (n, 1).
     :type prior_mu_train: numpy.ndarray
     :param is_fixed_noise: flag for fixing a noise.
     :type is_fixed_noise: bool., optional
@@ -156,7 +202,7 @@ def neg_log_ml(X_train, Y_train, hyps, str_cov, prior_mu_train,
     :type debug: bool., optional
 
     :returns: negative log marginal likelihood, or (negative log marginal likelihood, gradients of the likelihood).
-    :rtype: float, or (float, float)
+    :rtype: float, or tuple of (float, float)
 
     :raises: AssertionError
 

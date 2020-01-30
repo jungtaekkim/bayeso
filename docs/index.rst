@@ -1,8 +1,11 @@
 bayeso: A Bayesian optimization framework in Python
 ===================================================
 
-`bayeso <https://github.com/jungtaekkim/bayeso>`_ is a simple, but essential Bayesian optimization package, written in Python. It is developed by `machine learning group <http://mlg.postech.ac.kr>`_ at POSTECH. This project is licensed under `the MIT license <https://opensource.org/licenses/MIT>`_.
+`bayeso <https://github.com/jungtaekkim/bayeso>`_ is a simple, but essential Bayesian optimization package, written in Python.
+It is developed by `machine learning group <http://mlg.postech.ac.kr>`_ at POSTECH.
+This project is licensed under `the MIT license <https://opensource.org/licenses/MIT>`_.
 
+This documentation describes the details of implementation, getting started guides, some examples with bayeso, and Python API specifications.
 The code can be found in `our GitHub repository <https://github.com/jungtaekkim/bayeso>`_.
 
 
