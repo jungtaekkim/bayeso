@@ -1,4 +1,6 @@
-![alt text](docs/_static/logo_bayeso.svg "Logo bayeso")
+<p align="center">
+<img src="docs/_static/logo_bayeso.svg" width="400" />
+</p>
 
 # bayeso
 [![Build Status](https://travis-ci.org/jungtaekkim/bayeso.svg?branch=master)](https://travis-ci.org/jungtaekkim/bayeso)
