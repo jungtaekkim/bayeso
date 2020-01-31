@@ -74,9 +74,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.7"
-     inkscape:cx="208.88829"
-     inkscape:cy="-19.11748"
+     inkscape:zoom="1.979899"
+     inkscape:cx="233.27076"
+     inkscape:cy="-1.4604279"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -101,24 +101,24 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-3.9484821,-111.07442)">
+     transform="translate(-3.9484821,-111.34169)">
     <g
-       id="g977">
+       id="g945">
       <text
          id="text3775"
-         y="160.70177"
+         y="161.23093"
          x="82.852386"
          style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#c80150;fill-opacity:1;stroke:none;stroke-width:0.26458332"
          xml:space="preserve"><tspan
            style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:35.27777863px;font-family:serif;-inkscape-font-specification:serif;fill:#c80150;fill-opacity:1;stroke-width:0.26458332"
-           y="160.70177"
+           y="161.23093"
            x="82.852386"
            id="tspan3773"
            sodipodi:role="line">bayeso</tspan></text>
       <g
          id="g935"
          inkscape:label="logo_bayeso_left"
-         transform="matrix(0.35277777,0,0,-0.35277777,-0.32559095,171.39432)">
+         transform="matrix(0.35277777,0,0,-0.35277777,-0.32559095,171.66159)">
         <g
            id="g937">
           <g
