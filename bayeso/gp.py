@@ -1,6 +1,6 @@
 # gp
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: June 03, 2019
+# last updated: January 31, 2020
 
 import time
 import numpy as np
@@ -61,7 +61,7 @@ def get_prior_mu(prior_mu, X):
     :param X: inputs for prior mean function. Shape: (n, d) or (n, m, d).
     :type X: numpy.ndarray
 
-    :returns: zero array, or array of prior mean function values. Shape: (n, 1)
+    :returns: zero array, or array of prior mean function values. Shape: (n, 1).
     :rtype: numpy.ndarray
 
     :raises: AssertionError
@@ -456,7 +456,7 @@ def predict_test_(X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps,
     :param debug: flag for printing log messages.
     :type debug: bool., optional
 
-    :returns: a tuple of posterior mean function over X_test and posterior standard deviation function over X_test. Shape: ((l, 1), (l, 1))
+    :returns: a tuple of posterior mean function over X_test and posterior standard deviation function over X_test. Shape: ((l, 1), (l, 1)).
     :rtype: tuple of (numpy.ndarray, numpy.ndarray)
 
     :raises: AssertionError
@@ -513,7 +513,7 @@ def predict_test(X_train, Y_train, X_test, hyps,
     :param debug: flag for printing log messages.
     :type debug: bool., optional
 
-    :returns: a tuple of posterior mean function over X_test and posterior standard deviation function over X_test. Shape: ((l, 1), (l, 1))
+    :returns: a tuple of posterior mean function over X_test and posterior standard deviation function over X_test. Shape: ((l, 1), (l, 1)).
     :rtype: tuple of (numpy.ndarray, numpy.ndarray)
 
     :raises: AssertionError
@@ -560,7 +560,7 @@ def predict_optimized(X_train, Y_train, X_test,
     :param debug: flag for printing log messages.
     :type debug: bool., optional
 
-    :returns: a tuple of posterior mean function over X_test and posterior standard deviation function over X_test. Shape: ((l, 1), (l, 1))
+    :returns: a tuple of posterior mean function over X_test and posterior standard deviation function over X_test. Shape: ((l, 1), (l, 1)).
     :rtype: tuple of (numpy.ndarray, numpy.ndarray)
 
     :raises: AssertionError
