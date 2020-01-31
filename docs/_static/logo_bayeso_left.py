@@ -28,7 +28,7 @@ if __name__ == '__main__':
     fig = plt.figure(figsize=(4, 3))
     ax = fig.gca()
 
-    ax.plot(X_test.flatten(), mu, color=(255./255., 179./255., 0./255.), linewidth=6)
+    ax.plot(X_test.flatten(), mu, color=(255./255., 179./255., 0./255.), linewidth=8)
 
     '''
     range_shade = 4.0
@@ -40,7 +40,7 @@ if __name__ == '__main__':
         alpha=0.3
     )
     '''
-    ax.plot([0.254], [-0.235], color=(200./255., 1./255., 80./255.), linestyle='none', marker='*', markersize=18)
+    ax.plot([0.254], [-0.235], color=(200./255., 1./255., 80./255.), linestyle='none', marker='*', markersize=24)
 
     plt.axis('off')
 

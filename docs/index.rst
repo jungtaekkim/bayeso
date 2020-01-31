@@ -1,3 +1,10 @@
+.. image:: _static/logo_bayeso.svg
+    :alt: bayeso logo
+    :width: 400px
+    :align: center
+
+----------------------------------
+
 bayeso: A Bayesian optimization framework in Python
 ===================================================
 
