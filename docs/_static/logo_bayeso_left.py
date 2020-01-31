@@ -40,7 +40,7 @@ if __name__ == '__main__':
         alpha=0.3
     )
     '''
-    ax.plot([0.254], [-0.235], color=(200./255., 1./255., 80./255.), linestyle='none', marker='*', markersize=24)
+    ax.plot([0.254], [-0.235], color=(200./255., 1./255., 80./255.), linestyle='none', marker='+', markersize=18, markeredgewidth=6)
 
     plt.axis('off')
 

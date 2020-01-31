@@ -1,3 +1,5 @@
+![alt text](docs/_static/logo_bayeso.svg "Logo bayeso")
+
 # bayeso
 [![Build Status](https://travis-ci.org/jungtaekkim/bayeso.svg?branch=master)](https://travis-ci.org/jungtaekkim/bayeso)
 [![Coverage Status](https://coveralls.io/repos/github/jungtaekkim/bayeso/badge.svg?branch=master)](https://coveralls.io/github/jungtaekkim/bayeso?branch=master)
