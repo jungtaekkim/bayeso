@@ -261,6 +261,31 @@ def neg_log_pseudo_l_loocv(X_train, Y_train, hyps, str_cov, prior_mu_train,
     is_fixed_noise=constants.IS_FIXED_GP_NOISE,
     debug=False
 ):
+    """
+    It computes a negative log pseudo-likelihood using leave-one-out cross-validation.
+
+    :param X_train: inputs. Shape: (n, d) or (n, m, d).
+    :type X_train: numpy.ndarray
+    :param Y_train: outputs. Shape: (n, 1).
+    :type Y_train: numpy.ndarray
+    :param hyps: hyperparameters for Gaussian process. Shape: (h, ).
+    :type hyps: numpy.ndarray
+    :param str_cov: the name of covariance function.
+    :type str_cov: str.
+    :param prior_mu_train: the prior values computed by get_prior_mu(). Shape: (n, 1).
+    :type prior_mu_train: numpy.ndarray
+    :param is_fixed_noise: flag for fixing a noise.
+    :type is_fixed_noise: bool., optional
+    :param debug: flag for printing log messages.
+    :type debug: bool., optional
+
+    :returns: negative log pseudo-likelihood.
+    :rtype: float
+
+    :raises: AssertionError
+
+    """
+
     assert isinstance(X_train, np.ndarray)
     assert isinstance(Y_train, np.ndarray)
     assert isinstance(hyps, np.ndarray)
@@ -306,6 +331,33 @@ def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov,
     is_fixed_noise=constants.IS_FIXED_GP_NOISE,
     debug=False
 ):
+    """
+    This function computes the kernel matrix optimized by optimization method specified, its inverse matrix, and the optimized hyperparameters.
+
+    :param X_train: inputs. Shape: (n, d) or (n, m, d).
+    :type X_train: numpy.ndarray
+    :param Y_train: outputs. Shape: (n, 1).
+    :type Y_train: numpy.ndarray
+    :param prior_mu: prior mean function or None.
+    :type prior_mu: function or NoneType
+    :param str_cov: the name of covariance function.
+    :type str_cov: str.
+    :param str_optimizer_method: the name of optimization method.
+    :type str_optimizer_method: str., optional
+    :param str_modelselection_method: the name of model selection method.
+    :type str_modelselection_method: str., optional
+    :param is_fixed_noise: flag for fixing a noise.
+    :type is_fixed_noise: bool., optional
+    :param debug: flag for printing log messages.
+    :type debug: bool., optional
+
+    :returns: a tuple of kernel matrix over X_train, kernel matrix inverse, and dictionary of hyperparameters.
+    :rtype: tuple of (numpy.ndarray, numpy.ndarray, dict.)
+
+    :raises: AssertionError, ValueError
+
+    """
+
     # TODO: check to input same is_fixed_noise to convert_hyps and restore_hyps
     assert isinstance(X_train, np.ndarray)
     assert isinstance(Y_train, np.ndarray)
@@ -382,6 +434,35 @@ def predict_test_(X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps,
     prior_mu=None,
     debug=False
 ):
+    """
+    This function returns posterior mean and posterior standard deviation functions over X_test, computed by Gaussian process regression with X_train, Y_train, cov_X_X, inv_cov_X_X, and hyps.
+
+    :param X_train: inputs. Shape: (n, d) or (n, m, d).
+    :type X_train: numpy.ndarray
+    :param Y_train: outputs. Shape: (n, 1).
+    :type Y_train: numpy.ndarray
+    :param X_test: inputs. Shape: (l, d) or (l, m, d).
+    :type X_test: numpy.ndarray
+    :param cov_X_X: kernel matrix over X_train. Shape: (n, n).
+    :type cov_X_X: numpy.ndarray
+    :param inv_cov_X_X: kernel matrix inverse over X_train. Shape: (n, n).
+    :type inv_cov_X_X: numpy.ndarray
+    :param hyps: dictionary of hyperparameters for Gaussian process.
+    :type hyps: dict.
+    :param str_cov: the name of covariance function.
+    :type str_cov: str., optional
+    :param prior_mu: None, or prior mean function.
+    :type prior_mu: NoneType, or function, optional
+    :param debug: flag for printing log messages.
+    :type debug: bool., optional
+
+    :returns: a tuple of posterior mean function over X_test and posterior standard deviation function over X_test. Shape: ((l, 1), (l, 1))
+    :rtype: tuple of (numpy.ndarray, numpy.ndarray)
+
+    :raises: AssertionError
+
+    """
+
     assert isinstance(X_train, np.ndarray)
     assert isinstance(Y_train, np.ndarray)
     assert isinstance(X_test, np.ndarray)
@@ -414,6 +495,31 @@ def predict_test(X_train, Y_train, X_test, hyps,
     prior_mu=None,
     debug=False
 ):
+    """
+    This function returns posterior mean and posterior standard deviation functions over X_test, computed by Gaussian process regression with X_train, Y_train, and hyps.
+
+    :param X_train: inputs. Shape: (n, d) or (n, m, d).
+    :type X_train: numpy.ndarray
+    :param Y_train: outputs. Shape: (n, 1).
+    :type Y_train: numpy.ndarray
+    :param X_test: inputs. Shape: (l, d) or (l, m, d).
+    :type X_test: numpy.ndarray
+    :param hyps: dictionary of hyperparameters for Gaussian process.
+    :type hyps: dict.
+    :param str_cov: the name of covariance function.
+    :type str_cov: str., optional
+    :param prior_mu: None, or prior mean function.
+    :type prior_mu: NoneType, or function, optional
+    :param debug: flag for printing log messages.
+    :type debug: bool., optional
+
+    :returns: a tuple of posterior mean function over X_test and posterior standard deviation function over X_test. Shape: ((l, 1), (l, 1))
+    :rtype: tuple of (numpy.ndarray, numpy.ndarray)
+
+    :raises: AssertionError
+
+    """
+
     assert isinstance(X_train, np.ndarray)
     assert isinstance(Y_train, np.ndarray)
     assert isinstance(X_test, np.ndarray)
@@ -436,6 +542,31 @@ def predict_optimized(X_train, Y_train, X_test,
     is_fixed_noise=constants.IS_FIXED_GP_NOISE,
     debug=False
 ):
+    """
+    This function returns posterior mean and posterior standard deviation functions over X_test, computed by the Gaussian process regression optimized with X_train and Y_train.
+
+    :param X_train: inputs. Shape: (n, d) or (n, m, d).
+    :type X_train: numpy.ndarray
+    :param Y_train: outputs. Shape: (n, 1).
+    :type Y_train: numpy.ndarray
+    :param X_test: inputs. Shape: (l, d) or (l, m, d).
+    :type X_test: numpy.ndarray
+    :param str_cov: the name of covariance function.
+    :type str_cov: str., optional
+    :param prior_mu: None, or prior mean function.
+    :type prior_mu: NoneType, or function, optional
+    :param is_fixed_noise: flag for fixing a noise.
+    :type is_fixed_noise: bool., optional
+    :param debug: flag for printing log messages.
+    :type debug: bool., optional
+
+    :returns: a tuple of posterior mean function over X_test and posterior standard deviation function over X_test. Shape: ((l, 1), (l, 1))
+    :rtype: tuple of (numpy.ndarray, numpy.ndarray)
+
+    :raises: AssertionError
+
+    """
+
     assert isinstance(X_train, np.ndarray)
     assert isinstance(Y_train, np.ndarray)
     assert isinstance(X_test, np.ndarray)
