@@ -1,6 +1,6 @@
 # acquisition
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: June 20, 2018
+# last updated: February 01, 2020
 
 import numpy as np
 import scipy.stats
@@ -9,6 +9,25 @@ from bayeso import constants
 
 
 def pi(pred_mean, pred_std, Y_train, jitter=constants.JITTER_ACQ):
+    """
+    It is a probability improvement criterion.
+
+    :param pred_mean: posterior predictive mean function over X_test. Shape: (l, ).
+    :type pred_mean: numpy.ndarray
+    :param pred_std: posterior predictive standard deviation function over X_test. Shape: (l, ).
+    :type pred_std: numpy.ndarray
+    :param Y_train: outputs of X_train. Shape: (n, 1).
+    :type Y_train: numpy.ndarray
+    :param jitter: jitter for pred_std.
+    :type jitter: float, optional
+
+    :returns: acquisition function values. Shape: (l, ).
+    :rtype: numpy.ndarray
+
+    :raises: AssertionError
+
+    """
+
     assert isinstance(pred_mean, np.ndarray)
     assert isinstance(pred_std, np.ndarray)
     assert isinstance(Y_train, np.ndarray)
@@ -23,6 +42,25 @@ def pi(pred_mean, pred_std, Y_train, jitter=constants.JITTER_ACQ):
     return scipy.stats.norm.cdf(val_z)
 
 def ei(pred_mean, pred_std, Y_train, jitter=constants.JITTER_ACQ):
+    """
+    It is an expected improvement criterion.
+
+    :param pred_mean: posterior predictive mean function over X_test. Shape: (l, ).
+    :type pred_mean: numpy.ndarray
+    :param pred_std: posterior predictive standard deviation function over X_test. Shape: (l, ).
+    :type pred_std: numpy.ndarray
+    :param Y_train: outputs of X_train. Shape: (n, 1).
+    :type Y_train: numpy.ndarray
+    :param jitter: jitter for pred_std.
+    :type jitter: float, optional
+
+    :returns: acquisition function values. Shape: (l, ).
+    :rtype: numpy.ndarray
+
+    :raises: AssertionError
+
+    """
+
     assert isinstance(pred_mean, np.ndarray)
     assert isinstance(pred_std, np.ndarray)
     assert isinstance(Y_train, np.ndarray)
@@ -37,6 +75,27 @@ def ei(pred_mean, pred_std, Y_train, jitter=constants.JITTER_ACQ):
     return (np.min(Y_train) - pred_mean) * scipy.stats.norm.cdf(val_z) + pred_std * scipy.stats.norm.pdf(val_z)
 
 def ucb(pred_mean, pred_std, Y_train=None, kappa=2.0, is_increased=True):
+    """
+    It is a Gaussian process upper confidence bound criterion.
+
+    :param pred_mean: posterior predictive mean function over X_test. Shape: (l, ).
+    :type pred_mean: numpy.ndarray
+    :param pred_std: posterior predictive standard deviation function over X_test. Shape: (l, ).
+    :type pred_std: numpy.ndarray
+    :param Y_train: outputs of X_train. Shape: (n, 1).
+    :type Y_train: numpy.ndarray, optional
+    :param kappa: trade-off hyperparameter between exploration and exploitation.
+    :type kappa: float, optional
+    :param is_increased: flag for increasing a kappa value as Y_train grows. If Y_train is None, it is ignored, which means kappa is fixed.
+    :type is_increased: bool., optional
+
+    :returns: acquisition function values. Shape: (l, ).
+    :rtype: numpy.ndarray
+
+    :raises: AssertionError
+
+    """
+
     assert isinstance(pred_mean, np.ndarray)
     assert isinstance(pred_std, np.ndarray)
     assert isinstance(Y_train, np.ndarray) or Y_train is None
@@ -57,6 +116,27 @@ def ucb(pred_mean, pred_std, Y_train=None, kappa=2.0, is_increased=True):
 def aei(pred_mean, pred_std, Y_train, noise,
     jitter=constants.JITTER_ACQ
 ):
+    """
+    It is an augmented expected improvement criterion.
+
+    :param pred_mean: posterior predictive mean function over X_test. Shape: (l, ).
+    :type pred_mean: numpy.ndarray
+    :param pred_std: posterior predictive standard deviation function over X_test. Shape: (l, ).
+    :type pred_std: numpy.ndarray
+    :param Y_train: outputs of X_train. Shape: (n, 1).
+    :type Y_train: numpy.ndarray
+    :param noise: noise for augmenting exploration.
+    :type noise: float
+    :param jitter: jitter for pred_std.
+    :type jitter: float, optional
+
+    :returns: acquisition function values. Shape: (l, ).
+    :rtype: numpy.ndarray
+
+    :raises: AssertionError
+
+    """
+
     assert isinstance(pred_mean, np.ndarray)
     assert isinstance(pred_std, np.ndarray)
     assert isinstance(Y_train, np.ndarray)
@@ -75,6 +155,23 @@ def aei(pred_mean, pred_std, Y_train, noise,
 
 # pred_std and Y_train are ignored.
 def pure_exploit(pred_mean, pred_std=None, Y_train=None):
+    """
+    It is a pure exploitation criterion.
+
+    :param pred_mean: posterior predictive mean function over X_test. Shape: (l, ).
+    :type pred_mean: numpy.ndarray
+    :param pred_std: posterior predictive standard deviation function over X_test. Shape: (l, ). It can be given, but it is ignored when it works.
+    :type pred_std: numpy.ndarray, optional
+    :param Y_train: outputs of X_train. Shape: (n, 1). It can be given, but it is ignored when it works.
+    :type Y_train: numpy.ndarray, optional
+
+    :returns: acquisition function values. Shape: (l, ).
+    :rtype: numpy.ndarray
+
+    :raises: AssertionError
+
+    """
+
     assert isinstance(pred_mean, np.ndarray)
     assert isinstance(pred_std, np.ndarray) or pred_std is None
     assert isinstance(Y_train, np.ndarray) or Y_train is None
@@ -89,6 +186,23 @@ def pure_exploit(pred_mean, pred_std=None, Y_train=None):
 
 # pred_mean and Y_train are ignored.
 def pure_explore(pred_std, pred_mean=None, Y_train=None):
+    """
+    It is a pure exploration criterion.
+
+    :param pred_std: posterior predictive standard deviation function over X_test. Shape: (l, ).
+    :type pred_std: numpy.ndarray
+    :param pred_mean: posterior predictive mean function over X_test. Shape: (l, ). It can be given, but it is ignored when it works.
+    :type pred_mean: numpy.ndarray, optional
+    :param Y_train: outputs of X_train. Shape: (n, 1). It can be given, but it is ignored when it works.
+    :type Y_train: numpy.ndarray, optional
+
+    :returns: acquisition function values. Shape: (l, ).
+    :rtype: numpy.ndarray
+
+    :raises: AssertionError
+
+    """
+
     assert isinstance(pred_mean, np.ndarray) or pred_mean is None
     assert isinstance(pred_std, np.ndarray)
     assert isinstance(Y_train, np.ndarray) or Y_train is None
