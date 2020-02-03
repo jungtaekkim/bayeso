@@ -10,6 +10,21 @@ from bayeso.utils import utils_covariance
 
 
 def choose_fun_cov(str_cov, is_grad=False):
+    """
+    It is for choosing a covariance function or a function for computing gradients of covariance function.
+
+    :param str_cov: the name of covariance function.
+    :type str_cov: str.
+    :param is_grad: flag for returning a function for the gradients
+    :type is_grad: bool., optional
+
+    :returns: covariance function, or function for computing gradients of covariance function.
+    :rtype: function
+
+    :raises: AssertionError
+
+    """
+
     assert isinstance(str_cov, str)
     assert isinstance(is_grad, bool)
 

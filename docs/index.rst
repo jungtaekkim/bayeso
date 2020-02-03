@@ -1,4 +1,4 @@
-.. image:: _static/logo_bayeso.svg
+.. image:: _static/logo_bayeso.*
     :alt: bayeso logo
     :width: 400px
     :align: center
