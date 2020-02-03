@@ -12,11 +12,11 @@ def pi(pred_mean, pred_std, Y_train, jitter=constants.JITTER_ACQ):
     """
     It is a probability improvement criterion.
 
-    :param pred_mean: posterior predictive mean function over X_test. Shape: (l, ).
+    :param pred_mean: posterior predictive mean function over `X_test`. Shape: (l, ).
     :type pred_mean: numpy.ndarray
-    :param pred_std: posterior predictive standard deviation function over X_test. Shape: (l, ).
+    :param pred_std: posterior predictive standard deviation function over `X_test`. Shape: (l, ).
     :type pred_std: numpy.ndarray
-    :param Y_train: outputs of X_train. Shape: (n, 1).
+    :param Y_train: outputs of `X_train`. Shape: (n, 1).
     :type Y_train: numpy.ndarray
     :param jitter: jitter for pred_std.
     :type jitter: float, optional
@@ -45,11 +45,11 @@ def ei(pred_mean, pred_std, Y_train, jitter=constants.JITTER_ACQ):
     """
     It is an expected improvement criterion.
 
-    :param pred_mean: posterior predictive mean function over X_test. Shape: (l, ).
+    :param pred_mean: posterior predictive mean function over `X_test`. Shape: (l, ).
     :type pred_mean: numpy.ndarray
-    :param pred_std: posterior predictive standard deviation function over X_test. Shape: (l, ).
+    :param pred_std: posterior predictive standard deviation function over `X_test`. Shape: (l, ).
     :type pred_std: numpy.ndarray
-    :param Y_train: outputs of X_train. Shape: (n, 1).
+    :param Y_train: outputs of `X_train`. Shape: (n, 1).
     :type Y_train: numpy.ndarray
     :param jitter: jitter for pred_std.
     :type jitter: float, optional
@@ -78,15 +78,15 @@ def ucb(pred_mean, pred_std, Y_train=None, kappa=2.0, is_increased=True):
     """
     It is a Gaussian process upper confidence bound criterion.
 
-    :param pred_mean: posterior predictive mean function over X_test. Shape: (l, ).
+    :param pred_mean: posterior predictive mean function over `X_test`. Shape: (l, ).
     :type pred_mean: numpy.ndarray
-    :param pred_std: posterior predictive standard deviation function over X_test. Shape: (l, ).
+    :param pred_std: posterior predictive standard deviation function over `X_test`. Shape: (l, ).
     :type pred_std: numpy.ndarray
-    :param Y_train: outputs of X_train. Shape: (n, 1).
+    :param Y_train: outputs of `X_train`. Shape: (n, 1).
     :type Y_train: numpy.ndarray, optional
     :param kappa: trade-off hyperparameter between exploration and exploitation.
     :type kappa: float, optional
-    :param is_increased: flag for increasing a kappa value as Y_train grows. If Y_train is None, it is ignored, which means kappa is fixed.
+    :param is_increased: flag for increasing a kappa value as `Y_train` grows. If `Y_train` is None, it is ignored, which means `kappa` is fixed.
     :type is_increased: bool., optional
 
     :returns: acquisition function values. Shape: (l, ).
@@ -119,11 +119,11 @@ def aei(pred_mean, pred_std, Y_train, noise,
     """
     It is an augmented expected improvement criterion.
 
-    :param pred_mean: posterior predictive mean function over X_test. Shape: (l, ).
+    :param pred_mean: posterior predictive mean function over `X_test`. Shape: (l, ).
     :type pred_mean: numpy.ndarray
-    :param pred_std: posterior predictive standard deviation function over X_test. Shape: (l, ).
+    :param pred_std: posterior predictive standard deviation function over `X_test`. Shape: (l, ).
     :type pred_std: numpy.ndarray
-    :param Y_train: outputs of X_train. Shape: (n, 1).
+    :param Y_train: outputs of `X_train`. Shape: (n, 1).
     :type Y_train: numpy.ndarray
     :param noise: noise for augmenting exploration.
     :type noise: float
@@ -158,11 +158,11 @@ def pure_exploit(pred_mean, pred_std=None, Y_train=None):
     """
     It is a pure exploitation criterion.
 
-    :param pred_mean: posterior predictive mean function over X_test. Shape: (l, ).
+    :param pred_mean: posterior predictive mean function over `X_test`. Shape: (l, ).
     :type pred_mean: numpy.ndarray
-    :param pred_std: posterior predictive standard deviation function over X_test. Shape: (l, ). It can be given, but it is ignored when it works.
+    :param pred_std: posterior predictive standard deviation function over `X_test`. Shape: (l, ). It can be given, but it is ignored when it works.
     :type pred_std: numpy.ndarray, optional
-    :param Y_train: outputs of X_train. Shape: (n, 1). It can be given, but it is ignored when it works.
+    :param Y_train: outputs of `X_train`. Shape: (n, 1). It can be given, but it is ignored when it works.
     :type Y_train: numpy.ndarray, optional
 
     :returns: acquisition function values. Shape: (l, ).
@@ -189,11 +189,11 @@ def pure_explore(pred_std, pred_mean=None, Y_train=None):
     """
     It is a pure exploration criterion.
 
-    :param pred_std: posterior predictive standard deviation function over X_test. Shape: (l, ).
+    :param pred_std: posterior predictive standard deviation function over `X_test`. Shape: (l, ).
     :type pred_std: numpy.ndarray
-    :param pred_mean: posterior predictive mean function over X_test. Shape: (l, ). It can be given, but it is ignored when it works.
+    :param pred_mean: posterior predictive mean function over `X_test`. Shape: (l, ). It can be given, but it is ignored when it works.
     :type pred_mean: numpy.ndarray, optional
-    :param Y_train: outputs of X_train. Shape: (n, 1). It can be given, but it is ignored when it works.
+    :param Y_train: outputs of `X_train`. Shape: (n, 1). It can be given, but it is ignored when it works.
     :type Y_train: numpy.ndarray, optional
 
     :returns: acquisition function values. Shape: (l, ).

@@ -1,6 +1,6 @@
 # covariance
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: November 25, 2019
+# last updated: February 03, 2020
 
 import numpy as np
 import scipy.spatial.distance as scisd
@@ -48,6 +48,25 @@ def choose_fun_cov(str_cov, is_grad=False):
     return fun_cov
 
 def cov_se(bx, bxp, lengthscales, signal):
+    """
+    It computes squared exponential kernel over `bx` and `bxp`, where `lengthscales` and `signal` are given.
+
+    :param bx: one input. Shape: (d, ).
+    :type bx: numpy.ndarray
+    :param bxp: another input. Shape: (d, ).
+    :type bxp: numpy.ndarray
+    :param lengthscales: length scales. Shape: (d, ) or ().
+    :type lengthscales: numpy.ndarray, or float
+    :param signal: coefficient for signal.
+    :type signal: float
+
+    :returns: kernel value over `bx` and `bxp`.
+    :rtype: float
+
+    :raises: AssertionError
+
+    """
+
     assert isinstance(bx, np.ndarray)
     assert isinstance(bxp, np.ndarray)
     assert isinstance(lengthscales, np.ndarray) or isinstance(lengthscales, float)
@@ -59,6 +78,29 @@ def cov_se(bx, bxp, lengthscales, signal):
     return signal**2 * np.exp(-0.5 * np.linalg.norm((bx - bxp) / lengthscales, ord=2)**2)
 
 def grad_cov_se(cov_, X, Xs, hyps, num_hyps, is_fixed_noise):
+    """
+    It computes gradients of squared exponential kernel over `X` and `Xs`, where `hyps` is given.
+
+    :param cov_: covariance matrix. Shape: (n, m).
+    :type cov_: numpy.ndarray
+    :param X: one inputs. Shape: (n, d).
+    :type X: numpy.ndarray
+    :param Xs: another inputs. Shape: (m, d).
+    :type Xs: numpy.ndarray
+    :param hyps: dictionary of hyperparameters for covariance function.
+    :type hyps: dict.
+    :param num_hyps: the number of hyperparameters == l.
+    :type num_hyps: int.
+    :param is_fixed_noise: flag for fixing a noise.
+    :type is_fixed_noise: bool.
+
+    :returns: gradient matrix over hyperparameters. Shape: (n, m, l).
+    :rtype: numpy.ndarray
+
+    :raises: AssertionError
+
+    """
+
     assert isinstance(cov_, np.ndarray)
     assert isinstance(X, np.ndarray)
     assert isinstance(Xs, np.ndarray)
@@ -87,6 +129,25 @@ def grad_cov_se(cov_, X, Xs, hyps, num_hyps, is_fixed_noise):
     return grad_cov_
 
 def cov_matern32(bx, bxp, lengthscales, signal):
+    """
+    It computes Matern 3/2 kernel over `bx` and `bxp`, where `lengthscales` and `signal` are given.
+
+    :param bx: one input. Shape: (d, ).
+    :type bx: numpy.ndarray
+    :param bxp: another input. Shape: (d, ).
+    :type bxp: numpy.ndarray
+    :param lengthscales: length scales. Shape: (d, ) or ().
+    :type lengthscales: numpy.ndarray, or float
+    :param signal: coefficient for signal.
+    :type signal: float
+
+    :returns: kernel value over `bx` and `bxp`.
+    :rtype: float
+
+    :raises: AssertionError
+
+    """
+
     assert isinstance(bx, np.ndarray)
     assert isinstance(bxp, np.ndarray)
     assert isinstance(lengthscales, np.ndarray) or isinstance(lengthscales, float)
@@ -100,6 +161,29 @@ def cov_matern32(bx, bxp, lengthscales, signal):
     return signal**2 * (1.0 + np.sqrt(3.0) * dist) * np.exp(-1.0 * np.sqrt(3.0) * dist)
 
 def grad_cov_matern32(cov_, X, Xs, hyps, num_hyps, is_fixed_noise):
+    """
+    It computes gradients of Matern 3/2 kernel over `X` and `Xs`, where `hyps` is given.
+
+    :param cov_: covariance matrix. Shape: (n, m).
+    :type cov_: numpy.ndarray
+    :param X: one inputs. Shape: (n, d).
+    :type X: numpy.ndarray
+    :param Xs: another inputs. Shape: (m, d).
+    :type Xs: numpy.ndarray
+    :param hyps: dictionary of hyperparameters for covariance function.
+    :type hyps: dict.
+    :param num_hyps: the number of hyperparameters == l.
+    :type num_hyps: int.
+    :param is_fixed_noise: flag for fixing a noise.
+    :type is_fixed_noise: bool.
+
+    :returns: gradient matrix over hyperparameters. Shape: (n, m, l).
+    :rtype: numpy.ndarray
+
+    :raises: AssertionError
+
+    """
+
     assert isinstance(cov_, np.ndarray)
     assert isinstance(X, np.ndarray)
     assert isinstance(Xs, np.ndarray)
@@ -128,6 +212,25 @@ def grad_cov_matern32(cov_, X, Xs, hyps, num_hyps, is_fixed_noise):
     return grad_cov_
 
 def cov_matern52(bx, bxp, lengthscales, signal):
+    """
+    It computes Matern 5/2 kernel over `bx` and `bxp`, where `lengthscales` and `signal` are given.
+
+    :param bx: one input. Shape: (d, ).
+    :type bx: numpy.ndarray
+    :param bxp: another input. Shape: (d, ).
+    :type bxp: numpy.ndarray
+    :param lengthscales: length scales. Shape: (d, ) or ().
+    :type lengthscales: numpy.ndarray, or float
+    :param signal: coefficient for signal.
+    :type signal: float
+
+    :returns: kernel value over `bx` and `bxp`.
+    :rtype: float
+
+    :raises: AssertionError
+
+    """
+
     assert isinstance(bx, np.ndarray)
     assert isinstance(bxp, np.ndarray)
     assert isinstance(lengthscales, np.ndarray) or isinstance(lengthscales, float)
@@ -141,6 +244,29 @@ def cov_matern52(bx, bxp, lengthscales, signal):
     return signal**2 * (1.0 + np.sqrt(5.0) * dist + 5.0 / 3.0 * dist**2) * np.exp(-1.0 * np.sqrt(5.0) * dist)
 
 def grad_cov_matern52(cov_, X, Xs, hyps, num_hyps, is_fixed_noise):
+    """
+    It computes gradients of Matern 5/2 kernel over `X` and `Xs`, where `hyps` is given.
+
+    :param cov_: covariance matrix. Shape: (n, m).
+    :type cov_: numpy.ndarray
+    :param X: one inputs. Shape: (n, d).
+    :type X: numpy.ndarray
+    :param Xs: another inputs. Shape: (m, d).
+    :type Xs: numpy.ndarray
+    :param hyps: dictionary of hyperparameters for covariance function.
+    :type hyps: dict.
+    :param num_hyps: the number of hyperparameters == l.
+    :type num_hyps: int.
+    :param is_fixed_noise: flag for fixing a noise.
+    :type is_fixed_noise: bool.
+
+    :returns: gradient matrix over hyperparameters. Shape: (n, m, l).
+    :rtype: numpy.ndarray
+
+    :raises: AssertionError
+
+    """
+
     assert isinstance(cov_, np.ndarray)
     assert isinstance(X, np.ndarray)
     assert isinstance(Xs, np.ndarray)
@@ -169,6 +295,27 @@ def grad_cov_matern52(cov_, X, Xs, hyps, num_hyps, is_fixed_noise):
     return grad_cov_
 
 def cov_set(str_cov, X, Xs, lengthscales, signal):
+    """
+    It computes set kernel matrix over `X` and `Xs`, where `lengthscales` and `signal` are given.
+
+    :param str_cov: the name of covariance function.
+    :type str_cov: str.
+    :param X: one inputs. Shape: (n, m, d).
+    :type X: numpy.ndarray
+    :param Xs: another inputs. Shape: (l, m, d).
+    :type Xs: numpy.ndarray
+    :param lengthscales: length scales. Shape: (d, ) or ().
+    :type lengthscales: numpy.ndarray, or float
+    :param signal: coefficient for signal.
+    :type signal: float
+
+    :returns: set kernel matrix over `X` and `Xs`. Shape: (n, l).
+    :rtype: numpy.ndarray
+
+    :raises: AssertionError
+
+    """
+
     assert isinstance(str_cov, str)
     assert isinstance(X, np.ndarray)
     assert isinstance(Xs, np.ndarray)
@@ -198,6 +345,29 @@ def cov_set(str_cov, X, Xs, lengthscales, signal):
 def cov_main(str_cov, X, Xs, hyps, same_X_Xs,
     jitter=constants.JITTER_COV
 ):
+    """
+    It computes kernel matrix over `X` and `Xs`, where `hyps` is given.
+
+    :param str_cov: the name of covariance function.
+    :type str_cov: str.
+    :param X: one inputs. Shape: (n, d).
+    :type X: numpy.ndarray
+    :param Xs: another inputs. Shape: (m, d).
+    :type Xs: numpy.ndarray
+    :param hyps: dictionary of hyperparameters for covariance function.
+    :type hyps: dict.
+    :param same_X_Xs: flag for checking `X` and `Xs` are same.
+    :type same_X_Xs: bool.
+    :param jitter: jitter for diagonal entries.
+    :type jitter: float, optional
+
+    :returns: kernel matrix over `X` and `Xs`. Shape: (n, m).
+    :rtype: numpy.ndarray
+
+    :raises: AssertionError, ValueError
+
+    """
+
     assert isinstance(str_cov, str)
     assert isinstance(X, np.ndarray)
     assert isinstance(Xs, np.ndarray)
@@ -269,6 +439,29 @@ def grad_cov_main(str_cov, X, Xs, hyps, is_fixed_noise,
     same_X_Xs=True,
     jitter=constants.JITTER_COV,
 ):
+    """
+    It computes gradients of kernel matrix over hyperparameters, where `hyps` is given.
+
+    :param str_cov: the name of covariance function.
+    :type str_cov: str.
+    :param X: one inputs. Shape: (n, d).
+    :type X: numpy.ndarray
+    :param Xs: another inputs. Shape: (m, d).
+    :type Xs: numpy.ndarray
+    :param hyps: dictionary of hyperparameters for covariance function.
+    :type hyps: dict.
+    :param same_X_Xs: flag for checking `X` and `Xs` are same.
+    :type same_X_Xs: bool., optional
+    :param jitter: jitter for diagonal entries.
+    :type jitter: float, optional
+
+    :returns: gradient matrix over hyperparameters. Shape: (n, m, l) where l is the number of hyperparameters.
+    :rtype: numpy.ndarray
+
+    :raises: AssertionError
+
+    """
+
     assert isinstance(str_cov, str)
     assert isinstance(X, np.ndarray)
     assert isinstance(Xs, np.ndarray)

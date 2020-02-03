@@ -101,7 +101,7 @@ def get_kernel_inverse(X_train, hyps, str_cov,
     :param debug: flag for printing log messages.
     :type debug: bool., optional
 
-    :returns: a tuple of kernel matrix over X_train, kernel matrix inverse, and gradients of kernel matrix. If is_gradient is False, gradients of kernel matrix would be None.
+    :returns: a tuple of kernel matrix over `X_train`, kernel matrix inverse, and gradients of kernel matrix. If `is_gradient` is False, gradients of kernel matrix would be None.
     :rtype: tuple of (numpy.ndarray, numpy.ndarray, numpy.ndarray)
 
     :raises: AssertionError
@@ -148,7 +148,7 @@ def get_kernel_cholesky(X_train, hyps, str_cov,
     :param debug: flag for printing log messages.
     :type debug: bool., optional
 
-    :returns: a tuple of kernel matrix over X_train, lower matrix computed by Cholesky decomposition, and gradients of kernel matrix. If is_gradient is False, gradients of kernel matrix would be None.
+    :returns: a tuple of kernel matrix over `X_train`, lower matrix computed by Cholesky decomposition, and gradients of kernel matrix. If `is_gradient` is False, gradients of kernel matrix would be None.
     :rtype: tuple of (numpy.ndarray, numpy.ndarray, numpy.ndarray)
 
     :raises: AssertionError
@@ -351,7 +351,7 @@ def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov,
     :param debug: flag for printing log messages.
     :type debug: bool., optional
 
-    :returns: a tuple of kernel matrix over X_train, kernel matrix inverse, and dictionary of hyperparameters.
+    :returns: a tuple of kernel matrix over `X_train`, kernel matrix inverse, and dictionary of hyperparameters.
     :rtype: tuple of (numpy.ndarray, numpy.ndarray, dict.)
 
     :raises: AssertionError, ValueError
@@ -435,7 +435,7 @@ def predict_test_(X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps,
     debug=False
 ):
     """
-    This function returns posterior mean and posterior standard deviation functions over X_test, computed by Gaussian process regression with X_train, Y_train, cov_X_X, inv_cov_X_X, and hyps.
+    This function returns posterior mean and posterior standard deviation functions over `X_test`, computed by Gaussian process regression with `X_train`, `Y_train`, `cov_X_X`, `inv_cov_X_X`, and `hyps`.
 
     :param X_train: inputs. Shape: (n, d) or (n, m, d).
     :type X_train: numpy.ndarray
@@ -443,9 +443,9 @@ def predict_test_(X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps,
     :type Y_train: numpy.ndarray
     :param X_test: inputs. Shape: (l, d) or (l, m, d).
     :type X_test: numpy.ndarray
-    :param cov_X_X: kernel matrix over X_train. Shape: (n, n).
+    :param cov_X_X: kernel matrix over `X_train`. Shape: (n, n).
     :type cov_X_X: numpy.ndarray
-    :param inv_cov_X_X: kernel matrix inverse over X_train. Shape: (n, n).
+    :param inv_cov_X_X: kernel matrix inverse over `X_train`. Shape: (n, n).
     :type inv_cov_X_X: numpy.ndarray
     :param hyps: dictionary of hyperparameters for Gaussian process.
     :type hyps: dict.
@@ -456,7 +456,7 @@ def predict_test_(X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps,
     :param debug: flag for printing log messages.
     :type debug: bool., optional
 
-    :returns: a tuple of posterior mean function over X_test and posterior standard deviation function over X_test. Shape: ((l, 1), (l, 1)).
+    :returns: a tuple of posterior mean function over `X_test` and posterior standard deviation function over `X_test`. Shape: ((l, 1), (l, 1)).
     :rtype: tuple of (numpy.ndarray, numpy.ndarray)
 
     :raises: AssertionError
@@ -496,7 +496,7 @@ def predict_test(X_train, Y_train, X_test, hyps,
     debug=False
 ):
     """
-    This function returns posterior mean and posterior standard deviation functions over X_test, computed by Gaussian process regression with X_train, Y_train, and hyps.
+    This function returns posterior mean and posterior standard deviation functions over `X_test`, computed by Gaussian process regression with `X_train`, `Y_train`, and `hyps`.
 
     :param X_train: inputs. Shape: (n, d) or (n, m, d).
     :type X_train: numpy.ndarray
@@ -513,7 +513,7 @@ def predict_test(X_train, Y_train, X_test, hyps,
     :param debug: flag for printing log messages.
     :type debug: bool., optional
 
-    :returns: a tuple of posterior mean function over X_test and posterior standard deviation function over X_test. Shape: ((l, 1), (l, 1)).
+    :returns: a tuple of posterior mean function over `X_test` and posterior standard deviation function over `X_test`. Shape: ((l, 1), (l, 1)).
     :rtype: tuple of (numpy.ndarray, numpy.ndarray)
 
     :raises: AssertionError
@@ -543,7 +543,7 @@ def predict_optimized(X_train, Y_train, X_test,
     debug=False
 ):
     """
-    This function returns posterior mean and posterior standard deviation functions over X_test, computed by the Gaussian process regression optimized with X_train and Y_train.
+    This function returns posterior mean and posterior standard deviation functions over `X_test`, computed by the Gaussian process regression optimized with `X_train` and `Y_train`.
 
     :param X_train: inputs. Shape: (n, d) or (n, m, d).
     :type X_train: numpy.ndarray
@@ -560,7 +560,7 @@ def predict_optimized(X_train, Y_train, X_test,
     :param debug: flag for printing log messages.
     :type debug: bool., optional
 
-    :returns: a tuple of posterior mean function over X_test and posterior standard deviation function over X_test. Shape: ((l, 1), (l, 1)).
+    :returns: a tuple of posterior mean function over `X_test` and posterior standard deviation function over `X_test`. Shape: ((l, 1), (l, 1)).
     :rtype: tuple of (numpy.ndarray, numpy.ndarray)
 
     :raises: AssertionError
