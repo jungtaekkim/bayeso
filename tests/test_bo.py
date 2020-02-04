@@ -10,7 +10,7 @@ from bayeso import bo
 
 TEST_EPSILON = 1e-5
 
-def test_get_grid():
+def test_get_grids():
     arr_range_1 = np.array([
         [0.0, 10.0],
         [-2.0, 2.0],
@@ -82,18 +82,18 @@ def test_get_grid():
     ])
 
     with pytest.raises(AssertionError) as error:
-        bo.get_grid('abc', 3)
+        bo.get_grids('abc', 3)
     with pytest.raises(AssertionError) as error:
-        bo.get_grid(arr_range_1, 'abc')
+        bo.get_grids(arr_range_1, 'abc')
     with pytest.raises(AssertionError) as error:
-        bo.get_grid(np.arange(0, 10), 3)
+        bo.get_grids(np.arange(0, 10), 3)
     with pytest.raises(AssertionError) as error:
-        bo.get_grid(np.ones((3, 3)), 3)
+        bo.get_grids(np.ones((3, 3)), 3)
     with pytest.raises(AssertionError) as error:
-        bo.get_grid(np.array([[0.0, -2.0], [10.0, 20.0]]), 3)
+        bo.get_grids(np.array([[0.0, -2.0], [10.0, 20.0]]), 3)
 
-    arr_grid_1 = bo.get_grid(arr_range_1, 3)
-    arr_grid_2 = bo.get_grid(arr_range_2, 3)
+    arr_grid_1 = bo.get_grids(arr_range_1, 3)
+    arr_grid_2 = bo.get_grids(arr_range_2, 3)
 
     assert (arr_grid_1 == truth_arr_grid_1).all()
     assert (arr_grid_2 == truth_arr_grid_2).all()

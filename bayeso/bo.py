@@ -1,6 +1,6 @@
 # bo
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: June 03, 2019
+# last updated: February 04, 2020
 
 import numpy as np
 import time
@@ -22,25 +22,56 @@ from bayeso.utils import utils_covariance
 from bayeso import constants
 
 
-def get_grid(arr_ranges, int_grid):
+def get_grids(arr_ranges, int_grids):
+    """
+    It returns grids of given `arr_ranges`, where each of dimension has `int_grids` partitions.
+
+    :param arr_ranges: ranges. Shape: (d, 2).
+    :type arr_ranges: numpy.ndarray
+    :param int_grids: the number of partitions per dimension.
+    :type int_grids: int.
+
+    :returns: grids of given `arr_ranges`. Shape: (`int_grids`:math:`^{\\text{d}}`, d).
+    :rtype: numpy.ndarray
+
+    :raises: AssertionError
+
+    """
+
     assert isinstance(arr_ranges, np.ndarray)
-    assert isinstance(int_grid, int)
+    assert isinstance(int_grids, int)
     assert len(arr_ranges.shape) == 2
     assert arr_ranges.shape[1] == 2
     assert (arr_ranges[:, 0] <= arr_ranges[:, 1]).all()
 
-    list_grid = []
+    list_grids = []
     for range_ in arr_ranges:
-        list_grid.append(np.linspace(range_[0], range_[1], int_grid))
-    list_grid_mesh = list(np.meshgrid(*list_grid))
-    list_grid = []
-    for elem in list_grid_mesh:
-        list_grid.append(elem.flatten(order='C'))
-    arr_grid = np.vstack(tuple(list_grid))
-    arr_grid = arr_grid.T
-    return arr_grid
+        list_grids.append(np.linspace(range_[0], range_[1], int_grids))
+    list_grids_mesh = list(np.meshgrid(*list_grids))
+    list_grids = []
+    for elem in list_grids_mesh:
+        list_grids.append(elem.flatten(order='C'))
+    arr_grids = np.vstack(tuple(list_grids))
+    arr_grids = arr_grids.T
+    return arr_grids
 
 def get_best_acquisition(arr_initials, fun_objective):
+    """
+    It returns the best example with respect to values of `fun_objective`.
+    Here, the best acquisition is a minimizer of `fun_objective`.
+
+    :param arr_initials: inputs. Shape: (n, d).
+    :type arr_initials: numpy.ndarray
+    :param fun_objective: an objective function.
+    :type fun_objective: function
+
+    :returns: the best example of `arr_initials`. Shape: (1, d).
+    :rtype: numpy.ndarray
+
+    :raises: AssertionError
+
+    """
+
     assert isinstance(arr_initials, np.ndarray)
     assert callable(fun_objective)
     assert len(arr_initials.shape) == 2
@@ -55,6 +86,24 @@ def get_best_acquisition(arr_initials, fun_objective):
     return np.expand_dims(cur_initial, axis=0)
 
 def _check_optimizer_method_bo(str_optimizer_method_bo, num_dim, debug):
+    """
+    It checks the availability of optimization methods.
+    It helps to run Bayesian optimization, even though additional optimization methods are not installed or there exist the conditions some of optimization methods cannot be run.
+
+    :param str_optimizer_method_bo: the name of optimization method for Bayesian optimization.
+    :type str_optimizer_method_bo: str.
+    :param num_dim: dimensionality of the problem we solve.
+    :type num_dim: int.
+    :param debug: flag for printing log messages.
+    :type debug: bool.
+
+    :returns: available `str_optimizer_method_bo`.
+    :rtype: str.
+
+    :raises: AssertionError
+
+    """
+
     assert isinstance(str_optimizer_method_bo, str)
     assert isinstance(num_dim, int)
     assert isinstance(debug, bool)
@@ -76,6 +125,21 @@ def _check_optimizer_method_bo(str_optimizer_method_bo, num_dim, debug):
     return str_optimizer_method_bo
 
 def _choose_fun_acquisition(str_acq, hyps):
+    """
+    It chooses and returns an acquisition function.
+
+    :param str_acq: the name of acquisition function.
+    :type str_acq: str.
+    :param hyps: dictionary of hyperparameters for acquisition function.
+    :type hyps: dict.
+
+    :returns: acquisition function.
+    :rtype: function
+
+    :raises: AssertionError
+
+    """
+
     assert isinstance(str_acq, str)
     assert isinstance(hyps, dict)
     assert str_acq in constants.ALLOWED_BO_ACQ
@@ -97,6 +161,27 @@ def _choose_fun_acquisition(str_acq, hyps):
     return fun_acquisition
 
 def _check_hyps_convergence(list_hyps, hyps, str_cov, is_fixed_noise, ratio_threshold=0.05):
+    """
+    It checks convergence of hyperparameters for Gaussian process regression.
+
+    :param list_hyps: list of historical hyperparameters for Gaussian process regression.
+    :type list_hyps: list
+    :param hyps: dictionary of hyperparameters for acquisition function.
+    :type hyps: dict.
+    :param str_cov: the name of covariance function.
+    :type str_cov: str.
+    :param is_fixed_noise: flag for fixing a noise.
+    :type is_fixed_noise: bool.
+    :param ratio_threshold: ratio of threshold for checking convergence.
+    :type ratio_threshold: float, optional
+
+    :returns: flag for checking convergence. If converged, it is True.
+    :rtype: bool.
+
+    :raises: AssertionError
+
+    """
+
     assert isinstance(list_hyps, list)
     assert isinstance(hyps, dict)
     assert isinstance(str_cov, str)
@@ -165,7 +250,7 @@ class BO():
     def _get_initial_grid(self, int_grid=constants.NUM_BO_GRID):
         assert isinstance(int_grid, int)
 
-        arr_initials = get_grid(self.arr_range, int_grid)
+        arr_initials = get_grids(self.arr_range, int_grid)
         return arr_initials
 
     def _get_initial_uniform(self, int_samples, int_seed=None):

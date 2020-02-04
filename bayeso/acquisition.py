@@ -18,7 +18,7 @@ def pi(pred_mean, pred_std, Y_train, jitter=constants.JITTER_ACQ):
     :type pred_std: numpy.ndarray
     :param Y_train: outputs of `X_train`. Shape: (n, 1).
     :type Y_train: numpy.ndarray
-    :param jitter: jitter for pred_std.
+    :param jitter: jitter for `pred_std`.
     :type jitter: float, optional
 
     :returns: acquisition function values. Shape: (l, ).
@@ -51,7 +51,7 @@ def ei(pred_mean, pred_std, Y_train, jitter=constants.JITTER_ACQ):
     :type pred_std: numpy.ndarray
     :param Y_train: outputs of `X_train`. Shape: (n, 1).
     :type Y_train: numpy.ndarray
-    :param jitter: jitter for pred_std.
+    :param jitter: jitter for `pred_std`.
     :type jitter: float, optional
 
     :returns: acquisition function values. Shape: (l, ).
@@ -127,7 +127,7 @@ def aei(pred_mean, pred_std, Y_train, noise,
     :type Y_train: numpy.ndarray
     :param noise: noise for augmenting exploration.
     :type noise: float
-    :param jitter: jitter for pred_std.
+    :param jitter: jitter for `pred_std`.
     :type jitter: float, optional
 
     :returns: acquisition function values. Shape: (l, ).
