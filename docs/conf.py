@@ -78,7 +78,7 @@ pygments_style = 'sphinx'
 #
 #html_theme = 'alabaster'
 html_theme = 'sphinx_rtd_theme'
-#html_logo = '_static/logo_bayeso.svg'
+#html_logo = '_static/assets/logo_bayeso.svg'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -136,7 +136,7 @@ latex_documents = [
      'Jungtaek Kim and Seungjin Choi', 'manual'),
 ]
 
-latex_logo = '_static/logo_bayeso.pdf'
+latex_logo = '_static/assets/logo_bayeso.pdf'
 
 # -- Options for manual page output ------------------------------------------
 

@@ -1,4 +1,4 @@
-.. image:: _static/logo_bayeso.*
+.. image:: _static/assets/logo_bayeso.*
     :alt: bayeso logo
     :width: 400px
     :align: center
@@ -32,8 +32,9 @@ The code can be found in `our GitHub repository <https://github.com/jungtaekkim/
    :maxdepth: 1
    :caption: Example:
 
-   example/simple_gp_regression
+   example/gp
    example/branin
+   example/hpo
 
 .. toctree::
    :maxdepth: 2

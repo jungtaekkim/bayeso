@@ -1,5 +1,5 @@
 <p align="center">
-<img src="docs/_static/logo_bayeso.svg" width="400" />
+<img src="docs/_static/assets/logo_bayeso.svg" width="400" />
 </p>
 
 # bayeso: A Bayesian optimization framework in Python
