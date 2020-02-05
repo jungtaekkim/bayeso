@@ -50,6 +50,11 @@ Then, plot the result.
         str_x_axis='$x$', str_y_axis='$y$'
     )
 
+.. image:: ../_static/examples/gp_fixed.*
+    :width: 400
+    :align: center
+    :alt: gp_fixed
+
 Build a Gaussian process regression model with the hyperparameters optimized by marginal likelihood maximization, and plot the result.
 
 .. code-block:: python
@@ -59,6 +64,11 @@ Build a Gaussian process regression model with the hyperparameters optimized by 
         X_train, Y_train, X_test, mu, sigma, Y_test_truth=Y_test_truth, is_tex=is_tex,
         str_x_axis='$x$', str_y_axis='$y$'
     )
+
+.. image:: ../_static/examples/gp_optimized.*
+    :width: 400
+    :align: center
+    :alt: gp_optimized
 
 Declare some functions that would be employed to prior functions.
 
@@ -117,6 +127,21 @@ Build Gaussian process regression models with the prior functions we declare abo
         X_train, Y_train, X_test, mu, sigma, Y_test_truth=Y_test_truth, is_tex=is_tex,
         str_x_axis='$x$', str_y_axis='$y$'
     )
+
+.. image:: ../_static/examples/gp_optimized_prior_cosine.*
+    :width: 400
+    :align: center
+    :alt: gp_optimized_prior_cosine
+
+.. image:: ../_static/examples/gp_optimized_prior_linear_down.*
+    :width: 400
+    :align: center
+    :alt: gp_optimized_prior_linear_down
+
+.. image:: ../_static/examples/gp_optimized_prior_linear_up.*
+    :width: 400
+    :align: center
+    :alt: gp_optimized_prior_linear_up
 
 Full codes:
 
