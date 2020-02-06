@@ -267,4 +267,6 @@ def validate_hyps_arr(arr_hyps, str_cov, int_dim):
     assert isinstance(int_dim, int)
     assert str_cov in constants.ALLOWED_GP_COV
 
+#    is_valid = True
+
     raise NotImplementedError('validate_hyps_arr in utils_covariance.py')

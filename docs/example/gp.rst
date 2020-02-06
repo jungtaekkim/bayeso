@@ -51,7 +51,7 @@ Then, plot the result.
     )
 
 .. image:: ../_static/examples/gp_fixed.*
-    :width: 400
+    :width: 320
     :align: center
     :alt: gp_fixed
 
@@ -66,7 +66,7 @@ Build a Gaussian process regression model with the hyperparameters optimized by 
     )
 
 .. image:: ../_static/examples/gp_optimized.*
-    :width: 400
+    :width: 320
     :align: center
     :alt: gp_optimized
 
@@ -129,17 +129,17 @@ Build Gaussian process regression models with the prior functions we declare abo
     )
 
 .. image:: ../_static/examples/gp_optimized_prior_cosine.*
-    :width: 400
+    :width: 320
     :align: center
     :alt: gp_optimized_prior_cosine
 
 .. image:: ../_static/examples/gp_optimized_prior_linear_down.*
-    :width: 400
+    :width: 320
     :align: center
     :alt: gp_optimized_prior_linear_down
 
 .. image:: ../_static/examples/gp_optimized_prior_linear_up.*
-    :width: 400
+    :width: 320
     :align: center
     :alt: gp_optimized_prior_linear_up
 

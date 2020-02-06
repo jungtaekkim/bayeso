@@ -200,7 +200,33 @@ def _check_hyps_convergence(list_hyps, hyps, str_cov, is_fixed_noise, ratio_thre
     return is_converged
 
 # TODO: I am not sure, but flatten() should be replaced.
-class BO():
+class BO(object):
+    """
+    It is a Bayesian optimization class.
+
+    :param arr_range: a search space. Shape: (d, 2).
+    :type arr_range: numpy.ndarray
+    :param str_cov: the name of covariance function.
+    :type str_cov: str., optional
+    :param str_acq: the name of acquisition function.
+    :type str_acq: str., optional
+    :param is_normalized: flag for normalizing outputs.
+    :type is_normalized: bool., optional
+    :param is_ard: flag for automatic relevance determination.
+    :type is_ard: bool., optional
+    :param prior_mu: None, or prior mean function.
+    :type prior_mu: NoneType, or function, optional
+    :param str_optimizer_method_gp: the name of optimization method for Gaussian process regression.
+    :type str_optimizer_method_gp: str., optional
+    :param str_optimizer_method_bo: the name of optimization method for Bayesian optimization.
+    :type str_optimizer_method_bo: str., optional
+    :param str_modelselection_method: the name of model selection method for Gaussian process regression.
+    :type str_modelselection_method: str., optional
+    :param debug: flag for printing log messages.
+    :type debug: bool., optional
+
+    """
+
     def __init__(self, arr_range,
         str_cov=constants.STR_GP_COV,
         str_acq=constants.STR_BO_ACQ,
@@ -212,6 +238,11 @@ class BO():
         str_modelselection_method=constants.STR_MODELSELECTION_METHOD,
         debug=False
     ):
+        """
+        Constructor method
+
+        """
+
         # TODO: use is_ard.
         assert isinstance(arr_range, np.ndarray)
         assert isinstance(str_cov, str)
