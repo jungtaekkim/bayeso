@@ -450,6 +450,8 @@ def grad_cov_main(str_cov, X, Xs, hyps, is_fixed_noise,
     :type Xs: numpy.ndarray
     :param hyps: dictionary of hyperparameters for covariance function.
     :type hyps: dict.
+    :param is_fixed_noise: flag for fixing a noise.
+    :type is_fixed_noise: bool.
     :param same_X_Xs: flag for checking `X` and `Xs` are same.
     :type same_X_Xs: bool., optional
     :param jitter: jitter for diagonal entries.

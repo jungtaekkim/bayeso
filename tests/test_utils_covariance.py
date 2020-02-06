@@ -59,10 +59,10 @@ def test_get_range_hyps():
         utils_covariance.get_range_hyps('se', 2, is_fixed_noise='abc')
     
     cur_range = utils_covariance.get_range_hyps('se', 2, is_ard=False, is_fixed_noise=False)
-    assert isinstance(cur_range, list)
-    assert cur_range == [[0.01, 1000.0], [0.01, 1000.0], [0.001, 10.0]]
     print(type(cur_range))
     print(cur_range)
+    assert isinstance(cur_range, list)
+    assert cur_range == [[0.001, 10.0], [0.01, 1000.0], [0.01, 1000.0]]
 
 def test_convert_hyps():
     cur_hyps = {'noise': 0.1, 'signal': 1.0, 'lengthscales': np.array([1.0, 1.0])}

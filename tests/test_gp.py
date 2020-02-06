@@ -91,7 +91,7 @@ def test_get_kernel_inverse():
     assert (np.abs(inv_cov_X_X - truth_inv_cov_X_X) < TEST_EPSILON).all()
     assert cov_X_X.shape == inv_cov_X_X.shape
 
-    cov_X_X, inv_cov_X_X, grad_cov_X_X = gp.get_kernel_inverse(X, hyps, 'se', is_gradient=True)
+    cov_X_X, inv_cov_X_X, grad_cov_X_X = gp.get_kernel_inverse(X, hyps, 'se', is_gradient=True, is_fixed_noise=True)
     print(grad_cov_X_X)
     print(grad_cov_X_X.shape)
 
@@ -155,8 +155,10 @@ def test_neg_log_ml():
     str_cov = 'se'
     X = np.reshape(np.arange(0, 9), (3, dim_X))
     Y = np.expand_dims(np.arange(3, 10, 3), axis=1)
+    is_fixed_noise = False
+
     dict_hyps = utils_covariance.get_hyps(str_cov, dim_X)
-    arr_hyps = utils_covariance.convert_hyps(str_cov, dict_hyps, is_fixed_noise=constants.IS_FIXED_GP_NOISE)
+    arr_hyps = utils_covariance.convert_hyps(str_cov, dict_hyps, is_fixed_noise=is_fixed_noise)
     prior_mu_X = np.zeros((3, 1))
 
     with pytest.raises(AssertionError) as error:
@@ -184,26 +186,28 @@ def test_neg_log_ml():
     with pytest.raises(AssertionError) as error:
         gp.neg_log_ml(X, Y, arr_hyps, str_cov, prior_mu_X, debug=1)
 
-    neg_log_ml_ = gp.neg_log_ml(X, Y, arr_hyps, str_cov, prior_mu_X, is_gradient=False, is_cholesky=True)
+    neg_log_ml_ = gp.neg_log_ml(X, Y, arr_hyps, str_cov, prior_mu_X, is_fixed_noise=is_fixed_noise, is_gradient=False, is_cholesky=True)
     print(neg_log_ml_)
     truth_log_ml_ = 21.916650988532854
     assert np.abs(neg_log_ml_ - truth_log_ml_) < TEST_EPSILON
 
-    neg_log_ml_ = gp.neg_log_ml(X, Y, arr_hyps, str_cov, prior_mu_X, is_gradient=False, is_cholesky=False)
+    neg_log_ml_ = gp.neg_log_ml(X, Y, arr_hyps, str_cov, prior_mu_X, is_fixed_noise=is_fixed_noise, is_gradient=False, is_cholesky=False)
     print(neg_log_ml_)
     truth_log_ml_ = 21.91665090519953
     assert np.abs(neg_log_ml_ - truth_log_ml_) < TEST_EPSILON
 
-    neg_log_ml_ = gp.neg_log_ml(X, Y, arr_hyps, str_cov, prior_mu_X, is_gradient=True, is_cholesky=False)
+    neg_log_ml_ = gp.neg_log_ml(X, Y, arr_hyps, str_cov, prior_mu_X, is_fixed_noise=is_fixed_noise, is_gradient=True, is_cholesky=False)
     print(neg_log_ml_)
     truth_log_ml_ = 21.91665090519953
     assert np.abs(neg_log_ml_ - truth_log_ml_) < TEST_EPSILON
 
-    neg_log_ml_, neg_grad_log_ml_ = gp.neg_log_ml(X, Y, arr_hyps, str_cov, prior_mu_X, is_gradient=True, is_cholesky=True)
+    neg_log_ml_, neg_grad_log_ml_ = gp.neg_log_ml(X, Y, arr_hyps, str_cov, prior_mu_X, is_fixed_noise=is_fixed_noise, is_gradient=True, is_cholesky=True)
     print(neg_log_ml_)
+    print(neg_grad_log_ml_)
 
     truth_log_ml_ = 21.916650988532854
     truth_grad_log_ml_ = np.array([
+        -4.09907399e-01,
         -4.09912156e+01,
         -8.88182458e-04,
         -8.88182458e-04,
@@ -294,12 +298,20 @@ def test_get_optimized_kernel():
     with pytest.raises(AssertionError) as error:
         gp.get_optimized_kernel(X_set, Y, prior_mu, 'set_se', debug=1)
 
-    gp.get_optimized_kernel(X, Y, prior_mu, 'se')
-    gp.get_optimized_kernel(X, Y, prior_mu, 'se', str_optimizer_method='L-BFGS-B')
-    gp.get_optimized_kernel(X, Y, prior_mu, 'se', str_modelselection_method='loocv')
-    gp.get_optimized_kernel(X_set, Y, prior_mu, 'set_se')
-    gp.get_optimized_kernel(X_set, Y, prior_mu, 'set_se', str_optimizer_method='L-BFGS-B')
-    gp.get_optimized_kernel(X_set, Y, prior_mu, 'set_se', str_modelselection_method='loocv')
+    cov_X_X, inv_cov_X_X, hyps = gp.get_optimized_kernel(X, Y, prior_mu, 'se')
+    print(hyps)
+    cov_X_X, inv_cov_X_X, hyps = gp.get_optimized_kernel(X, Y, prior_mu, 'se', str_optimizer_method='BFGS')
+    print(hyps)
+    cov_X_X, inv_cov_X_X, hyps = gp.get_optimized_kernel(X, Y, prior_mu, 'se', str_optimizer_method='L-BFGS-B')
+    print(hyps)
+    cov_X_X, inv_cov_X_X, hyps = gp.get_optimized_kernel(X, Y, prior_mu, 'se', str_modelselection_method='loocv')
+    print(hyps)
+    cov_X_X, inv_cov_X_X, hyps = gp.get_optimized_kernel(X_set, Y, prior_mu, 'set_se')
+    print(hyps)
+    cov_X_X, inv_cov_X_X, hyps = gp.get_optimized_kernel(X_set, Y, prior_mu, 'set_se', str_optimizer_method='L-BFGS-B')
+    print(hyps)
+    cov_X_X, inv_cov_X_X, hyps = gp.get_optimized_kernel(X_set, Y, prior_mu, 'set_se', str_modelselection_method='loocv')
+    print(hyps)
 
 def test_predict_test_():
     np.random.seed(42)

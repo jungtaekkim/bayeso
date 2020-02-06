@@ -70,7 +70,7 @@ Build a Gaussian process regression model with the hyperparameters optimized by 
     :align: center
     :alt: gp_optimized
 
-Declare some functions that would be employed to prior functions.
+Declare some functions that would be employed as prior functions.
 
 .. code-block:: python
 
@@ -143,7 +143,7 @@ Build Gaussian process regression models with the prior functions we declare abo
     :align: center
     :alt: gp_optimized_prior_linear_up
 
-Full codes:
+Full code:
 
 .. code-block:: python
 
