@@ -279,6 +279,19 @@ class BO(object):
         self.historical_hyps = []
 
     def _get_initial_grid(self, int_grid=constants.NUM_BO_GRID):
+        """
+        It returns grids of `self.arr_ranges`.
+
+        :param int_grid: the number of grids.
+        :type int_grid: int.
+
+        :returns: grids of `self.arr_ranges`. Shape: (`int_grid`:math:`^{\\text{d}}`, d).
+        :rtype: numpy.ndarray
+
+        :raises: AssertionError
+
+        """
+
         assert isinstance(int_grid, int)
 
         arr_initials = get_grids(self.arr_range, int_grid)
