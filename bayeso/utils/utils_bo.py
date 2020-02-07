@@ -1,6 +1,6 @@
 # utils_bo
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: June 04, 2019
+# last updated: February 07, 2020
 
 import numpy as np
 import time
@@ -10,6 +10,23 @@ from bayeso import constants
 
 
 def get_next_best_acquisition(arr_points, arr_acquisitions, cur_points):
+    """
+    It returns the next best acquired example.
+
+    :param arr_points: inputs for acquisition function. Shape: (n, d).
+    :type arr_points: numpy.ndarray
+    :param arr_acquisitions: acquisition function values over `arr_points`. Shape: (n, ).
+    :type arr_acquisitions: numpy.ndarray
+    :param cur_points: examples evaluated so far. Shape: (m, d).
+    :type cur_points: numpy.ndarray
+
+    :returns: next best acquired point. Shape: (d, ).
+    :rtype: numpy.ndarray
+
+    :raises: AssertionError
+
+    """
+
     assert isinstance(arr_points, np.ndarray)
     assert isinstance(arr_acquisitions, np.ndarray)
     assert isinstance(cur_points, np.ndarray)
@@ -32,7 +49,7 @@ def get_next_best_acquisition(arr_points, arr_acquisitions, cur_points):
                 cur_best = cur_acq
                 next_point = arr_point
     else:
-        next_point = cur_points[cur_points.shape[0]-1]
+        next_point = cur_points[-1]
     return next_point
 
 def optimize_many_(model_bo, fun_target, X_train, Y_train, int_iter,
@@ -40,6 +57,34 @@ def optimize_many_(model_bo, fun_target, X_train, Y_train, int_iter,
     int_samples_ao=constants.NUM_ACQ_SAMPLES,
     str_mlm_method=constants.STR_MLM_METHOD
 ):
+    """
+    It optimizes `fun_target` for `int_iter` iterations with given `model_bo`.
+    It returns the optimization results and execution times.
+
+    :param model_bo: Bayesian optimization model.
+    :type model_bo: bayeso.bo.BO
+    :param fun_target: a target function.
+    :type fun_target: function
+    :param X_train: initial inputs. Shape: (n, d) or (n, m, d).
+    :type X_train: numpy.ndarray
+    :param Y_train: initial outputs. Shape: (n, 1).
+    :type Y_train: numpy.ndarray
+    :param int_iter: the number of iterations for Bayesian optimization.
+    :type int_iter: int.
+    :param str_initial_method_ao: the name of initialization method for acquisition function optimization.
+    :type str_initial_method_ao: str., optional
+    :param int_samples_ao: the number of samples for acquisition function optimization. If L-BFGS-B is used as an acquisition function optimization method, it is employed.
+    :type int_samples_ao: int., optional
+    :param str_mlm_method: the name of marginal likelihood maximization method for Gaussian process regression.
+    :type str_mlm_method: str., optional
+
+    :returns: tuple of acquired examples, their function values, overall execution times per iteration, execution time consumed in Gaussian process regression, and execution time consumed in acquisition function optimization. Shape: ((n + `int_iter`, d), (n + `int_iter`, 1), (`int_iter`, ), (`int_iter`, ), (`int_iter`, )), or ((n + `int_iter`, m, d), (n + `int_iter`, m, 1), (`int_iter`, ), (`int_iter`, ), (`int_iter`, )).
+    :rtype: (numpy.ndarray, numpy.ndarray, numpy.ndarray, numpy.ndarray, numpy.ndarray)
+
+    :raises: AssertionError
+
+    """
+
     assert isinstance(model_bo, bo.BO)
     assert callable(fun_target)
     assert isinstance(X_train, np.ndarray)
@@ -104,6 +149,32 @@ def optimize_many(model_bo, fun_target, X_train, int_iter,
     int_samples_ao=constants.NUM_ACQ_SAMPLES,
     str_mlm_method=constants.STR_MLM_METHOD,
 ):
+    """
+    It optimizes `fun_target` for `int_iter` iterations with given `model_bo` and initial inputs `X_train`.
+    It returns the optimization results and execution times.
+
+    :param model_bo: Bayesian optimization model.
+    :type model_bo: bayeso.bo.BO
+    :param fun_target: a target function.
+    :type fun_target: function
+    :param X_train: initial inputs. Shape: (n, d) or (n, m, d).
+    :type X_train: numpy.ndarray
+    :param int_iter: the number of iterations for Bayesian optimization.
+    :type int_iter: int.
+    :param str_initial_method_ao: the name of initialization method for acquisition function optimization.
+    :type str_initial_method_ao: str., optional
+    :param int_samples_ao: the number of samples for acquisition function optimization. If L-BFGS-B is used as an acquisition function optimization method, it is employed.
+    :type int_samples_ao: int., optional
+    :param str_mlm_method: the name of marginal likelihood maximization method for Gaussian process regression.
+    :type str_mlm_method: str., optional
+
+    :returns: tuple of acquired examples, their function values, overall execution times per iteration, execution time consumed in Gaussian process regression, and execution time consumed in acquisition function optimization. Shape: ((n + `int_iter`, d), (n + `int_iter`, 1), (n + `int_iter`, ), (`int_iter`, ), (`int_iter`, )), or ((n + `int_iter`, m, d), (n + `int_iter`, m, 1), (n + `int_iter`, ), (`int_iter`, ), (`int_iter`, )).
+    :rtype: (numpy.ndarray, numpy.ndarray, numpy.ndarray, numpy.ndarray, numpy.ndarray)
+
+    :raises: AssertionError
+
+    """
+
     assert isinstance(model_bo, bo.BO)
     assert callable(fun_target)
     assert isinstance(X_train, np.ndarray)
@@ -144,6 +215,37 @@ def optimize_many_with_random_init(model_bo, fun_target, int_init, int_iter,
     str_mlm_method=constants.STR_MLM_METHOD,
     int_seed=None
 ):
+    """
+    It optimizes `fun_target` for `int_iter` iterations with given `model_bo` and `int_init` initial examples.
+    Initial examples are sampled by `get_initial` method in `model_bo`.
+    It returns the optimization results and execution times.
+
+    :param model_bo: Bayesian optimization model.
+    :type model_bo: bayeso.bo.BO
+    :param fun_target: a target function.
+    :type fun_target: function
+    :param int_init: the number of initial examples for Bayesian optimization.
+    :type int_init: int.
+    :param int_iter: the number of iterations for Bayesian optimization.
+    :type int_iter: int.
+    :param str_initial_method_bo: the name of initialization method for sampling initial examples in Bayesian optimization.
+    :type str_initial_method_bo: str., optional
+    :param str_initial_method_ao: the name of initialization method for acquisition function optimization.
+    :type str_initial_method_ao: str., optional
+    :param int_samples_ao: the number of samples for acquisition function optimization. If L-BFGS-B is used as an acquisition function optimization method, it is employed.
+    :type int_samples_ao: int., optional
+    :param str_mlm_method: the name of marginal likelihood maximization method for Gaussian process regression.
+    :type str_mlm_method: str., optional
+    :param int_seed: None, or random seed.
+    :type int_seed: NoneType or int., optional
+
+    :returns: tuple of acquired examples, their function values, overall execution times per iteration, execution time consumed in Gaussian process regression, and execution time consumed in acquisition function optimization. Shape: ((`int_init` + `int_iter`, d), (`int_init` + `int_iter`, 1), (`int_init` + `int_iter`, ), (`int_iter`, ), (`int_iter`, )), or ((`int_init` + `int_iter`, m, d), (`int_init` + `int_iter`, m, 1), (`int_init` + `int_iter`, ), (`int_iter`, ), (`int_iter`, )), where d is a dimensionality of the problem we are solving and m is a cardinality of sets.
+    :rtype: (numpy.ndarray, numpy.ndarray, numpy.ndarray, numpy.ndarray, numpy.ndarray)
+
+    :raises: AssertionError
+
+    """
+
     assert isinstance(model_bo, bo.BO)
     assert callable(fun_target)
     assert isinstance(int_init, int)
