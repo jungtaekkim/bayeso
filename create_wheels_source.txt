@@ -1,0 +1,6 @@
+# Install setuptools wheel first.
+python2 setup.py sdist bdist_wheel
+python3 setup.py sdist bdist_wheel
+
+# Install twine
+twine upload dist/*

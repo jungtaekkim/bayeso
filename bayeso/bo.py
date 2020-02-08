@@ -280,12 +280,12 @@ class BO(object):
 
     def _get_initial_grid(self, int_grid=constants.NUM_BO_GRID):
         """
-        It returns grids of `self.arr_ranges`.
+        It returns grids of `self.arr_range`.
 
         :param int_grid: the number of grids.
-        :type int_grid: int.
+        :type int_grid: int., optional
 
-        :returns: grids of `self.arr_ranges`. Shape: (`int_grid`:math:`^{\\text{d}}`, d).
+        :returns: grids of `self.arr_range`. Shape: (`int_grid`:math:`^{\\text{d}}`, d).
         :rtype: numpy.ndarray
 
         :raises: AssertionError
@@ -298,6 +298,22 @@ class BO(object):
         return arr_initials
 
     def _get_initial_uniform(self, int_samples, int_seed=None):
+        """
+        It returns `int_samples` examples uniformly sampled.
+
+        :param int_samples: the number of samples.
+        :type int_samples: int.
+        :param int_seed: None, or random seed.
+        :type int_seed: NoneType or int., optional
+
+        :returns: random examples. Shape: (`int_samples`, d).
+        :rtype: numpy.ndarray
+
+        :raises: AssertionError
+
+        """
+
+        assert isinstance(int_samples, int)
         assert isinstance(int_seed, int) or int_seed is None
         
         if int_seed is not None:
@@ -313,6 +329,22 @@ class BO(object):
 
     # TODO: noise should be added.
     def _get_initial_sobol(self, int_samples, int_seed=None):
+        """
+        It returns `int_samples` examples sampled from Sobol sequence.
+
+        :param int_samples: the number of samples.
+        :type int_samples: int.
+        :param int_seed: None, or random seed.
+        :type int_seed: NoneType or int., optional
+
+        :returns: examples sampled from Sobol sequence. Shape: (`int_samples`, d).
+        :rtype: numpy.ndarray
+
+        :raises: AssertionError
+
+        """
+
+        assert isinstance(int_samples, int)
         assert isinstance(int_seed, int) or int_seed is None
 
         if int_seed is None:
@@ -324,14 +356,47 @@ class BO(object):
         return arr_samples
 
     def _get_initial_latin(self, int_samples):
+        """
+        It returns `int_samples` examples sampled from Latin hypercube.
+
+        :param int_samples: the number of samples.
+        :type int_samples: int.
+
+        :returns: examples sampled from Latin hypercube. Shape: (`int_samples`, d).
+        :rtype: numpy.ndarray
+
+        :raises: AssertionError
+
+        """
+
         raise NotImplementedError('_get_initial_latin in bo.py')
 
     # TODO: int_grid should be able to be input.
+    # TODO: change this method name. More general name is needed like get_samples.
     def get_initial(self, str_initial_method,
         fun_objective=None,
         int_samples=constants.NUM_ACQ_SAMPLES,
         int_seed=None,
     ):
+        """
+        It returns a single example or `int_samples` examples, sampled by a certian method `str_initial_method`.
+
+        :param str_initial_method: the name of sampling method.
+        :type str_initial_method: str.
+        :param fun_objective: None, or objective function.
+        :type fun_objective: NoneType or function, optional
+        :param int_samples: the number of samples.
+        :type int_samples: int., optional
+        :param int_seed: None, or random seed.
+        :type int_seed: NoneType or int., optional
+
+        :returns: sampled examples. Shape: (1, d) or (`int_samples`, d).
+        :rtype: numpy.ndarray
+
+        :raises: AssertionError
+
+        """
+
         assert isinstance(str_initial_method, str)
         assert callable(fun_objective) or fun_objective is None
         assert isinstance(int_samples, int)
@@ -357,6 +422,29 @@ class BO(object):
         return arr_initials
 
     def _optimize_objective(self, fun_acquisition, X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps):
+        """
+        It returns acquisition function values over `X_test`.
+
+        :param fun_acquisition: acquisition function.
+        :type fun_acquisition: function
+        :param X_train: inputs. Shape: (n, d) or (n, m, d).
+        :type X_train: numpy.ndarray
+        :param Y_train: outputs. Shape: (n, 1).
+        :type Y_train: numpy.ndarray
+        :param X_test: inputs. Shape: (l, d) or (l, m, d).
+        :type X_test: numpy.ndarray
+        :param cov_X_X: kernel matrix over `X_train`. Shape: (n, n).
+        :type cov_X_X: numpy.ndarray
+        :param inv_cov_X_X: kernel matrix inverse over `X_train`. Shape: (n, n).
+        :type inv_cov_X_X: numpy.ndarray
+        :param hyps: dictionary of hyperparameters for Gaussian process.
+        :type hyps: dict.
+
+        :returns: acquisition function values over `X_test`. Shape: (l, ).
+        :rtype: numpy.ndarray
+
+        """
+
         X_test = np.atleast_2d(X_test)
         pred_mean, pred_std = gp.predict_test_(X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps, str_cov=self.str_cov, prior_mu=self.prior_mu, debug=self.debug)
         # no matter which acquisition functions are given, we input pred_mean, pred_std, and Y_train.
@@ -364,12 +452,36 @@ class BO(object):
         return acquisitions
 
     def _get_bounds(self):
+        """
+        It returns list of range tuples, obtained from `self.arr_range`.
+
+        :returns: list of range tuples.
+        :rtype: list
+
+        """
+
         list_bounds = []
         for elem in self.arr_range:
             list_bounds.append(tuple(elem))
         return list_bounds
 
     def _optimize(self, fun_negative_acquisition, str_initial_method, int_samples):
+        """
+        It optimizes `fun_negative_function` with `self.str_optimizer_method_bo`.
+        `int_samples` examples are determined by `str_initial_method`, to start acquisition function optimization.
+
+        :param fun_objective: negative acquisition function.
+        :type fun_objective: function
+        :param str_initial_method: the name of sampling method.
+        :type str_initial_method: str.
+        :param int_samples: the number of samples.
+        :type int_samples: int.
+
+        :returns: tuple of next point to evaluate and all candidates determined by acquisition function optimization. Shape: ((d, ), (`int_samples`, d)).
+        :rtype: (numpy.ndarray, numpy.ndarray)
+
+        """
+
         list_next_point = []
         if self.str_optimizer_method_bo == 'L-BFGS-B':
             list_bounds = self._get_bounds()
@@ -416,6 +528,27 @@ class BO(object):
         int_samples=constants.NUM_ACQ_SAMPLES,
         str_mlm_method=constants.STR_MLM_METHOD,
     ):
+        """
+        It computes acquired example, candidates of acquired examples, acquisition function values for the candidates, covariance matrix, inverse matrix of the covariance matrix, hyperparameters optimized, and execution times.
+
+        :param X_train: inputs. Shape: (n, d) or (n, m, d).
+        :type X_train: numpy.ndarray
+        :param Y_train: outputs. Shape: (n, 1).
+        :type Y_train: numpy.ndarray
+        :param str_initial_method_ao: the name of initialization method for acquisition function optimization.
+        :type str_initial_method_ao: str., optional
+        :param int_samples: the number of samples.
+        :type int_samples: int., optional
+        :param str_mlm_method: the name of marginal likelihood maximization method for Gaussian process regression.
+        :type str_mlm_method: str., optional
+
+        :returns: acquired example, candidates of acquired examples, acquisition function values over the candidates, covariance matrix by `hyps`, inverse matrix of the covariance matrix, hyperparameters optimized, and execution times. Shape: ((d, ), (`int_samples`, d), (`int_samples`, ), (n, n), (n, n), dict., dict.).
+        :rtype: (numpy.ndarray, numpy.ndarray, numpy.ndarray, numpy.ndarray, numpy.ndarray, dict., dict.)
+
+        :raises: AssertionError
+
+        """
+
         assert isinstance(X_train, np.ndarray)
         assert isinstance(Y_train, np.ndarray)
         assert isinstance(str_initial_method_ao, str)

@@ -35,7 +35,7 @@ We optimize the objective function with 10 Bayesian optimization rounds and 50 i
     int_iter = 50
     int_init = 3
 
-With BO class in **bayeso.bo**, optimize the objective function.
+With BO class in `bayeso.bo`, optimize the objective function.
 
 .. code-block:: python
 
