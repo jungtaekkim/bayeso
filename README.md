@@ -1,6 +1,11 @@
-# bayeso
+<p align="center">
+<img src="docs/_static/assets/logo_bayeso.svg" width="400" />
+</p>
+
+# bayeso: A Bayesian optimization framework in Python
 [![Build Status](https://travis-ci.org/jungtaekkim/bayeso.svg?branch=master)](https://travis-ci.org/jungtaekkim/bayeso)
 [![Coverage Status](https://coveralls.io/repos/github/jungtaekkim/bayeso/badge.svg?branch=master)](https://coveralls.io/github/jungtaekkim/bayeso?branch=master)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/bayeso)](https://pypi.org/project/bayeso/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Documentation Status](https://readthedocs.org/projects/bayeso/badge/?version=latest)](http://bayeso.readthedocs.io/en/latest/?badge=latest)
 
@@ -58,7 +63,7 @@ The following `requirements` files include the package list, the purpose of whic
 ## Supported Python Version
 We test our package in the following versions.
 
-* Python 2.7
+* Python 2.7 (It will be excluded due to the maintenance schedule for Python 2.7, but it is currently tested.)
 * Python 3.5
 * Python 3.6
 * Python 3.7

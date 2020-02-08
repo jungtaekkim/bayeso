@@ -12,21 +12,21 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-# import os
-# import sys
-# sys.path.insert(0, os.path.abspath('.'))
+import os
+import sys
+sys.path.insert(0, os.path.abspath('../'))
 
 
 # -- Project information -----------------------------------------------------
 
 project = 'bayeso'
-copyright = '2019, Jungtaek Kim and Seungjin Choi'
+copyright = '2020, Jungtaek Kim and Seungjin Choi'
 author = 'Jungtaek Kim and Seungjin Choi'
 
 # The short X.Y version
-version = '0.3.3'
+version = '0.4.0'
 # The full version, including alpha/beta/rc tags
-release = 'alpha'
+release = '{} alpha'.format(version)
 
 
 # -- General configuration ---------------------------------------------------
@@ -39,6 +39,8 @@ release = 'alpha'
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
+    'sphinx.ext.autodoc',
+    'sphinx.ext.mathjax',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -76,6 +78,7 @@ pygments_style = 'sphinx'
 #
 #html_theme = 'alabaster'
 html_theme = 'sphinx_rtd_theme'
+#html_logo = '_static/assets/logo_bayeso.svg'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -110,11 +113,11 @@ htmlhelp_basename = 'bayesodoc'
 latex_elements = {
     # The paper size ('letterpaper' or 'a4paper').
     #
-    # 'papersize': 'letterpaper',
+    'papersize': 'letterpaper',
 
     # The font size ('10pt', '11pt' or '12pt').
     #
-    # 'pointsize': '10pt',
+    'pointsize': '10pt',
 
     # Additional stuff for the LaTeX preamble.
     #
@@ -133,6 +136,7 @@ latex_documents = [
      'Jungtaek Kim and Seungjin Choi', 'manual'),
 ]
 
+latex_logo = '_static/assets/logo_bayeso.pdf'
 
 # -- Options for manual page output ------------------------------------------
 
@@ -151,6 +155,6 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
     (master_doc, 'bayeso', 'bayeso Documentation',
-     author, 'bayeso', 'One line description of project.',
-     'Miscellaneous'),
+     author, 'bayeso', 'Simple, but essential Bayesian optimization package.',
+     'Machine learning, Global optimization, Bayesian optimization, Hyperparameter optimization'),
 ]

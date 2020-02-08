@@ -1,21 +1,45 @@
-.. bayeso documentation master file, created by
-   sphinx-quickstart on Sun May 20 14:37:12 2018.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+.. image:: _static/assets/logo_bayeso.*
+    :alt: bayeso logo
+    :width: 400px
+    :align: center
 
-Welcome to bayeso's documentation!
-==================================
+----------------------------------
 
-`bayeso <https://github.com/jungtaekkim/bayeso>`_ is a simple, but essential Bayesian optimization package, written in Python. It is developed by `machine learning group <http://mlg.postech.ac.kr>`_ at POSTECH. This project is licensed under `the MIT license <https://opensource.org/licenses/MIT>`_.
+bayeso: A Bayesian optimization framework in Python
+===================================================
 
+`bayeso <https://github.com/jungtaekkim/bayeso>`_ is a simple, but essential Bayesian optimization package, written in Python.
+It is developed by `machine learning group <http://mlg.postech.ac.kr>`_ at POSTECH.
+This project is licensed under `the MIT license <https://opensource.org/licenses/MIT>`_.
+
+This documentation describes the details of implementation, getting started guides, some examples with bayeso, and Python API specifications.
 The code can be found in `our GitHub repository <https://github.com/jungtaekkim/bayeso>`_.
 
-It is still under construction. We will update soon.
+
+.. toctree::
+   :maxdepth: 1
+
+   about/about_bayeso
+   about/about_bo
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Getting Started:
+
+   getting_started/installation
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Example:
+
+   example/gp
+   example/branin
+   example/hpo
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: Python API:
 
-   self
-   gpr_simple
+   python_api/bayeso
+   python_api/bayeso.utils
 

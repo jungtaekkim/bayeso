@@ -1,6 +1,6 @@
 # test_utils_plotting
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: July 10, 2018
+# last updated: November 25, 2019
 
 import pytest
 import numpy as np
@@ -341,8 +341,6 @@ def test_plot_bo_step_acq():
         utils_plotting.plot_bo_step_acq(X_train, Y_train, X_test, Y_test, mean_test, std_test, acq_test, is_tex='abc')
     with pytest.raises(AssertionError) as error:
         utils_plotting.plot_bo_step_acq(X_train, Y_train, X_test, Y_test, mean_test, std_test, acq_test, is_zero_axis='abc')
-    with pytest.raises(AssertionError) as error:
-        utils_plotting.plot_bo_step_acq(X_train, Y_train, X_test, Y_test, mean_test, std_test, acq_test, is_acq_axis_small='abc')
     with pytest.raises(AssertionError) as error:
         utils_plotting.plot_bo_step_acq(X_train, Y_train, X_test, Y_test, mean_test, std_test, acq_test, time_pause='abc')
     with pytest.raises(AssertionError) as error:

@@ -8,8 +8,6 @@ python:
 install:
   - pip install .
 script:
-  - pytest
-after_success:
   - pip install coveralls
   - coverage run -m pytest
   - coveralls

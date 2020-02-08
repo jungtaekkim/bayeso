@@ -93,14 +93,17 @@ def test_optimize_many_():
     with pytest.raises(AssertionError) as error:
         utils_bo.optimize_many_(model_bo, fun_target, X, Y, num_iter, int_samples_ao='abc')
 
-    X_final, Y_final, time_final = utils_bo.optimize_many_(model_bo, fun_target, X, Y, num_iter)
+    X_final, Y_final, time_all_final, time_gp_final, time_acq_final = utils_bo.optimize_many_(model_bo, fun_target, X, Y, num_iter)
     assert len(X_final.shape) == 2
     assert len(Y_final.shape) == 2
-    assert len(time_final.shape) == 1
+    assert len(time_all_final.shape) == 1
+    assert len(time_gp_final.shape) == 1
+    assert len(time_acq_final.shape) == 1
     assert X_final.shape[1] == dim_X
     assert X_final.shape[0] == Y_final.shape[0] == num_X + num_iter
-    assert time_final.shape[0] == num_iter
+    assert time_all_final.shape[0] == num_iter
     assert Y_final.shape[1] == 1
+    assert time_gp_final.shape[0] == time_acq_final.shape[0]
 
 def test_optimize_many():
     np.random.seed(42)
@@ -131,13 +134,16 @@ def test_optimize_many():
     with pytest.raises(AssertionError) as error:
         utils_bo.optimize_many(model_bo, fun_target, X, num_iter, int_samples_ao='abc')
 
-    X_final, Y_final, time_final = utils_bo.optimize_many(model_bo, fun_target, X, num_iter)
+    X_final, Y_final, time_all_final, time_gp_final, time_acq_final = utils_bo.optimize_many(model_bo, fun_target, X, num_iter)
     assert len(X_final.shape) == 2
     assert len(Y_final.shape) == 2
-    assert len(time_final.shape) == 1
+    assert len(time_all_final.shape) == 1
+    assert len(time_gp_final.shape) == 1
+    assert len(time_acq_final.shape) == 1
     assert X_final.shape[1] == dim_X
-    assert X_final.shape[0] == Y_final.shape[0] == time_final.shape[0] == num_X + num_iter
+    assert X_final.shape[0] == Y_final.shape[0] == time_all_final.shape[0] == num_X + num_iter
     assert Y_final.shape[1] == 1
+    assert time_gp_final.shape[0] == time_acq_final.shape[0]
 
 def test_optimize_many_with_random_init():
     np.random.seed(42)
@@ -171,10 +177,13 @@ def test_optimize_many_with_random_init():
     with pytest.raises(AssertionError) as error:
         utils_bo.optimize_many_with_random_init(model_bo, fun_target, num_X, num_iter, int_seed=1.2)
 
-    X_final, Y_final, time_final = utils_bo.optimize_many_with_random_init(model_bo, fun_target, num_X, num_iter, str_initial_method_bo='uniform')
+    X_final, Y_final, time_all_final, time_gp_final, time_acq_final = utils_bo.optimize_many_with_random_init(model_bo, fun_target, num_X, num_iter, str_initial_method_bo='uniform')
     assert len(X_final.shape) == 2
     assert len(Y_final.shape) == 2
-    assert len(time_final.shape) == 1
+    assert len(time_all_final.shape) == 1
+    assert len(time_gp_final.shape) == 1
+    assert len(time_acq_final.shape) == 1
     assert X_final.shape[1] == dim_X
-    assert X_final.shape[0] == Y_final.shape[0] == time_final.shape[0] == num_X + num_iter
+    assert X_final.shape[0] == Y_final.shape[0] == time_all_final.shape[0] == num_X + num_iter
     assert Y_final.shape[1] == 1
+    assert time_gp_final.shape[0] == time_acq_final.shape[0]
