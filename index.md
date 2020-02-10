@@ -1,16 +1,16 @@
-<p align="center">
-<img src="logo_bayeso.svg" width="400" />
-</p>
-
-# bayeso: A Bayesian optimization framework in Python
 [![Build Status](https://travis-ci.org/jungtaekkim/bayeso.svg?branch=master)](https://travis-ci.org/jungtaekkim/bayeso)
 [![Coverage Status](https://coveralls.io/repos/github/jungtaekkim/bayeso/badge.svg?branch=master)](https://coveralls.io/github/jungtaekkim/bayeso?branch=master)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/bayeso)](https://pypi.org/project/bayeso/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Documentation Status](https://readthedocs.org/projects/bayeso/badge/?version=latest)](http://bayeso.readthedocs.io/en/latest/?badge=latest)
 
+<p align="center">
+<img src="logo_bayeso.svg" width="400" />
+</p>
+
 Simple, but essential Bayesian optimization package.
 
+* [GitHub repository](https://github.com/jungtaekkim/bayeso)
 * [Online documentation](http://bayeso.readthedocs.io)
 
 ## Installation
