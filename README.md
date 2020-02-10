@@ -11,7 +11,7 @@
 
 Simple, but essential Bayesian optimization package.
 
-* [Home](http://bayeso.org)
+* [http://bayeso.org](http://bayeso.org)
 * [Online documentation](http://bayeso.readthedocs.io)
 
 ## Installation
