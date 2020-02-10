@@ -22,7 +22,7 @@ title: bayeso
 email: jtkim@postech.ac.kr
 description: >- # this means to ignore newlines until "baseurl:"
   Simple, but essential Bayesian optimization package.
-baseurl: "/bayeso" # the subpath of your site, e.g. /blog
+baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://jungtaekkim.github.io" # the base hostname & protocol for your site, e.g. http://example.com
 twitter_username: jungtaek_kim
 github_username: jungtaekkim
