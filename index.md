@@ -1,37 +1,89 @@
-## Welcome to GitHub Pages
+<p align="center">
+<img src="logo_bayeso.svg" width="400" />
+</p>
 
-You can use the [editor on GitHub](https://github.com/woonboon/woonboon.github.io/edit/master/index.md) to maintain and preview the content for your website in Markdown files.
+# bayeso: A Bayesian optimization framework in Python
+[![Build Status](https://travis-ci.org/jungtaekkim/bayeso.svg?branch=master)](https://travis-ci.org/jungtaekkim/bayeso)
+[![Coverage Status](https://coveralls.io/repos/github/jungtaekkim/bayeso/badge.svg?branch=master)](https://coveralls.io/github/jungtaekkim/bayeso?branch=master)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/bayeso)](https://pypi.org/project/bayeso/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Documentation Status](https://readthedocs.org/projects/bayeso/badge/?version=latest)](http://bayeso.readthedocs.io/en/latest/?badge=latest)
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+Simple, but essential Bayesian optimization package.
 
-### Markdown
+* [Online documentation](http://bayeso.readthedocs.io)
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+## Installation
+We recommend it should be installed in `virtualenv`.
+You can choose one of three installation options.
 
-```markdown
-Syntax highlighted code block
+* Using PyPI repository (for user installation)
 
-# Header 1
-## Header 2
-### Header 3
+To install the released version in PyPI repository, command it.
 
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
+```shell
+$ pip install bayeso
 ```
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+* Using source code (for developer installation)
 
-### Jekyll Themes
+To install `bayeso` from source code, command
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/woonboon/woonboon.github.io/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+```shell
+$ pip install .
+```
+in the `bayeso` root.
 
-### Support or Contact
+* Using source code (for editable development mode)
 
-Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+To use editable development mode, command
+
+```shell
+$ pip install -r requirements.txt
+$ python setup.py develop
+```
+in the `bayeso` root.
+
+* Uninstallation
+
+If you would like to uninstall bayeso, command it.
+
+```shell
+$ pip uninstall bayeso
+```
+
+## Required Packages
+Mandatory pacakges are inlcuded in `requirements.txt`.
+The following `requirements` files include the package list, the purpose of which is described as follows.
+
+* `requirements-optional.txt`: It is an optional package list, but it needs to be installed to execute some features of `bayeso`.
+* `requirements-dev.txt`: It is for developing the `bayeso` package.
+* `requirements-examples.txt`: It needs to be installed to execute the examples included in the `bayeso` repository.
+
+## Supported Python Version
+We test our package in the following versions.
+
+* Python 2.7 (It will be excluded due to the maintenance schedule for Python 2.7, but it is currently tested.)
+* Python 3.5
+* Python 3.6
+* Python 3.7
+
+## Author
+* [Jungtaek Kim](http://mlg.postech.ac.kr/~jtkim/) (POSTECH)
+* [Seungjin Choi](http://mlg.postech.ac.kr/~seungjin/) (POSTECH)
+
+## Citation
+```
+@misc{KimJ2017bayeso,
+    author={Kim, Jungtaek and Choi, Seungjin},
+    title={{bayeso}: A {Bayesian} optimization framework in {Python}},
+    howpublished={\url{https://github.com/jungtaekkim/bayeso}},
+    year={2017}
+}
+```
+
+## Contact
+* Jungtaek Kim: [jtkim@postech.ac.kr](mailto:jtkim@postech.ac.kr)
+
+## License
+[MIT License](https://github.com/jungtaekkim/bayeso/blob/master/LICENSE)
