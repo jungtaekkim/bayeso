@@ -76,7 +76,7 @@ We test our package in the following versions.
 ```
 @misc{KimJ2017bayeso,
     author={Kim, Jungtaek and Choi, Seungjin},
-    title={{bayeso}: A {Bayesian} optimization framework in {Python}},
+    title={ {bayeso}: A {Bayesian} optimization framework in {Python} },
     howpublished={\url{https://github.com/jungtaekkim/bayeso}},
     year={2017}
 }
