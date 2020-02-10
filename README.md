@@ -11,6 +11,7 @@
 
 Simple, but essential Bayesian optimization package.
 
+* [Home](http://bayeso.org)
 * [Online documentation](http://bayeso.readthedocs.io)
 
 ## Installation
@@ -68,9 +69,8 @@ We test our package in the following versions.
 * Python 3.6
 * Python 3.7
 
-## Author
+## Contributor
 * [Jungtaek Kim](http://mlg.postech.ac.kr/~jtkim/) (POSTECH)
-* [Seungjin Choi](http://mlg.postech.ac.kr/~seungjin/) (POSTECH)
 
 ## Citation
 ```

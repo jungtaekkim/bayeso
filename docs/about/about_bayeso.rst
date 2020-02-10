@@ -16,11 +16,10 @@ We test our package in the following versions.
 - Python 3.6
 - Python 3.7
 
-Author
-======
+Contributor
+===========
 
 - `Jungtaek Kim <http://mlg.postech.ac.kr/~jtkim/>`_ (POSTECH)
-- `Seungjin Choi <http://mlg.postech.ac.kr/~seungjin/>`_ (POSTECH)
 
 Citation
 ========

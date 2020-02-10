@@ -18,12 +18,12 @@ with open(path_requirements) as f:
 
 setup(
     name='bayeso',
-    version='0.4.0',
+    version='0.4.1',
     author='Jungtaek Kim',
     author_email='jtkim@postech.ac.kr',
-    url='https://github.com/jungtaekkim/bayeso',
+    url='http://bayeso.org',
     license='MIT',
-    description='Bayesian optimization package',
+    description='Simple, but essential Bayesian optimization package',
     packages=list_packages,
     python_requires='>=2.7, !=3.0.*, !=3.1.*, !=3.2.*, != 3.3.*, !=3.4.*, <4',
     install_requires=required,
