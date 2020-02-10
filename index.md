@@ -14,7 +14,7 @@ Simple, but essential Bayesian optimization package.
 * [Online documentation](http://bayeso.readthedocs.io)
 
 ## Installation
-We recommend it should be installed in `virtualenv`.
+We recommend it should be installed in virtualenv.
 You can choose one of three installation options.
 
 * Using PyPI repository (for user installation)
@@ -27,12 +27,12 @@ $ pip install bayeso
 
 * Using source code (for developer installation)
 
-To install `bayeso` from source code, command
+To install bayeso from source code, command
 
 ```shell
 $ pip install .
 ```
-in the `bayeso` root.
+in the bayeso root.
 
 * Using source code (for editable development mode)
 
@@ -42,7 +42,7 @@ To use editable development mode, command
 $ pip install -r requirements.txt
 $ python setup.py develop
 ```
-in the `bayeso` root.
+in the bayeso root.
 
 * Uninstallation
 
@@ -53,12 +53,12 @@ $ pip uninstall bayeso
 ```
 
 ## Required Packages
-Mandatory pacakges are inlcuded in `requirements.txt`.
-The following `requirements` files include the package list, the purpose of which is described as follows.
+Mandatory pacakges are inlcuded in requirements.txt.
+The following requirements files include the package list, the purpose of which is described as follows.
 
-* `requirements-optional.txt`: It is an optional package list, but it needs to be installed to execute some features of `bayeso`.
-* `requirements-dev.txt`: It is for developing the `bayeso` package.
-* `requirements-examples.txt`: It needs to be installed to execute the examples included in the `bayeso` repository.
+* requirements-optional.txt: It is an optional package list, but it needs to be installed to execute some features of bayeso.
+* requirements-dev.txt: It is for developing the bayeso package.
+* requirements-examples.txt: It needs to be installed to execute the examples included in the bayeso repository.
 
 ## Supported Python Version
 We test our package in the following versions.
@@ -75,10 +75,10 @@ We test our package in the following versions.
 ## Citation
 ```
 @misc{KimJ2017bayeso,
-    author={Kim, Jungtaek and Choi, Seungjin},
-    title={ {bayeso}: A {Bayesian} optimization framework in {Python} },
-    howpublished={\url{https://github.com/jungtaekkim/bayeso}},
-    year={2017}
+    author="Kim, Jungtaek and Choi, Seungjin",
+    title="{bayeso}: A {Bayesian} optimization framework in {Python}",
+    howpublished="\url{https://github.com/jungtaekkim/bayeso}",
+    year="2017"
 }
 ```
 
