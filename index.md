@@ -60,6 +60,9 @@ The following requirements files include the package list, the purpose of which 
 * requirements-dev.txt: It is for developing the bayeso package.
 * requirements-examples.txt: It needs to be installed to execute the examples included in the bayeso repository.
 
+## Related Package
+* [bayeso-benchmarks](https://github.com/jungtaekkim/bayeso-benchmarks): We implement benchmark functions for Bayesian optimization. This package is included in requirements-optional.txt.
+
 ## Supported Python Version
 We test our package in the following versions.
 
