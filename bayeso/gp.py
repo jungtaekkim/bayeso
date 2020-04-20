@@ -456,8 +456,8 @@ def predict_test_(X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps,
     :param debug: flag for printing log messages.
     :type debug: bool., optional
 
-    :returns: a tuple of posterior mean function over `X_test` and posterior standard deviation function over `X_test`. Shape: ((l, 1), (l, 1)).
-    :rtype: tuple of (numpy.ndarray, numpy.ndarray)
+    :returns: a tuple of posterior mean function over `X_test`, posterior standard deviation function over `X_test`, and posterior covariance matrix over `X_test`. Shape: ((l, 1), (l, 1), (l, l)).
+    :rtype: tuple of (numpy.ndarray, numpy.ndarray, numpy.ndarray)
 
     :raises: AssertionError
 
@@ -488,7 +488,7 @@ def predict_test_(X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps,
 
     mu_Xs = np.dot(np.dot(cov_X_Xs.T, inv_cov_X_X), Y_train - prior_mu_train) + prior_mu_test
     Sigma_Xs = cov_Xs_Xs - np.dot(np.dot(cov_X_Xs.T, inv_cov_X_X), cov_X_Xs)
-    return mu_Xs, np.expand_dims(np.sqrt(np.maximum(np.diag(Sigma_Xs), 0.0)), axis=1)
+    return mu_Xs, np.expand_dims(np.sqrt(np.maximum(np.diag(Sigma_Xs), 0.0)), axis=1), Sigma_Xs
 
 def predict_test(X_train, Y_train, X_test, hyps,
     str_cov=constants.STR_GP_COV,
@@ -513,8 +513,8 @@ def predict_test(X_train, Y_train, X_test, hyps,
     :param debug: flag for printing log messages.
     :type debug: bool., optional
 
-    :returns: a tuple of posterior mean function over `X_test` and posterior standard deviation function over `X_test`. Shape: ((l, 1), (l, 1)).
-    :rtype: tuple of (numpy.ndarray, numpy.ndarray)
+    :returns: a tuple of posterior mean function over `X_test`, posterior standard deviation function over `X_test`, and posterior covariance matrix over `X_test`. Shape: ((l, 1), (l, 1), (l, l)).
+    :rtype: tuple of (numpy.ndarray, numpy.ndarray, numpy.ndarray)
 
     :raises: AssertionError
 
@@ -533,8 +533,8 @@ def predict_test(X_train, Y_train, X_test, hyps,
     assert X_train.shape[1] == X_test.shape[1]
     
     cov_X_X, inv_cov_X_X, grad_cov_X_X = get_kernel_inverse(X_train, hyps, str_cov, debug=debug)
-    mu_Xs, sigma_Xs = predict_test_(X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps, str_cov=str_cov, prior_mu=prior_mu, debug=debug)
-    return mu_Xs, sigma_Xs
+    mu_Xs, sigma_Xs, Sigma_Xs = predict_test_(X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps, str_cov=str_cov, prior_mu=prior_mu, debug=debug)
+    return mu_Xs, sigma_Xs, Sigma_Xs
 
 def predict_optimized(X_train, Y_train, X_test,
     str_cov=constants.STR_GP_COV,
@@ -560,8 +560,8 @@ def predict_optimized(X_train, Y_train, X_test,
     :param debug: flag for printing log messages.
     :type debug: bool., optional
 
-    :returns: a tuple of posterior mean function over `X_test` and posterior standard deviation function over `X_test`. Shape: ((l, 1), (l, 1)).
-    :rtype: tuple of (numpy.ndarray, numpy.ndarray)
+    :returns: a tuple of posterior mean function over `X_test`, posterior standard deviation function over `X_test`, and posterior covariance matrix over `X_test`. Shape: ((l, 1), (l, 1), (l, l)).
+    :rtype: tuple of (numpy.ndarray, numpy.ndarray, numpy.ndarray)
 
     :raises: AssertionError
 
@@ -582,9 +582,9 @@ def predict_optimized(X_train, Y_train, X_test,
     time_start = time.time()
 
     cov_X_X, inv_cov_X_X, hyps = get_optimized_kernel(X_train, Y_train, prior_mu, str_cov, is_fixed_noise=is_fixed_noise, debug=debug)
-    mu_Xs, sigma_Xs = predict_test_(X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps, str_cov=str_cov, prior_mu=prior_mu, debug=debug)
+    mu_Xs, sigma_Xs, Sigma_Xs = predict_test_(X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps, str_cov=str_cov, prior_mu=prior_mu, debug=debug)
 
     time_end = time.time()
     if debug:
         print('[DEBUG] predict_optimized in gp.py: time consumed', time_end - time_start, 'sec.')
-    return mu_Xs, sigma_Xs
+    return mu_Xs, sigma_Xs, Sigma_Xs
