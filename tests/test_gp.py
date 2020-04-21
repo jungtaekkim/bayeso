@@ -1,6 +1,6 @@
 # test_gp
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: July 09, 2018
+# last updated: April 21, 2020
 
 import numpy as np
 import pytest

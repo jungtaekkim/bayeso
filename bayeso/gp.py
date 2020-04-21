@@ -1,6 +1,6 @@
 # gp
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: January 31, 2020
+# last updated: April 21, 2020
 
 import time
 import numpy as np
