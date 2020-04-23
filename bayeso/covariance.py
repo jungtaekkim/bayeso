@@ -116,19 +116,23 @@ def grad_cov_se(cov_, X, Xs, hyps, num_hyps, is_fixed_noise):
     num_Xs = Xs.shape[0]
 
     grad_cov_ = np.zeros((num_X, num_Xs, num_hyps))
+    dist = scisd.cdist(X / hyps['lengthscales'], Xs / hyps['lengthscales'], metric='euclidean')
 
-    for ind_X in range(0, num_X):
-        for ind_Xs in range(0, num_Xs):
-            X_Xs_l = (X[ind_X] - Xs[ind_Xs]) / hyps['lengthscales']
-            dist = np.linalg.norm(X_Xs_l, ord=2)
+    if is_fixed_noise:
+        ind_next = 0
+    else:
+        grad_cov_[:, :, 0] += 2.0 * hyps['noise'] * np.eye(num_X, M=num_Xs)
+        ind_next = 1
 
-            ind_next = 0
-            if not is_fixed_noise:
-                if ind_X == ind_Xs:
-                    grad_cov_[ind_X, ind_Xs, 0] = 2.0 * hyps['noise']
-                ind_next += 1
-            grad_cov_[ind_X, ind_Xs, ind_next] = 2.0 * cov_[ind_X, ind_Xs] / hyps['signal']
-            grad_cov_[ind_X, ind_Xs, ind_next+1:] = cov_[ind_X, ind_Xs] * dist**2 * hyps['lengthscales']**(-1)
+    grad_cov_[:, :, ind_next] += 2.0 * cov_ / hyps['signal']
+
+    term_pre = cov_ * dist**2
+
+    if isinstance(hyps['lengthscales'], np.ndarray) and len(hyps['lengthscales'].shape) == 1:
+        for ind_ in range(0, hyps['lengthscales'].shape[0]):
+            grad_cov_[:, :, ind_next+ind_+1] += term_pre * hyps['lengthscales'][ind_]**(-1)
+    else:
+        grad_cov_[:, :, ind_next+1] += term_pre * hyps['lengthscales']**(-1)
 
     return grad_cov_
 
@@ -202,19 +206,23 @@ def grad_cov_matern32(cov_, X, Xs, hyps, num_hyps, is_fixed_noise):
     num_Xs = Xs.shape[0]
 
     grad_cov_ = np.zeros((num_X, num_Xs, num_hyps))
+    dist = scisd.cdist(X / hyps['lengthscales'], Xs / hyps['lengthscales'], metric='euclidean')
 
-    for ind_X in range(0, num_X):
-        for ind_Xs in range(0, num_Xs):
-            X_Xs_l = (X[ind_X] - Xs[ind_Xs]) / hyps['lengthscales']
-            dist = np.linalg.norm(X_Xs_l, ord=2)
+    if is_fixed_noise:
+        ind_next = 0
+    else:
+        grad_cov_[:, :, 0] += 2.0 * hyps['noise'] * np.eye(num_X, M=num_Xs)
+        ind_next = 1
 
-            ind_next = 0
-            if not is_fixed_noise:
-                if ind_X == ind_Xs:
-                    grad_cov_[ind_X, ind_Xs, 0] = 2.0 * hyps['noise']
-                ind_next += 1
-            grad_cov_[ind_X, ind_Xs, ind_next] = 2.0 * cov_[ind_X, ind_Xs] / hyps['signal']
-            grad_cov_[ind_X, ind_Xs, ind_next+1:] = 3.0 * hyps['signal']**2 * np.exp(-np.sqrt(3) * dist) * dist**2 * hyps['lengthscales']**(-1)
+    grad_cov_[:, :, ind_next] += 2.0 * cov_ / hyps['signal']
+
+    term_pre = 3.0 * hyps['signal']**2 * np.exp(-np.sqrt(3) * dist) * dist**2
+
+    if isinstance(hyps['lengthscales'], np.ndarray) and len(hyps['lengthscales'].shape) == 1:
+        for ind_ in range(0, hyps['lengthscales'].shape[0]):
+            grad_cov_[:, :, ind_next+ind_+1] += term_pre * hyps['lengthscales'][ind_]**(-1)
+    else:
+        grad_cov_[:, :, ind_next+1] += term_pre * hyps['lengthscales']**(-1)
 
     return grad_cov_
 
@@ -288,19 +296,24 @@ def grad_cov_matern52(cov_, X, Xs, hyps, num_hyps, is_fixed_noise):
     num_Xs = Xs.shape[0]
 
     grad_cov_ = np.zeros((num_X, num_Xs, num_hyps))
+    dist = scisd.cdist(X / hyps['lengthscales'], Xs / hyps['lengthscales'], metric='euclidean')
 
-    for ind_X in range(0, num_X):
-        for ind_Xs in range(0, num_Xs):
-            X_Xs_l = (X[ind_X] - Xs[ind_Xs]) / hyps['lengthscales']
-            dist = np.linalg.norm((X[ind_X] - Xs[ind_Xs]) / hyps['lengthscales'], ord=2)
+    if is_fixed_noise:
+        ind_next = 0
+    else:
+        grad_cov_[:, :, 0] += 2.0 * hyps['noise'] * np.eye(num_X, M=num_Xs)
+        ind_next = 1
 
-            ind_next = 0
-            if not is_fixed_noise:
-                if ind_X == ind_Xs:
-                    grad_cov_[ind_X, ind_Xs, 0] = 2.0 * hyps['noise']
-                ind_next += 1
-            grad_cov_[ind_X, ind_Xs, ind_next] = 2.0 * cov_[ind_X, ind_Xs] / hyps['signal']
-            grad_cov_[ind_X, ind_Xs, ind_next+1:] = 5.0 / 3.0 * hyps['signal']**2 * (1.0 + np.sqrt(5) * dist) * np.exp(-np.sqrt(5) * dist) * dist**3 * hyps['lengthscales']**(-1)
+    grad_cov_[:, :, ind_next] += 2.0 * cov_ / hyps['signal']
+
+    term_pre = 5.0 / 3.0 * hyps['signal']**2 * (1.0 + np.sqrt(5) * dist) * np.exp(-np.sqrt(5) * dist) * dist**3
+
+    if isinstance(hyps['lengthscales'], np.ndarray) and len(hyps['lengthscales'].shape) == 1:
+        for ind_ in range(0, hyps['lengthscales'].shape[0]):
+            grad_cov_[:, :, ind_next+ind_+1] += term_pre * hyps['lengthscales'][ind_]**(-1)
+    else:
+        grad_cov_[:, :, ind_next+1] += term_pre * hyps['lengthscales']**(-1)
+
 
     return grad_cov_
 
