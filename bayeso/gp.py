@@ -257,7 +257,6 @@ def neg_log_ml(X_train, Y_train, hyps, str_cov, prior_mu_train,
     if is_cholesky:
         cov_X_X, lower, grad_cov_X_X = get_kernel_cholesky(X_train, hyps, str_cov, is_fixed_noise=is_fixed_noise, is_gradient=is_gradient, debug=debug)
 
-#        lower_new_Y_train = scipy.linalg.cho_solve((lower, True), new_Y_train)
         alpha = scipy.linalg.cho_solve((lower, True), new_Y_train)
 
         first_term = -0.5 * np.dot(new_Y_train.T, alpha)
