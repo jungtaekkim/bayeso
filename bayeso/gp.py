@@ -1,12 +1,13 @@
 # gp
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: April 21, 2020
+# last updated: April 23, 2020
 
 import time
 import numpy as np
 import scipy 
 import scipy.linalg
 import scipy.optimize
+import scipy.stats
 
 from bayeso import covariance
 from bayeso import constants
@@ -51,6 +52,35 @@ def _check_str_cov(str_fun, str_cov, shape_X1, shape_X2=None):
     else:
         raise ValueError('{}: invalid str_cov.'.format(str_fun))
     return
+
+def sample_functions(mu, Sigma, num_samples=1):
+    """
+    It samples `num_samples` functions from multivariate Gaussian distribution (mu, Sigma).
+
+    :param mu: mean vector. Shape: (n, ).
+    :type mu: numpy.ndarray
+    :param Sigma: covariance matrix. Shape: (n, n).
+    :type Sigma: numpy.ndarray
+    :param num_samples: the number of sampled functions
+    :type num_samples: int., optional
+
+    :returns: sampled functions. Shape: (num_samples, n).
+    :rtype: numpy.ndarray
+
+    :raises: AssertionError
+
+    """
+
+    assert isinstance(mu, np.ndarray)
+    assert isinstance(Sigma, np.ndarray)
+    assert isinstance(num_samples, int)
+    assert len(mu.shape) == 1
+    assert len(Sigma.shape) == 2
+    assert mu.shape[0] == Sigma.shape[0] == Sigma.shape[1]
+
+    rv = scipy.stats.multivariate_normal(mean=mu, cov=Sigma)
+    list_rvs = [rv.rvs() for _ in range(0, num_samples)]
+    return np.array(list_rvs)
 
 def get_prior_mu(prior_mu, X):
     """

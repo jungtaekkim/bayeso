@@ -116,6 +116,90 @@ def _show_figure(is_pause, time_pause): # pragma: no cover
     plt.close('all')
     return
 
+def plot_gp_sampled(X, Ys,
+    path_save=None,
+    str_postfix=None,
+    str_x_axis='x',
+    str_y_axis='y',
+    is_tex=False,
+    is_zero_axis=False,
+    is_pause=True,
+    time_pause=constants.TIME_PAUSE,
+    colors=constants.COLORS,
+): # pragma: no cover
+    """
+    It is for plotting sampled functions from multivariate distributions.
+
+    :param X: training inputs. Shape: (n, 1).
+    :type X: numpy.ndarray
+    :param Ys: training outputs. Shape: (m, n).
+    :type Ys: numpy.ndarray
+    :param path_save: None, or path for saving a figure.
+    :type path_save: NoneType or str., optional
+    :param str_postfix: None, or the name of postfix.
+    :type str_postfix: NoneType or str., optional
+    :param str_x_axis: the name of x axis.
+    :type str_x_axis: str., optional
+    :param str_y_axis: the name of y axis.
+    :type str_y_axis: str., optional
+    :param is_tex: flag for using latex.
+    :type is_tex: bool., optional
+    :param is_zero_axis: flag for drawing a zero axis.
+    :type is_zero_axis: bool., optional
+    :param is_pause: flag for pausing before closing a figure.
+    :type is_pause: bool., optional
+    :param time_pause: pausing time.
+    :type time_pause: float, optional
+    :param colors: list of colors.
+    :type colors: list, optional
+
+    :returns: None.
+    :rtype: NoneType
+
+    :raises: AssertionError
+
+    """
+
+    assert isinstance(X, np.ndarray)
+    assert isinstance(Ys, np.ndarray)
+    assert isinstance(path_save, str) or path_save is None
+    assert isinstance(str_postfix, str) or str_postfix is None
+    assert isinstance(str_x_axis, str)
+    assert isinstance(str_y_axis, str)
+    assert isinstance(is_tex, bool)
+    assert isinstance(is_zero_axis, bool)
+    assert isinstance(is_pause, bool)
+    assert isinstance(time_pause, float)
+    assert isinstance(colors, list)
+    assert len(X.shape) == 2
+    assert len(Ys.shape) == 2
+    assert X.shape[1] == 1
+    assert X.shape[0] == Ys.shape[1]
+
+    if plt is None or pylab is None:
+        return
+    if is_tex:
+        plt.rc('text', usetex=True)
+    else:
+        plt.rc('pdf', fonttype=42)
+
+    fig = plt.figure(figsize=(8, 6))
+    ax = plt.gca()
+
+    for ind_Y, Y in enumerate(Ys):
+        ax.plot(X.flatten(), Y, 
+            c=colors[0], 
+            lw=4,
+            alpha=0.3,
+        )
+
+    _set_ax_config(ax, str_x_axis, str_y_axis, xlim_min=np.min(X), xlim_max=np.max(X), is_zero_axis=is_zero_axis)
+
+    if path_save is not None and str_postfix is not None:
+        _save_figure(path_save, str_postfix, str_prefix='gp_sampled_')
+    _show_figure(is_pause, time_pause)
+    return
+
 def plot_gp(X_train, Y_train, X_test, mu, sigma,
     Y_test_truth=None,
     path_save=None,

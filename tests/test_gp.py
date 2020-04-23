@@ -33,6 +33,34 @@ def test_check_str_cov():
     with pytest.raises(ValueError) as error:
         gp._check_str_cov('test', 'abc', (2, 1))
 
+def test_sample_functions():
+    num_points = 10
+    mu = np.zeros(num_points)
+    Sigma = np.eye(num_points)
+    num_samples = 5
+
+    with pytest.raises(AssertionError) as error:
+        gp.sample_functions(mu, 'abc')
+    with pytest.raises(AssertionError) as error:
+        gp.sample_functions('abc', Sigma)
+    with pytest.raises(AssertionError) as error:
+        gp.sample_functions(mu, np.eye(20))
+    with pytest.raises(AssertionError) as error:
+        gp.sample_functions(mu, np.ones(num_points))
+    with pytest.raises(AssertionError) as error:
+        gp.sample_functions(np.zeros(20), Sigma)
+    with pytest.raises(AssertionError) as error:
+        gp.sample_functions(np.eye(10), Sigma)
+    with pytest.raises(AssertionError) as error:
+        gp.sample_functions(mu, Sigma, num_samples='abc')
+    with pytest.raises(AssertionError) as error:
+        gp.sample_functions(mu, Sigma, num_samples=1.2)
+
+
+    functions = gp.sample_functions(mu, Sigma, num_samples=num_samples)
+    assert functions.shape[1] == num_points
+    assert functions.shape[0] == num_samples
+
 def test_get_prior_mu():
     fun_prior = lambda X: np.expand_dims(np.linalg.norm(X, axis=1), axis=1)
     fun_prior_1d = lambda X: np.linalg.norm(X, axis=1)
