@@ -328,8 +328,20 @@ def test_grad_cov_main():
     assert np.all(np.abs(grad_cov_ - truth_grad_cov_) < TEST_EPSILON)
 
     cur_hyps['lengthscales'] = 1.0
-    grad_cov_ = covariance.grad_cov_main('se', np.ones((1, 2)), np.ones((1, 2)), cur_hyps, False)
+    grad_cov_ = covariance.grad_cov_main('se', np.ones((1, 2)), np.zeros((1, 2)), cur_hyps, False)
 
     print(grad_cov_)
-    truth_grad_cov_ = np.array([[[0.02, 2.00002, 0.0]]])
+    truth_grad_cov_ = np.array([[[0.02, 0.73577888, 0.73577888]]])
+    assert np.all(np.abs(grad_cov_ - truth_grad_cov_) < TEST_EPSILON)
+
+    grad_cov_ = covariance.grad_cov_main('matern32', np.ones((1, 2)), np.zeros((1, 2)), cur_hyps, False)
+
+    print(grad_cov_)
+    truth_grad_cov_ = np.array([[[0.02, 0.59566154, 0.51802578]]])
+    assert np.all(np.abs(grad_cov_ - truth_grad_cov_) < TEST_EPSILON)
+
+    grad_cov_ = covariance.grad_cov_main('matern52', np.ones((1, 2)), np.zeros((1, 2)), cur_hyps, False)
+
+    print(grad_cov_)
+    truth_grad_cov_ = np.array([[[0.02, 0.63458673, 0.8305486]]])
     assert np.all(np.abs(grad_cov_ - truth_grad_cov_) < TEST_EPSILON)
