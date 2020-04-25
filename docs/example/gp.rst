@@ -38,7 +38,7 @@ Make a simple synthetic dataset, which produces with cosine functions.
     X_test = X_test.reshape((num_test, 1))
     Y_test_truth = np.cos(X_test) + 10.0
 
-Sample functions from a prior distribution, which is zero mean and covariance matrix.
+Sample functions from a prior distribution, which is zero mean.
 
 .. code-block:: python
 
