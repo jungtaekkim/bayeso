@@ -17,6 +17,24 @@ from bayeso import constants
 from bayeso.utils import utils_common
 
 
+def _set_font_config(is_tex):
+    """
+    It sets a font configuration.
+
+    :param is_tex: flag for using latex.
+    :type is_tex: bool.
+
+    :returns: None.
+    :rtype: NoneType
+
+    """
+
+    if is_tex:
+        plt.rc('text', usetex=True)
+    else:
+        plt.rc('pdf', fonttype=42)
+    return
+
 def _set_ax_config(ax, str_x_axis, str_y_axis,
     size_labels=32,
     size_ticks=22,
@@ -178,10 +196,7 @@ def plot_gp_sampled(X, Ys,
 
     if plt is None or pylab is None:
         return
-    if is_tex:
-        plt.rc('text', usetex=True)
-    else:
-        plt.rc('pdf', fonttype=42)
+    _set_font_config(is_tex)
 
     fig = plt.figure(figsize=(8, 6))
     ax = plt.gca()
@@ -290,10 +305,7 @@ def plot_gp(X_train, Y_train, X_test, mu, sigma,
 
     if plt is None or pylab is None:
         return
-    if is_tex:
-        plt.rc('text', usetex=True)
-    else:
-        plt.rc('pdf', fonttype=42)
+    _set_font_config(is_tex)
 
     fig = plt.figure(figsize=(8, 6))
     ax = plt.gca()
@@ -403,10 +415,7 @@ def plot_minimum(arr_minima, list_str_label, int_init, is_std,
 
     if plt is None or pylab is None:
         return
-    if is_tex:
-        plt.rc('text', usetex=True)
-    else:
-        plt.rc('pdf', fonttype=42)
+    _set_font_config(is_tex)
 
     fig = plt.figure(figsize=(8, 6))
     ax = plt.gca()
@@ -542,10 +551,7 @@ def plot_minimum_time(arr_times, arr_minima, list_str_label, int_init, is_std,
 
     if plt is None or pylab is None:
         return
-    if is_tex:
-        plt.rc('text', usetex=True)
-    else:
-        plt.rc('pdf', fonttype=42)
+    _set_font_config(is_tex)
 
     fig = plt.figure(figsize=(8, 6))
     ax = plt.gca()
@@ -686,10 +692,7 @@ def plot_bo_step(X_train, Y_train, X_test, Y_test, mean_test, std_test,
 
     if plt is None or pylab is None:
         return
-    if is_tex:
-        plt.rc('text', usetex=True)
-    else:
-        plt.rc('pdf', fonttype=42)
+    _set_font_config(is_tex)
 
     fig = plt.figure(figsize=(8, 6))
     ax = plt.gca()
@@ -815,10 +818,7 @@ def plot_bo_step_acq(X_train, Y_train, X_test, Y_test, mean_test, std_test, acq_
 
     if plt is None or pylab is None:
         return
-    if is_tex:
-        plt.rc('text', usetex=True)
-    else:
-        plt.rc('pdf', fonttype=42)
+    _set_font_config(is_tex)
 
     fig, (ax1, ax2) = plt.subplots(2, 1, gridspec_kw = {'height_ratios':[3, 1]})
 
