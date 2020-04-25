@@ -17,7 +17,7 @@ from bayeso import constants
 from bayeso.utils import utils_common
 
 
-def _set_font_config(is_tex):
+def _set_font_config(is_tex): # pragma: no cover
     """
     It sets a font configuration.
 
