@@ -198,6 +198,7 @@ Build Gaussian process regression models with the prior functions we declare abo
 Full code:
 
 .. code-block:: python
+
     import numpy as np
     import os
 
