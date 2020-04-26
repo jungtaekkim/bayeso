@@ -1,5 +1,5 @@
-Optimizing a sampled function via Thompson sampling
-===================================================
+Optimizing Sampled Function via Thompson Sampling
+=================================================
 
 This example is to optimize a function sampled from a Gaussian process prior via Thompson sampling.
 First of all, import the packages we need and **bayeso**.
