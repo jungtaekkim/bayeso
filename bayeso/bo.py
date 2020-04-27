@@ -1,6 +1,6 @@
 # bo
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: February 04, 2020
+# last updated: April 21, 2020
 
 import numpy as np
 import time
@@ -446,7 +446,7 @@ class BO(object):
         """
 
         X_test = np.atleast_2d(X_test)
-        pred_mean, pred_std = gp.predict_test_(X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps, str_cov=self.str_cov, prior_mu=self.prior_mu, debug=self.debug)
+        pred_mean, pred_std, _ = gp.predict_test_(X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps, str_cov=self.str_cov, prior_mu=self.prior_mu, debug=self.debug)
         # no matter which acquisition functions are given, we input pred_mean, pred_std, and Y_train.
         acquisitions = fun_acquisition(pred_mean=pred_mean.flatten(), pred_std=pred_std.flatten(), Y_train=Y_train)
         return acquisitions

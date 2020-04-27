@@ -33,6 +33,7 @@ The code can be found in `our GitHub repository <https://github.com/jungtaekkim/
    :caption: Example:
 
    example/gp
+   example/ts_gp_prior
    example/branin
    example/hpo
 

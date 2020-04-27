@@ -1,6 +1,6 @@
 # test_gp
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: July 09, 2018
+# last updated: April 21, 2020
 
 import numpy as np
 import pytest
@@ -32,6 +32,34 @@ def test_check_str_cov():
 
     with pytest.raises(ValueError) as error:
         gp._check_str_cov('test', 'abc', (2, 1))
+
+def test_sample_functions():
+    num_points = 10
+    mu = np.zeros(num_points)
+    Sigma = np.eye(num_points)
+    num_samples = 5
+
+    with pytest.raises(AssertionError) as error:
+        gp.sample_functions(mu, 'abc')
+    with pytest.raises(AssertionError) as error:
+        gp.sample_functions('abc', Sigma)
+    with pytest.raises(AssertionError) as error:
+        gp.sample_functions(mu, np.eye(20))
+    with pytest.raises(AssertionError) as error:
+        gp.sample_functions(mu, np.ones(num_points))
+    with pytest.raises(AssertionError) as error:
+        gp.sample_functions(np.zeros(20), Sigma)
+    with pytest.raises(AssertionError) as error:
+        gp.sample_functions(np.eye(10), Sigma)
+    with pytest.raises(AssertionError) as error:
+        gp.sample_functions(mu, Sigma, num_samples='abc')
+    with pytest.raises(AssertionError) as error:
+        gp.sample_functions(mu, Sigma, num_samples=1.2)
+
+
+    functions = gp.sample_functions(mu, Sigma, num_samples=num_samples)
+    assert functions.shape[1] == num_points
+    assert functions.shape[0] == num_samples
 
 def test_get_prior_mu():
     fun_prior = lambda X: np.expand_dims(np.linalg.norm(X, axis=1), axis=1)
@@ -385,9 +413,10 @@ def test_predict_test():
     with pytest.raises(AssertionError) as error:
         gp.predict_test(X, np.random.randn(10, 1), X_test, hyps, str_cov='se', prior_mu=prior_mu)
     
-    mu_Xs, sigma_Xs = gp.predict_test(X, Y, X_test, hyps, str_cov='se', prior_mu=prior_mu)
+    mu_Xs, sigma_Xs, Sigma_Xs = gp.predict_test(X, Y, X_test, hyps, str_cov='se', prior_mu=prior_mu)
     print(mu_Xs)
     print(sigma_Xs)
+    print(Sigma_Xs)
 
 def test_predict_optimized():
     np.random.seed(42)
@@ -420,6 +449,7 @@ def test_predict_optimized():
     with pytest.raises(AssertionError) as error:
         gp.predict_optimized(X, Y, X_test, debug=1)
     
-    mu_Xs, sigma_Xs = gp.predict_optimized(X, Y, X_test)
+    mu_Xs, sigma_Xs, Sigma_Xs = gp.predict_optimized(X, Y, X_test)
     print(mu_Xs)
     print(sigma_Xs)
+    print(Sigma_Xs)

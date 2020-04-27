@@ -7,7 +7,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/jungtaekkim/bayeso/badge.svg?branch=master)](https://coveralls.io/github/jungtaekkim/bayeso?branch=master)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/bayeso)](https://pypi.org/project/bayeso/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Documentation Status](https://readthedocs.org/projects/bayeso/badge/?version=latest)](http://bayeso.readthedocs.io/en/latest/?badge=latest)
+[![Documentation Status](https://readthedocs.org/projects/bayeso/badge/?version=master)](https://bayeso.readthedocs.io/en/master/?badge=master)
 
 Simple, but essential Bayesian optimization package.
 
@@ -77,7 +77,7 @@ We test our package in the following versions.
 @misc{KimJ2017bayeso,
     author={Kim, Jungtaek and Choi, Seungjin},
     title={{bayeso}: A {Bayesian} optimization framework in {Python}},
-    howpublished={\url{https://github.com/jungtaekkim/bayeso}},
+    howpublished={\url{http://bayeso.org}},
     year={2017}
 }
 ```
