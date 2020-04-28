@@ -1,6 +1,6 @@
 # example_benchmarks_branin_ei
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: January 06, 2020
+# last updated: April 28, 2020
 
 import numpy as np
 import os
@@ -14,7 +14,7 @@ from bayeso.utils import utils_plotting
 STR_FUN_TARGET = 'linear'
 PATH_SAVE = '../figures/benchmarks/'
 
-obj_fun = Linear(2.0)
+obj_fun = Linear(np.array([[-2.0, 2.0]]))
 
 
 def fun_target(X):

@@ -1,6 +1,6 @@
 # example_basics_gp
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: July 12, 2018
+# last updated: April 28, 2020
 
 import numpy as np
 import os
@@ -29,7 +29,7 @@ def main():
         'lengthscales': 0.5,
         'noise': 0.02,
     }
-    mu, sigma = gp.predict_test(X_train, Y_train, X_test, hyps)
+    mu, sigma, Sigma = gp.predict_test(X_train, Y_train, X_test, hyps)
     utils_plotting.plot_gp(X_train, Y_train, X_test, mu, sigma, Y_test_truth, path_save=PATH_SAVE, str_postfix='cos')
 
 if __name__ == '__main__':

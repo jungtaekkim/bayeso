@@ -1,6 +1,6 @@
 # example_gp_benchmarks_branin
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: December 24, 2019
+# last updated: April 28, 2020
 
 import numpy as np
 
@@ -28,8 +28,8 @@ def main():
 
     model_bo = bo.BO(bounds, debug=True)
     X_init = model_bo.get_initial('uniform', fun_objective=fun_target, int_samples=num_points)
-    X_test = bo.get_grid(bounds, 50)
-    mu, sigma = gp.predict_optimized(X_init, fun_target(X_init), X_test, is_fixed_noise=is_fixed_noise, debug=True)
+    X_test = bo.get_grids(bounds, 50)
+    mu, sigma, Sigma = gp.predict_optimized(X_init, fun_target(X_init), X_test, is_fixed_noise=is_fixed_noise, debug=True)
 
 
 if __name__ == '__main__':

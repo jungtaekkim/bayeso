@@ -1,6 +1,6 @@
 # example_gp_mml
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: July 12, 2018
+# last updated: April 28, 2020
 
 import numpy as np
 import os
@@ -25,7 +25,7 @@ def main():
     X_test = np.linspace(-3, 3, num_test)
     X_test = X_test.reshape((num_test, 1))
     Y_test_truth = np.cos(X_test) + 10.0
-    mu, sigma = gp.predict_optimized(X_train, Y_train, X_test)
+    mu, sigma, Sigma = gp.predict_optimized(X_train, Y_train, X_test)
     utils_plotting.plot_gp(X_train, Y_train, X_test, mu, sigma, Y_test_truth, PATH_SAVE, 'optimized')
 
 

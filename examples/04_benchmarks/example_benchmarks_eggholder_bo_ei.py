@@ -1,6 +1,6 @@
 # example_benchmarks_eggholder_ei
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: January 06, 2020
+# last updated: April 28, 2020
 
 import numpy as np
 import os

@@ -1,6 +1,6 @@
 # example_benchmarks_holdertable_bo_ei
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: January 06, 2020
+# last updated: April 28, 2020
 
 import numpy as np
 import os
@@ -21,7 +21,7 @@ def fun_target(X):
 
 def main():
     int_bo = 5
-    int_iter = 50
+    int_iter = 20
     int_init = 3
 
     bounds = obj_fun.get_bounds()
