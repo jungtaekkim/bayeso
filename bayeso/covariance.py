@@ -76,7 +76,7 @@ def cov_se(X, Xs, lengthscales, signal):
     if isinstance(lengthscales, np.ndarray):
         assert X.shape[1] == Xs.shape[1] == lengthscales.shape[0]
     else:
-        assert X.shape[0] == Xs.shape[0]
+        assert X.shape[1] == Xs.shape[1]
     dist = scisd.cdist(X / lengthscales, Xs / lengthscales, metric='euclidean')
     cov_ = signal**2 * np.exp(-0.5 * dist**2)
     return cov_
@@ -164,7 +164,7 @@ def cov_matern32(X, Xs, lengthscales, signal):
     if isinstance(lengthscales, np.ndarray):
         assert X.shape[1] == Xs.shape[1] == lengthscales.shape[0]
     else:
-        assert X.shape[0] == Xs.shape[0]
+        assert X.shape[1] == Xs.shape[1]
     assert isinstance(signal, float)
 
     dist = scisd.cdist(X / lengthscales, Xs / lengthscales, metric='euclidean')
@@ -254,7 +254,7 @@ def cov_matern52(X, Xs, lengthscales, signal):
     if isinstance(lengthscales, np.ndarray):
         assert X.shape[1] == Xs.shape[1] == lengthscales.shape[0]
     else:
-        assert X.shape[0] == Xs.shape[0]
+        assert X.shape[1] == Xs.shape[1]
     assert isinstance(signal, float)
 
     dist = scisd.cdist(X / lengthscales, Xs / lengthscales, metric='euclidean')
