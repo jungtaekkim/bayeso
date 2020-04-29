@@ -45,6 +45,16 @@ def get_str_array_2d(arr):
     str_ = '[' + str_ + ']'
     return str_
 
+def get_str_array_3d(arr):
+    assert isinstance(arr, np.ndarray)
+    assert len(arr.shape) == 3
+
+    list_str = [get_str_array_2d(elem) for elem in arr]
+
+    str_ = ',\n'.join(list_str)
+    str_ = '[' + str_ + ']'
+    return str_
+
 def get_str_array(arr):
     assert isinstance(arr, np.ndarray)
     len_arr = len(arr.shape)
@@ -53,6 +63,8 @@ def get_str_array(arr):
         str_ = get_str_array_1d(arr)
     elif len_arr == 2:
         str_ = get_str_array_2d(arr)
+    elif len_arr == 3:
+        str_ = get_str_array_3d(arr)
     else:
         raise NotImplementedError('invalid len_arr.')
 

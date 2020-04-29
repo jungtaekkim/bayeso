@@ -1,6 +1,6 @@
 # test_import
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: December 30, 2019
+# last updated: April 29, 2020
 
 def test_import_bayeso():
     import bayeso
@@ -28,6 +28,9 @@ def test_import_utils_covariance():
 
 def test_import_utils_plotting():
     import bayeso.utils.utils_plotting
+
+def test_import_utils_logger():
+    import bayeso.utils.utils_logger
 
 def test_import_constants():
     import bayeso.constants
