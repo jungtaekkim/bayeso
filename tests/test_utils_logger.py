@@ -119,10 +119,26 @@ def test_get_str_hyps():
     hyps = {'signal': 1.0, 'noise': 1e-4, 'lengthscales': np.array([1.0, 2.0])}
     str_ = utils_logger.get_str_hyps(hyps)
     print(str_)
-    assert str_ == "{'signal': 1.000, 'noise': 0.000, 'lengthscales': [1.000, 2.000]}"
+    list_truths = [
+        "{'signal': 1.000, 'noise': 0.000, 'lengthscales': [1.000, 2.000]}",
+        "{'signal': 1.000, 'lengthscales': [1.000, 2.000], 'noise': 0.000}",
+        "{'lengthscales': [1.000, 2.000], 'signal': 1.000, 'noise': 0.000}",
+        "{'lengthscales': [1.000, 2.000], 'noise': 0.000, 'signal': 1.000}",
+        "{'noise': 0.000, 'signal': 1.000, 'lengthscales': [1.000, 2.000]}",
+        "{'noise': 0.000, 'lengthscales': [1.000, 2.000], 'signal': 1.000}",
+    ]
+    assert str_ in list_truths
 
     hyps = {'signal': 1, 'noise': 1e-3, 'lengthscales': np.array([1.0, 2.0])}
     str_ = utils_logger.get_str_hyps(hyps)
     print(str_)
-    assert str_ == "{'signal': 1, 'noise': 0.001, 'lengthscales': [1.000, 2.000]}"
+    list_truths = [
+        "{'signal': 1, 'noise': 0.001, 'lengthscales': [1.000, 2.000]}",
+        "{'signal': 1, 'lengthscales': [1.000, 2.000], 'noise': 0.001}",
+        "{'lengthscales': [1.000, 2.000], 'signal': 1, 'noise': 0.001}",
+        "{'lengthscales': [1.000, 2.000], 'noise': 0.001, 'signal': 1}",
+        "{'noise': 0.001, 'signal': 1, 'lengthscales': [1.000, 2.000]}",
+        "{'noise': 0.001, 'lengthscales': [1.000, 2.000], 'signal': 1}",
+    ]
+    assert str_ in list_truths
 
