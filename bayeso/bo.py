@@ -1,6 +1,6 @@
 # bo
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: April 21, 2020
+# last updated: April 29, 2020
 
 import numpy as np
 import time
@@ -17,9 +17,12 @@ import sobol_seq
 
 from bayeso import gp
 from bayeso import acquisition
+from bayeso import constants
 from bayeso.utils import utils_common
 from bayeso.utils import utils_covariance
-from bayeso import constants
+from bayeso.utils import utils_logger
+
+logger = utils_logger.get_logger('bo')
 
 
 def get_grids(arr_ranges, int_grids):
@@ -110,17 +113,14 @@ def _check_optimizer_method_bo(str_optimizer_method_bo, num_dim, debug):
     assert str_optimizer_method_bo in constants.ALLOWED_OPTIMIZER_METHOD_BO
 
     if str_optimizer_method_bo == 'DIRECT' and directminimize is None: # pragma: no cover
-        if debug:
-            print('[DEBUG] _check_optimizer_method_bo in bo.py: DIRECT is selected, but it is not installed.')
+        logger.warning('DIRECT is selected, but it is not installed.')
         str_optimizer_method_bo = 'L-BFGS-B'
     elif str_optimizer_method_bo == 'CMA-ES' and cma is None: # pragma: no cover
-        if debug:
-            print('[DEBUG] _check_optimizer_method_bo in bo.py: CMA-ES is selected, but it is not installed.')
+        logger.warning('CMA-ES is selected, but it is not installed.')
         str_optimizer_method_bo = 'L-BFGS-B'
     # TODO: It should be checked.
     elif str_optimizer_method_bo == 'CMA-ES' and num_dim == 1: # pragma: no cover
-        if debug:
-            print('[DEBUG] _check_optimizer_method_bo in bo.py: CMA-ES is selected, but a dimension of bounds is 1.')
+        logger.warning('CMA-ES is selected, but a dimension of bounds is 1.')
         str_optimizer_method_bo = 'L-BFGS-B'
     return str_optimizer_method_bo
 
@@ -349,8 +349,7 @@ class BO(object):
 
         if int_seed is None:
             int_seed = np.random.randint(0, 10000)
-        if self.debug:
-            print('[DEBUG] _get_initial_sobol in bo.py: int_seed', int_seed)
+        if self.debug: logger.debug('seed: {}'.format(int_seed))
         arr_samples = sobol_seq.i4_sobol_generate(self.num_dim, int_samples, int_seed)
         arr_samples = arr_samples * (self.arr_range[:, 1].flatten() - self.arr_range[:, 0].flatten()) + self.arr_range[:, 0].flatten()
         return arr_samples
@@ -404,8 +403,7 @@ class BO(object):
 
         if str_initial_method == 'grid':
             assert fun_objective is not None
-            if self.debug:
-                print('[DEBUG] get_initial in bo.py: int_samples is ignored, because grid is chosen.')
+            if self.debug: logger.debug('int_samples is ignored, because grid is chosen.')
             arr_initials = self._get_initial_grid()
             arr_initials = get_best_acquisition(arr_initials, fun_objective)
         elif str_initial_method == 'uniform':
@@ -416,9 +414,9 @@ class BO(object):
             raise NotImplementedError('get_initial: latin')
         else:
             raise NotImplementedError('get_initial: allowed str_initial_method, but it is not implemented.')
-        if self.debug:
-            print('[DEBUG] get_initial in bo.py: arr_initials')
-            print(arr_initials)
+
+        if self.debug: logger.debug('arr_initials:\n{}'.format(utils_logger.get_str_array(arr_initials)))
+
         return arr_initials
 
     def _optimize_objective(self, fun_acquisition, X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps):
@@ -496,8 +494,7 @@ class BO(object):
                 )
                 next_point_x = next_point.x
                 list_next_point.append(next_point_x)
-                if self.debug:
-                    print('[DEBUG] _optimize in bo.py: optimized point for acq', next_point_x)
+                if self.debug: logger.debug('acquired sample: {}'.format(utils_logger.get_str_array(next_point_x)))
         elif self.str_optimizer_method_bo == 'DIRECT': # pragma: no cover
             list_bounds = self._get_bounds()
             next_point = directminimize(
@@ -578,7 +575,7 @@ class BO(object):
                 cov_X_X, inv_cov_X_X, hyps = gp.get_optimized_kernel(X_train, Y_train, self.prior_mu, self.str_cov, str_optimizer_method=self.str_optimizer_method_gp, str_modelselection_method=self.str_modelselection_method, debug=self.debug)
                 self.is_optimize_hyps = not _check_hyps_convergence(self.historical_hyps, hyps, self.str_cov, is_fixed_noise)
             else: # pragma: no cover
-                print('[DEBUG] optimize in bo.py: hyps are converged.')
+                if self.debug: logger.debug('hyps converged.')
                 hyps = self.historical_hyps[-1]
                 cov_X_X, inv_cov_X_X, _ = gp.get_kernel_inverse(X_train, hyps, self.str_cov, is_fixed_noise=is_fixed_noise, debug=self.debug)
         elif str_mlm_method == 'probabilistic': # pragma: no cover
@@ -606,7 +603,6 @@ class BO(object):
             'acq': time_end_acq - time_start_acq,
         }
 
-        if self.debug:
-            print('[DEBUG] optimize in bo.py: time consumed', time_end - time_start, 'sec.')
+        if self.debug: logger.debug('overall time consumed to acquire: {:.4f} sec.'.format(time_end - time_start))
 
         return next_point, next_points, acquisitions, cov_X_X, inv_cov_X_X, hyps, times

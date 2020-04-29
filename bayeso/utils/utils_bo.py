@@ -1,12 +1,15 @@
 # utils_bo
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: February 07, 2020
+# last updated: April 29, 2020
 
 import numpy as np
 import time
 
 from bayeso import bo
 from bayeso import constants
+from bayeso.utils import utils_logger
+
+logger = utils_logger.get_logger('utils_bo')
 
 
 def get_next_best_acquisition(arr_points, arr_acquisitions, cur_points):
@@ -107,27 +110,24 @@ def optimize_many_(model_bo, fun_target, X_train, Y_train, int_iter,
     time_gp_final = []
     time_acq_final = []
     for ind_iter in range(0, int_iter):
-        print('Iteration {}'.format(ind_iter + 1))
+        logger.info('Iteration {}'.format(ind_iter + 1))
         time_iter_start = time.time()
 
         next_point, next_points, acquisitions, _, _, _, times = model_bo.optimize(X_final, Y_final, str_initial_method_ao=str_initial_method_ao, int_samples=int_samples_ao, str_mlm_method=str_mlm_method)
 
-        if model_bo.debug:
-            print('[DEBUG] optimize_many_ in utils_bo.py: next_point', next_point)
+        if model_bo.debug: logger.debug('next_point: {}'.format(utils_logger.get_str_array(next_point)))
 
         # TODO: check this code, which uses norm.
 #        if np.where(np.sum(next_point == X_final, axis=1) == X_final.shape[1])[0].shape[0] > 0:
         if np.where(np.linalg.norm(next_point - X_final, axis=1) < 1e-3)[0].shape[0] > 0: # pragma: no cover
             next_point = get_next_best_acquisition(next_points, acquisitions, X_final)
-            if model_bo.debug:
-                print('[DEBUG] optimize_many_ in utils_bo.py: next_point is repeated, so next best is selected. next_point', next_point)
+            if model_bo.debug: logger.debug('next_point is repeated, so next best is selected. next_point: {}'.format(utils_logger.get_str_array(next_point)))
         X_final = np.vstack((X_final, next_point))
 
         time_to_evaluate_start = time.time()
         Y_final = np.vstack((Y_final, fun_target(next_point)))
         time_to_evaluate_end = time.time()
-        if model_bo.debug:
-            print('[DEBUG] optimize_many_ in utils_bo.py: time consumed to evaluate', time_to_evaluate_end - time_to_evaluate_start, 'sec.')
+        if model_bo.debug: logger.debug('time consumed to evaluate: {:.4f} sec.'.format(time_to_evaluate_end - time_to_evaluate_start))
 
         time_iter_end = time.time()
         time_all_final.append(time_iter_end - time_iter_start)
@@ -136,8 +136,7 @@ def optimize_many_(model_bo, fun_target, X_train, Y_train, int_iter,
 
     time_end = time.time()
 
-    if model_bo.debug:
-        print('[DEBUG] optimize_many_ in utils_bo.py: time consumed', time_end - time_start, 'sec.')
+    if model_bo.debug: logger.debug('overall time consumed in single BO round: {:.4f} sec.'.format(time_end - time_start))
 
     time_all_final = np.array(time_all_final)
     time_gp_final = np.array(time_gp_final)
@@ -258,26 +257,25 @@ def optimize_many_with_random_init(model_bo, fun_target, int_init, int_iter,
     assert str_initial_method_bo in constants.ALLOWED_INITIALIZATIONS_BO
     assert str_mlm_method in constants.ALLOWED_MLM_METHOD
 
-    print('[INFO] arr_range {}'.format(model_bo.arr_range))
-    print('[INFO] str_cov {}'.format(model_bo.str_cov))
-    print('[INFO] str_acq {}'.format(model_bo.str_acq))
-    print('[INFO] str_optimizer_method_gp {}'.format(model_bo.str_optimizer_method_gp))
-    print('[INFO] str_optimizer_method_bo {}'.format(model_bo.str_optimizer_method_bo))
-    print('[INFO] str_modelselection_method {}'.format(model_bo.str_modelselection_method))
-    print('[INFO] int_init {}'.format(int_init))
-    print('[INFO] int_iter {}'.format(int_iter))
-    print('[INFO] str_initial_method_bo {}'.format(str_initial_method_bo))
-    print('[INFO] str_initial_method_ao {}'.format(str_initial_method_ao))
-    print('[INFO] int_samples_ao {}'.format(int_samples_ao))
-    print('[INFO] str_mlm_method {}'.format(str_mlm_method))
-    print('[INFO] int_seed {}'.format(int_seed))
+    logger.info('arr_range:\n{}'.format(utils_logger.get_str_array(model_bo.arr_range)))
+    logger.info('str_cov: {}'.format(model_bo.str_cov))
+    logger.info('str_acq: {}'.format(model_bo.str_acq))
+    logger.info('str_optimizer_method_gp: {}'.format(model_bo.str_optimizer_method_gp))
+    logger.info('str_optimizer_method_bo: {}'.format(model_bo.str_optimizer_method_bo))
+    logger.info('str_modelselection_method: {}'.format(model_bo.str_modelselection_method))
+    logger.info('int_init: {}'.format(int_init))
+    logger.info('int_iter: {}'.format(int_iter))
+    logger.info('str_initial_method_bo: {}'.format(str_initial_method_bo))
+    logger.info('str_initial_method_ao: {}'.format(str_initial_method_ao))
+    logger.info('int_samples_ao: {}'.format(int_samples_ao))
+    logger.info('str_mlm_method: {}'.format(str_mlm_method))
+    logger.info('int_seed: {}'.format(int_seed))
 
     time_start = time.time()
 
     X_init = model_bo.get_initial(str_initial_method_bo, fun_objective=fun_target, int_samples=int_init, int_seed=int_seed)
-    if model_bo.debug:
-        print('[DEBUG] optimize_many_with_random_init in utils_bo.py: X_init')
-        print(X_init)
+    if model_bo.debug: logger.debug('X_init:\n{}'.format(utils_logger.get_str_array(X_init)))
+
     X_final, Y_final, time_all_final, time_gp_final, time_acq_final = optimize_many(
         model_bo, fun_target, X_init, int_iter,
         str_initial_method_ao=str_initial_method_ao,
@@ -287,7 +285,6 @@ def optimize_many_with_random_init(model_bo, fun_target, int_init, int_iter,
 
     time_end = time.time()
 
-    if model_bo.debug:
-        print('[DEBUG] optimize_many_with_random_init in utils_bo.py: time consumed', time_end - time_start, 'sec.')
+    if model_bo.debug: logger.debug('overall time consumed including initializations: {:.4f} sec.'.format(time_end - time_start))
 
     return X_final, Y_final, time_all_final, time_gp_final, time_acq_final

@@ -12,6 +12,9 @@ import scipy.stats
 from bayeso import covariance
 from bayeso import constants
 from bayeso.utils import utils_covariance
+from bayeso.utils import utils_logger
+
+logger = utils_logger.get_logger('gp')
 
 
 def _check_str_cov(str_fun, str_cov, shape_X1, shape_X2=None):
@@ -406,9 +409,8 @@ def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov,
 
     time_start = time.time()
 
-    if debug:
-        print('[DEBUG] get_optimized_kernel in gp.py: str_optimizer_method {}'.format(str_optimizer_method))
-        print('[DEBUG] get_optimized_kernel in gp.py: str_modelselection_method {}'.format(str_modelselection_method))
+    if debug: logger.debug('str_optimizer_method: {}'.format(str_optimizer_method))
+    if debug: logger.debug('str_modelselection_method: {}'.format(str_modelselection_method))
 
     prior_mu_train = get_prior_mu(prior_mu, X_train)
     if str_cov in constants.ALLOWED_GP_COV_BASE:
@@ -453,9 +455,8 @@ def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov,
 
     time_end = time.time()
 
-    if debug:
-        print('[DEBUG] get_optimized_kernel in gp.py: optimized hyps for gpr', hyps)
-        print('[DEBUG] get_optimized_kernel in gp.py: time consumed', time_end - time_start, 'sec.')
+    if debug: logger.debug('hyps optimized: {}'.format(utils_logger.get_str_hyps(hyps)))
+    if debug: logger.debug('time consumed to construct gpr: {:.4f} sec.'.format(time_end - time_start))
     return cov_X_X, inv_cov_X_X, hyps
 
 def predict_test_(X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps,
@@ -614,6 +615,5 @@ def predict_optimized(X_train, Y_train, X_test,
     mu_Xs, sigma_Xs, Sigma_Xs = predict_test_(X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps, str_cov=str_cov, prior_mu=prior_mu, debug=debug)
 
     time_end = time.time()
-    if debug:
-        print('[DEBUG] predict_optimized in gp.py: time consumed', time_end - time_start, 'sec.')
+    if debug: logger.debug('time consumed to construct gpr: {:.4f} sec.'.format(time_end - time_start))
     return mu_Xs, sigma_Xs, Sigma_Xs
