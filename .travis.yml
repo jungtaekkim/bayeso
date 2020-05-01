@@ -9,7 +9,8 @@ install:
   - pip install .
 script:
   - pip install coveralls
-  - coverage run -m pytest
+  - pip install pytest-timeout
+  - coverage run -m pytest tests_common/
   - coveralls
 notifications:
   slack: bayeso:FWBoHH9TMqjKUJWkZxCaTNVE
