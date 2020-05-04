@@ -353,8 +353,6 @@ def cov_set(str_cov, X, Xs, lengthscales, signal):
     assert str_cov in constants.ALLOWED_GP_COV_BASE
     num_X = X.shape[0]
     num_Xs = Xs.shape[0]
-    num_d_X = X.shape[1]
-    num_d_Xs = Xs.shape[1]
 
     fun_cov = choose_fun_cov(str_cov)
     cov_ = fun_cov(X, Xs, lengthscales, signal)
