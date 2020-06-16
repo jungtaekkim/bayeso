@@ -253,9 +253,9 @@ def test_get_initial():
     arr_initials = model_bo.get_initial('sobol', int_samples=3)
     arr_initials = model_bo.get_initial('sobol', int_samples=3, int_seed=42)
     truth_arr_initials = np.array([
-        [5.0, 0.0, 0.0],
-        [7.5, -1.0, 2.5],
-        [2.5, 1.0, -2.5],
+        [4.84375, 1.3125, 0.46875],
+        [3.59375, -0.1875, -0.78125],
+        [8.59375, 1.8125, 4.21875],
     ])
     assert (np.abs(arr_initials - truth_arr_initials) < TEST_EPSILON).all()
 
