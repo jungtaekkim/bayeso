@@ -5,7 +5,8 @@ import sys
 if (sys.version_info.major == 2 and sys.version_info.minor == 7) or\
     (sys.version_info.major == 3 and sys.version_info.minor == 5) or\
     (sys.version_info.major == 3 and sys.version_info.minor == 6) or\
-    (sys.version_info.major == 3 and sys.version_info.minor == 7):
+    (sys.version_info.major == 3 and sys.version_info.minor == 7) or\
+    (sys.version_info.major == 3 and sys.version_info.minor == 8):
     print('[SETUP] bayeso supports Python {}.{} version in this system.'.format(sys.version_info.major, sys.version_info.minor))
 else:
     sys.exit('[ERROR] bayeso does not support Python {}.{} version in this system.'.format(sys.version_info.major, sys.version_info.minor))
@@ -32,6 +33,7 @@ setup(
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
         'License :: OSI Approved :: MIT License',
         'Topic :: Scientific/Engineering',
         'Topic :: Scientific/Engineering :: Artificial Intelligence',
