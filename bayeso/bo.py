@@ -562,7 +562,7 @@ class BO(object):
 
         time_start = time.time()
 
-        if self.is_normalized:
+        if self.is_normalized and not np.max(Y_train) == np.min(Y_train):
             Y_train = (Y_train - np.min(Y_train)) / (np.max(Y_train) - np.min(Y_train)) * constants.MULTIPLIER_RESPONSE
 
         time_start_gp = time.time()

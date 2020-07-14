@@ -513,3 +513,59 @@ def test_optimize_str_modelselection_method():
     assert next_point.shape[0] == dim_X
     assert next_points.shape[1] == dim_X
     assert next_points.shape[0] == acquisitions.shape[0]
+
+def test_optimize_is_normalized():
+    np.random.seed(42)
+    arr_range = np.array([
+        [0.0, 10.0],
+        [-2.0, 2.0],
+        [-5.0, 5.0],
+    ])
+    dim_X = arr_range.shape[0]
+    num_X = 1
+    X = np.random.randn(num_X, dim_X)
+    Y = np.random.randn(num_X, 1)
+
+    model_bo = bo.BO(arr_range, str_acq='ei', is_normalized=True)
+    next_point, next_points, acquisitions, cov_X_X, inv_cov_X_X, hyps, times = model_bo.optimize(X, Y)
+    assert isinstance(next_point, np.ndarray)
+    assert isinstance(next_points, np.ndarray)
+    assert isinstance(acquisitions, np.ndarray)
+    assert isinstance(cov_X_X, np.ndarray)
+    assert isinstance(inv_cov_X_X, np.ndarray)
+    assert isinstance(hyps, dict)
+    assert isinstance(times, dict)
+    assert len(next_point.shape) == 1
+    assert len(next_points.shape) == 2
+    assert len(acquisitions.shape) == 1
+    assert next_point.shape[0] == dim_X
+    assert next_points.shape[1] == dim_X
+    assert next_points.shape[0] == acquisitions.shape[0]
+
+    X = np.array([
+        [3.0, 0.0, 1.0],
+        [2.0, -1.0, 4.0],
+        [9.0, 1.5, 3.0],
+    ])
+    Y = np.array([
+        [100.0],
+        [100.0],
+        [100.0],
+    ])
+
+    model_bo = bo.BO(arr_range, str_acq='ei', is_normalized=True)
+    next_point, next_points, acquisitions, cov_X_X, inv_cov_X_X, hyps, times = model_bo.optimize(X, Y)
+    assert isinstance(next_point, np.ndarray)
+    assert isinstance(next_points, np.ndarray)
+    assert isinstance(acquisitions, np.ndarray)
+    assert isinstance(cov_X_X, np.ndarray)
+    assert isinstance(inv_cov_X_X, np.ndarray)
+    assert isinstance(hyps, dict)
+    assert isinstance(times, dict)
+    assert len(next_point.shape) == 1
+    assert len(next_points.shape) == 2
+    assert len(acquisitions.shape) == 1
+    assert next_point.shape[0] == dim_X
+    assert next_points.shape[1] == dim_X
+    assert next_points.shape[0] == acquisitions.shape[0]
+
