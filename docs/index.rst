@@ -20,6 +20,7 @@ The code can be found in `our GitHub repository <https://github.com/jungtaekkim/
    :maxdepth: 1
 
    about/about_bayeso
+   about/about_bayeso_benchmarks
    about/about_bo
 
 .. toctree::
