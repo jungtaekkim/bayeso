@@ -540,7 +540,7 @@ class BO(object):
         :param str_mlm_method: the name of marginal likelihood maximization method for Gaussian process regression.
         :type str_mlm_method: str., optional
 
-        :returns: acquired example, a dictionary of information. Shape: ((d, ), dict.).
+        :returns: acquired example and dictionary of information. Shape: ((d, ), dict.).
         :rtype: (numpy.ndarray, dict.)
 
         :raises: AssertionError
