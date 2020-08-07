@@ -1,6 +1,6 @@
 # test_bo
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: June 23, 2018
+# last updated: August 07, 2020
 
 import numpy as np
 import pytest
@@ -305,14 +305,25 @@ def test_optimize():
     with pytest.raises(AssertionError) as error:
         model_bo.optimize(X, Y, int_samples='abc')
 
-    next_point, next_points, acquisitions, cov_X_X, inv_cov_X_X, hyps, times = model_bo.optimize(X, Y)
+    next_point, dict_info = model_bo.optimize(X, Y)
+    next_points = dict_info['next_points']
+    acquisitions = dict_info['acquisitions']
+    cov_X_X = dict_info['cov_X_X']
+    inv_cov_X_X = dict_info['inv_cov_X_X']
+    hyps = dict_info['hyps']
+    time_overall = dict_info['time_overall']
+    time_gp = dict_info['time_gp']
+    time_acq = dict_info['time_acq']
+
     assert isinstance(next_point, np.ndarray)
     assert isinstance(next_points, np.ndarray)
     assert isinstance(acquisitions, np.ndarray)
     assert isinstance(cov_X_X, np.ndarray)
     assert isinstance(inv_cov_X_X, np.ndarray)
     assert isinstance(hyps, dict)
-    assert isinstance(times, dict)
+    assert isinstance(time_overall, float)
+    assert isinstance(time_gp, float)
+    assert isinstance(time_acq, float)
     assert len(next_point.shape) == 1
     assert len(next_points.shape) == 2
     assert len(acquisitions.shape) == 1
@@ -333,14 +344,25 @@ def test_optimize_str_acq():
     Y = np.random.randn(num_X, 1)
 
     model_bo = bo.BO(arr_range_1, str_acq='pi')
-    next_point, next_points, acquisitions, cov_X_X, inv_cov_X_X, hyps, times = model_bo.optimize(X, Y)
+    next_point, dict_info = model_bo.optimize(X, Y)
+    next_points = dict_info['next_points']
+    acquisitions = dict_info['acquisitions']
+    cov_X_X = dict_info['cov_X_X']
+    inv_cov_X_X = dict_info['inv_cov_X_X']
+    hyps = dict_info['hyps']
+    time_overall = dict_info['time_overall']
+    time_gp = dict_info['time_gp']
+    time_acq = dict_info['time_acq']
+
     assert isinstance(next_point, np.ndarray)
     assert isinstance(next_points, np.ndarray)
     assert isinstance(acquisitions, np.ndarray)
     assert isinstance(cov_X_X, np.ndarray)
     assert isinstance(inv_cov_X_X, np.ndarray)
     assert isinstance(hyps, dict)
-    assert isinstance(times, dict)
+    assert isinstance(time_overall, float)
+    assert isinstance(time_gp, float)
+    assert isinstance(time_acq, float)
     assert len(next_point.shape) == 1
     assert len(next_points.shape) == 2
     assert len(acquisitions.shape) == 1
@@ -349,14 +371,25 @@ def test_optimize_str_acq():
     assert next_points.shape[0] == acquisitions.shape[0]
 
     model_bo = bo.BO(arr_range_1, str_acq='ucb')
-    next_point, next_points, acquisitions, cov_X_X, inv_cov_X_X, hyps, times = model_bo.optimize(X, Y)
+    next_point, dict_info = model_bo.optimize(X, Y)
+    next_points = dict_info['next_points']
+    acquisitions = dict_info['acquisitions']
+    cov_X_X = dict_info['cov_X_X']
+    inv_cov_X_X = dict_info['inv_cov_X_X']
+    hyps = dict_info['hyps']
+    time_overall = dict_info['time_overall']
+    time_gp = dict_info['time_gp']
+    time_acq = dict_info['time_acq']
+
     assert isinstance(next_point, np.ndarray)
     assert isinstance(next_points, np.ndarray)
     assert isinstance(acquisitions, np.ndarray)
     assert isinstance(cov_X_X, np.ndarray)
     assert isinstance(inv_cov_X_X, np.ndarray)
     assert isinstance(hyps, dict)
-    assert isinstance(times, dict)
+    assert isinstance(time_overall, float)
+    assert isinstance(time_gp, float)
+    assert isinstance(time_acq, float)
     assert len(next_point.shape) == 1
     assert len(next_points.shape) == 2
     assert len(acquisitions.shape) == 1
@@ -365,14 +398,25 @@ def test_optimize_str_acq():
     assert next_points.shape[0] == acquisitions.shape[0]
 
     model_bo = bo.BO(arr_range_1, str_acq='aei')
-    next_point, next_points, acquisitions, cov_X_X, inv_cov_X_X, hyps, times = model_bo.optimize(X, Y)
+    next_point, dict_info = model_bo.optimize(X, Y)
+    next_points = dict_info['next_points']
+    acquisitions = dict_info['acquisitions']
+    cov_X_X = dict_info['cov_X_X']
+    inv_cov_X_X = dict_info['inv_cov_X_X']
+    hyps = dict_info['hyps']
+    time_overall = dict_info['time_overall']
+    time_gp = dict_info['time_gp']
+    time_acq = dict_info['time_acq']
+
     assert isinstance(next_point, np.ndarray)
     assert isinstance(next_points, np.ndarray)
     assert isinstance(acquisitions, np.ndarray)
     assert isinstance(cov_X_X, np.ndarray)
     assert isinstance(inv_cov_X_X, np.ndarray)
     assert isinstance(hyps, dict)
-    assert isinstance(times, dict)
+    assert isinstance(time_overall, float)
+    assert isinstance(time_gp, float)
+    assert isinstance(time_acq, float)
     assert len(next_point.shape) == 1
     assert len(next_points.shape) == 2
     assert len(acquisitions.shape) == 1
@@ -381,14 +425,25 @@ def test_optimize_str_acq():
     assert next_points.shape[0] == acquisitions.shape[0]
 
     model_bo = bo.BO(arr_range_1, str_acq='pure_exploit')
-    next_point, next_points, acquisitions, cov_X_X, inv_cov_X_X, hyps, times = model_bo.optimize(X, Y)
+    next_point, dict_info = model_bo.optimize(X, Y)
+    next_points = dict_info['next_points']
+    acquisitions = dict_info['acquisitions']
+    cov_X_X = dict_info['cov_X_X']
+    inv_cov_X_X = dict_info['inv_cov_X_X']
+    hyps = dict_info['hyps']
+    time_overall = dict_info['time_overall']
+    time_gp = dict_info['time_gp']
+    time_acq = dict_info['time_acq']
+
     assert isinstance(next_point, np.ndarray)
     assert isinstance(next_points, np.ndarray)
     assert isinstance(acquisitions, np.ndarray)
     assert isinstance(cov_X_X, np.ndarray)
     assert isinstance(inv_cov_X_X, np.ndarray)
     assert isinstance(hyps, dict)
-    assert isinstance(times, dict)
+    assert isinstance(time_overall, float)
+    assert isinstance(time_gp, float)
+    assert isinstance(time_acq, float)
     assert len(next_point.shape) == 1
     assert len(next_points.shape) == 2
     assert len(acquisitions.shape) == 1
@@ -397,14 +452,25 @@ def test_optimize_str_acq():
     assert next_points.shape[0] == acquisitions.shape[0]
 
     model_bo = bo.BO(arr_range_1, str_acq='pure_explore')
-    next_point, next_points, acquisitions, cov_X_X, inv_cov_X_X, hyps, times = model_bo.optimize(X, Y)
+    next_point, dict_info = model_bo.optimize(X, Y)
+    next_points = dict_info['next_points']
+    acquisitions = dict_info['acquisitions']
+    cov_X_X = dict_info['cov_X_X']
+    inv_cov_X_X = dict_info['inv_cov_X_X']
+    hyps = dict_info['hyps']
+    time_overall = dict_info['time_overall']
+    time_gp = dict_info['time_gp']
+    time_acq = dict_info['time_acq']
+
     assert isinstance(next_point, np.ndarray)
     assert isinstance(next_points, np.ndarray)
     assert isinstance(acquisitions, np.ndarray)
     assert isinstance(cov_X_X, np.ndarray)
     assert isinstance(inv_cov_X_X, np.ndarray)
     assert isinstance(hyps, dict)
-    assert isinstance(times, dict)
+    assert isinstance(time_overall, float)
+    assert isinstance(time_gp, float)
+    assert isinstance(time_acq, float)
     assert len(next_point.shape) == 1
     assert len(next_points.shape) == 2
     assert len(acquisitions.shape) == 1
@@ -425,14 +491,25 @@ def test_optimize_str_optimize_method_bo():
     Y = np.random.randn(num_X, 1)
 
     model_bo = bo.BO(arr_range_1, str_optimizer_method_bo='L-BFGS-B')
-    next_point, next_points, acquisitions, cov_X_X, inv_cov_X_X, hyps, times = model_bo.optimize(X, Y)
+    next_point, dict_info = model_bo.optimize(X, Y)
+    next_points = dict_info['next_points']
+    acquisitions = dict_info['acquisitions']
+    cov_X_X = dict_info['cov_X_X']
+    inv_cov_X_X = dict_info['inv_cov_X_X']
+    hyps = dict_info['hyps']
+    time_overall = dict_info['time_overall']
+    time_gp = dict_info['time_gp']
+    time_acq = dict_info['time_acq']
+
     assert isinstance(next_point, np.ndarray)
     assert isinstance(next_points, np.ndarray)
     assert isinstance(acquisitions, np.ndarray)
     assert isinstance(cov_X_X, np.ndarray)
     assert isinstance(inv_cov_X_X, np.ndarray)
     assert isinstance(hyps, dict)
-    assert isinstance(times, dict)
+    assert isinstance(time_overall, float)
+    assert isinstance(time_gp, float)
+    assert isinstance(time_acq, float)
     assert len(next_point.shape) == 1
     assert len(next_points.shape) == 2
     assert len(acquisitions.shape) == 1
@@ -443,14 +520,25 @@ def test_optimize_str_optimize_method_bo():
     # TODO: add DIRECT test, now it causes an error.
 
     model_bo = bo.BO(arr_range_1, str_optimizer_method_bo='CMA-ES')
-    next_point, next_points, acquisitions, cov_X_X, inv_cov_X_X, hyps, times = model_bo.optimize(X, Y)
+    next_point, dict_info = model_bo.optimize(X, Y)
+    next_points = dict_info['next_points']
+    acquisitions = dict_info['acquisitions']
+    cov_X_X = dict_info['cov_X_X']
+    inv_cov_X_X = dict_info['inv_cov_X_X']
+    hyps = dict_info['hyps']
+    time_overall = dict_info['time_overall']
+    time_gp = dict_info['time_gp']
+    time_acq = dict_info['time_acq']
+
     assert isinstance(next_point, np.ndarray)
     assert isinstance(next_points, np.ndarray)
     assert isinstance(acquisitions, np.ndarray)
     assert isinstance(cov_X_X, np.ndarray)
     assert isinstance(inv_cov_X_X, np.ndarray)
     assert isinstance(hyps, dict)
-    assert isinstance(times, dict)
+    assert isinstance(time_overall, float)
+    assert isinstance(time_gp, float)
+    assert isinstance(time_acq, float)
     assert len(next_point.shape) == 1
     assert len(next_points.shape) == 2
     assert len(acquisitions.shape) == 1
@@ -471,14 +559,25 @@ def test_optimize_str_mlm_method():
     Y = np.random.randn(num_X, 1)
 
     model_bo = bo.BO(arr_range_1)
-    next_point, next_points, acquisitions, cov_X_X, inv_cov_X_X, hyps, times = model_bo.optimize(X, Y, str_mlm_method='converged')
+    next_point, dict_info = model_bo.optimize(X, Y, str_mlm_method='converged')
+    next_points = dict_info['next_points']
+    acquisitions = dict_info['acquisitions']
+    cov_X_X = dict_info['cov_X_X']
+    inv_cov_X_X = dict_info['inv_cov_X_X']
+    hyps = dict_info['hyps']
+    time_overall = dict_info['time_overall']
+    time_gp = dict_info['time_gp']
+    time_acq = dict_info['time_acq']
+
     assert isinstance(next_point, np.ndarray)
     assert isinstance(next_points, np.ndarray)
     assert isinstance(acquisitions, np.ndarray)
     assert isinstance(cov_X_X, np.ndarray)
     assert isinstance(inv_cov_X_X, np.ndarray)
     assert isinstance(hyps, dict)
-    assert isinstance(times, dict)
+    assert isinstance(time_overall, float)
+    assert isinstance(time_gp, float)
+    assert isinstance(time_acq, float)
     assert len(next_point.shape) == 1
     assert len(next_points.shape) == 2
     assert len(acquisitions.shape) == 1
@@ -499,14 +598,25 @@ def test_optimize_str_modelselection_method():
     Y = np.random.randn(num_X, 1)
 
     model_bo = bo.BO(arr_range_1, str_modelselection_method='loocv')
-    next_point, next_points, acquisitions, cov_X_X, inv_cov_X_X, hyps, times = model_bo.optimize(X, Y)
+    next_point, dict_info = model_bo.optimize(X, Y)
+    next_points = dict_info['next_points']
+    acquisitions = dict_info['acquisitions']
+    cov_X_X = dict_info['cov_X_X']
+    inv_cov_X_X = dict_info['inv_cov_X_X']
+    hyps = dict_info['hyps']
+    time_overall = dict_info['time_overall']
+    time_gp = dict_info['time_gp']
+    time_acq = dict_info['time_acq']
+
     assert isinstance(next_point, np.ndarray)
     assert isinstance(next_points, np.ndarray)
     assert isinstance(acquisitions, np.ndarray)
     assert isinstance(cov_X_X, np.ndarray)
     assert isinstance(inv_cov_X_X, np.ndarray)
     assert isinstance(hyps, dict)
-    assert isinstance(times, dict)
+    assert isinstance(time_overall, float)
+    assert isinstance(time_gp, float)
+    assert isinstance(time_acq, float)
     assert len(next_point.shape) == 1
     assert len(next_points.shape) == 2
     assert len(acquisitions.shape) == 1
@@ -527,14 +637,25 @@ def test_optimize_is_normalized():
     Y = np.random.randn(num_X, 1)
 
     model_bo = bo.BO(arr_range, str_acq='ei', is_normalized=True)
-    next_point, next_points, acquisitions, cov_X_X, inv_cov_X_X, hyps, times = model_bo.optimize(X, Y)
+    next_point, dict_info = model_bo.optimize(X, Y)
+    next_points = dict_info['next_points']
+    acquisitions = dict_info['acquisitions']
+    cov_X_X = dict_info['cov_X_X']
+    inv_cov_X_X = dict_info['inv_cov_X_X']
+    hyps = dict_info['hyps']
+    time_overall = dict_info['time_overall']
+    time_gp = dict_info['time_gp']
+    time_acq = dict_info['time_acq']
+
     assert isinstance(next_point, np.ndarray)
     assert isinstance(next_points, np.ndarray)
     assert isinstance(acquisitions, np.ndarray)
     assert isinstance(cov_X_X, np.ndarray)
     assert isinstance(inv_cov_X_X, np.ndarray)
     assert isinstance(hyps, dict)
-    assert isinstance(times, dict)
+    assert isinstance(time_overall, float)
+    assert isinstance(time_gp, float)
+    assert isinstance(time_acq, float)
     assert len(next_point.shape) == 1
     assert len(next_points.shape) == 2
     assert len(acquisitions.shape) == 1
@@ -554,14 +675,25 @@ def test_optimize_is_normalized():
     ])
 
     model_bo = bo.BO(arr_range, str_acq='ei', is_normalized=True)
-    next_point, next_points, acquisitions, cov_X_X, inv_cov_X_X, hyps, times = model_bo.optimize(X, Y)
+    next_point, dict_info = model_bo.optimize(X, Y)
+    next_points = dict_info['next_points']
+    acquisitions = dict_info['acquisitions']
+    cov_X_X = dict_info['cov_X_X']
+    inv_cov_X_X = dict_info['inv_cov_X_X']
+    hyps = dict_info['hyps']
+    time_overall = dict_info['time_overall']
+    time_gp = dict_info['time_gp']
+    time_acq = dict_info['time_acq']
+
     assert isinstance(next_point, np.ndarray)
     assert isinstance(next_points, np.ndarray)
     assert isinstance(acquisitions, np.ndarray)
     assert isinstance(cov_X_X, np.ndarray)
     assert isinstance(inv_cov_X_X, np.ndarray)
     assert isinstance(hyps, dict)
-    assert isinstance(times, dict)
+    assert isinstance(time_overall, float)
+    assert isinstance(time_gp, float)
+    assert isinstance(time_acq, float)
     assert len(next_point.shape) == 1
     assert len(next_points.shape) == 2
     assert len(acquisitions.shape) == 1

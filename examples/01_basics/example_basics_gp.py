@@ -5,7 +5,7 @@
 import numpy as np
 import os
 
-from bayeso import gp
+from bayeso.gp import gp
 from bayeso.utils import utils_common
 from bayeso.utils import utils_plotting
 

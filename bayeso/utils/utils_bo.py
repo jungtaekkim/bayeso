@@ -113,7 +113,11 @@ def optimize_many_(model_bo, fun_target, X_train, Y_train, int_iter,
         logger.info('Iteration {}'.format(ind_iter + 1))
         time_iter_start = time.time()
 
-        next_point, next_points, acquisitions, _, _, _, times = model_bo.optimize(X_final, Y_final, str_initial_method_ao=str_initial_method_ao, int_samples=int_samples_ao, str_mlm_method=str_mlm_method)
+        next_point, dict_info = model_bo.optimize(X_final, Y_final, str_initial_method_ao=str_initial_method_ao, int_samples=int_samples_ao, str_mlm_method=str_mlm_method)
+        next_points = dict_info['next_points']
+        acquisitions = dict_info['acquisitions']
+        time_gp = dict_info['time_gp']
+        time_acq = dict_info['time_acq']
 
         if model_bo.debug: logger.debug('next_point: {}'.format(utils_logger.get_str_array(next_point)))
 
@@ -131,8 +135,8 @@ def optimize_many_(model_bo, fun_target, X_train, Y_train, int_iter,
 
         time_iter_end = time.time()
         time_all_final.append(time_iter_end - time_iter_start)
-        time_gp_final.append(times['gp'])
-        time_acq_final.append(times['acq'])
+        time_gp_final.append(time_gp)
+        time_acq_final.append(time_acq)
 
     time_end = time.time()
 

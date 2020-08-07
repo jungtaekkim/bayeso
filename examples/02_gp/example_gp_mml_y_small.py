@@ -1,11 +1,11 @@
 # example_gp_mml_small_y
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: April 28, 2020
+# last updated: August 07, 2020
 
 import numpy as np
 import os
 
-from bayeso import gp
+from bayeso.gp import gp
 from bayeso.utils import utils_plotting
 
 

@@ -15,9 +15,10 @@ except: # pragma: no cover
     cma = None
 import sobol_seq
 
-from bayeso import gp
 from bayeso import acquisition
 from bayeso import constants
+from bayeso.gp import gp
+from bayeso.gp import gp_common
 from bayeso.utils import utils_common
 from bayeso.utils import utils_covariance
 from bayeso.utils import utils_logger
@@ -539,8 +540,8 @@ class BO(object):
         :param str_mlm_method: the name of marginal likelihood maximization method for Gaussian process regression.
         :type str_mlm_method: str., optional
 
-        :returns: acquired example, candidates of acquired examples, acquisition function values over the candidates, covariance matrix by `hyps`, inverse matrix of the covariance matrix, hyperparameters optimized, and execution times. Shape: ((d, ), (`int_samples`, d), (`int_samples`, ), (n, n), (n, n), dict., dict.).
-        :rtype: (numpy.ndarray, numpy.ndarray, numpy.ndarray, numpy.ndarray, numpy.ndarray, dict., dict.)
+        :returns: acquired example, a dictionary of information. Shape: ((d, ), dict.).
+        :rtype: (numpy.ndarray, dict.)
 
         :raises: AssertionError
 
@@ -577,9 +578,7 @@ class BO(object):
             else: # pragma: no cover
                 if self.debug: logger.debug('hyps converged.')
                 hyps = self.historical_hyps[-1]
-                cov_X_X, inv_cov_X_X, _ = gp.get_kernel_inverse(X_train, hyps, self.str_cov, is_fixed_noise=is_fixed_noise, debug=self.debug)
-        elif str_mlm_method == 'probabilistic': # pragma: no cover
-            raise NotImplementedError('optimize: it will be added.')
+                cov_X_X, inv_cov_X_X, _ = gp_common.get_kernel_inverse(X_train, hyps, self.str_cov, is_fixed_noise=is_fixed_noise, debug=self.debug)
         else: # pragma: no cover
             raise ValueError('optimize: missing condition for str_mlm_method.')
         time_end_gp = time.time()
@@ -597,12 +596,17 @@ class BO(object):
 
         time_end = time.time()
 
-        times = {
-            'overall': time_end - time_start,
-            'gp': time_end_gp - time_start_gp,
-            'acq': time_end_acq - time_start_acq,
+        dict_info = {
+            'next_points': next_points,
+            'acquisitions': acquisitions,
+            'cov_X_X': cov_X_X,
+            'inv_cov_X_X': inv_cov_X_X,
+            'hyps': hyps,
+            'time_overall': time_end - time_start,
+            'time_gp': time_end_gp - time_start_gp,
+            'time_acq': time_end_acq - time_start_acq,
         }
 
         if self.debug: logger.debug('overall time consumed to acquire: {:.4f} sec.'.format(time_end - time_start))
 
-        return next_point, next_points, acquisitions, cov_X_X, inv_cov_X_X, hyps, times
+        return next_point, dict_info

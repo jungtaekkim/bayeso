@@ -37,7 +37,7 @@ RANGE_NOISE = [[1e-3, 1e1]]
 TIME_PAUSE = 2.0
 RANGE_SHADE = 1.96
 
-ALLOWED_OPTIMIZER_METHOD_GP = ['BFGS', 'L-BFGS-B', 'DIRECT', 'CMA-ES']
+ALLOWED_OPTIMIZER_METHOD_GP = ['BFGS', 'L-BFGS-B', 'DIRECT']
 ALLOWED_OPTIMIZER_METHOD_BO = ['L-BFGS-B', 'DIRECT', 'CMA-ES']
 # INFO: Do not use _ (underscore) in base str_cov.
 ALLOWED_GP_COV_BASE = ['se', 'matern32', 'matern52']
@@ -48,6 +48,7 @@ ALLOWED_INITIALIZATIONS_BO = ['sobol', 'uniform', 'latin']
 ALLOWED_INITIALIZATIONS_AO = ALLOWED_INITIALIZATIONS_BO + ['grid']
 ALLOWED_MLM_METHOD = ['regular', 'converged']
 ALLOWED_MODELSELECTION_METHOD = ['ml', 'loocv']
+ALLOWED_FRAMEWORK_GP = ['scipy', 'tensorflow']
 
 KEYS_INFO_BENCHMARK = ['dim_fun', 'bounds', 'global_minimum_X', 'global_minimum_y']
 

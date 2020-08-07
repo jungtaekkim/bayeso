@@ -5,9 +5,9 @@
 import numpy as np
 import os
 
-from bayeso import gp
 from bayeso import bo
 from bayeso import acquisition
+from bayeso.gp import gp
 from bayeso.utils import utils_plotting
 
 
@@ -31,7 +31,11 @@ def main():
     X_test = np.reshape(X_test, (400, 1))
     for ind_ in range(1, num_iter + 1):
         Y_train = fun_target(X_train)
-        next_x, _, _, cov_X_X, inv_cov_X_X, hyps, _ = model_bo.optimize(X_train, fun_target(X_train), str_initial_method_ao='uniform')
+        next_x, dict_info = model_bo.optimize(X_train, fun_target(X_train), str_initial_method_ao='uniform')
+        cov_X_X = dict_info['cov_X_X']
+        inv_cov_X_X = dict_info['inv_cov_X_X']
+        hyps = dict_info['hyps']
+
         mu_test, sigma_test, Sigma_test = gp.predict_test_(X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps)
         acq_test = acquisition.pure_explore(sigma_test.flatten())
         acq_test = np.expand_dims(acq_test, axis=1)
