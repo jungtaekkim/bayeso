@@ -1,15 +1,13 @@
 language: python
 dist: xenial
 python:
-  - "2.7"
-  - "3.5"
-  - "3.6"
-  - "3.7"
-  - "3.8"
+  - '2.7'
+  - '3.5'
+  - '3.6'
+  - '3.7'
+  - '3.8'
 install:
   - pip install .
-  - pip install tensorflow==2.1.0 || pip install tensorflow
-  - pip install tensorflow-probability==0.9 || pip install tensorflow-probability
 script:
   - pip install coveralls
   - pip install pytest-timeout

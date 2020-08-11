@@ -22,6 +22,12 @@ def test_get_optimized_kernel():
     Y = np.random.randn(num_X, 1)
     prior_mu = None
 
+    try:
+        import tensorflow as tf
+        import tensorflow_probability as tfp
+    except:
+        return
+
     with pytest.raises(AssertionError) as error:
         gp_tensorflow.get_optimized_kernel(X, Y, prior_mu, 1)
     with pytest.raises(AssertionError) as error:
