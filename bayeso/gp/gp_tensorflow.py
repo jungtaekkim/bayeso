@@ -16,7 +16,7 @@ from bayeso.utils import utils_logger
 
 logger = utils_logger.get_logger('gp_tensorflow')
 gpus = tf.config.experimental.list_physical_devices('GPU')
-if gpus:
+if gpus: # pragma: no cover
     try:
         for gpu in gpus:
             tf.config.experimental.set_memory_growth(gpu, True)

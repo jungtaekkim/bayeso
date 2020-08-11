@@ -7,6 +7,10 @@ import pytest
 
 from bayeso import constants
 from bayeso.gp import gp
+try:
+    from bayeso.gp import gp_tensorflow
+except:
+    gp_tensorflow = None
 from bayeso.utils import utils_covariance
 
 
@@ -108,8 +112,10 @@ def test_get_optimized_kernel():
 
     cov_X_X, inv_cov_X_X, hyps = gp.get_optimized_kernel(X, Y, prior_mu, 'se', str_framework='scipy')
     print(hyps)
-    cov_X_X, inv_cov_X_X, hyps = gp.get_optimized_kernel(X, Y, prior_mu, 'se', str_framework='tensorflow')
-    print(hyps)
+
+    if gp_tensorflow is not None:
+        cov_X_X, inv_cov_X_X, hyps = gp.get_optimized_kernel(X, Y, prior_mu, 'se', str_framework='tensorflow')
+        print(hyps)
 
     cov_X_X, inv_cov_X_X, hyps = gp.get_optimized_kernel(X_set, Y, prior_mu, 'set_se')
     print(hyps)
