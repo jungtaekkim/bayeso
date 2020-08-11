@@ -9,8 +9,8 @@ from bayeso import constants
 try:
     from bayeso.gp import gp_tensorflow
 except:
-    import sys
-    sys.exit()
+    gp_tensorflow = None
+
 from bayeso.utils import utils_covariance
 
 TEST_EPSILON = 1e-7
@@ -25,6 +25,9 @@ def test_get_optimized_kernel():
     X_set = np.random.randn(num_X, num_instances, dim_X)
     Y = np.random.randn(num_X, 1)
     prior_mu = None
+
+    if gp_tensorflow is None:
+        pytest.skip('TensorFlow is not installed.')
 
     with pytest.raises(AssertionError) as error:
         gp_tensorflow.get_optimized_kernel(X, Y, prior_mu, 1)
