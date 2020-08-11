@@ -89,12 +89,28 @@ def test_get_optimized_kernel():
 
     cov_X_X, inv_cov_X_X, hyps = gp.get_optimized_kernel(X, Y, prior_mu, 'se')
     print(hyps)
+    cov_X_X, inv_cov_X_X, hyps = gp.get_optimized_kernel(X, Y, prior_mu, 'eq')
+    print(hyps)
+    cov_X_X, inv_cov_X_X, hyps = gp.get_optimized_kernel(X, Y, prior_mu, 'matern32')
+    print(hyps)
+    cov_X_X, inv_cov_X_X, hyps = gp.get_optimized_kernel(X, Y, prior_mu, 'matern52')
+    print(hyps)
+
     cov_X_X, inv_cov_X_X, hyps = gp.get_optimized_kernel(X, Y, prior_mu, 'se', str_optimizer_method='BFGS')
     print(hyps)
     cov_X_X, inv_cov_X_X, hyps = gp.get_optimized_kernel(X, Y, prior_mu, 'se', str_optimizer_method='L-BFGS-B')
     print(hyps)
+    cov_X_X, inv_cov_X_X, hyps = gp.get_optimized_kernel(X, Y, prior_mu, 'se', str_optimizer_method='Nelder-Mead')
+    print(hyps)
+
     cov_X_X, inv_cov_X_X, hyps = gp.get_optimized_kernel(X, Y, prior_mu, 'se', str_modelselection_method='loocv')
     print(hyps)
+
+    cov_X_X, inv_cov_X_X, hyps = gp.get_optimized_kernel(X, Y, prior_mu, 'se', str_framework='scipy')
+    print(hyps)
+    cov_X_X, inv_cov_X_X, hyps = gp.get_optimized_kernel(X, Y, prior_mu, 'se', str_framework='tensorflow')
+    print(hyps)
+
     cov_X_X, inv_cov_X_X, hyps = gp.get_optimized_kernel(X_set, Y, prior_mu, 'set_se')
     print(hyps)
     cov_X_X, inv_cov_X_X, hyps = gp.get_optimized_kernel(X_set, Y, prior_mu, 'set_se', str_optimizer_method='L-BFGS-B')

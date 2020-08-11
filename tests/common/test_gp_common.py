@@ -1,4 +1,4 @@
-# test_gp
+# test_gp_common
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
 # last updated: August 07, 2020
 

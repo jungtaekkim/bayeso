@@ -1,4 +1,4 @@
-# test_gp
+# test_gp_scipy
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
 # last updated: August 07, 2020
 
@@ -165,6 +165,8 @@ def test_get_optimized_kernel():
     cov_X_X, inv_cov_X_X, hyps = gp_scipy.get_optimized_kernel(X, Y, prior_mu, 'se', str_optimizer_method='BFGS')
     print(hyps)
     cov_X_X, inv_cov_X_X, hyps = gp_scipy.get_optimized_kernel(X, Y, prior_mu, 'se', str_optimizer_method='L-BFGS-B')
+    print(hyps)
+    cov_X_X, inv_cov_X_X, hyps = gp_scipy.get_optimized_kernel(X, Y, prior_mu, 'se', str_optimizer_method='Nelder-Mead')
     print(hyps)
     cov_X_X, inv_cov_X_X, hyps = gp_scipy.get_optimized_kernel(X, Y, prior_mu, 'se', str_modelselection_method='loocv')
     print(hyps)

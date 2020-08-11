@@ -8,6 +8,8 @@ python:
   - "3.8"
 install:
   - pip install .
+  - pip install tensorflow
+  - pip install tensorflow-probability
 script:
   - pip install coveralls
   - pip install pytest-timeout

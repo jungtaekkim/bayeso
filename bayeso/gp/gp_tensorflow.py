@@ -60,6 +60,7 @@ def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov,
     assert callable(prior_mu) or prior_mu is None
     assert isinstance(str_cov, str)
     assert isinstance(is_fixed_noise, bool)
+    assert isinstance(num_iters, int)
     assert isinstance(debug, bool)
     assert len(Y_train.shape) == 2
     assert X_train.shape[0] == Y_train.shape[0]
