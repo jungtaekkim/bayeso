@@ -6,7 +6,11 @@ import numpy as np
 import pytest
 
 from bayeso import constants
-from bayeso.gp import gp_tensorflow
+try:
+    from bayeso.gp import gp_tensorflow
+except:
+    import sys
+    sys.exit()
 from bayeso.utils import utils_covariance
 
 TEST_EPSILON = 1e-7
@@ -21,12 +25,6 @@ def test_get_optimized_kernel():
     X_set = np.random.randn(num_X, num_instances, dim_X)
     Y = np.random.randn(num_X, 1)
     prior_mu = None
-
-    try:
-        import tensorflow as tf
-        import tensorflow_probability as tfp
-    except:
-        return
 
     with pytest.raises(AssertionError) as error:
         gp_tensorflow.get_optimized_kernel(X, Y, prior_mu, 1)
