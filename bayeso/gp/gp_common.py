@@ -166,7 +166,7 @@ def get_kernel_cholesky(X_train, hyps, str_cov,
     cov_X_X = (cov_X_X + cov_X_X.T) / 2.0
     try:
         lower = scipy.linalg.cholesky(cov_X_X, lower=True)
-    except np.linalg.LinAlgError:
+    except np.linalg.LinAlgError: # pragma: no cover
         cov_X_X += 1e-2 * np.eye(X_train.shape[0])
         lower = scipy.linalg.cholesky(cov_X_X, lower=True)
 

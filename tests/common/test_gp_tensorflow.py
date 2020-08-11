@@ -55,7 +55,16 @@ def test_get_optimized_kernel():
     with pytest.raises(AssertionError) as error:
         gp_tensorflow.get_optimized_kernel(X_set, Y, prior_mu, 'set_se', debug=1)
 
-    cov_X_X, inv_cov_X_X, hyps = gp_tensorflow.get_optimized_kernel(X, Y, prior_mu, 'eq')
+    cov_X_X, inv_cov_X_X, hyps = gp_tensorflow.get_optimized_kernel(X, Y, prior_mu, 'eq', num_iters=0)
+    print(hyps)
+
+    cov_X_X, inv_cov_X_X, hyps = gp_tensorflow.get_optimized_kernel(X, Y, prior_mu, 'se', num_iters=0)
+    print(hyps)
+
+    cov_X_X, inv_cov_X_X, hyps = gp_tensorflow.get_optimized_kernel(X, Y, prior_mu, 'matern32', num_iters=0)
+    print(hyps)
+
+    cov_X_X, inv_cov_X_X, hyps = gp_tensorflow.get_optimized_kernel(X, Y, prior_mu, 'matern52', num_iters=0)
     print(hyps)
 
     with pytest.raises(NotImplementedError) as error:

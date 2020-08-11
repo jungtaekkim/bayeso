@@ -65,6 +65,7 @@ def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov,
     assert len(Y_train.shape) == 2
     assert X_train.shape[0] == Y_train.shape[0]
     gp_common._check_str_cov('get_optimized_kernel', str_cov, X_train.shape)
+    assert num_iters >= 10 or num_iters == 0
 
     # TODO: prior_mu is not working now.
     prior_mu = None
@@ -122,7 +123,7 @@ def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov,
     )
 
     @tf.function()
-    def log_prob_outputs():
+    def log_prob_outputs(): # pragma: no cover
         return model_gp.log_prob(np.ravel(Y_train))
 
     optimizer = tf.optimizers.Adam(learning_rate=1e-2)
@@ -137,7 +138,7 @@ def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov,
     list_neg_log_probs = []
     ind_iter = 0
 
-    while True:
+    while num_iters >= 10:
         with tf.GradientTape() as tape:
             loss = -1.0 * log_prob_outputs()
         

@@ -98,7 +98,7 @@ def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov,
 
     try:
         if str_framework == 'tensorflow': import tensorflow as tf
-    except:
+    except: # pragma: no cover
         str_framework = 'scipy'
 
     if str_framework == 'scipy':
@@ -114,7 +114,7 @@ def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov,
             is_fixed_noise=is_fixed_noise,
             debug=debug
         )
-    else:
+    else: # pragma: no cover
         raise ValueError('{}: invalid str_framework.'.format(str_framework))
 
     return cov_X_X, inv_cov_X_X, hyps
