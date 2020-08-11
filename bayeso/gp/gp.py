@@ -10,7 +10,6 @@ from bayeso import covariance
 from bayeso import constants
 from bayeso.gp import gp_common
 from bayeso.gp import gp_scipy
-from bayeso.gp import gp_tensorflow
 from bayeso.utils import utils_logger
 
 logger = utils_logger.get_logger('gp')
@@ -46,7 +45,7 @@ def sample_functions(mu, Sigma, num_samples=1):
     return np.array(list_rvs)
 
 def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov,
-    str_framework = 'scipy',
+    str_framework='scipy',
     str_optimizer_method=constants.STR_OPTIMIZER_METHOD_GP,
     str_modelselection_method=constants.STR_MODELSELECTION_METHOD,
     is_fixed_noise=constants.IS_FIXED_GP_NOISE,
@@ -98,7 +97,7 @@ def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov,
     assert str_framework in constants.ALLOWED_FRAMEWORK_GP
 
     try:
-        import tensorflow as tf
+        if str_framework == 'tensorflow': import tensorflow as tf
     except:
         str_framework = 'scipy'
 
@@ -110,10 +109,13 @@ def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov,
             debug=debug
         )
     elif str_framework == 'tensorflow':
-        pass
+        from bayeso.gp import gp_tensorflow
+        cov_X_X, inv_cov_X_X, hyps = gp_tensorflow.get_optimized_kernel(X_train, Y_train, prior_mu, str_cov,
+            is_fixed_noise=is_fixed_noise,
+            debug=debug
+        )
     else:
         raise ValueError('{}: invalid str_framework.'.format(str_framework))
-
 
     return cov_X_X, inv_cov_X_X, hyps
 

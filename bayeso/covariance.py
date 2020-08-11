@@ -28,7 +28,7 @@ def choose_fun_cov(str_cov, is_grad=False):
     assert isinstance(str_cov, str)
     assert isinstance(is_grad, bool)
 
-    if str_cov == 'se':
+    if str_cov == 'eq' or str_cov == 'se':
         if is_grad:
             fun_cov = grad_cov_se
         else:
@@ -404,7 +404,7 @@ def cov_main(str_cov, X, Xs, hyps, same_X_Xs,
         assert num_X == num_Xs
         cov_ += np.eye(num_X) * jitter
 
-    if str_cov == 'se' or str_cov == 'matern32' or str_cov == 'matern52':
+    if str_cov == 'eq' or str_cov == 'se' or str_cov == 'matern32' or str_cov == 'matern52':
         assert len(X.shape) == 2
         assert len(Xs.shape) == 2
         num_d_X = X.shape[1]

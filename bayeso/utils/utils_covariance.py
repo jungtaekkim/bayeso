@@ -18,7 +18,7 @@ def _get_list_first():
 
     """
 
-    list_first = ['se', 'matern32', 'matern52']
+    list_first = ['eq', 'se', 'matern32', 'matern52']
     list_first += ['set_' + str_ for str_ in list_first]
     return list_first
 
@@ -227,7 +227,7 @@ def validate_hyps_dict(dict_hyps, str_cov, int_dim):
             if np.abs(dict_hyps['noise']) >= constants.BOUND_UPPER_GP_NOISE:
                 dict_hyps['noise'] = constants.BOUND_UPPER_GP_NOISE
 
-    if str_cov == 'se' or str_cov == 'matern32' or str_cov == 'matern52':
+    if str_cov == 'eq' or str_cov == 'se' or str_cov == 'matern32' or str_cov == 'matern52':
         if 'lengthscales' not in dict_hyps:
             is_valid = False
         else:

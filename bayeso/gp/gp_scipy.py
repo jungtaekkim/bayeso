@@ -214,7 +214,10 @@ def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov,
     assert str_optimizer_method in constants.ALLOWED_OPTIMIZER_METHOD_GP
     assert str_modelselection_method in constants.ALLOWED_MODELSELECTION_METHOD
     # TODO: fix this.
-    is_gradient = True
+    if str_optimizer_method != 'Nelder-Mead':
+        is_gradient = True
+    else:
+        is_gradient = False
 
     time_start = time.time()
 
@@ -244,10 +247,19 @@ def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov,
 
     if str_optimizer_method == 'BFGS':
         result_optimized = scipy.optimize.minimize(neg_log_ml_, hyps_converted, method=str_optimizer_method, jac=is_gradient, options={'disp': False})
+        if debug: logger.debug('scipy message: {}'.format(result_optimized.message))
+
         result_optimized = result_optimized.x
     elif str_optimizer_method == 'L-BFGS-B':
         bounds = utils_covariance.get_range_hyps(str_cov, num_dim, is_fixed_noise=is_fixed_noise)
         result_optimized = scipy.optimize.minimize(neg_log_ml_, hyps_converted, method=str_optimizer_method, bounds=bounds, jac=is_gradient, options={'disp': False})
+        if debug: logger.debug('scipy message: {}'.format(result_optimized.message))
+
+        result_optimized = result_optimized.x
+    elif str_optimizer_method == 'Nelder-Mead':
+        result_optimized = scipy.optimize.minimize(neg_log_ml_, hyps_converted, method=str_optimizer_method, options={'disp': False})
+        if debug: logger.debug('scipy message: {}'.format(result_optimized.message))
+
         result_optimized = result_optimized.x
     # TODO: Fill this conditions
     elif str_optimizer_method == 'DIRECT': # pragma: no cover

@@ -4,12 +4,12 @@
 
 import numpy as np
 
-from bayeso import gp
 from bayeso import bo
 from bayeso import acquisition
-from benchmarks.two_dim_branin import Branin
+from bayeso.gp import gp
 from bayeso.utils import utils_bo
 from bayeso.utils import utils_plotting
+from benchmarks.two_dim_branin import Branin
 
 
 STR_FUN_TARGET = 'branin'

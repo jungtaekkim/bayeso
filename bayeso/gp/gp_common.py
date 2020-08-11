@@ -161,10 +161,14 @@ def get_kernel_cholesky(X_train, hyps, str_cov,
     assert isinstance(is_gradient, bool)
     assert isinstance(debug, bool)
     _check_str_cov('get_kernel_cholesky', str_cov, X_train.shape)
-   
+
     cov_X_X = covariance.cov_main(str_cov, X_train, X_train, hyps, True) + hyps['noise']**2 * np.eye(X_train.shape[0])
     cov_X_X = (cov_X_X + cov_X_X.T) / 2.0
-    lower = scipy.linalg.cholesky(cov_X_X, lower=True)
+    try:
+        lower = scipy.linalg.cholesky(cov_X_X, lower=True)
+    except np.linalg.LinAlgError:
+        cov_X_X += 1e-2 * np.eye(X_train.shape[0])
+        lower = scipy.linalg.cholesky(cov_X_X, lower=True)
 
     if is_gradient:
         grad_cov_X_X = covariance.grad_cov_main(str_cov, X_train, X_train, hyps, is_fixed_noise, same_X_Xs=True)

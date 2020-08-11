@@ -9,7 +9,7 @@ JITTER_ACQ = 1e-5
 JITTER_COV = 1e-5
 JITTER_LOG = 1e-7
 
-STR_OPTIMIZER_METHOD_GP = 'BFGS'
+STR_OPTIMIZER_METHOD_GP = 'Nelder-Mead'
 STR_OPTIMIZER_METHOD_BO = 'L-BFGS-B'
 STR_GP_COV = 'matern52'
 STR_BO_ACQ = 'ei'
@@ -37,10 +37,10 @@ RANGE_NOISE = [[1e-3, 1e1]]
 TIME_PAUSE = 2.0
 RANGE_SHADE = 1.96
 
-ALLOWED_OPTIMIZER_METHOD_GP = ['BFGS', 'L-BFGS-B', 'DIRECT']
+ALLOWED_OPTIMIZER_METHOD_GP = ['BFGS', 'L-BFGS-B', 'Nelder-Mead', 'DIRECT']
 ALLOWED_OPTIMIZER_METHOD_BO = ['L-BFGS-B', 'DIRECT', 'CMA-ES']
 # INFO: Do not use _ (underscore) in base str_cov.
-ALLOWED_GP_COV_BASE = ['se', 'matern32', 'matern52']
+ALLOWED_GP_COV_BASE = ['eq', 'se', 'matern32', 'matern52']
 ALLOWED_GP_COV_SET = ['set_' + str_cov for str_cov in ALLOWED_GP_COV_BASE]
 ALLOWED_GP_COV = ALLOWED_GP_COV_BASE + ALLOWED_GP_COV_SET
 ALLOWED_BO_ACQ = ['pi', 'ei', 'ucb', 'aei', 'pure_exploit', 'pure_explore']
