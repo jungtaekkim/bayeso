@@ -9,6 +9,7 @@ import scipy.optimize
 
 from bayeso import constants
 from bayeso.gp import gp_common
+from bayeso.utils import utils_gp
 from bayeso.utils import utils_covariance
 from bayeso.utils import utils_logger
 
@@ -62,7 +63,7 @@ def neg_log_ml(X_train, Y_train, hyps, str_cov, prior_mu_train,
     assert len(Y_train.shape) == 2
     assert len(prior_mu_train.shape) == 2
     assert X_train.shape[0] == Y_train.shape[0] == prior_mu_train.shape[0]
-    gp_common._check_str_cov('neg_log_ml', str_cov, X_train.shape)
+    utils_gp.check_str_cov('neg_log_ml', str_cov, X_train.shape)
 
     hyps = utils_covariance.restore_hyps(str_cov, hyps, is_fixed_noise=is_fixed_noise)
     new_Y_train = Y_train - prior_mu_train
@@ -137,7 +138,7 @@ def neg_log_pseudo_l_loocv(X_train, Y_train, hyps, str_cov, prior_mu_train,
     assert len(Y_train.shape) == 2
     assert len(prior_mu_train.shape) == 2
     assert X_train.shape[0] == Y_train.shape[0] == prior_mu_train.shape[0]
-    gp_common._check_str_cov('neg_log_pseudo_l_loocv', str_cov, X_train.shape)
+    utils_gp.check_str_cov('neg_log_pseudo_l_loocv', str_cov, X_train.shape)
 
     num_data = X_train.shape[0]
     hyps = utils_covariance.restore_hyps(str_cov, hyps, is_fixed_noise=is_fixed_noise)
@@ -210,7 +211,7 @@ def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov,
     assert isinstance(debug, bool)
     assert len(Y_train.shape) == 2
     assert X_train.shape[0] == Y_train.shape[0]
-    gp_common._check_str_cov('get_optimized_kernel', str_cov, X_train.shape)
+    utils_gp.check_str_cov('get_optimized_kernel', str_cov, X_train.shape)
     assert str_optimizer_method in constants.ALLOWED_OPTIMIZER_METHOD_GP
     assert str_modelselection_method in constants.ALLOWED_MODELSELECTION_METHOD
     # TODO: fix this.
@@ -224,7 +225,7 @@ def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov,
     if debug: logger.debug('str_optimizer_method: {}'.format(str_optimizer_method))
     if debug: logger.debug('str_modelselection_method: {}'.format(str_modelselection_method))
 
-    prior_mu_train = gp_common.get_prior_mu(prior_mu, X_train)
+    prior_mu_train = utils_gp.get_prior_mu(prior_mu, X_train)
     if str_cov in constants.ALLOWED_GP_COV_BASE:
         num_dim = X_train.shape[1]
     elif str_cov in constants.ALLOWED_GP_COV_SET:
@@ -277,4 +278,3 @@ def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov,
     if debug: logger.debug('hyps optimized: {}'.format(utils_logger.get_str_hyps(hyps)))
     if debug: logger.debug('time consumed to construct gpr: {:.4f} sec.'.format(time_end - time_start))
     return cov_X_X, inv_cov_X_X, hyps
-

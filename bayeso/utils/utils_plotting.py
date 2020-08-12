@@ -843,7 +843,7 @@ def plot_bo_step_acq(X_train, Y_train, X_test, Y_test, mean_test, std_test, acq_
     _set_ax_config(ax1, None, str_y_axis, xlim_min=np.min(X_test), xlim_max=np.max(X_test), is_zero_axis=is_zero_axis)
 
     ax2.plot(X_test, acq_test, 'b', linewidth=4)
-    _set_ax_config(ax2, str_x_axis, str_y_axis, xlim_min=np.min(X_test), xlim_max=np.max(X_test), is_zero_axis=is_zero_axis)
+    _set_ax_config(ax2, str_x_axis, str_acq_axis, xlim_min=np.min(X_test), xlim_max=np.max(X_test), is_zero_axis=is_zero_axis)
 
     if path_save is not None and str_postfix is not None:
         _save_figure(path_save, str_postfix, str_prefix='bo_step_acq_')

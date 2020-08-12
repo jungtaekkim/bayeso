@@ -1,6 +1,6 @@
 # gp
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: August 07, 2020
+# last updated: August 12, 2020
 
 import time
 import numpy as np
@@ -10,6 +10,7 @@ from bayeso import covariance
 from bayeso import constants
 from bayeso.gp import gp_common
 from bayeso.gp import gp_scipy
+from bayeso.utils import utils_gp
 from bayeso.utils import utils_logger
 
 logger = utils_logger.get_logger('gp')
@@ -91,7 +92,7 @@ def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov,
     assert isinstance(debug, bool)
     assert len(Y_train.shape) == 2
     assert X_train.shape[0] == Y_train.shape[0]
-    gp_common._check_str_cov('get_optimized_kernel', str_cov, X_train.shape)
+    utils_gp.check_str_cov('get_optimized_kernel', str_cov, X_train.shape)
     assert str_optimizer_method in constants.ALLOWED_OPTIMIZER_METHOD_GP
     assert str_modelselection_method in constants.ALLOWED_MODELSELECTION_METHOD
     assert str_framework in constants.ALLOWED_FRAMEWORK_GP
@@ -166,12 +167,12 @@ def predict_test_(X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps,
     assert len(cov_X_X.shape) == 2
     assert len(inv_cov_X_X.shape) == 2
     assert (np.array(cov_X_X.shape) == np.array(inv_cov_X_X.shape)).all()
-    gp_common._check_str_cov('predict_test_', str_cov, X_train.shape, shape_X2=X_test.shape)
+    utils_gp.check_str_cov('predict_test_', str_cov, X_train.shape, shape_X2=X_test.shape)
     assert X_train.shape[0] == Y_train.shape[0]
     assert X_train.shape[1] == X_test.shape[1]
 
-    prior_mu_train = gp_common.get_prior_mu(prior_mu, X_train)
-    prior_mu_test = gp_common.get_prior_mu(prior_mu, X_test)
+    prior_mu_train = utils_gp.get_prior_mu(prior_mu, X_train)
+    prior_mu_test = utils_gp.get_prior_mu(prior_mu, X_test)
     cov_X_Xs = covariance.cov_main(str_cov, X_train, X_test, hyps, False)
     cov_Xs_Xs = covariance.cov_main(str_cov, X_test, X_test, hyps, True)
     cov_Xs_Xs = (cov_Xs_Xs + cov_Xs_Xs.T) / 2.0
@@ -218,7 +219,7 @@ def predict_test(X_train, Y_train, X_test, hyps,
     assert isinstance(debug, bool)
     assert callable(prior_mu) or prior_mu is None
     assert len(Y_train.shape) == 2
-    gp_common._check_str_cov('predict_test', str_cov, X_train.shape, shape_X2=X_test.shape)
+    utils_gp.check_str_cov('predict_test', str_cov, X_train.shape, shape_X2=X_test.shape)
     assert X_train.shape[0] == Y_train.shape[0]
     assert X_train.shape[1] == X_test.shape[1]
     
@@ -265,7 +266,7 @@ def predict_optimized(X_train, Y_train, X_test,
     assert isinstance(debug, bool)
     assert callable(prior_mu) or prior_mu is None
     assert len(Y_train.shape) == 2
-    gp_common._check_str_cov('predict_optimized', str_cov, X_train.shape, shape_X2=X_test.shape)
+    utils_gp.check_str_cov('predict_optimized', str_cov, X_train.shape, shape_X2=X_test.shape)
     assert X_train.shape[0] == Y_train.shape[0]
     assert X_train.shape[1] == X_test.shape[1]
 

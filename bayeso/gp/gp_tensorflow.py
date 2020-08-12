@@ -11,6 +11,7 @@ import tensorflow_probability as tfp
 from bayeso import covariance
 from bayeso import constants
 from bayeso.gp import gp_common
+from bayeso.utils import utils_gp
 from bayeso.utils import utils_covariance
 from bayeso.utils import utils_logger
 
@@ -64,7 +65,7 @@ def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov,
     assert isinstance(debug, bool)
     assert len(Y_train.shape) == 2
     assert X_train.shape[0] == Y_train.shape[0]
-    gp_common._check_str_cov('get_optimized_kernel', str_cov, X_train.shape)
+    utils_gp.check_str_cov('get_optimized_kernel', str_cov, X_train.shape)
     assert num_iters >= 10 or num_iters == 0
 
     # TODO: prior_mu is not working now.

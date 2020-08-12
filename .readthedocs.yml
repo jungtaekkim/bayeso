@@ -1,10 +1,12 @@
 version: 2
 
 sphinx:
+  builder: html
   configuration: docs/conf.py
 
 formats:
   - pdf
+  - htmlzip
 
 python:
   version: 3.7

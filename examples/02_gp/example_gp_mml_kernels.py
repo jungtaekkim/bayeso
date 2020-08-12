@@ -1,4 +1,4 @@
-# example_gp_mml_kernel_se
+# example_gp_mml_kernel_matern32
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
 # last updated: August 07, 2020
 
@@ -9,11 +9,15 @@ from bayeso.gp import gp
 from bayeso.utils import utils_common
 from bayeso.utils import utils_plotting
 
-
 PATH_SAVE = '../figures/gp/'
-STR_COV = 'se'
+list_str_covs = [
+    'se',
+    'eq',
+    'matern32',
+    'matern52'
+]
 
-def main():
+def main(str_cov):
     np.random.seed(42)
     X_train = np.array([
         [-3],
@@ -32,11 +36,13 @@ def main():
         'lengthscales': 0.5,
         'noise': 0.02,
     }
-    mu, sigma, Sigma = gp.predict_optimized(X_train, Y_train, X_test, str_cov=STR_COV, debug=True)
-    utils_plotting.plot_gp(X_train, Y_train, X_test, mu, sigma, Y_test_truth, path_save=PATH_SAVE, str_postfix='cos_' + STR_COV)
+    mu, sigma, Sigma = gp.predict_optimized(X_train, Y_train, X_test, str_cov=str_cov, debug=True)
+    utils_plotting.plot_gp(X_train, Y_train, X_test, mu, sigma, Y_test_truth, path_save=PATH_SAVE, str_postfix='cos_' + str_cov)
 
 if __name__ == '__main__':
     if not os.path.isdir(PATH_SAVE):
         os.makedirs(PATH_SAVE)
-    main()
+
+    for str_cov in list_str_covs:
+        main(str_cov)
 
