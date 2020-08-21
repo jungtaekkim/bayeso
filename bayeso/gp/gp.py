@@ -1,6 +1,6 @@
 # gp
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: August 12, 2020
+# last updated: August 21, 2020
 
 import time
 import numpy as np
@@ -99,6 +99,7 @@ def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov,
 
     try:
         if str_framework == 'tensorflow': import tensorflow as tf
+        elif str_framework == 'gpytorch': import gpytorch
     except: # pragma: no cover
         str_framework = 'scipy'
 
@@ -112,6 +113,12 @@ def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov,
     elif str_framework == 'tensorflow':
         from bayeso.gp import gp_tensorflow
         cov_X_X, inv_cov_X_X, hyps = gp_tensorflow.get_optimized_kernel(X_train, Y_train, prior_mu, str_cov,
+            is_fixed_noise=is_fixed_noise,
+            debug=debug
+        )
+    elif str_framework == 'gpytorch':
+        from bayeso.gp import gp_gpytorch
+        cov_X_X, inv_cov_X_X, hyps = gp_gpytorch.get_optimized_kernel(X_train, Y_train, prior_mu, str_cov,
             is_fixed_noise=is_fixed_noise,
             debug=debug
         )

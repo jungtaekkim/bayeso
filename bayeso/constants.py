@@ -48,7 +48,7 @@ ALLOWED_INITIALIZATIONS_BO = ['sobol', 'uniform', 'latin']
 ALLOWED_INITIALIZATIONS_AO = ALLOWED_INITIALIZATIONS_BO + ['grid']
 ALLOWED_MLM_METHOD = ['regular', 'converged']
 ALLOWED_MODELSELECTION_METHOD = ['ml', 'loocv']
-ALLOWED_FRAMEWORK_GP = ['scipy', 'tensorflow']
+ALLOWED_FRAMEWORK_GP = ['scipy', 'tensorflow', 'gpytorch']
 
 KEYS_INFO_BENCHMARK = ['dim_fun', 'bounds', 'global_minimum_X', 'global_minimum_y']
 

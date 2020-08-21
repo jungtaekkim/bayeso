@@ -68,8 +68,9 @@ def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov,
     utils_gp.check_str_cov('get_optimized_kernel', str_cov, X_train.shape)
     assert num_iters >= 10 or num_iters == 0
 
-    # TODO: prior_mu is not working now.
+    # TODO: prior_mu and is_fixed_noise are not working now.
     prior_mu = None
+    is_fixed_noise = False
 
     time_start = time.time()
 
@@ -107,7 +108,7 @@ def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov,
         elif str_cov == 'matern52':
             kernel_main = tfp.math.psd_kernels.MaternFiveHalves(amplitude=var_amplitude, length_scale=None)
         else:
-            raise NotImplementedError('allowed str_cov and is_grad conditions, but it is not implemented.')
+            raise NotImplementedError('allowed str_cov conditions, but it is not implemented.')
 
         kernel = tfp.math.psd_kernels.FeatureScaled(
             kernel_main,
@@ -136,7 +137,7 @@ def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov,
         ]
     ]
 
-    list_neg_log_probs = []
+    list_neg_log_likelihoods = []
     ind_iter = 0
 
     while num_iters >= 10:
@@ -145,9 +146,11 @@ def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov,
         
         grads = tape.gradient(loss, trainable_variables)
         optimizer.apply_gradients(zip(grads, trainable_variables))
-        list_neg_log_probs.append(loss)
+        list_neg_log_likelihoods.append(loss)
 
-        if ind_iter > num_iters and np.abs(np.mean(list_neg_log_probs[-6:-1]) - loss) < 1e-1:
+        if ind_iter > num_iters and np.abs(np.mean(list_neg_log_likelihoods[-6:-1]) - loss) < 5e-2:
+            break
+        elif ind_iter > 10 * num_iters:
             break
         else:
             ind_iter += 1
@@ -155,7 +158,7 @@ def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov,
     hyps = {
         'signal': var_amplitude._value().numpy(),
         'lengthscales': var_length_scale._value().numpy(),
-        'noise': var_observation_noise_variance._value().numpy()
+        'noise': np.sqrt(var_observation_noise_variance._value().numpy())
     }
 
     cov_X_X, inv_cov_X_X, _ = gp_common.get_kernel_inverse(X_train, hyps, str_cov, is_fixed_noise=is_fixed_noise, debug=debug)
