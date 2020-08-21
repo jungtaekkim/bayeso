@@ -74,8 +74,6 @@ def test_get_optimized_kernel():
     cov_X_X, inv_cov_X_X, hyps = gp_gpytorch.get_optimized_kernel(X, Y, prior_mu, 'matern52', num_iters=0)
     print(hyps)
 
-    assert False
-
     with pytest.raises(NotImplementedError) as error:
         cov_X_X, inv_cov_X_X, hyps = gp_gpytorch.get_optimized_kernel(X_set, Y, prior_mu, 'set_se')
         print(hyps)

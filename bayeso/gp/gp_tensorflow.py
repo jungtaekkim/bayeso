@@ -150,7 +150,7 @@ def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov,
 
         if ind_iter > num_iters and np.abs(np.mean(list_neg_log_likelihoods[-6:-1]) - loss) < 5e-2:
             break
-        elif ind_iter > 10 * num_iters:
+        elif ind_iter > 10 * num_iters: # pragma: no cover
             break
         else:
             ind_iter += 1

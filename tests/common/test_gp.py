@@ -11,6 +11,10 @@ try:
     from bayeso.gp import gp_tensorflow
 except:
     gp_tensorflow = None
+try:
+    from bayeso.gp import gp_gpytorch
+except:
+    gp_gpytorch = None
 from bayeso.utils import utils_covariance
 
 
@@ -115,6 +119,10 @@ def test_get_optimized_kernel():
 
     if gp_tensorflow is not None:
         cov_X_X, inv_cov_X_X, hyps = gp.get_optimized_kernel(X, Y, prior_mu, 'se', str_framework='tensorflow')
+        print(hyps)
+
+    if gp_gpytorch is not None:
+        cov_X_X, inv_cov_X_X, hyps = gp.get_optimized_kernel(X, Y, prior_mu, 'se', str_framework='gpytorch')
         print(hyps)
 
     cov_X_X, inv_cov_X_X, hyps = gp.get_optimized_kernel(X_set, Y, prior_mu, 'set_se')
