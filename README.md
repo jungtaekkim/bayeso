@@ -65,7 +65,6 @@ The following `requirements` files include the package list, the purpose of whic
 We test our package in the following versions.
 
 * Python 2.7 (It will be excluded due to the maintenance schedule for Python 2.7, but it is currently tested.)
-* Python 3.5
 * Python 3.6
 * Python 3.7
 * Python 3.8
