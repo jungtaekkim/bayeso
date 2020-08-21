@@ -1,6 +1,6 @@
 # test_gp_tensorflow
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: August 11, 2020
+# last updated: August 21, 2020
 
 import numpy as np
 import pytest
@@ -8,7 +8,7 @@ import pytest
 from bayeso import constants
 try:
     from bayeso.gp import gp_tensorflow
-except:
+except: # pragma: no cover
     gp_tensorflow = None
 
 from bayeso.utils import utils_covariance
@@ -26,7 +26,7 @@ def test_get_optimized_kernel():
     Y = np.random.randn(num_X, 1)
     prior_mu = None
 
-    if gp_tensorflow is None:
+    if gp_tensorflow is None: # pragma: no cover
         pytest.skip('TensorFlow is not installed.')
 
     with pytest.raises(AssertionError) as error:

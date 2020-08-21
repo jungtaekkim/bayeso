@@ -8,7 +8,7 @@ import pytest
 from bayeso import constants
 try:
     from bayeso.gp import gp_gpytorch
-except:
+except: # pragma: no cover
     gp_gpytorch = None
 
 from bayeso.utils import utils_covariance
@@ -26,7 +26,7 @@ def test_get_optimized_kernel():
     Y = np.random.randn(num_X, 1)
     prior_mu = None
 
-    if gp_gpytorch is None:
+    if gp_gpytorch is None: # pragma: no cover
         pytest.skip('GPyTorch is not installed.')
 
     with pytest.raises(AssertionError) as error:

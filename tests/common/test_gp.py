@@ -9,11 +9,11 @@ from bayeso import constants
 from bayeso.gp import gp
 try:
     from bayeso.gp import gp_tensorflow
-except:
+except: # pragma: no cover
     gp_tensorflow = None
 try:
     from bayeso.gp import gp_gpytorch
-except:
+except: # pragma: no cover
     gp_gpytorch = None
 from bayeso.utils import utils_covariance
 
