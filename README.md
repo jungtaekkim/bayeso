@@ -67,7 +67,6 @@ We test our package in the following versions.
 * Python 3.6
 * Python 3.7
 * Python 3.8
-* Python 3.9
 
 ## Contributor
 * [Jungtaek Kim](http://mlg.postech.ac.kr/~jtkim/) (POSTECH)
