@@ -45,6 +45,15 @@ def test_cov_se():
     truth_cov_ = 0.22313016014842987
     assert np.abs(cov_[0] - truth_cov_) < TEST_EPSILON
 
+    X = np.array([[1.0, 2.0, 0.0]])
+    Xs = np.array([[2.0, 1.0, 1.0], [0.0, 0.0, 0.0]])
+    cur_hyps = utils_covariance.get_hyps('se', 3)
+    cur_hyps['lengthscales'] = 1.0
+    cov_ = covariance.cov_se(X, Xs, cur_hyps['lengthscales'], cur_hyps['signal'])
+    print(cov_)
+    truth_cov_ = np.array([[0.22313016, 0.082085]])
+    assert np.all(np.abs(cov_[0] - truth_cov_) < TEST_EPSILON)
+
 def test_grad_cov_se():
     str_cov = 'se'
     cur_hyps = utils_covariance.get_hyps(str_cov, 2)
@@ -104,6 +113,15 @@ def test_cov_matern32():
     truth_cov_ = 0.19914827347145583
     assert np.abs(cov_[0] - truth_cov_) < TEST_EPSILON
 
+    X = np.array([[1.0, 2.0, 0.0]])
+    Xs = np.array([[2.0, 1.0, 1.0], [0.0, 0.0, 0.0]])
+    cur_hyps = utils_covariance.get_hyps('matern32', 3)
+    cur_hyps['lengthscales'] = 1.0
+    cov_ = covariance.cov_matern32(X, Xs, cur_hyps['lengthscales'], cur_hyps['signal'])
+    print(cov_)
+    truth_cov_ = np.array([[0.19914827, 0.1013397]])
+    assert np.all(np.abs(cov_[0] - truth_cov_) < TEST_EPSILON)
+
 def test_grad_cov_matern32():
     str_cov = 'matern32'
     cur_hyps = utils_covariance.get_hyps(str_cov, 2)
@@ -144,6 +162,22 @@ def test_grad_cov_matern32():
 
     assert np.all(np.abs(truth_grad_cov_ - grad_cov_) < TEST_EPSILON)
 
+    num_hyps = X_train.shape[1] + 1
+    grad_cov_ = covariance.grad_cov_matern32(cov_, X_train, X_train, cur_hyps, num_hyps, True)
+    print(grad_cov_)
+
+    truth_grad_cov_ = np.array([
+        [
+            [2.00002, 0., 0.],
+            [0.96671545, 0.53076362, 0.53076362],
+        ], [
+            [0.96671545, 0.53076362, 0.53076362],
+            [2.00002, 0., 0.]
+        ]
+    ])
+
+    assert np.all(np.abs(truth_grad_cov_ - grad_cov_) < TEST_EPSILON)
+
 def test_cov_matern52():
     with pytest.raises(AssertionError) as error:
         covariance.cov_matern52(np.zeros((1, 2)), np.zeros((1, 2)), np.array([1.0, 1.0, 1.0]), 0.1)
@@ -162,6 +196,15 @@ def test_cov_matern52():
     print(cov_)
     truth_cov_ = 0.20532087608359792
     assert np.abs(cov_[0] - truth_cov_) < TEST_EPSILON
+
+    X = np.array([[1.0, 2.0, 0.0]])
+    Xs = np.array([[2.0, 1.0, 1.0], [0.0, 0.0, 0.0]])
+    cur_hyps = utils_covariance.get_hyps('matern52', 3)
+    cur_hyps['lengthscales'] = 1.0
+    cov_ = covariance.cov_matern52(X, Xs, cur_hyps['lengthscales'], cur_hyps['signal'])
+    print(cov_)
+    truth_cov_ = np.array([[0.20532088, 0.09657724]])
+    assert np.all(np.abs(cov_[0] - truth_cov_) < TEST_EPSILON)
 
 def test_grad_cov_matern52():
     str_cov = 'matern52'
@@ -198,6 +241,22 @@ def test_grad_cov_matern52():
         ], [
             [0., 1.04798822, 0.57644039, 0.57644039],
             [0.02, 2.00002, 0., 0.]
+        ]
+    ])
+
+    assert np.all(np.abs(truth_grad_cov_ - grad_cov_) < TEST_EPSILON)
+
+    num_hyps = X_train.shape[1] + 1
+    grad_cov_ = covariance.grad_cov_matern52(cov_, X_train, X_train, cur_hyps, num_hyps, True)
+    print(grad_cov_)
+
+    truth_grad_cov_ = np.array([
+        [
+            [2.00002, 0., 0.],
+            [1.04798822, 0.57644039, 0.57644039],
+        ], [
+            [1.04798822, 0.57644039, 0.57644039],
+            [2.00002, 0., 0.]
         ]
     ])
 

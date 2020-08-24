@@ -1,15 +1,20 @@
 language: python
 dist: xenial
 python:
-  - "2.7"
-  - "3.5"
-  - "3.6"
-  - "3.7"
+  - '2.7'
+  - '3.6'
+  - '3.7'
+  - '3.8'
 install:
   - pip install .
+  - pip install tensorflow
+  - pip install tensorflow-probability
+  - pip install torch
+  - pip install gpytorch
 script:
   - pip install coveralls
-  - coverage run -m pytest
+  - pip install pytest-timeout
+  - coverage run -m pytest tests/common/
   - coveralls
 notifications:
   slack: bayeso:FWBoHH9TMqjKUJWkZxCaTNVE

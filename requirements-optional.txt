@@ -1,3 +1,7 @@
 scipydirect
 matplotlib
 bayeso-benchmarks
+tensorflow
+tensorflow-probability
+torch
+gpytorch

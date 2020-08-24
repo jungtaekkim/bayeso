@@ -28,7 +28,7 @@ def choose_fun_cov(str_cov, is_grad=False):
     assert isinstance(str_cov, str)
     assert isinstance(is_grad, bool)
 
-    if str_cov == 'se':
+    if str_cov == 'eq' or str_cov == 'se':
         if is_grad:
             fun_cov = grad_cov_se
         else:
@@ -76,7 +76,7 @@ def cov_se(X, Xs, lengthscales, signal):
     if isinstance(lengthscales, np.ndarray):
         assert X.shape[1] == Xs.shape[1] == lengthscales.shape[0]
     else:
-        assert X.shape[0] == Xs.shape[0]
+        assert X.shape[1] == Xs.shape[1]
     dist = scisd.cdist(X / lengthscales, Xs / lengthscales, metric='euclidean')
     cov_ = signal**2 * np.exp(-0.5 * dist**2)
     return cov_
@@ -164,7 +164,7 @@ def cov_matern32(X, Xs, lengthscales, signal):
     if isinstance(lengthscales, np.ndarray):
         assert X.shape[1] == Xs.shape[1] == lengthscales.shape[0]
     else:
-        assert X.shape[0] == Xs.shape[0]
+        assert X.shape[1] == Xs.shape[1]
     assert isinstance(signal, float)
 
     dist = scisd.cdist(X / lengthscales, Xs / lengthscales, metric='euclidean')
@@ -254,7 +254,7 @@ def cov_matern52(X, Xs, lengthscales, signal):
     if isinstance(lengthscales, np.ndarray):
         assert X.shape[1] == Xs.shape[1] == lengthscales.shape[0]
     else:
-        assert X.shape[0] == Xs.shape[0]
+        assert X.shape[1] == Xs.shape[1]
     assert isinstance(signal, float)
 
     dist = scisd.cdist(X / lengthscales, Xs / lengthscales, metric='euclidean')
@@ -353,8 +353,6 @@ def cov_set(str_cov, X, Xs, lengthscales, signal):
     assert str_cov in constants.ALLOWED_GP_COV_BASE
     num_X = X.shape[0]
     num_Xs = Xs.shape[0]
-    num_d_X = X.shape[1]
-    num_d_Xs = Xs.shape[1]
 
     fun_cov = choose_fun_cov(str_cov)
     cov_ = fun_cov(X, Xs, lengthscales, signal)
@@ -406,7 +404,7 @@ def cov_main(str_cov, X, Xs, hyps, same_X_Xs,
         assert num_X == num_Xs
         cov_ += np.eye(num_X) * jitter
 
-    if str_cov == 'se' or str_cov == 'matern32' or str_cov == 'matern52':
+    if str_cov == 'eq' or str_cov == 'se' or str_cov == 'matern32' or str_cov == 'matern52':
         assert len(X.shape) == 2
         assert len(Xs.shape) == 2
         num_d_X = X.shape[1]

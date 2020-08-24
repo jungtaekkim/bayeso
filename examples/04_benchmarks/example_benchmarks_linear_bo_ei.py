@@ -1,6 +1,6 @@
 # example_benchmarks_branin_ei
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: January 06, 2020
+# last updated: April 28, 2020
 
 import numpy as np
 import os
@@ -14,7 +14,7 @@ from bayeso.utils import utils_plotting
 STR_FUN_TARGET = 'linear'
 PATH_SAVE = '../figures/benchmarks/'
 
-obj_fun = Linear(2.0)
+obj_fun = Linear(np.array([[-2.0, 2.0]]))
 
 
 def fun_target(X):
@@ -30,7 +30,7 @@ def main():
     list_Y = []
     list_time = []
     for ind_bo in range(0, int_bo):
-        print('BO Iteration', ind_bo)
+        print('BO Iteration', ind_bo + 1)
         X_final, Y_final, time_final, _, _ = utils_bo.optimize_many_with_random_init(model_bo, fun_target, int_init, int_iter, str_initial_method_bo='uniform', str_initial_method_ao='uniform', int_samples_ao=100)
         print(X_final)
         print(Y_final)

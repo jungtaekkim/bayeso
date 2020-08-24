@@ -42,5 +42,6 @@ The code can be found in `our GitHub repository <https://github.com/jungtaekkim/
    :caption: Python API:
 
    python_api/bayeso
+   python_api/bayeso.gp
    python_api/bayeso.utils
 

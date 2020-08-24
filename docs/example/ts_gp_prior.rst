@@ -8,8 +8,8 @@ First of all, import the packages we need and **bayeso**.
 
     import numpy as np
 
-    from bayeso import gp
     from bayeso import covariance
+    from bayeso.gp import gp
     from bayeso.utils import utils_covariance
     from bayeso.utils import utils_plotting
 
@@ -21,7 +21,7 @@ Declare some parameters to control this example, including zero-mean prior, and 
     str_cov = 'se'
     int_init = 1
     int_iter = 50
-    int_ts = 100
+    int_ts = 10
 
     list_Y_min = []
 
@@ -36,7 +36,7 @@ At each iteration, we sample a query point that outputs the mininum value of the
 .. code-block:: python
 
     for ind_ts in range(0, int_ts):
-        print('TS:', ind_ts + 1, 'iteration')
+        print('TS:', ind_ts + 1, 'round')
         Y = gp.sample_functions(mu, Sigma, num_samples=1)[0]
 
         ind_init = np.argmin(Y)
@@ -83,8 +83,8 @@ Full code:
 
     import numpy as np
 
-    from bayeso import gp
     from bayeso import covariance
+    from bayeso.gp import gp
     from bayeso.utils import utils_covariance
     from bayeso.utils import utils_plotting
 
@@ -92,7 +92,7 @@ Full code:
     str_cov = 'se'
     int_init = 1
     int_iter = 50
-    int_ts = 100
+    int_ts = 10
 
     list_Y_min = []
 
@@ -102,7 +102,7 @@ Full code:
     Sigma = covariance.cov_main(str_cov, X, X, hyps, True)
 
     for ind_ts in range(0, int_ts):
-        print('TS:', ind_ts + 1, 'iteration')
+        print('TS:', ind_ts + 1, 'round')
         Y = gp.sample_functions(mu, Sigma, num_samples=1)[0]
 
         ind_init = np.argmin(Y)

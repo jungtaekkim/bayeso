@@ -13,4 +13,3 @@ bayeso
    bayeso.bo
    bayeso.constants
    bayeso.covariance
-   bayeso.gp

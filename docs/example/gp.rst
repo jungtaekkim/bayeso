@@ -9,7 +9,8 @@ First of all, import the packages we need and **bayeso**.
     import numpy as np
     import os
 
-    from bayeso import gp
+    from bayeso import covariance
+    from bayeso.gp import gp
     from bayeso.utils import utils_covariance
     from bayeso.utils import utils_plotting
 
@@ -202,7 +203,8 @@ Full code:
     import numpy as np
     import os
 
-    from bayeso import gp
+    from bayeso import covariance
+    from bayeso.gp import gp
     from bayeso.utils import utils_covariance
     from bayeso.utils import utils_plotting
 
