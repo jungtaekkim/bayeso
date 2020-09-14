@@ -1,6 +1,6 @@
 # constants
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: November 26, 2019
+# last updated: September 11, 2020
 
 import numpy as np
 
@@ -17,6 +17,7 @@ STR_BO_INITIALIZATION = 'uniform'
 STR_AO_INITIALIZATION = 'uniform'
 STR_MLM_METHOD = 'regular'
 STR_MODELSELECTION_METHOD = 'ml'
+STR_FRAMEWORK_GP = 'scipy'
 
 NUM_BO_GRID = 50
 NUM_BO_RANDOM = 1000

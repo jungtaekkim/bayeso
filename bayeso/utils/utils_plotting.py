@@ -1,6 +1,6 @@
 # utils_plotting
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: February 07, 2020
+# last updated: August 24, 2020
 
 import os
 import numpy as np
@@ -15,6 +15,9 @@ except:
 
 from bayeso import constants
 from bayeso.utils import utils_common
+from bayeso.utils import utils_logger
+
+logger = utils_logger.get_logger('utils_plotting')
 
 
 def _set_font_config(is_tex): # pragma: no cover
@@ -128,10 +131,14 @@ def _show_figure(is_pause, time_pause): # pragma: no cover
 
     """
 
-    plt.ion()
     if is_pause:
-        plt.pause(time_pause)
-    plt.close('all')
+        if time_pause < np.inf:
+            plt.ion()
+            plt.pause(time_pause)
+            plt.close('all')
+        else:
+            plt.show()
+        
     return
 
 def plot_gp_sampled(X, Ys,
@@ -195,6 +202,7 @@ def plot_gp_sampled(X, Ys,
     assert X.shape[0] == Ys.shape[1]
 
     if plt is None or pylab is None:
+        logger.info('matplotlib or pylab is not installed.')
         return
     _set_font_config(is_tex)
 
@@ -304,6 +312,7 @@ def plot_gp(X_train, Y_train, X_test, mu, sigma,
         assert X_test.shape[0] == Y_test_truth.shape[0]
 
     if plt is None or pylab is None:
+        logger.info('matplotlib or pylab is not installed.')
         return
     _set_font_config(is_tex)
 
@@ -414,6 +423,7 @@ def plot_minimum(arr_minima, list_str_label, int_init, is_std,
     assert arr_minima.shape[2] >= int_init
 
     if plt is None or pylab is None:
+        logger.info('matplotlib or pylab is not installed.')
         return
     _set_font_config(is_tex)
 
@@ -550,6 +560,7 @@ def plot_minimum_time(arr_times, arr_minima, list_str_label, int_init, is_std,
     assert arr_times.shape[2] == arr_minima.shape[2] or arr_times.shape[2] + int_init == arr_minima.shape[2]
 
     if plt is None or pylab is None:
+        logger.info('matplotlib or pylab is not installed.')
         return
     _set_font_config(is_tex)
 
@@ -691,6 +702,7 @@ def plot_bo_step(X_train, Y_train, X_test, Y_test, mean_test, std_test,
         assert X_train.shape[0] >= int_init
 
     if plt is None or pylab is None:
+        logger.info('matplotlib or pylab is not installed.')
         return
     _set_font_config(is_tex)
 
@@ -817,6 +829,7 @@ def plot_bo_step_acq(X_train, Y_train, X_test, Y_test, mean_test, std_test, acq_
         assert X_train.shape[0] >= int_init
 
     if plt is None or pylab is None:
+        logger.info('matplotlib or pylab is not installed.')
         return
     _set_font_config(is_tex)
 

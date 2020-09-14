@@ -204,10 +204,10 @@ def test_predict_test():
     with pytest.raises(AssertionError) as error:
         gp.predict_test(X, np.random.randn(10, 1), X_test, hyps, str_cov='se', prior_mu=prior_mu)
     
-    mu_Xs, sigma_Xs, Sigma_Xs = gp.predict_test(X, Y, X_test, hyps, str_cov='se', prior_mu=prior_mu)
-    print(mu_Xs)
-    print(sigma_Xs)
-    print(Sigma_Xs)
+    mu_test, sigma_test, Sigma_test = gp.predict_test(X, Y, X_test, hyps, str_cov='se', prior_mu=prior_mu)
+    print(mu_test)
+    print(sigma_test)
+    print(Sigma_test)
 
 def test_predict_optimized():
     np.random.seed(42)
@@ -240,7 +240,7 @@ def test_predict_optimized():
     with pytest.raises(AssertionError) as error:
         gp.predict_optimized(X, Y, X_test, debug=1)
     
-    mu_Xs, sigma_Xs, Sigma_Xs = gp.predict_optimized(X, Y, X_test)
-    print(mu_Xs)
-    print(sigma_Xs)
-    print(Sigma_Xs)
+    mu_test, sigma_test, Sigma_test = gp.predict_optimized(X, Y, X_test)
+    print(mu_test)
+    print(sigma_test)
+    print(Sigma_test)

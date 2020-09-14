@@ -46,7 +46,7 @@ def sample_functions(mu, Sigma, num_samples=1):
     return np.array(list_rvs)
 
 def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov,
-    str_framework='scipy',
+    str_framework=constants.STR_FRAMEWORK_GP,
     str_optimizer_method=constants.STR_OPTIMIZER_METHOD_GP,
     str_modelselection_method=constants.STR_MODELSELECTION_METHOD,
     is_fixed_noise=constants.IS_FIXED_GP_NOISE,
