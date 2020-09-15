@@ -1,9 +1,49 @@
 # utils_common
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: February 04, 2020
+# last updated: September 14, 2020
 
 import numpy as np
+import typing
 
+
+def include_original(func):
+    def meta_decorator(f):
+        decorated = func(f)
+        decorated._original = f
+        return decorated
+    return meta_decorator
+
+@include_original
+def validate_types(func):
+    annos = func.__annotations__
+    assert len(annos) == func.__code__.co_argcount + 1
+    arg_names = func.__code__.co_varnames[:func.__code__.co_argcount]
+
+    def _validate_types(*args, **kwargs):
+        '''
+        args_all = dict(**dict(zip(arg_names, args)), **kwargs)
+
+        for key_anno, val_anno in annos.items():
+            if key_anno == 'return':
+                continue
+
+            val_arg = args_all.get(key_anno, 'not existed')
+            if type(val_arg) == str and val_arg == 'not existed':
+                continue
+            else:
+                type_arg = type(args_all[key_anno])
+
+            if val_anno == typing.Union[np.ndarray, None]:
+                assert isinstance(args_all[key_anno], (np.ndarray, type(None)))
+            elif val_anno == typing.Union[np.ndarray, float]:
+                assert isinstance(args_all[key_anno], (np.ndarray, float))
+            else:
+                assert isinstance(args_all[key_anno], val_anno)
+        '''
+
+        return func(*args, **kwargs)
+
+    return _validate_types
 
 def get_minimum(data_all, int_init):
     """

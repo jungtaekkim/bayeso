@@ -1,6 +1,6 @@
 # bo
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: April 29, 2020
+# last updated: September 14, 2020
 
 import numpy as np
 import time
@@ -154,9 +154,9 @@ def _choose_fun_acquisition(str_acq, hyps):
     elif str_acq == 'aei':
         fun_acquisition = lambda pred_mean, pred_std, Y_train: acquisition.aei(pred_mean, pred_std, Y_train, hyps['noise'])
     elif str_acq == 'pure_exploit':
-        fun_acquisition = acquisition.pure_exploit
+        fun_acquisition = lambda pred_mean, pred_std, Y_train: acquisition.pure_exploit(pred_mean)
     elif str_acq == 'pure_explore':
-        fun_acquisition = acquisition.pure_explore
+        fun_acquisition = lambda pred_mean, pred_std, Y_train: acquisition.pure_explore(pred_std)
     else:
         raise NotImplementedError('_choose_fun_acquisition: allowed str_acq, but it is not implemented.')
     return fun_acquisition

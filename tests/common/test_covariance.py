@@ -13,7 +13,7 @@ from bayeso.utils import utils_covariance
 TEST_EPSILON = 1e-5
 
 def test_choose_fun_cov_typing():
-    annos = covariance.choose_fun_cov.__annotations__
+    annos = covariance.choose_fun_cov._original.__annotations__
 
     assert annos['str_cov'] == str
     assert annos['choose_grad'] == bool
@@ -35,7 +35,7 @@ def test_choose_fun_cov():
     assert covariance.choose_fun_cov('matern52', True) == covariance.grad_cov_matern52
 
 def test_cov_se_typing():
-    annos = covariance.cov_se.__annotations__
+    annos = covariance.cov_se._original.__annotations__
 
     assert annos['X'] == np.ndarray
     assert annos['Xp'] == np.ndarray
@@ -72,7 +72,7 @@ def test_cov_se():
     assert np.all(np.abs(cov_[0] - truth_cov_) < TEST_EPSILON)
 
 def test_grad_cov_se_typing():
-    annos = covariance.grad_cov_se.__annotations__
+    annos = covariance.grad_cov_se._original.__annotations__
 
     assert annos['cov_X_Xp'] == np.ndarray
     assert annos['X'] == np.ndarray
@@ -123,7 +123,7 @@ def test_grad_cov_se():
     assert np.all(np.abs(truth_grad_cov_ - grad_cov_) < TEST_EPSILON)
 
 def test_cov_matern32_typing():
-    annos = covariance.cov_matern32.__annotations__
+    annos = covariance.cov_matern32._original.__annotations__
 
     assert annos['X'] == np.ndarray
     assert annos['Xp'] == np.ndarray
@@ -160,7 +160,7 @@ def test_cov_matern32():
     assert np.all(np.abs(cov_[0] - truth_cov_) < TEST_EPSILON)
 
 def test_grad_cov_matern32_typing():
-    annos = covariance.grad_cov_matern32.__annotations__
+    annos = covariance.grad_cov_matern32._original.__annotations__
 
     assert annos['cov_X_Xp'] == np.ndarray
     assert annos['X'] == np.ndarray
@@ -227,7 +227,7 @@ def test_grad_cov_matern32():
     assert np.all(np.abs(truth_grad_cov_ - grad_cov_) < TEST_EPSILON)
 
 def test_cov_matern52_typing():
-    annos = covariance.cov_matern52.__annotations__
+    annos = covariance.cov_matern52._original.__annotations__
 
     assert annos['X'] == np.ndarray
     assert annos['Xp'] == np.ndarray
@@ -264,7 +264,7 @@ def test_cov_matern52():
     assert np.all(np.abs(cov_[0] - truth_cov_) < TEST_EPSILON)
 
 def test_grad_cov_matern52_typing():
-    annos = covariance.grad_cov_matern52.__annotations__
+    annos = covariance.grad_cov_matern52._original.__annotations__
 
     assert annos['cov_X_Xp'] == np.ndarray
     assert annos['X'] == np.ndarray
@@ -331,7 +331,7 @@ def test_grad_cov_matern52():
     assert np.all(np.abs(truth_grad_cov_ - grad_cov_) < TEST_EPSILON)
 
 def test_cov_set_typing():
-    annos = covariance.cov_set.__annotations__
+    annos = covariance.cov_set._original.__annotations__
 
     assert annos['str_cov'] == str
     assert annos['X'] == np.ndarray
@@ -367,7 +367,7 @@ def test_cov_set():
     assert np.abs(cov_ - truth_cov_) < TEST_EPSILON
 
 def test_cov_main_typing():
-    annos = covariance.cov_main.__annotations__
+    annos = covariance.cov_main._original.__annotations__
 
     assert annos['str_cov'] == str
     assert annos['X'] == np.ndarray
@@ -442,7 +442,7 @@ def test_cov_main():
     assert np.all(cov_ == np.ones((10, 10)) + np.eye(10) * 1e-3)
 
 def test_grad_cov_main_typing():
-    annos = covariance.grad_cov_main.__annotations__
+    annos = covariance.grad_cov_main._original.__annotations__
 
     assert annos['str_cov'] == str
     assert annos['X'] == np.ndarray

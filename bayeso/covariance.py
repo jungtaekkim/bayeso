@@ -1,6 +1,6 @@
 # covariance
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: April 23, 2020
+# last updated: September 14, 2020
 
 import numpy as np
 import scipy.spatial.distance as scisd
@@ -8,8 +8,10 @@ import typing
 
 from bayeso import constants
 from bayeso.utils import utils_covariance
+from bayeso.utils import utils_common
 
 
+@utils_common.validate_types
 def choose_fun_cov(str_cov: str, choose_grad: bool) -> typing.Callable:
     """
     It is for choosing a covariance function or a function for computing gradients of covariance function.
@@ -48,6 +50,7 @@ def choose_fun_cov(str_cov: str, choose_grad: bool) -> typing.Callable:
         raise NotImplementedError('choose_fun_cov: allowed str_cov and choose_grad conditions, but it is not implemented.')
     return fun_cov
 
+@utils_common.validate_types
 def cov_se(X: np.ndarray, Xp: np.ndarray, lengthscales: typing.Union[np.ndarray, float], signal: float) -> np.ndarray:
     """
     It computes squared exponential kernel over `X` and `Xp`, where `lengthscales` and `signal` are given.
@@ -70,7 +73,7 @@ def cov_se(X: np.ndarray, Xp: np.ndarray, lengthscales: typing.Union[np.ndarray,
 
     assert isinstance(X, np.ndarray)
     assert isinstance(Xp, np.ndarray)
-    assert isinstance(lengthscales, np.ndarray) or isinstance(lengthscales, float)
+    assert isinstance(lengthscales, (np.ndarray, float))
     assert isinstance(signal, float)
     assert len(X.shape) == 2
     assert len(Xp.shape) == 2
@@ -79,9 +82,10 @@ def cov_se(X: np.ndarray, Xp: np.ndarray, lengthscales: typing.Union[np.ndarray,
     else:
         assert X.shape[1] == Xp.shape[1]
     dist = scisd.cdist(X / lengthscales, Xp / lengthscales, metric='euclidean')
-    cov_ = signal**2 * np.exp(-0.5 * dist**2)
-    return cov_
+    cov_X_Xp = signal**2 * np.exp(-0.5 * dist**2)
+    return cov_X_Xp
 
+@utils_common.validate_types
 def grad_cov_se(cov_X_Xp: np.ndarray, X: np.ndarray, Xp: np.ndarray, hyps: dict, num_hyps: int, fix_noise: bool) -> np.ndarray:
     """
     It computes gradients of squared exponential kernel over `X` and `Xp`, where `hyps` is given.
@@ -137,6 +141,7 @@ def grad_cov_se(cov_X_Xp: np.ndarray, X: np.ndarray, Xp: np.ndarray, hyps: dict,
 
     return grad_cov_X_Xp
 
+@utils_common.validate_types
 def cov_matern32(X: np.ndarray, Xp: np.ndarray, lengthscales: typing.Union[np.ndarray, float], signal: float) -> np.ndarray:
     """
     It computes Matern 3/2 kernel over `X` and `Xp`, where `lengthscales` and `signal` are given.
@@ -159,7 +164,7 @@ def cov_matern32(X: np.ndarray, Xp: np.ndarray, lengthscales: typing.Union[np.nd
 
     assert isinstance(X, np.ndarray)
     assert isinstance(Xp, np.ndarray)
-    assert isinstance(lengthscales, np.ndarray) or isinstance(lengthscales, float)
+    assert isinstance(lengthscales, (np.ndarray, float))
     assert len(X.shape) == 2
     assert len(Xp.shape) == 2
     if isinstance(lengthscales, np.ndarray):
@@ -172,6 +177,7 @@ def cov_matern32(X: np.ndarray, Xp: np.ndarray, lengthscales: typing.Union[np.nd
     cov_ = signal**2 * (1.0 + np.sqrt(3.0) * dist) * np.exp(-1.0 * np.sqrt(3.0) * dist)
     return cov_
 
+@utils_common.validate_types
 def grad_cov_matern32(cov_X_Xp: np.ndarray, X: np.ndarray, Xp: np.ndarray, hyps: dict, num_hyps: int, fix_noise: bool) -> np.ndarray:
     """
     It computes gradients of Matern 3/2 kernel over `X` and `Xp`, where `hyps` is given.
@@ -227,6 +233,7 @@ def grad_cov_matern32(cov_X_Xp: np.ndarray, X: np.ndarray, Xp: np.ndarray, hyps:
 
     return grad_cov_X_Xp
 
+@utils_common.validate_types
 def cov_matern52(X: np.ndarray, Xp:np.ndarray, lengthscales: typing.Union[np.ndarray, float], signal: float) -> np.ndarray:
     """
     It computes Matern 5/2 kernel over `X` and `Xp`, where `lengthscales` and `signal` are given.
@@ -249,7 +256,7 @@ def cov_matern52(X: np.ndarray, Xp:np.ndarray, lengthscales: typing.Union[np.nda
 
     assert isinstance(X, np.ndarray)
     assert isinstance(Xp, np.ndarray)
-    assert isinstance(lengthscales, np.ndarray) or isinstance(lengthscales, float)
+    assert isinstance(lengthscales, (np.ndarray, float))
     assert len(X.shape) == 2
     assert len(Xp.shape) == 2
     if isinstance(lengthscales, np.ndarray):
@@ -262,6 +269,7 @@ def cov_matern52(X: np.ndarray, Xp:np.ndarray, lengthscales: typing.Union[np.nda
     cov_X_Xp = signal**2 * (1.0 + np.sqrt(5.0) * dist + 5.0 / 3.0 * dist**2) * np.exp(-1.0 * np.sqrt(5.0) * dist)
     return cov_X_Xp
 
+@utils_common.validate_types
 def grad_cov_matern52(cov_X_Xp: np.ndarray, X: np.ndarray, Xp: np.ndarray, hyps: dict, num_hyps: int, fix_noise: bool) -> np.ndarray:
     """
     It computes gradients of Matern 5/2 kernel over `X` and `Xp`, where `hyps` is given.
@@ -317,6 +325,7 @@ def grad_cov_matern52(cov_X_Xp: np.ndarray, X: np.ndarray, Xp: np.ndarray, hyps:
 
     return grad_cov_X_Xp
 
+@utils_common.validate_types
 def cov_set(str_cov: str, X: np.ndarray, Xp: np.ndarray, lengthscales: typing.Union[np.ndarray, float], signal: float) -> np.ndarray:
     """
     It computes set kernel matrix over `X` and `Xp`, where `lengthscales` and `signal` are given.
@@ -342,7 +351,7 @@ def cov_set(str_cov: str, X: np.ndarray, Xp: np.ndarray, lengthscales: typing.Un
     assert isinstance(str_cov, str)
     assert isinstance(X, np.ndarray)
     assert isinstance(Xp, np.ndarray)
-    assert isinstance(lengthscales, np.ndarray) or isinstance(lengthscales, float)
+    assert isinstance(lengthscales, (np.ndarray, float))
     assert isinstance(signal, float)
     assert len(X.shape) == 2
     assert len(Xp.shape) == 2
@@ -362,6 +371,7 @@ def cov_set(str_cov: str, X: np.ndarray, Xp: np.ndarray, lengthscales: typing.Un
 
     return cov_X_Xp
 
+@utils_common.validate_types
 def cov_main(str_cov: str, X: np.ndarray, Xp: np.ndarray, hyps: dict, same_X_Xp: bool,
     jitter: float = constants.JITTER_COV
 ) -> np.ndarray:
@@ -446,9 +456,10 @@ def cov_main(str_cov: str, X: np.ndarray, Xp: np.ndarray, hyps: dict, same_X_Xp:
         raise NotImplementedError('cov_main: allowed str_cov, but it is not implemented.')
     return cov_X_Xp
 
+@utils_common.validate_types
 def grad_cov_main(str_cov: str, X: np.ndarray, Xp: np.ndarray, hyps: dict, fix_noise: bool,
-    same_X_Xp:bool = True,
-    jitter: float = constants.JITTER_COV,
+    same_X_Xp: bool=True,
+    jitter: float=constants.JITTER_COV,
 ) -> np.ndarray:
     """
     It computes gradients of kernel matrix over hyperparameters, where `hyps` is given.
