@@ -3,6 +3,7 @@
 # last updated: September 14, 2020
 
 import numpy as np
+import typing
 
 
 def include_original(func):
@@ -23,31 +24,32 @@ def validate_types(func):
 
     return _validate_types
 
-def get_grids(arr_ranges, int_grids):
+@validate_types
+def get_grids(ranges: np.ndarray, num_grids: int) -> np.ndarray:
     """
-    It returns grids of given `arr_ranges`, where each of dimension has `int_grids` partitions.
+    It returns grids of given `ranges`, where each of dimension has `num_grids` partitions.
 
-    :param arr_ranges: ranges. Shape: (d, 2).
-    :type arr_ranges: numpy.ndarray
-    :param int_grids: the number of partitions per dimension.
-    :type int_grids: int.
+    :param ranges: ranges. Shape: (d, 2).
+    :type ranges: numpy.ndarray
+    :param num_grids: the number of partitions per dimension.
+    :type num_grids: int.
 
-    :returns: grids of given `arr_ranges`. Shape: (`int_grids`:math:`^{\\text{d}}`, d).
+    :returns: grids of given `ranges`. Shape: (`num_grids`:math:`^{\\text{d}}`, d).
     :rtype: numpy.ndarray
 
     :raises: AssertionError
 
     """
 
-    assert isinstance(arr_ranges, np.ndarray)
-    assert isinstance(int_grids, int)
-    assert len(arr_ranges.shape) == 2
-    assert arr_ranges.shape[1] == 2
-    assert (arr_ranges[:, 0] <= arr_ranges[:, 1]).all()
+    assert isinstance(ranges, np.ndarray)
+    assert isinstance(num_grids, int)
+    assert len(ranges.shape) == 2
+    assert ranges.shape[1] == 2
+    assert (ranges[:, 0] <= ranges[:, 1]).all()
 
     list_grids = []
-    for range_ in arr_ranges:
-        list_grids.append(np.linspace(range_[0], range_[1], int_grids))
+    for range_ in ranges:
+        list_grids.append(np.linspace(range_[0], range_[1], num_grids))
     list_grids_mesh = list(np.meshgrid(*list_grids))
     list_grids = []
     for elem in list_grids_mesh:
@@ -56,79 +58,85 @@ def get_grids(arr_ranges, int_grids):
     arr_grids = arr_grids.T
     return arr_grids
 
-def get_minimum(data_all, int_init):
+@validate_types
+def get_minimum(Y_all: np.ndarray, num_init: int) -> typing.Tuple[np.ndarray, np.ndarray, np.ndarray]:
     """
     It returns accumulated minima at each iteration, their arithmetic means over rounds, and their standard deviations over rounds, which is widely used in Bayesian optimization community.
 
-    :param data_all: historical function values. Shape: (r, t) where r is the number of Bayesian optimization rounds and t is the number of iterations including initial points for each round. For example, if we run 50 iterations with 5 initial examples and repeat this procedure 3 times, r would be 3 and t would be 55 (= 50 + 5).
-    :type data_all: numpy.ndarray
-    :param int_init: the number of initial points.
-    :type int_init: int.
+    :param Y_all: historical function values. Shape: (r, t) where r is the number of Bayesian optimization rounds and t is the number of iterations including initial points for each round. For example, if we run 50 iterations with 5 initial examples and repeat this procedure 3 times, r would be 3 and t would be 55 (= 50 + 5).
+    :type Y_all: numpy.ndarray
+    :param num_init: the number of initial points.
+    :type num_init: int.
 
-    :returns: tuple of accumulated minima, their arithmetic means over rounds, and their standard deviations over rounds. Shape: ((r, t - `int_init` + 1), (t - `int_init` + 1, ), (t - `int_init` + 1, )).
+    :returns: tuple of accumulated minima, their arithmetic means over rounds, and their standard deviations over rounds. Shape: ((r, t - `num_init` + 1), (t - `num_init` + 1, ), (t - `num_init` + 1, )).
     :rtype: (numpy.ndarray, numpy.ndarray, numpy.ndarray)
 
     :raises: AssertionError
 
     """
 
-    assert isinstance(data_all, np.ndarray)
-    assert isinstance(int_init, int)
-    assert len(data_all.shape) == 2
-    assert data_all.shape[1] > int_init
+    assert isinstance(Y_all, np.ndarray)
+    assert isinstance(num_init, int)
+    assert len(Y_all.shape) == 2
+    assert Y_all.shape[1] > num_init
 
-    list_minimum = []
-    for cur_data in data_all:
-        cur_minimum = np.inf
-        cur_list = []
-        for cur_elem in cur_data[:int_init]:
-            if cur_minimum > cur_elem:
-                cur_minimum = cur_elem
-        cur_list.append(cur_minimum)
-        for cur_elem in cur_data[int_init:]:
-            if cur_minimum > cur_elem:
-                cur_minimum = cur_elem
-            cur_list.append(cur_minimum)
-        list_minimum.append(cur_list)
-    arr_minimum = np.array(list_minimum)
-    mean_minimum = np.mean(arr_minimum, axis=0)
-    std_minimum = np.std(arr_minimum, axis=0)
-    return arr_minimum, mean_minimum, std_minimum
+    list_minima = []
 
-def get_time(arr_time, int_init, is_initial):
+    for by in Y_all:
+        minimum_best = np.inf
+        list_minima_ = []
+        for y in by[:num_init]:
+            if minimum_best > y:
+                minimum_best = y
+        list_minima_.append(minimum_best)
+        for y in by[num_init:]:
+            if minimum_best > y:
+                minimum_best = y
+            list_minima_.append(minimum_best)
+        list_minima.append(list_minima_)
+
+    minima = np.array(list_minima)
+    mean_minima = np.mean(minima, axis=0)
+    std_minima = np.std(minima, axis=0)
+
+    return minima, mean_minima, std_minima
+
+@validate_types
+def get_time(time_all: np.ndarray, num_init: int, include_init: bool) -> np.ndarray:
     """
     It returns the means of accumulated execution times over rounds.
 
-    :param arr_time: execution times for all Bayesian optimization rounds. Shape: (r, t) where r is the number of Bayesian optimization rounds and t is the number of iterations (including initial points if `is_initial` is True, or excluding them if `is_initial` is False) for each round.
+    :param time_all: execution times for all Bayesian optimization rounds. Shape: (r, t) where r is the number of Bayesian optimization rounds and t is the number of iterations (including initial points if `include_init` is True, or excluding them if `include_init` is False) for each round.
 
-    :type arr_time: numpy.ndarray
-    :param int_init: the number of initial points. If `is_initial` is False, it is ignored even if it is provided.
-    :type int_init: int.
-    :param is_initial: flag for describing whether execution times to observe initial examples have been included or not.
-    :type is_initial: bool.
+    :type time_all: numpy.ndarray
+    :param num_init: the number of initial points. If `include_init` is False, it is ignored even if it is provided.
+    :type num_init: int.
+    :param include_init: flag for describing whether execution times to observe initial examples have been included or not.
+    :type include_init: bool.
 
-    :returns: arithmetic means of accumulated execution times over rounds. Shape: (t - `int_init`, ) if `is_initial` is True. (t, ), otherwise.
+    :returns: arithmetic means of accumulated execution times over rounds. Shape: (t - `num_init`, ) if `include_init` is True. (t, ), otherwise.
     :rtype: numpy.ndarray
 
     :raises: AssertionError
 
     """
 
-    assert isinstance(arr_time, np.ndarray)
-    assert isinstance(int_init, int)
-    assert isinstance(is_initial, bool)
-    assert len(arr_time.shape) == 2
-    if is_initial:
-        assert arr_time.shape[1] > int_init
+    assert isinstance(time_all, np.ndarray)
+    assert isinstance(num_init, int)
+    assert isinstance(include_init, bool)
+    assert len(time_all.shape) == 2
+    if include_init:
+        assert time_all.shape[1] > num_init
 
     list_time = []
-    for elem_time in arr_time:
-        cur_list = np.array([0.0])
+    for time_ in time_all:
+        list_time_ = np.array([0.0])
         cur_time = 0.0
 
-        if is_initial:
-            elem_time = elem_time[int_init:]
-        cur_list = np.concatenate((cur_list, np.cumsum(elem_time)))
-        list_time.append(cur_list)
+        if include_init:
+            time_ = time_[num_init:]
+        list_time_ = np.concatenate((list_time_, np.cumsum(time_)))
+        list_time.append(list_time_)
     list_time = np.array(list_time)
+
     return np.mean(list_time, axis=0)

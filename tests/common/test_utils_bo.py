@@ -91,6 +91,16 @@ def test_choose_fun_acquisition():
     with pytest.raises(AssertionError) as error:
         utils_bo.choose_fun_acquisition('pi', 1)
 
+def test_check_hyps_convergence_typing():
+    annos = utils_bo.check_hyps_convergence._original.__annotations__
+
+    assert annos['list_hyps'] == list
+    assert annos['hyps'] == dict
+    assert annos['str_cov'] == str
+    assert annos['fix_noise'] == bool
+    assert annos['ratio_threshold'] == float
+    assert annos['return'] == bool
+
 def test_check_hyps_convergence():
     dict_hyps_1 = {'lengthscales': np.array([1.0, 1.0]), 'signal': 1.0, 'noise': 0.01}
     dict_hyps_2 = {'lengthscales': np.array([2.0, 1.0]), 'signal': 1.0, 'noise': 0.01}
@@ -106,6 +116,14 @@ def test_check_hyps_convergence():
     
     assert utils_bo.check_hyps_convergence([dict_hyps_1], dict_hyps_1, 'se', False)
     assert not utils_bo.check_hyps_convergence([dict_hyps_2], dict_hyps_1, 'se', False)
+
+def test_get_next_best_acquisition_typing():
+    annos = utils_bo.get_next_best_acquisition._original.__annotations__
+
+    assert annos['points'] == np.ndarray
+    assert annos['acquisitions'] == np.ndarray
+    assert annos['points_evaluated'] == np.ndarray
+    assert annos['return'] == np.ndarray
 
 def test_get_next_best_acquisition():
     arr_points = np.array([

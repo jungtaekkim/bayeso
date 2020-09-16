@@ -1,14 +1,22 @@
 # test_utils_common
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: June 01, 2018
+# last updated: September 16, 2020
 
 import pytest
 import numpy as np
+import typing
 
 from bayeso.utils import utils_common
 
 
 TEST_EPSILON = 1e-5
+
+def test_get_grids_typing():
+    annos = utils_common.get_grids._original.__annotations__
+
+    assert annos['ranges'] == np.ndarray
+    assert annos['num_grids'] == int
+    assert annos['return'] == np.ndarray
 
 def test_get_grids():
     arr_range_1 = np.array([
@@ -99,6 +107,13 @@ def test_get_grids():
     assert (arr_grid_1 == truth_arr_grid_1).all()
     assert (arr_grid_2 == truth_arr_grid_2).all()
 
+def test_get_minimum_typing():
+    annos = utils_common.get_minimum._original.__annotations__
+
+    assert annos['Y_all'] == np.ndarray
+    assert annos['num_init'] == int
+    assert annos['return'] == typing.Tuple[np.ndarray, np.ndarray, np.ndarray]
+
 def test_get_minimum():
     with pytest.raises(AssertionError) as error:
         utils_common.get_minimum(1.2, 2.1)
@@ -141,6 +156,14 @@ def test_get_minimum():
     assert (cur_minimum == truth_all_data).all()
     assert (cur_mean == np.mean(truth_all_data, axis=0)).all()
     assert (cur_std == np.std(truth_all_data, axis=0)).all()
+
+def test_get_time_typing():
+    annos = utils_common.get_time._original.__annotations__
+
+    assert annos['time_all'] == np.ndarray
+    assert annos['num_init'] == int
+    assert annos['include_init'] == bool
+    assert annos['return'] == np.ndarray
 
 def test_get_time():
     arr_time = np.array([

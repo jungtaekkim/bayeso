@@ -16,13 +16,13 @@ except: # pragma: no cover
     cma = None
 import sobol_seq
 
-from bayeso import constants
 from bayeso.gp import gp
 from bayeso.gp import gp_common
 from bayeso.utils import utils_bo
 from bayeso.utils import utils_covariance
 from bayeso.utils import utils_common
 from bayeso.utils import utils_logger
+from bayeso import constants
 
 logger = utils_logger.get_logger('bo')
 

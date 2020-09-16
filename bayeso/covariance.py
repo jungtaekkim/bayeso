@@ -373,7 +373,7 @@ def cov_set(str_cov: str, X: np.ndarray, Xp: np.ndarray, lengthscales: typing.Un
 
 @utils_common.validate_types
 def cov_main(str_cov: str, X: np.ndarray, Xp: np.ndarray, hyps: dict, same_X_Xp: bool,
-    jitter: float = constants.JITTER_COV
+    jitter: float=constants.JITTER_COV
 ) -> np.ndarray:
     """
     It computes kernel matrix over `X` and `Xp`, where `hyps` is given.

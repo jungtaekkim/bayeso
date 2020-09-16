@@ -129,9 +129,10 @@ def choose_fun_acquisition(str_acq: str, hyps: dict) -> typing.Callable:
         raise NotImplementedError('_choose_fun_acquisition: allowed str_acq, but it is not implemented.')
     return fun_acquisition
 
-def check_hyps_convergence(list_hyps, hyps, str_cov, fix_noise,
-    ratio_threshold=0.05
-):
+@utils_common.validate_types
+def check_hyps_convergence(list_hyps: list, hyps: dict, str_cov: str, fix_noise: bool,
+    ratio_threshold: float=0.05
+) -> bool:
     """
     It checks convergence of hyperparameters for Gaussian process regression.
 
@@ -170,16 +171,17 @@ def check_hyps_convergence(list_hyps, hyps, str_cov, fix_noise,
             converged = True
     return converged
 
-def get_next_best_acquisition(arr_points, arr_acquisitions, cur_points):
+@utils_common.validate_types
+def get_next_best_acquisition(points: np.ndarray, acquisitions: np.ndarray, points_evaluated: np.ndarray) -> np.ndarray:
     """
     It returns the next best acquired example.
 
-    :param arr_points: inputs for acquisition function. Shape: (n, d).
-    :type arr_points: numpy.ndarray
-    :param arr_acquisitions: acquisition function values over `arr_points`. Shape: (n, ).
-    :type arr_acquisitions: numpy.ndarray
-    :param cur_points: examples evaluated so far. Shape: (m, d).
-    :type cur_points: numpy.ndarray
+    :param points: inputs for acquisition function. Shape: (n, d).
+    :type points: numpy.ndarray
+    :param acquisitions: acquisition function values over `points`. Shape: (n, ).
+    :type acquisitions: numpy.ndarray
+    :param points_evaluated: examples evaluated so far. Shape: (m, d).
+    :type points_evaluated: numpy.ndarray
 
     :returns: next best acquired point. Shape: (d, ).
     :rtype: numpy.ndarray
@@ -188,27 +190,27 @@ def get_next_best_acquisition(arr_points, arr_acquisitions, cur_points):
 
     """
 
-    assert isinstance(arr_points, np.ndarray)
-    assert isinstance(arr_acquisitions, np.ndarray)
-    assert isinstance(cur_points, np.ndarray)
-    assert len(arr_points.shape) == 2
-    assert len(arr_acquisitions.shape) == 1
-    assert len(cur_points.shape) == 2
-    assert arr_points.shape[0] == arr_acquisitions.shape[0]
-    assert arr_points.shape[1] == cur_points.shape[1]
+    assert isinstance(points, np.ndarray)
+    assert isinstance(acquisitions, np.ndarray)
+    assert isinstance(points_evaluated, np.ndarray)
+    assert len(points.shape) == 2
+    assert len(acquisitions.shape) == 1
+    assert len(points_evaluated.shape) == 2
+    assert points.shape[0] == acquisitions.shape[0]
+    assert points.shape[1] == points_evaluated.shape[1]
    
-    for cur_point in cur_points:
-        ind_same, = np.where(np.linalg.norm(arr_points - cur_point, axis=1) < 1e-2)
-        arr_points = np.delete(arr_points, ind_same, axis=0)
-        arr_acquisitions = np.delete(arr_acquisitions, ind_same)
+    for cur_point in points_evaluated:
+        ind_same, = np.where(np.linalg.norm(points - cur_point, axis=1) < 1e-2)
+        points = np.delete(points, ind_same, axis=0)
+        acquisitions = np.delete(acquisitions, ind_same)
     cur_best = np.inf
     next_point = None
 
-    if arr_points.shape[0] > 0:
-        for arr_point, cur_acq in zip(arr_points, arr_acquisitions):
+    if points.shape[0] > 0:
+        for arr_point, cur_acq in zip(points, acquisitions):
             if cur_acq < cur_best:
                 cur_best = cur_acq
                 next_point = arr_point
     else:
-        next_point = cur_points[-1]
+        next_point = points_evaluated[-1]
     return next_point
