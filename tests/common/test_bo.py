@@ -1,157 +1,15 @@
 # test_bo
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: August 07, 2020
+# last updated: September 16, 2020
 
-import numpy as np
 import pytest
+import numpy as np
+import typing
 
 from bayeso import bo
 
 
 TEST_EPSILON = 1e-5
-
-def test_get_grids():
-    arr_range_1 = np.array([
-        [0.0, 10.0],
-        [-2.0, 2.0],
-        [-5.0, 5.0],
-    ])
-    arr_range_2 = np.array([
-        [0.0, 10.0],
-        [2.0, 2.0],
-        [5.0, 5.0],
-    ])
-
-    truth_arr_grid_1 = np.array([
-        [0., -2., -5.],
-        [0., -2., 0.],
-        [0., -2., 5.],
-        [5., -2., -5.],
-        [5., -2., 0.],
-        [5., -2., 5.],
-        [10., -2., -5.],
-        [10., -2., 0.],
-        [10., -2., 5.],
-        [0., 0., -5.],
-        [0., 0., 0.],
-        [0., 0., 5.],
-        [5., 0., -5.],
-        [5., 0., 0.],
-        [5., 0., 5.],
-        [10., 0., -5.],
-        [10., 0., 0.],
-        [10., 0., 5.],
-        [0., 2., -5.],
-        [0., 2., 0.],
-        [0., 2., 5.],
-        [5., 2., -5.],
-        [5., 2., 0.],
-        [5., 2., 5.],
-        [10., 2., -5.],
-        [10., 2., 0.],
-        [10., 2., 5.],
-    ])
-    truth_arr_grid_2 = np.array([
-        [0., 2., 5.],
-        [0., 2., 5.],
-        [0., 2., 5.],
-        [5., 2., 5.],
-        [5., 2., 5.],
-        [5., 2., 5.],
-        [10., 2., 5.],
-        [10., 2., 5.],
-        [10., 2., 5.],
-        [0., 2., 5.],
-        [0., 2., 5.],
-        [0., 2., 5.],
-        [5., 2., 5.],
-        [5., 2., 5.],
-        [5., 2., 5.],
-        [10., 2., 5.],
-        [10., 2., 5.],
-        [10., 2., 5.],
-        [0., 2., 5.],
-        [0., 2., 5.],
-        [0., 2., 5.],
-        [5., 2., 5.],
-        [5., 2., 5.],
-        [5., 2., 5.],
-        [10., 2., 5.],
-        [10., 2., 5.],
-        [10., 2., 5.],
-    ])
-
-    with pytest.raises(AssertionError) as error:
-        bo.get_grids('abc', 3)
-    with pytest.raises(AssertionError) as error:
-        bo.get_grids(arr_range_1, 'abc')
-    with pytest.raises(AssertionError) as error:
-        bo.get_grids(np.arange(0, 10), 3)
-    with pytest.raises(AssertionError) as error:
-        bo.get_grids(np.ones((3, 3)), 3)
-    with pytest.raises(AssertionError) as error:
-        bo.get_grids(np.array([[0.0, -2.0], [10.0, 20.0]]), 3)
-
-    arr_grid_1 = bo.get_grids(arr_range_1, 3)
-    arr_grid_2 = bo.get_grids(arr_range_2, 3)
-
-    assert (arr_grid_1 == truth_arr_grid_1).all()
-    assert (arr_grid_2 == truth_arr_grid_2).all()
-
-def test_get_best_acquisition():
-    fun_objective = lambda x: x**2 - 2.0 * x + 1.0
-    arr_initials = np.expand_dims(np.arange(-5, 5), axis=1)
-
-    with pytest.raises(AssertionError) as error:
-        bo.get_best_acquisition(1, fun_objective)
-    with pytest.raises(AssertionError) as error:
-        bo.get_best_acquisition(arr_initials, None)
-    with pytest.raises(AssertionError) as error:
-        bo.get_best_acquisition(np.arange(-5, 5), fun_objective)
-
-    best_initial = bo.get_best_acquisition(arr_initials, fun_objective)
-    assert len(best_initial.shape)
-    assert best_initial.shape[0] == 1
-    assert best_initial.shape[1] == arr_initials.shape[1]
-    assert best_initial == np.array([[1]])
-
-def test_check_optimizer_method_bo():
-    directminimize = None
-    cma = None
-
-    with pytest.raises(AssertionError) as error:
-        bo._check_optimizer_method_bo(2, 2, True)
-    with pytest.raises(AssertionError) as error:
-        bo._check_optimizer_method_bo('DIRECT', 'abc', True)
-    with pytest.raises(AssertionError) as error:
-        bo._check_optimizer_method_bo('DIRECT', 2, 'abc')
-    with pytest.raises(AssertionError) as error:
-        bo._check_optimizer_method_bo('ABC', 2, True)
-
-def test_choose_fun_acquisition():
-    dict_hyps = {'lengthscales': np.array([1.0, 1.0]), 'signal': 1.0, 'noise': 0.01}
-    with pytest.raises(AssertionError) as error:
-        bo._choose_fun_acquisition(1, dict_hyps)
-    with pytest.raises(AssertionError) as error:
-        bo._choose_fun_acquisition('abc', dict_hyps)
-    with pytest.raises(AssertionError) as error:
-        bo._choose_fun_acquisition('pi', 1)
-
-def test_check_hyps_convergence():
-    dict_hyps_1 = {'lengthscales': np.array([1.0, 1.0]), 'signal': 1.0, 'noise': 0.01}
-    dict_hyps_2 = {'lengthscales': np.array([2.0, 1.0]), 'signal': 1.0, 'noise': 0.01}
-
-    with pytest.raises(AssertionError) as error:
-        bo._check_hyps_convergence(1, dict_hyps_1, 'se', True)
-    with pytest.raises(AssertionError) as error:
-        bo._check_hyps_convergence([dict_hyps_1], 1, 'se', True)
-    with pytest.raises(AssertionError) as error:
-        bo._check_hyps_convergence([dict_hyps_1], dict_hyps_1, 1, True)
-    with pytest.raises(AssertionError) as error:
-        bo._check_hyps_convergence([dict_hyps_1], dict_hyps_1, 1, 'abc')
-    
-    assert bo._check_hyps_convergence([dict_hyps_1], dict_hyps_1, 'se', False)
-    assert not bo._check_hyps_convergence([dict_hyps_2], dict_hyps_1, 'se', False)
 
 def test_load_bo():
     # legitimate cases
@@ -194,9 +52,9 @@ def test_load_bo():
     with pytest.raises(AssertionError) as error:
         model_bo = bo.BO(arr_range_1, str_acq='abc')
     with pytest.raises(AssertionError) as error:
-        model_bo = bo.BO(arr_range_1, is_ard='abc')
+        model_bo = bo.BO(arr_range_1, use_ard='abc')
     with pytest.raises(AssertionError) as error:
-        model_bo = bo.BO(arr_range_1, is_ard=1)
+        model_bo = bo.BO(arr_range_1, use_ard=1)
     with pytest.raises(AssertionError) as error:
         model_bo = bo.BO(arr_range_1, prior_mu=1)
     with pytest.raises(AssertionError) as error:
@@ -624,7 +482,7 @@ def test_optimize_str_modelselection_method():
     assert next_points.shape[1] == dim_X
     assert next_points.shape[0] == acquisitions.shape[0]
 
-def test_optimize_is_normalized():
+def test_optimize_normalize_Y():
     np.random.seed(42)
     arr_range = np.array([
         [0.0, 10.0],
@@ -636,7 +494,7 @@ def test_optimize_is_normalized():
     X = np.random.randn(num_X, dim_X)
     Y = np.random.randn(num_X, 1)
 
-    model_bo = bo.BO(arr_range, str_acq='ei', is_normalized=True)
+    model_bo = bo.BO(arr_range, str_acq='ei', normalize_Y=True)
     next_point, dict_info = model_bo.optimize(X, Y)
     next_points = dict_info['next_points']
     acquisitions = dict_info['acquisitions']
@@ -674,7 +532,7 @@ def test_optimize_is_normalized():
         [100.0],
     ])
 
-    model_bo = bo.BO(arr_range, str_acq='ei', is_normalized=True)
+    model_bo = bo.BO(arr_range, str_acq='ei', normalize_Y=True)
     next_point, dict_info = model_bo.optimize(X, Y)
     next_points = dict_info['next_points']
     acquisitions = dict_info['acquisitions']

@@ -10,6 +10,95 @@ from bayeso.utils import utils_common
 
 TEST_EPSILON = 1e-5
 
+def test_get_grids():
+    arr_range_1 = np.array([
+        [0.0, 10.0],
+        [-2.0, 2.0],
+        [-5.0, 5.0],
+    ])
+    arr_range_2 = np.array([
+        [0.0, 10.0],
+        [2.0, 2.0],
+        [5.0, 5.0],
+    ])
+
+    truth_arr_grid_1 = np.array([
+        [0., -2., -5.],
+        [0., -2., 0.],
+        [0., -2., 5.],
+        [5., -2., -5.],
+        [5., -2., 0.],
+        [5., -2., 5.],
+        [10., -2., -5.],
+        [10., -2., 0.],
+        [10., -2., 5.],
+        [0., 0., -5.],
+        [0., 0., 0.],
+        [0., 0., 5.],
+        [5., 0., -5.],
+        [5., 0., 0.],
+        [5., 0., 5.],
+        [10., 0., -5.],
+        [10., 0., 0.],
+        [10., 0., 5.],
+        [0., 2., -5.],
+        [0., 2., 0.],
+        [0., 2., 5.],
+        [5., 2., -5.],
+        [5., 2., 0.],
+        [5., 2., 5.],
+        [10., 2., -5.],
+        [10., 2., 0.],
+        [10., 2., 5.],
+    ])
+
+    truth_arr_grid_2 = np.array([
+        [0., 2., 5.],
+        [0., 2., 5.],
+        [0., 2., 5.],
+        [5., 2., 5.],
+        [5., 2., 5.],
+        [5., 2., 5.],
+        [10., 2., 5.],
+        [10., 2., 5.],
+        [10., 2., 5.],
+        [0., 2., 5.],
+        [0., 2., 5.],
+        [0., 2., 5.],
+        [5., 2., 5.],
+        [5., 2., 5.],
+        [5., 2., 5.],
+        [10., 2., 5.],
+        [10., 2., 5.],
+        [10., 2., 5.],
+        [0., 2., 5.],
+        [0., 2., 5.],
+        [0., 2., 5.],
+        [5., 2., 5.],
+        [5., 2., 5.],
+        [5., 2., 5.],
+        [10., 2., 5.],
+        [10., 2., 5.],
+        [10., 2., 5.],
+    ])
+
+    with pytest.raises(AssertionError) as error:
+        utils_common.get_grids('abc', 3)
+    with pytest.raises(AssertionError) as error:
+        utils_common.get_grids(arr_range_1, 'abc')
+    with pytest.raises(AssertionError) as error:
+        utils_common.get_grids(np.arange(0, 10), 3)
+    with pytest.raises(AssertionError) as error:
+        utils_common.get_grids(np.ones((3, 3)), 3)
+    with pytest.raises(AssertionError) as error:
+        utils_common.get_grids(np.array([[0.0, -2.0], [10.0, 20.0]]), 3)
+
+    arr_grid_1 = utils_common.get_grids(arr_range_1, 3)
+    arr_grid_2 = utils_common.get_grids(arr_range_2, 3)
+
+    assert (arr_grid_1 == truth_arr_grid_1).all()
+    assert (arr_grid_2 == truth_arr_grid_2).all()
+
 def test_get_minimum():
     with pytest.raises(AssertionError) as error:
         utils_common.get_minimum(1.2, 2.1)

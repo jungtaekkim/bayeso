@@ -3,7 +3,6 @@
 # last updated: September 14, 2020
 
 import numpy as np
-import typing
 
 
 def include_original(func):
@@ -20,30 +19,42 @@ def validate_types(func):
     arg_names = func.__code__.co_varnames[:func.__code__.co_argcount]
 
     def _validate_types(*args, **kwargs):
-        '''
-        args_all = dict(**dict(zip(arg_names, args)), **kwargs)
-
-        for key_anno, val_anno in annos.items():
-            if key_anno == 'return':
-                continue
-
-            val_arg = args_all.get(key_anno, 'not existed')
-            if type(val_arg) == str and val_arg == 'not existed':
-                continue
-            else:
-                type_arg = type(args_all[key_anno])
-
-            if val_anno == typing.Union[np.ndarray, None]:
-                assert isinstance(args_all[key_anno], (np.ndarray, type(None)))
-            elif val_anno == typing.Union[np.ndarray, float]:
-                assert isinstance(args_all[key_anno], (np.ndarray, float))
-            else:
-                assert isinstance(args_all[key_anno], val_anno)
-        '''
-
         return func(*args, **kwargs)
 
     return _validate_types
+
+def get_grids(arr_ranges, int_grids):
+    """
+    It returns grids of given `arr_ranges`, where each of dimension has `int_grids` partitions.
+
+    :param arr_ranges: ranges. Shape: (d, 2).
+    :type arr_ranges: numpy.ndarray
+    :param int_grids: the number of partitions per dimension.
+    :type int_grids: int.
+
+    :returns: grids of given `arr_ranges`. Shape: (`int_grids`:math:`^{\\text{d}}`, d).
+    :rtype: numpy.ndarray
+
+    :raises: AssertionError
+
+    """
+
+    assert isinstance(arr_ranges, np.ndarray)
+    assert isinstance(int_grids, int)
+    assert len(arr_ranges.shape) == 2
+    assert arr_ranges.shape[1] == 2
+    assert (arr_ranges[:, 0] <= arr_ranges[:, 1]).all()
+
+    list_grids = []
+    for range_ in arr_ranges:
+        list_grids.append(np.linspace(range_[0], range_[1], int_grids))
+    list_grids_mesh = list(np.meshgrid(*list_grids))
+    list_grids = []
+    for elem in list_grids_mesh:
+        list_grids.append(elem.flatten(order='C'))
+    arr_grids = np.vstack(tuple(list_grids))
+    arr_grids = arr_grids.T
+    return arr_grids
 
 def get_minimum(data_all, int_init):
     """
