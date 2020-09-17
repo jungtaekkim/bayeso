@@ -13,7 +13,7 @@ TEST_EPSILON = 1e-5
 
 
 def test_pi_typing():
-    annos = acquisition.pi._original.__annotations__
+    annos = acquisition.pi.__annotations__
 
     assert annos['pred_mean'] == np.ndarray
     assert annos['pred_std'] == np.ndarray
@@ -46,7 +46,7 @@ def test_pi():
     assert (np.abs(val_acq - truth_val_acq) < TEST_EPSILON).all()
 
 def test_ei_typing():
-    annos = acquisition.ei._original.__annotations__
+    annos = acquisition.ei.__annotations__
 
     assert annos['pred_mean'] == np.ndarray
     assert annos['pred_std'] == np.ndarray
@@ -77,7 +77,7 @@ def test_ei():
     assert (np.abs(val_acq - truth_val_acq) < TEST_EPSILON).all()
 
 def test_ucb_typing():
-    annos = acquisition.ucb._original.__annotations__
+    annos = acquisition.ucb.__annotations__
 
     assert annos['pred_mean'] == np.ndarray
     assert annos['pred_std'] == np.ndarray
@@ -115,7 +115,7 @@ def test_ucb():
     assert (np.abs(val_acq - truth_val_acq) < TEST_EPSILON).all()
 
 def test_aei_typing():
-    annos = acquisition.aei._original.__annotations__
+    annos = acquisition.aei.__annotations__
 
     assert annos['pred_mean'] == np.ndarray
     assert annos['pred_std'] == np.ndarray
@@ -148,7 +148,7 @@ def test_aei():
     assert (np.abs(val_acq - truth_val_acq) < TEST_EPSILON).all()
 
 def test_pure_exploit_typing():
-    annos = acquisition.pure_exploit._original.__annotations__
+    annos = acquisition.pure_exploit.__annotations__
 
     assert annos['pred_mean'] == np.ndarray
     assert annos['return'] == np.ndarray
@@ -164,7 +164,7 @@ def test_pure_exploit():
     assert (np.abs(val_acq - truth_val_acq) < TEST_EPSILON).all()
 
 def test_pure_explore_typing():
-    annos = acquisition.pure_explore._original.__annotations__
+    annos = acquisition.pure_explore.__annotations__
 
     assert annos['pred_std'] == np.ndarray
     assert annos['return'] == np.ndarray

@@ -11,7 +11,7 @@ from bayeso.utils import utils_bo
 
 
 def test_get_best_acquisition_typing():
-    annos = utils_bo.get_best_acquisition._original.__annotations__
+    annos = utils_bo.get_best_acquisition.__annotations__
 
     assert annos['initials'] == np.ndarray
     assert annos['fun_objective'] == typing.Callable
@@ -51,7 +51,7 @@ def test_get_best_acquisition():
     assert np.all(best_initial == np.array([[-2, -1, 0, 1]]))
 
 def test_check_optimizer_method_bo_typing():
-    annos = utils_bo.check_optimizer_method_bo._original.__annotations__
+    annos = utils_bo.check_optimizer_method_bo.__annotations__
 
     assert annos['str_optimizer_method_bo'] == str
     assert annos['dim'] == int
@@ -76,7 +76,7 @@ def test_check_optimizer_method_bo():
     utils_bo.check_optimizer_method_bo('CMA-ES', 2, False)
 
 def test_choose_fun_acquisition_typing():
-    annos = utils_bo.choose_fun_acquisition._original.__annotations__
+    annos = utils_bo.choose_fun_acquisition.__annotations__
 
     assert annos['str_acq'] == str
     assert annos['hyps'] == dict
@@ -92,7 +92,7 @@ def test_choose_fun_acquisition():
         utils_bo.choose_fun_acquisition('pi', 1)
 
 def test_check_hyps_convergence_typing():
-    annos = utils_bo.check_hyps_convergence._original.__annotations__
+    annos = utils_bo.check_hyps_convergence.__annotations__
 
     assert annos['list_hyps'] == list
     assert annos['hyps'] == dict
@@ -118,7 +118,7 @@ def test_check_hyps_convergence():
     assert not utils_bo.check_hyps_convergence([dict_hyps_2], dict_hyps_1, 'se', False)
 
 def test_get_next_best_acquisition_typing():
-    annos = utils_bo.get_next_best_acquisition._original.__annotations__
+    annos = utils_bo.get_next_best_acquisition.__annotations__
 
     assert annos['points'] == np.ndarray
     assert annos['acquisitions'] == np.ndarray

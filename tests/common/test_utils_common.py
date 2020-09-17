@@ -12,7 +12,7 @@ from bayeso.utils import utils_common
 TEST_EPSILON = 1e-5
 
 def test_get_grids_typing():
-    annos = utils_common.get_grids._original.__annotations__
+    annos = utils_common.get_grids.__annotations__
 
     assert annos['ranges'] == np.ndarray
     assert annos['num_grids'] == int
@@ -108,7 +108,7 @@ def test_get_grids():
     assert (arr_grid_2 == truth_arr_grid_2).all()
 
 def test_get_minimum_typing():
-    annos = utils_common.get_minimum._original.__annotations__
+    annos = utils_common.get_minimum.__annotations__
 
     assert annos['Y_all'] == np.ndarray
     assert annos['num_init'] == int
@@ -158,7 +158,7 @@ def test_get_minimum():
     assert (cur_std == np.std(truth_all_data, axis=0)).all()
 
 def test_get_time_typing():
-    annos = utils_common.get_time._original.__annotations__
+    annos = utils_common.get_time.__annotations__
 
     assert annos['time_all'] == np.ndarray
     assert annos['num_init'] == int

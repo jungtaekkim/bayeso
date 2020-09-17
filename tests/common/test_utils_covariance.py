@@ -11,12 +11,12 @@ from bayeso import constants
 
 
 def test_get_list_first_typing():
-    annos = utils_covariance._get_list_first._original.__annotations__
+    annos = utils_covariance._get_list_first.__annotations__
 
     assert annos['return'] == list
 
 def test_get_hyps_typing():
-    annos = utils_covariance.get_hyps._original.__annotations__
+    annos = utils_covariance.get_hyps.__annotations__
 
     assert annos['str_cov'] == str
     assert annos['dim'] == int
@@ -57,7 +57,7 @@ def test_get_hyps():
     assert cur_hyps['lengthscales'] == 1.0
 
 def test_get_range_hyps_typing():
-    annos = utils_covariance.get_range_hyps._original.__annotations__
+    annos = utils_covariance.get_range_hyps.__annotations__
 
     assert annos['str_cov'] == str
     assert annos['dim'] == int
@@ -88,7 +88,7 @@ def test_get_range_hyps():
     assert cur_range == [[0.001, 10.0], [0.01, 1000.0], [0.01, 1000.0]]
 
 def test_convert_hyps_typing():
-    annos = utils_covariance.convert_hyps._original.__annotations__
+    annos = utils_covariance.convert_hyps.__annotations__
 
     assert annos['str_cov'] == str
     assert annos['hyps'] == dict
@@ -125,7 +125,7 @@ def test_convert_hyps():
     assert (converted_hyps[1:] == cur_hyps['lengthscales']).all()
 
 def test_restore_hyps_typing():
-    annos = utils_covariance.restore_hyps._original.__annotations__
+    annos = utils_covariance.restore_hyps.__annotations__
 
     assert annos['str_cov'] == str
     assert annos['hyps'] == np.ndarray
@@ -161,7 +161,7 @@ def test_restore_hyps():
     assert (restored_hyps['lengthscales'] == cur_hyps[1:]).all()
 
 def test_validate_hyps_dict_typing():
-    annos = utils_covariance.validate_hyps_dict._original.__annotations__
+    annos = utils_covariance.validate_hyps_dict.__annotations__
 
     assert annos['hyps'] == dict
     assert annos['str_cov'] == str
@@ -227,7 +227,7 @@ def test_validate_hyps_dict():
         assert is_valid == True
 
 def test_validate_hyps_arr_typing():
-    annos = utils_covariance.validate_hyps_arr._original.__annotations__
+    annos = utils_covariance.validate_hyps_arr.__annotations__
 
     assert annos['hyps'] == np.ndarray
     assert annos['str_cov'] == str
