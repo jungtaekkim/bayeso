@@ -65,7 +65,7 @@ def neg_log_ml(X_train, Y_train, hyps, str_cov, prior_mu_train,
     assert X_train.shape[0] == Y_train.shape[0] == prior_mu_train.shape[0]
     utils_gp.check_str_cov('neg_log_ml', str_cov, X_train.shape)
 
-    hyps = utils_covariance.restore_hyps(str_cov, hyps, is_fixed_noise=is_fixed_noise)
+    hyps = utils_covariance.restore_hyps(str_cov, hyps, fix_noise=is_fixed_noise)
     new_Y_train = Y_train - prior_mu_train
     if is_cholesky:
         cov_X_X, lower, grad_cov_X_X = gp_common.get_kernel_cholesky(X_train, hyps, str_cov, is_fixed_noise=is_fixed_noise, is_gradient=is_gradient, debug=debug)
@@ -141,7 +141,7 @@ def neg_log_pseudo_l_loocv(X_train, Y_train, hyps, str_cov, prior_mu_train,
     utils_gp.check_str_cov('neg_log_pseudo_l_loocv', str_cov, X_train.shape)
 
     num_data = X_train.shape[0]
-    hyps = utils_covariance.restore_hyps(str_cov, hyps, is_fixed_noise=is_fixed_noise)
+    hyps = utils_covariance.restore_hyps(str_cov, hyps, fix_noise=is_fixed_noise)
 
     cov_X_X, inv_cov_X_X, grad_cov_X_X = gp_common.get_kernel_inverse(X_train, hyps, str_cov, is_fixed_noise=is_fixed_noise, debug=debug)
 
@@ -243,7 +243,7 @@ def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov,
     hyps_converted = utils_covariance.convert_hyps(
         str_cov,
         utils_covariance.get_hyps(str_cov, num_dim),
-        is_fixed_noise=is_fixed_noise,
+        fix_noise=is_fixed_noise,
     )
 
     if str_optimizer_method == 'BFGS':
@@ -252,7 +252,7 @@ def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov,
 
         result_optimized = result_optimized.x
     elif str_optimizer_method == 'L-BFGS-B':
-        bounds = utils_covariance.get_range_hyps(str_cov, num_dim, is_fixed_noise=is_fixed_noise)
+        bounds = utils_covariance.get_range_hyps(str_cov, num_dim, fix_noise=is_fixed_noise)
         result_optimized = scipy.optimize.minimize(neg_log_ml_, hyps_converted, method=str_optimizer_method, bounds=bounds, jac=is_gradient, options={'disp': False})
         if debug: logger.debug('scipy message: {}'.format(result_optimized.message))
 
@@ -268,7 +268,7 @@ def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov,
     else: # pragma: no cover
         raise ValueError('get_optimized_kernel: missing conditions for str_optimizer_method')
 
-    hyps = utils_covariance.restore_hyps(str_cov, result_optimized, is_fixed_noise=is_fixed_noise)
+    hyps = utils_covariance.restore_hyps(str_cov, result_optimized, fix_noise=is_fixed_noise)
 
     hyps, _ = utils_covariance.validate_hyps_dict(hyps, str_cov, num_dim)
     cov_X_X, inv_cov_X_X, grad_cov_X_X = gp_common.get_kernel_inverse(X_train, hyps, str_cov, is_fixed_noise=is_fixed_noise, debug=debug)

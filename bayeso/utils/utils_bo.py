@@ -162,8 +162,8 @@ def check_hyps_convergence(list_hyps: list, hyps: dict, str_cov: str, fix_noise:
 
     converged = False
     if len(list_hyps) > 0:
-        hyps_converted = utils_covariance.convert_hyps(str_cov, hyps, is_fixed_noise=fix_noise)
-        target_hyps_converted = utils_covariance.convert_hyps(str_cov, list_hyps[-1], is_fixed_noise=fix_noise)
+        hyps_converted = utils_covariance.convert_hyps(str_cov, hyps, fix_noise=fix_noise)
+        target_hyps_converted = utils_covariance.convert_hyps(str_cov, list_hyps[-1], fix_noise=fix_noise)
 
         cur_norm = np.linalg.norm(hyps_converted - target_hyps_converted, ord=2)
         threshold = np.linalg.norm(target_hyps_converted) * ratio_threshold

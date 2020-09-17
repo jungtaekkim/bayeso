@@ -1,12 +1,23 @@
 # utils_common
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: September 14, 2020
+# last updated: September 17, 2020
 
 import numpy as np
 import typing
 
 
 def include_original(func):
+    """
+    It is a decorator for a decorator `validate_types`. It make a function include an original function.
+
+    :param func: an original function.
+    :type func: callable
+
+    :returns: a callable decorator.
+    :rtype: callable
+
+    """
+
     def meta_decorator(f):
         decorated = func(f)
         decorated._original = f
@@ -15,6 +26,19 @@ def include_original(func):
 
 @include_original
 def validate_types(func):
+    """
+    It is a decorator for validating the number of types, which are declared for typing.
+
+    :param func: an original function.
+    :type func: callable
+
+    :returns: a callable decorator.
+    :rtype: callable
+
+    :raises: AssertionError
+
+    """
+
     annos = func.__annotations__
     assert len(annos) == func.__code__.co_argcount + 1
     arg_names = func.__code__.co_varnames[:func.__code__.co_argcount]

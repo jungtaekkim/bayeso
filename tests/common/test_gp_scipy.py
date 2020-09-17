@@ -20,7 +20,7 @@ def test_neg_log_ml():
     is_fixed_noise = False
 
     dict_hyps = utils_covariance.get_hyps(str_cov, dim_X)
-    arr_hyps = utils_covariance.convert_hyps(str_cov, dict_hyps, is_fixed_noise=is_fixed_noise)
+    arr_hyps = utils_covariance.convert_hyps(str_cov, dict_hyps, fix_noise=is_fixed_noise)
     prior_mu_X = np.zeros((3, 1))
 
     with pytest.raises(AssertionError) as error:
@@ -84,7 +84,7 @@ def test_neg_log_pseudo_l_loocv():
     X = np.reshape(np.arange(0, 9), (3, dim_X))
     Y = np.expand_dims(np.arange(3, 10, 3), axis=1)
     dict_hyps = utils_covariance.get_hyps(str_cov, dim_X)
-    arr_hyps = utils_covariance.convert_hyps(str_cov, dict_hyps, is_fixed_noise=constants.IS_FIXED_GP_NOISE)
+    arr_hyps = utils_covariance.convert_hyps(str_cov, dict_hyps, fix_noise=constants.IS_FIXED_GP_NOISE)
     prior_mu_X = np.zeros((3, 1))
 
     with pytest.raises(AssertionError) as error:

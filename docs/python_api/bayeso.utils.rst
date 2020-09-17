@@ -13,4 +13,5 @@ bayeso.utils
    bayeso.utils.utils_common
    bayeso.utils.utils_covariance
    bayeso.utils.utils_gp
+   bayeso.utils.utils_logger
    bayeso.utils.utils_plotting
