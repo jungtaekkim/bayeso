@@ -81,7 +81,7 @@ def test_ucb_typing():
 
     assert annos['pred_mean'] == np.ndarray
     assert annos['pred_std'] == np.ndarray
-    assert annos['Y_train'] == typing.Union[np.ndarray, None]
+    assert annos['Y_train'] == typing.Union[np.ndarray, type(None)]
     assert annos['kappa'] == float
     assert annos['increase_kappa'] == bool
     assert annos['return'] == np.ndarray

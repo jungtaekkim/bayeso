@@ -44,7 +44,7 @@ def test_check_str_cov():
 def test_get_prior_mu_typing():
     annos = utils_gp.get_prior_mu.__annotations__
 
-    assert annos['prior_mu'] == typing.Union[callable, None]
+    assert annos['prior_mu'] == typing.Union[callable, type(None)]
     assert annos['X'] == np.ndarray
     assert annos['return'] == np.ndarray
 

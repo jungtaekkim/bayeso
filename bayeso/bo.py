@@ -4,7 +4,6 @@
 
 import numpy as np
 import time
-import typing
 from scipy.optimize import minimize
 try:
     from scipydirect import minimize as directminimize

@@ -90,9 +90,15 @@ MARKERS = [
     '3',
 ]
 
+TYPE_NONE = type(None)
+TYPING_TUPLE_DICT_BOOL = typing.Tuple[dict, bool]
+TYPING_TUPLE_ARRAY_BOOL = typing.Tuple[np.ndarray, bool]
 TYPING_TUPLE_THREE_ARRAYS = typing.Tuple[np.ndarray, np.ndarray, np.ndarray]
 TYPING_TUPLE_FIVE_ARRAYS = typing.Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]
-TYPING_UNION_INT_NONE = typing.Union[int, None]
-TYPING_UNION_ARRAY_NONE = typing.Union[np.ndarray, None]
-TYPING_UNION_CALLABLE_NONE = typing.Union[callable, None]
+
+TYPING_UNION_INT_NONE = typing.Union[int, TYPE_NONE]
+TYPING_UNION_INT_FLOAT = typing.Union[int, float]
+TYPING_UNION_ARRAY_NONE = typing.Union[np.ndarray, TYPE_NONE]
 TYPING_UNION_ARRAY_FLOAT = typing.Union[np.ndarray, float]
+TYPING_UNION_CALLABLE_NONE = typing.Union[callable, TYPE_NONE]
+TYPING_UNION_STR_NONE = typing.Union[str, TYPE_NONE]

@@ -1,6 +1,6 @@
 # utils_plotting
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: August 24, 2020
+# last updated: September 21, 2020
 
 import os
 import numpy as np
@@ -13,26 +13,27 @@ try:
 except:
     pylab = None
 
-from bayeso import constants
 from bayeso.utils import utils_common
 from bayeso.utils import utils_logger
+from bayeso import constants
 
 logger = utils_logger.get_logger('utils_plotting')
 
 
-def _set_font_config(is_tex): # pragma: no cover
+@utils_common.validate_types
+def _set_font_config(use_tex: bool) -> constants.TYPE_NONE: # pragma: no cover
     """
     It sets a font configuration.
 
-    :param is_tex: flag for using latex.
-    :type is_tex: bool.
+    :param use_tex: flag for using latex.
+    :type use_tex: bool.
 
     :returns: None.
     :rtype: NoneType
 
     """
 
-    if is_tex:
+    if use_tex:
         plt.rc('text', usetex=True)
     else:
         plt.rc('pdf', fonttype=42)
@@ -43,8 +44,8 @@ def _set_ax_config(ax, str_x_axis, str_y_axis,
     size_ticks=22,
     xlim_min=None,
     xlim_max=None,
-    is_box=True,
-    is_zero_axis=False,
+    draw_box=True,
+    draw_zero_axis=False,
     is_grid=True,
 ): # pragma: no cover
     """
@@ -64,10 +65,10 @@ def _set_ax_config(ax, str_x_axis, str_y_axis,
     :type xlim_min: NoneType or float, optional
     :param xlim_max: None, or maximum for x limit.
     :type xlim_max: NoneType or float, optional
-    :param is_box: flag for drawing a box.
-    :type is_box: bool., optional
-    :param is_zero_axis: flag for drawing a zero axis.
-    :type is_zero_axis: bool., optional
+    :param draw_box: flag for drawing a box.
+    :type draw_box: bool., optional
+    :param draw_zero_axis: flag for drawing a zero axis.
+    :type draw_zero_axis: bool., optional
     :param is_grid: flag for drawing grids.
     :type is_grid: bool., optional
 
@@ -81,18 +82,21 @@ def _set_ax_config(ax, str_x_axis, str_y_axis,
     ax.set_ylabel(str_y_axis, fontsize=size_labels)
     ax.tick_params(labelsize=size_ticks)
 
-    if not is_box:
+    if not draw_box:
         ax.spines['top'].set_color('none')
         ax.spines['right'].set_color('none')
     if xlim_min is not None and xlim_max is not None:
         ax.set_xlim([xlim_min, xlim_max])
-    if is_zero_axis:
+    if draw_zero_axis:
         ax.spines['bottom'].set_position('zero')
     if is_grid:
         ax.grid()
     return
 
-def _save_figure(path_save, str_postfix, str_prefix=''): # pragma: no cover
+@utils_common.validate_types
+def _save_figure(path_save: str, str_postfix: str,
+    str_prefix: str=''
+) -> constants.TYPE_NONE: # pragma: no cover
     """
     It saves a figure.
 
@@ -117,41 +121,42 @@ def _save_figure(path_save, str_postfix, str_prefix=''): # pragma: no cover
         )
     return
 
-def _show_figure(is_pause, time_pause): # pragma: no cover
+@utils_common.validate_types
+def _show_figure(pause_figure: bool, time_pause: constants.TYPING_UNION_INT_FLOAT) -> constants.TYPE_NONE: # pragma: no cover
     """
     It shows a figure.
 
-    :param is_pause: flag for pausing before closing a figure.
-    :type is_pause: bool.
+    :param pause_figure: flag for pausing before closing a figure.
+    :type pause_figure: bool.
     :param time_pause: pausing time.
-    :type time_pause: float
+    :type time_pause: int. or float
 
     :returns: None.
     :rtype: NoneType
 
     """
 
-    if is_pause:
+    if pause_figure:
         if time_pause < np.inf:
             plt.ion()
             plt.pause(time_pause)
             plt.close('all')
         else:
             plt.show()
-        
     return
 
-def plot_gp_sampled(X, Ys,
-    path_save=None,
-    str_postfix=None,
-    str_x_axis='x',
-    str_y_axis='y',
-    is_tex=False,
-    is_zero_axis=False,
-    is_pause=True,
-    time_pause=constants.TIME_PAUSE,
-    colors=constants.COLORS,
-): # pragma: no cover
+@utils_common.validate_types
+def plot_gp_via_sample(X: np.ndarray, Ys: np.ndarray,
+    path_save: constants.TYPING_UNION_STR_NONE=None,
+    str_postfix: constants.TYPING_UNION_STR_NONE=None,
+    str_x_axis: str='x',
+    str_y_axis: str='y',
+    use_tex: bool=False,
+    draw_zero_axis: bool=False,
+    pause_figure: bool=True,
+    time_pause: constants.TYPING_UNION_INT_FLOAT=constants.TIME_PAUSE,
+    colors: list=constants.COLORS,
+) -> constants.TYPE_NONE: # pragma: no cover
     """
     It is for plotting sampled functions from multivariate distributions.
 
@@ -167,14 +172,14 @@ def plot_gp_sampled(X, Ys,
     :type str_x_axis: str., optional
     :param str_y_axis: the name of y axis.
     :type str_y_axis: str., optional
-    :param is_tex: flag for using latex.
-    :type is_tex: bool., optional
-    :param is_zero_axis: flag for drawing a zero axis.
-    :type is_zero_axis: bool., optional
-    :param is_pause: flag for pausing before closing a figure.
-    :type is_pause: bool., optional
+    :param use_tex: flag for using latex.
+    :type use_tex: bool., optional
+    :param draw_zero_axis: flag for drawing a zero axis.
+    :type draw_zero_axis: bool., optional
+    :param pause_figure: flag for pausing before closing a figure.
+    :type pause_figure: bool., optional
     :param time_pause: pausing time.
-    :type time_pause: float, optional
+    :type time_pause: int. or float, optional
     :param colors: list of colors.
     :type colors: list, optional
 
@@ -187,14 +192,14 @@ def plot_gp_sampled(X, Ys,
 
     assert isinstance(X, np.ndarray)
     assert isinstance(Ys, np.ndarray)
-    assert isinstance(path_save, str) or path_save is None
-    assert isinstance(str_postfix, str) or str_postfix is None
+    assert isinstance(path_save, (str, type(None)))
+    assert isinstance(str_postfix, (str, type(None)))
     assert isinstance(str_x_axis, str)
     assert isinstance(str_y_axis, str)
-    assert isinstance(is_tex, bool)
-    assert isinstance(is_zero_axis, bool)
-    assert isinstance(is_pause, bool)
-    assert isinstance(time_pause, float)
+    assert isinstance(use_tex, bool)
+    assert isinstance(draw_zero_axis, bool)
+    assert isinstance(pause_figure, bool)
+    assert isinstance(time_pause, (int, float))
     assert isinstance(colors, list)
     assert len(X.shape) == 2
     assert len(Ys.shape) == 2
@@ -204,7 +209,7 @@ def plot_gp_sampled(X, Ys,
     if plt is None or pylab is None:
         logger.info('matplotlib or pylab is not installed.')
         return
-    _set_font_config(is_tex)
+    _set_font_config(use_tex)
 
     fig = plt.figure(figsize=(8, 6))
     ax = plt.gca()
@@ -216,26 +221,27 @@ def plot_gp_sampled(X, Ys,
             alpha=0.3,
         )
 
-    _set_ax_config(ax, str_x_axis, str_y_axis, xlim_min=np.min(X), xlim_max=np.max(X), is_zero_axis=is_zero_axis)
+    _set_ax_config(ax, str_x_axis, str_y_axis, xlim_min=np.min(X), xlim_max=np.max(X), draw_zero_axis=draw_zero_axis)
 
     if path_save is not None and str_postfix is not None:
         _save_figure(path_save, str_postfix, str_prefix='gp_sampled_')
-    _show_figure(is_pause, time_pause)
+    _show_figure(pause_figure, time_pause)
     return
 
-def plot_gp(X_train, Y_train, X_test, mu, sigma,
-    Y_test_truth=None,
-    path_save=None,
-    str_postfix=None,
-    str_x_axis='x',
-    str_y_axis='y',
-    is_tex=False,
-    is_zero_axis=False,
-    is_pause=True,
-    time_pause=constants.TIME_PAUSE,
-    range_shade=constants.RANGE_SHADE,
-    colors=constants.COLORS,
-): # pragma: no cover
+@utils_common.validate_types
+def plot_gp_via_distribution(X_train: np.ndarray, Y_train: np.ndarray, X_test: np.ndarray, mean_test: np.ndarray, std_test: np.ndarray,
+    Y_test: constants.TYPING_UNION_ARRAY_NONE=None,
+    path_save: constants.TYPING_UNION_STR_NONE=None,
+    str_postfix: constants.TYPING_UNION_STR_NONE=None,
+    str_x_axis: str='x',
+    str_y_axis: str='y',
+    use_tex: bool=False,
+    draw_zero_axis: bool=False,
+    pause_figure: bool=True,
+    time_pause: constants.TYPING_UNION_INT_FLOAT=constants.TIME_PAUSE,
+    range_shade: float=constants.RANGE_SHADE,
+    colors: list=constants.COLORS,
+) -> constants.TYPE_NONE: # pragma: no cover
     """
     It is for plotting Gaussian process regression.
 
@@ -245,12 +251,12 @@ def plot_gp(X_train, Y_train, X_test, mu, sigma,
     :type Y_train: numpy.ndarray
     :param X_test: test inputs. Shape: (m, 1).
     :type X_test: numpy.ndarray
-    :param mu: posterior predictive mean function values over `X_test`. Shape: (m, 1).
-    :type mu: numpy.ndarray
-    :param sigma: posterior predictive standard deviation function values over `X_test`. Shape: (m, 1).
-    :type sigma: numpy.ndarray
-    :param Y_test_truth: None, or true test outputs. Shape: (m, 1).
-    :type Y_test_truth: NoneType or numpy.ndarray, optional
+    :param mean_test: posterior predictive mean function values over `X_test`. Shape: (m, 1).
+    :type mean_test: numpy.ndarray
+    :param std_test: posterior predictive standard deviation function values over `X_test`. Shape: (m, 1).
+    :type std_test: numpy.ndarray
+    :param Y_test: None, or true test outputs. Shape: (m, 1).
+    :type Y_test: NoneType or numpy.ndarray, optional
     :param path_save: None, or path for saving a figure.
     :type path_save: NoneType or str., optional
     :param str_postfix: None, or the name of postfix.
@@ -259,14 +265,14 @@ def plot_gp(X_train, Y_train, X_test, mu, sigma,
     :type str_x_axis: str., optional
     :param str_y_axis: the name of y axis.
     :type str_y_axis: str., optional
-    :param is_tex: flag for using latex.
-    :type is_tex: bool., optional
-    :param is_zero_axis: flag for drawing a zero axis.
-    :type is_zero_axis: bool., optional
-    :param is_pause: flag for pausing before closing a figure.
-    :type is_pause: bool., optional
+    :param use_tex: flag for using latex.
+    :type use_tex: bool., optional
+    :param draw_zero_axis: flag for drawing a zero axis.
+    :type draw_zero_axis: bool., optional
+    :param pause_figure: flag for pausing before closing a figure.
+    :type pause_figure: bool., optional
     :param time_pause: pausing time.
-    :type time_pause: float, optional
+    :type time_pause: int. or float, optional
     :param range_shade: shade range for standard deviation.
     :type range_shade: float, optional
     :param colors: list of colors.
@@ -282,55 +288,55 @@ def plot_gp(X_train, Y_train, X_test, mu, sigma,
     assert isinstance(X_train, np.ndarray)
     assert isinstance(Y_train, np.ndarray)
     assert isinstance(X_test, np.ndarray)
-    assert isinstance(mu, np.ndarray)
-    assert isinstance(sigma, np.ndarray)
-    assert isinstance(Y_test_truth, np.ndarray) or Y_test_truth is None
-    assert isinstance(path_save, str) or path_save is None
-    assert isinstance(str_postfix, str) or str_postfix is None
+    assert isinstance(mean_test, np.ndarray)
+    assert isinstance(std_test, np.ndarray)
+    assert isinstance(Y_test, (np.ndarray, type(None)))
+    assert isinstance(path_save, (str, type(None)))
+    assert isinstance(str_postfix, (str, type(None)))
     assert isinstance(str_x_axis, str)
     assert isinstance(str_y_axis, str)
-    assert isinstance(is_tex, bool)
-    assert isinstance(is_zero_axis, bool)
-    assert isinstance(is_pause, bool)
-    assert isinstance(time_pause, float)
+    assert isinstance(use_tex, bool)
+    assert isinstance(draw_zero_axis, bool)
+    assert isinstance(pause_figure, bool)
+    assert isinstance(time_pause, (int, float))
     assert isinstance(range_shade, float)
     assert isinstance(colors, list)
     assert len(X_train.shape) == 2
     assert len(X_test.shape) == 2
     assert len(Y_train.shape) == 2
-    assert len(mu.shape) == 2
-    assert len(sigma.shape) == 2
+    assert len(mean_test.shape) == 2
+    assert len(std_test.shape) == 2
     assert X_train.shape[1] == X_test.shape[1] == 1
     assert Y_train.shape[1] == 1
     assert X_train.shape[0] == Y_train.shape[0]
-    assert mu.shape[1] == 1
-    assert sigma.shape[1] == 1
-    assert X_test.shape[0] == mu.shape[0] == sigma.shape[0]
-    if Y_test_truth is not None:
-        assert len(Y_test_truth.shape) == 2
-        assert Y_test_truth.shape[1] == 1
-        assert X_test.shape[0] == Y_test_truth.shape[0]
+    assert mean_test.shape[1] == 1
+    assert std_test.shape[1] == 1
+    assert X_test.shape[0] == mean_test.shape[0] == std_test.shape[0]
+    if Y_test is not None:
+        assert len(Y_test.shape) == 2
+        assert Y_test.shape[1] == 1
+        assert X_test.shape[0] == Y_test.shape[0]
 
     if plt is None or pylab is None:
         logger.info('matplotlib or pylab is not installed.')
         return
-    _set_font_config(is_tex)
+    _set_font_config(use_tex)
 
     fig = plt.figure(figsize=(8, 6))
     ax = plt.gca()
 
-    if Y_test_truth is not None:
-        ax.plot(X_test.flatten(), Y_test_truth.flatten(),
+    if Y_test is not None:
+        ax.plot(X_test.flatten(), Y_test.flatten(),
             c=colors[1],
             linewidth=4,
             marker='None')
-    ax.plot(X_test.flatten(), mu.flatten(), 
+    ax.plot(X_test.flatten(), mean_test.flatten(), 
         c=colors[2], 
         linewidth=4, 
         marker='None')
     ax.fill_between(X_test.flatten(), 
-        mu.flatten() - range_shade * sigma.flatten(), 
-        mu.flatten() + range_shade * sigma.flatten(), 
+        mean_test.flatten() - range_shade * std_test.flatten(), 
+        mean_test.flatten() + range_shade * std_test.flatten(), 
         color=colors[2], 
         alpha=0.3)
     ax.plot(X_train.flatten(), Y_train.flatten(), 
@@ -339,44 +345,45 @@ def plot_gp(X_train, Y_train, X_test, mu, sigma,
         markersize=10, 
         mew=4)
 
-    _set_ax_config(ax, str_x_axis, str_y_axis, xlim_min=np.min(X_test), xlim_max=np.max(X_test), is_zero_axis=is_zero_axis)
+    _set_ax_config(ax, str_x_axis, str_y_axis, xlim_min=np.min(X_test), xlim_max=np.max(X_test), draw_zero_axis=draw_zero_axis)
 
     if path_save is not None and str_postfix is not None:
         _save_figure(path_save, str_postfix, str_prefix='gp_')
-    _show_figure(is_pause, time_pause)
+    _show_figure(pause_figure, time_pause)
     return
 
-def plot_minimum(arr_minima, list_str_label, int_init, is_std,
-    is_marker=True,
-    is_legend=False,
-    is_tex=False,
-    path_save=None,
-    str_postfix=None,
-    str_x_axis='Iteration',
-    str_y_axis='Minimum function value',
-    is_pause=True,
-    time_pause=constants.TIME_PAUSE,
-    range_shade=constants.RANGE_SHADE,
-    markers=constants.MARKERS,
-    colors=constants.COLORS,
-): # pragma: no cover
+@utils_common.validate_types
+def plot_minimum_vs_iter(minima: np.ndarray, list_str_label: list, num_init: int, draw_std: bool,
+    include_marker: bool=True,
+    include_legend: bool=False,
+    use_tex: bool=False,
+    path_save: constants.TYPING_UNION_STR_NONE=None,
+    str_postfix: constants.TYPING_UNION_STR_NONE=None,
+    str_x_axis: str='Iteration',
+    str_y_axis: str='Minimum function value',
+    pause_figure: bool=True,
+    time_pause: constants.TYPING_UNION_INT_FLOAT=constants.TIME_PAUSE,
+    range_shade: float=constants.RANGE_SHADE,
+    markers: list=constants.MARKERS,
+    colors: list=constants.COLORS,
+) -> constants.TYPE_NONE: # pragma: no cover
     """
     It is for plotting optimization results of Bayesian optimization, in terms of iterations.
 
-    :param arr_minima: function values over acquired examples. Shape: (b, r, n) where b is the number of experiments, r is the number of rounds, and n is the number of iterations per round.
-    :type arr_minima: numpy.ndarray
+    :param minima: function values over acquired examples. Shape: (b, r, n) where b is the number of experiments, r is the number of rounds, and n is the number of iterations per round.
+    :type minima: numpy.ndarray
     :param list_str_label: list of label strings. Shape: (b, ).
     :type list_str_label: list
-    :param int_init: the number of initial examples < n.
-    :type int_init: int.
-    :param is_std: flag for drawing standard deviations.
-    :type is_std: bool.
-    :param is_marker: flag for drawing markers.
-    :type is_marker: bool., optional
-    :param is_legend: flag for drawing a legend.
-    :type is_legend: bool., optional
-    :param is_tex: flag for using latex.
-    :type is_tex: bool., optional
+    :param num_init: the number of initial examples < n.
+    :type num_init: int.
+    :param draw_std: flag for drawing standard deviations.
+    :type draw_std: bool.
+    :param include_marker: flag for drawing markers.
+    :type include_marker: bool., optional
+    :param include_legend: flag for drawing a legend.
+    :type include_legend: bool., optional
+    :param use_tex: flag for using latex.
+    :type use_tex: bool., optional
     :param path_save: None, or path for saving a figure.
     :type path_save: NoneType or str., optional
     :param str_postfix: None, or the name of postfix.
@@ -385,10 +392,10 @@ def plot_minimum(arr_minima, list_str_label, int_init, is_std,
     :type str_x_axis: str., optional
     :param str_y_axis: the name of y axis.
     :type str_y_axis: str., optional
-    :param is_pause: flag for pausing before closing a figure.
-    :type is_pause: bool., optional
+    :param pause_figure: flag for pausing before closing a figure.
+    :type pause_figure: bool., optional
     :param time_pause: pausing time.
-    :type time_pause: float, optional
+    :type time_pause: int. or float, optional
     :param range_shade: shade range for standard deviation.
     :type range_shade: float, optional
     :param markers: list of markers.
@@ -403,41 +410,42 @@ def plot_minimum(arr_minima, list_str_label, int_init, is_std,
 
     """
 
-    assert isinstance(arr_minima, np.ndarray)
+    assert isinstance(minima, np.ndarray)
     assert isinstance(list_str_label, list)
-    assert isinstance(int_init, int)
-    assert isinstance(is_std, bool)
-    assert isinstance(is_marker, bool)
-    assert isinstance(is_legend, bool)
-    assert isinstance(is_tex, bool)
-    assert isinstance(path_save, str) or path_save is None
-    assert isinstance(str_postfix, str) or str_postfix is None
+    assert isinstance(num_init, int)
+    assert isinstance(draw_std, bool)
+    assert isinstance(include_marker, bool)
+    assert isinstance(include_legend, bool)
+    assert isinstance(use_tex, bool)
+    assert isinstance(path_save, (str, type(None)))
+    assert isinstance(str_postfix, (str, type(None)))
     assert isinstance(str_x_axis, str)
     assert isinstance(str_y_axis, str)
-    assert isinstance(time_pause, float)
+    assert isinstance(pause_figure, bool)
+    assert isinstance(time_pause, (int, float))
     assert isinstance(range_shade, float)
     assert isinstance(markers, list)
     assert isinstance(colors, list)
-    assert len(arr_minima.shape) == 3
-    assert arr_minima.shape[0] == len(list_str_label)
-    assert arr_minima.shape[2] >= int_init
+    assert len(minima.shape) == 3
+    assert minima.shape[0] == len(list_str_label)
+    assert minima.shape[2] >= num_init
 
     if plt is None or pylab is None:
         logger.info('matplotlib or pylab is not installed.')
         return
-    _set_font_config(is_tex)
+    _set_font_config(use_tex)
 
     fig = plt.figure(figsize=(8, 6))
     ax = plt.gca()
 
-    for ind_minimum, arr_minimum in enumerate(arr_minima):
+    for ind_minimum, arr_minimum in enumerate(minima):
         ind_color = ind_minimum % len(colors)
         ind_marker = ind_minimum % len(markers)
-        _, mean_min, std_min = utils_common.get_minimum(arr_minimum, int_init)
+        _, mean_min, std_min = utils_common.get_minimum(arr_minimum, num_init)
         x_data = range(0, mean_min.shape[0])
         y_data = mean_min
         std_data = std_min
-        if is_marker:
+        if include_marker:
             ax.plot(x_data, y_data,
                 label=list_str_label[ind_minimum],
                 c=colors[ind_color],
@@ -453,7 +461,7 @@ def plot_minimum(arr_minima, list_str_label, int_init, is_std,
                 linewidth=4,
                 marker='None')
            
-        if is_std:
+        if draw_std:
             ax.fill_between(x_data, 
                 y_data - range_shade * std_data, 
                 y_data + range_shade * std_data, 
@@ -463,53 +471,54 @@ def plot_minimum(arr_minima, list_str_label, int_init, is_std,
 
     _set_ax_config(ax, str_x_axis, str_y_axis, xlim_min=0, xlim_max=mean_min.shape[0]-1)
 
-    if is_legend:
+    if include_legend:
         plt.legend(loc='upper right', fancybox=False, edgecolor='black', fontsize=24)
 
     if path_save is not None and str_postfix is not None:
-        str_figure = 'minimum_mean_std_' + str_postfix if is_std else 'minimum_mean_only_' + str_postfix
+        str_figure = 'minimum_mean_std_' + str_postfix if draw_std else 'minimum_mean_only_' + str_postfix
         _save_figure(path_save, str_figure)
 
         fig_legend = pylab.figure(figsize=(3, 2))
         fig_legend.legend(lines, list_str_label, 'center', fancybox=False, edgecolor='black', fontsize=32)
         fig_legend.savefig(os.path.join(path_save, 'legend_{}.pdf'.format(str_postfix)), format='pdf', transparent=True, bbox_inches='tight')
 
-    _show_figure(is_pause, time_pause)
+    _show_figure(pause_figure, time_pause)
     return
 
-def plot_minimum_time(arr_times, arr_minima, list_str_label, int_init, is_std,
-    is_marker=True,
-    is_legend=False,
-    is_tex=False,
-    path_save=None,
-    str_postfix=None,
-    str_x_axis='Time (sec.)',
-    str_y_axis='Minimum function value',
-    is_pause=True,
-    time_pause=constants.TIME_PAUSE,
-    range_shade=constants.RANGE_SHADE,
-    markers=constants.MARKERS,
-    colors=constants.COLORS,
-): # pragma: no cover
+@utils_common.validate_types
+def plot_minimum_vs_time(times: np.ndarray, minima: np.ndarray, list_str_label: list, num_init: int, draw_std: bool,
+    include_marker: bool=True,
+    include_legend: bool=False,
+    use_tex: bool=False,
+    path_save: constants.TYPING_UNION_STR_NONE=None,
+    str_postfix: constants.TYPING_UNION_STR_NONE=None,
+    str_x_axis: str='Time (sec.)',
+    str_y_axis: str='Minimum function value',
+    pause_figure: bool=True,
+    time_pause: constants.TYPING_UNION_INT_FLOAT=constants.TIME_PAUSE,
+    range_shade: float=constants.RANGE_SHADE,
+    markers: list=constants.MARKERS,
+    colors: list=constants.COLORS,
+) -> constants.TYPE_NONE: # pragma: no cover
     """
     It is for plotting optimization results of Bayesian optimization, in terms of execution time.
 
-    :param arr_times: execution times. Shape: (b, r, n), or (b, r, `int_init` + n) where b is the number of experiments, r is the number of rounds, and n is the number of iterations per round.
-    :type arr_times: numpy.ndarray
-    :param arr_minima: function values over acquired examples. Shape: (b, r, `int_init` + n) where b is the number of experiments, r is the number of rounds, and n is the number of iterations per round.
-    :type arr_minima: numpy.ndarray
+    :param times: execution times. Shape: (b, r, n), or (b, r, `num_init` + n) where b is the number of experiments, r is the number of rounds, and n is the number of iterations per round.
+    :type times: numpy.ndarray
+    :param minima: function values over acquired examples. Shape: (b, r, `num_init` + n) where b is the number of experiments, r is the number of rounds, and n is the number of iterations per round.
+    :type minima: numpy.ndarray
     :param list_str_label: list of label strings. Shape: (b, ).
     :type list_str_label: list
-    :param int_init: the number of initial examples.
-    :type int_init: int.
-    :param is_std: flag for drawing standard deviations.
-    :type is_std: bool.
-    :param is_marker: flag for drawing markers.
-    :type is_marker: bool., optional
-    :param is_legend: flag for drawing a legend.
-    :type is_legend: bool., optional
-    :param is_tex: flag for using latex.
-    :type is_tex: bool., optional
+    :param num_init: the number of initial examples.
+    :type num_init: int.
+    :param draw_std: flag for drawing standard deviations.
+    :type draw_std: bool.
+    :param include_marker: flag for drawing markers.
+    :type include_marker: bool., optional
+    :param include_legend: flag for drawing a legend.
+    :type include_legend: bool., optional
+    :param use_tex: flag for using latex.
+    :type use_tex: bool., optional
     :param path_save: None, or path for saving a figure.
     :type path_save: NoneType or str., optional
     :param str_postfix: None, or the name of postfix.
@@ -518,10 +527,10 @@ def plot_minimum_time(arr_times, arr_minima, list_str_label, int_init, is_std,
     :type str_x_axis: str., optional
     :param str_y_axis: the name of y axis.
     :type str_y_axis: str., optional
-    :param is_pause: flag for pausing before closing a figure.
-    :type is_pause: bool., optional
+    :param pause_figure: flag for pausing before closing a figure.
+    :type pause_figure: bool., optional
     :param time_pause: pausing time.
-    :type time_pause: float, optional
+    :type time_pause: int. or float, optional
     :param range_shade: shade range for standard deviation.
     :type range_shade: float, optional
     :param markers: list of markers.
@@ -536,46 +545,47 @@ def plot_minimum_time(arr_times, arr_minima, list_str_label, int_init, is_std,
 
     """
 
-    assert isinstance(arr_times, np.ndarray)
-    assert isinstance(arr_minima, np.ndarray)
+    assert isinstance(times, np.ndarray)
+    assert isinstance(minima, np.ndarray)
     assert isinstance(list_str_label, list)
-    assert isinstance(int_init, int)
-    assert isinstance(is_std, bool)
-    assert isinstance(is_marker, bool)
-    assert isinstance(is_legend, bool)
-    assert isinstance(is_tex, bool)
-    assert isinstance(path_save, str) or path_save is None
-    assert isinstance(str_postfix, str) or str_postfix is None
+    assert isinstance(num_init, int)
+    assert isinstance(draw_std, bool)
+    assert isinstance(include_marker, bool)
+    assert isinstance(include_legend, bool)
+    assert isinstance(use_tex, bool)
+    assert isinstance(path_save, (str, type(None)))
+    assert isinstance(str_postfix, (str, type(None)))
     assert isinstance(str_x_axis, str)
     assert isinstance(str_y_axis, str)
-    assert isinstance(time_pause, float)
+    assert isinstance(pause_figure, bool)
+    assert isinstance(time_pause, (int, float))
     assert isinstance(range_shade, float)
     assert isinstance(markers, list)
     assert isinstance(colors, list)
-    assert len(arr_times.shape) == 3
-    assert len(arr_minima.shape) == 3
-    assert arr_times.shape[0] == arr_minima.shape[0] == len(list_str_label)
-    assert arr_times.shape[1] == arr_minima.shape[1]
-    assert arr_minima.shape[2] >= int_init
-    assert arr_times.shape[2] == arr_minima.shape[2] or arr_times.shape[2] + int_init == arr_minima.shape[2]
+    assert len(times.shape) == 3
+    assert len(minima.shape) == 3
+    assert times.shape[0] == minima.shape[0] == len(list_str_label)
+    assert times.shape[1] == minima.shape[1]
+    assert minima.shape[2] >= num_init
+    assert times.shape[2] == minima.shape[2] or times.shape[2] + num_init == minima.shape[2]
 
     if plt is None or pylab is None:
         logger.info('matplotlib or pylab is not installed.')
         return
-    _set_font_config(is_tex)
+    _set_font_config(use_tex)
 
     fig = plt.figure(figsize=(8, 6))
     ax = plt.gca()
 
     list_x_data = []
-    for ind_minimum, arr_minimum in enumerate(arr_minima):
+    for ind_minimum, arr_minimum in enumerate(minima):
         ind_color = ind_minimum % len(colors)
         ind_marker = ind_minimum % len(markers)
-        _, mean_min, std_min = utils_common.get_minimum(arr_minimum, int_init)
-        x_data = utils_common.get_time(arr_times[ind_minimum], int_init, arr_times.shape[2] == arr_minima.shape[2])
+        _, mean_min, std_min = utils_common.get_minimum(arr_minimum, num_init)
+        x_data = utils_common.get_time(times[ind_minimum], num_init, times.shape[2] == minima.shape[2])
         y_data = mean_min
         std_data = std_min
-        if is_marker:
+        if include_marker:
             ax.plot(x_data, y_data,
                 label=list_str_label[ind_minimum],
                 c=colors[ind_color],
@@ -591,7 +601,7 @@ def plot_minimum_time(arr_times, arr_minima, list_str_label, int_init, is_std,
                 linewidth=4,
                 marker='None')
            
-        if is_std:
+        if draw_std:
             ax.fill_between(x_data, 
                 y_data - range_shade * std_data, 
                 y_data + range_shade * std_data, 
@@ -602,32 +612,33 @@ def plot_minimum_time(arr_times, arr_minima, list_str_label, int_init, is_std,
 
     _set_ax_config(ax, str_x_axis, str_y_axis, xlim_min=np.min(list_x_data), xlim_max=np.max(list_x_data))
 
-    if is_legend:
+    if include_legend:
         plt.legend(loc='upper right', fancybox=False, edgecolor='black', fontsize=24)
 
     if path_save is not None and str_postfix is not None:
-        str_figure = 'minimum_time_mean_std_' + str_postfix if is_std else 'minimum_time_mean_only_' + str_postfix
+        str_figure = 'minimum_time_mean_std_' + str_postfix if draw_std else 'minimum_time_mean_only_' + str_postfix
         _save_figure(path_save, str_figure)
 
         fig_legend = pylab.figure(figsize=(3, 2))
         fig_legend.legend(lines, list_str_label, 'center', fancybox=False, edgecolor='black', fontsize=32)
         fig_legend.savefig(os.path.join(path_save, 'legend_{}.pdf'.format(str_postfix)), format='pdf', transparent=True, bbox_inches='tight')
 
-    _show_figure(is_pause, time_pause)
+    _show_figure(pause_figure, time_pause)
     return
 
-def plot_bo_step(X_train, Y_train, X_test, Y_test, mean_test, std_test,
-    path_save=None,
-    str_postfix=None,
-    str_x_axis='x',
-    str_y_axis='y',
-    int_init=None,
-    is_tex=False,
-    is_zero_axis=False,
-    is_pause=True,
-    time_pause=constants.TIME_PAUSE,
-    range_shade=constants.RANGE_SHADE,
-): # pragma: no cover
+@utils_common.validate_types
+def plot_bo_step(X_train: np.ndarray, Y_train: np.ndarray, X_test: np.ndarray, Y_test: np.ndarray, mean_test: np.ndarray, std_test: np.ndarray,
+    path_save: constants.TYPING_UNION_STR_NONE=None,
+    str_postfix: constants.TYPING_UNION_STR_NONE=None,
+    str_x_axis: str='x',
+    str_y_axis: str='y',
+    num_init: constants.TYPING_UNION_INT_NONE=None,
+    use_tex: bool=False,
+    draw_zero_axis: bool=False,
+    pause_figure: bool=True,
+    time_pause: constants.TYPING_UNION_INT_FLOAT=constants.TIME_PAUSE,
+    range_shade: float=constants.RANGE_SHADE,
+) -> constants.TYPE_NONE: # pragma: no cover
     """
     It is for plotting Bayesian optimization results step by step.
 
@@ -637,8 +648,8 @@ def plot_bo_step(X_train, Y_train, X_test, Y_test, mean_test, std_test,
     :type Y_train: numpy.ndarray
     :param X_test: test inputs. Shape: (m, 1).
     :type X_test: numpy.ndarray
-    :param Y_test: None, or true test outputs. Shape: (m, 1).
-    :type Y_test: NoneType or numpy.ndarray, optional
+    :param Y_test: true test outputs. Shape: (m, 1).
+    :type Y_test: numpy.ndarray
     :param mean_test: posterior predictive mean function values over `X_test`. Shape: (m, 1).
     :type mean_test: numpy.ndarray
     :param std_test: posterior predictive standard deviation function values over `X_test`. Shape: (m, 1).
@@ -651,16 +662,16 @@ def plot_bo_step(X_train, Y_train, X_test, Y_test, mean_test, std_test,
     :type str_x_axis: str., optional
     :param str_y_axis: the name of y axis.
     :type str_y_axis: str., optional
-    :param int_init: None, or the number of initial examples.
-    :type int_init: NoneType or int., optional
-    :param is_tex: flag for using latex.
-    :type is_tex: bool., optional
-    :param is_zero_axis: flag for drawing a zero axis.
-    :type is_zero_axis: bool., optional
-    :param is_pause: flag for pausing before closing a figure.
-    :type is_pause: bool., optional
+    :param num_init: None, or the number of initial examples.
+    :type num_init: NoneType or int., optional
+    :param use_tex: flag for using latex.
+    :type use_tex: bool., optional
+    :param draw_zero_axis: flag for drawing a zero axis.
+    :type draw_zero_axis: bool., optional
+    :param pause_figure: flag for pausing before closing a figure.
+    :type pause_figure: bool., optional
     :param time_pause: pausing time.
-    :type time_pause: float, optional
+    :type time_pause: int. or float, optional
     :param range_shade: shade range for standard deviation.
     :type range_shade: float, optional
 
@@ -677,14 +688,15 @@ def plot_bo_step(X_train, Y_train, X_test, Y_test, mean_test, std_test,
     assert isinstance(Y_test, np.ndarray)
     assert isinstance(mean_test, np.ndarray)
     assert isinstance(std_test, np.ndarray)
-    assert isinstance(path_save, str) or path_save is None
-    assert isinstance(str_postfix, str) or str_postfix is None
+    assert isinstance(path_save, (str, type(None)))
+    assert isinstance(str_postfix, (str, type(None)))
     assert isinstance(str_x_axis, str)
     assert isinstance(str_y_axis, str)
-    assert isinstance(int_init, int) or int_init is None
-    assert isinstance(is_tex, bool)
-    assert isinstance(is_zero_axis, bool)
-    assert isinstance(time_pause, float)
+    assert isinstance(num_init, (int, type(None)))
+    assert isinstance(use_tex, bool)
+    assert isinstance(draw_zero_axis, bool)
+    assert isinstance(pause_figure, bool)
+    assert isinstance(time_pause, (int, float))
     assert isinstance(range_shade, float)
     assert len(X_train.shape) == 2
     assert len(X_test.shape) == 2
@@ -698,13 +710,13 @@ def plot_bo_step(X_train, Y_train, X_test, Y_test, mean_test, std_test,
     assert mean_test.shape[1] == 1
     assert std_test.shape[1] == 1
     assert X_test.shape[0] == Y_test.shape[0] == mean_test.shape[0] == std_test.shape[0]
-    if int_init is not None:
-        assert X_train.shape[0] >= int_init
+    if num_init is not None:
+        assert X_train.shape[0] >= num_init
 
     if plt is None or pylab is None:
         logger.info('matplotlib or pylab is not installed.')
         return
-    _set_font_config(is_tex)
+    _set_font_config(use_tex)
 
     fig = plt.figure(figsize=(8, 6))
     ax = plt.gca()
@@ -717,10 +729,10 @@ def plot_bo_step(X_train, Y_train, X_test, Y_test, mean_test, std_test,
         color='b', 
         alpha=0.3,
     )
-    if int_init is not None:
-        if X_train.shape[0] > int_init:
-            ax.plot(X_train[:int_init, :], Y_train[:int_init, :], 'x', c='saddlebrown', ms=14, markeredgewidth=6)
-            ax.plot(X_train[int_init:X_train.shape[0]-1, :], Y_train[int_init:X_train.shape[0]-1, :], 'rx', ms=14, markeredgewidth=6)
+    if num_init is not None:
+        if X_train.shape[0] > num_init:
+            ax.plot(X_train[:num_init, :], Y_train[:num_init, :], 'x', c='saddlebrown', ms=14, markeredgewidth=6)
+            ax.plot(X_train[num_init:X_train.shape[0]-1, :], Y_train[num_init:X_train.shape[0]-1, :], 'rx', ms=14, markeredgewidth=6)
             ax.plot(X_train[X_train.shape[0]-1, :], Y_train[X_train.shape[0]-1, :], c='orange', marker='+', ms=18, markeredgewidth=6)
         else:
             ax.plot(X_train, Y_train, 'x', c='saddlebrown', ms=14, markeredgewidth=6)
@@ -728,26 +740,27 @@ def plot_bo_step(X_train, Y_train, X_test, Y_test, mean_test, std_test,
         ax.plot(X_train[:X_train.shape[0]-1, :], Y_train[:X_train.shape[0]-1, :], 'rx', ms=14, markeredgewidth=6)
         ax.plot(X_train[X_train.shape[0]-1, :], Y_train[X_train.shape[0]-1, :], c='orange', marker='+', ms=18, markeredgewidth=6)
 
-    _set_ax_config(ax, str_x_axis, str_y_axis, xlim_min=np.min(X_test), xlim_max=np.max(X_test), is_zero_axis=is_zero_axis)
+    _set_ax_config(ax, str_x_axis, str_y_axis, xlim_min=np.min(X_test), xlim_max=np.max(X_test), draw_zero_axis=draw_zero_axis)
 
     if path_save is not None and str_postfix is not None:
         _save_figure(path_save, str_postfix, str_prefix='bo_step_')
-    _show_figure(is_pause, time_pause)
+    _show_figure(pause_figure, time_pause)
     return
 
-def plot_bo_step_acq(X_train, Y_train, X_test, Y_test, mean_test, std_test, acq_test,
-    path_save=None,
-    str_postfix=None,
-    str_x_axis='x',
-    str_y_axis='y',
-    str_acq_axis='acq.',
-    int_init=None,
-    is_tex=False,
-    is_zero_axis=False,
-    is_pause=True,
-    time_pause=constants.TIME_PAUSE,
-    range_shade=constants.RANGE_SHADE,
-): # pragma: no cover
+@utils_common.validate_types
+def plot_bo_step_with_acq(X_train: np.ndarray, Y_train: np.ndarray, X_test: np.ndarray, Y_test: np.ndarray, mean_test: np.ndarray, std_test: np.ndarray, acq_test: np.ndarray,
+    path_save: constants.TYPING_UNION_STR_NONE=None,
+    str_postfix: constants.TYPING_UNION_STR_NONE=None,
+    str_x_axis: str='x',
+    str_y_axis: str='y',
+    str_acq_axis: str='acq.',
+    num_init: constants.TYPING_UNION_INT_NONE=None,
+    use_tex: bool=False,
+    draw_zero_axis: bool=False,
+    pause_figure: bool=True,
+    time_pause: constants.TYPING_UNION_INT_FLOAT=constants.TIME_PAUSE,
+    range_shade: float=constants.RANGE_SHADE,
+) -> constants.TYPE_NONE: # pragma: no cover
     """
     It is for plotting Bayesian optimization results step by step.
 
@@ -757,8 +770,8 @@ def plot_bo_step_acq(X_train, Y_train, X_test, Y_test, mean_test, std_test, acq_
     :type Y_train: numpy.ndarray
     :param X_test: test inputs. Shape: (m, 1).
     :type X_test: numpy.ndarray
-    :param Y_test: None, or true test outputs. Shape: (m, 1).
-    :type Y_test: NoneType or numpy.ndarray, optional
+    :param Y_test: true test outputs. Shape: (m, 1).
+    :type Y_test: numpy.ndarray
     :param mean_test: posterior predictive mean function values over `X_test`. Shape: (m, 1).
     :type mean_test: numpy.ndarray
     :param std_test: posterior predictive standard deviation function values over `X_test`. Shape: (m, 1).
@@ -775,16 +788,16 @@ def plot_bo_step_acq(X_train, Y_train, X_test, Y_test, mean_test, std_test, acq_
     :type str_y_axis: str., optional
     :param str_acq_axis: the name of acquisition function axis.
     :type str_acq_axis: str., optional
-    :param int_init: None, or the number of initial examples.
-    :type int_init: NoneType or int., optional
-    :param is_tex: flag for using latex.
-    :type is_tex: bool., optional
-    :param is_zero_axis: flag for drawing a zero axis.
-    :type is_zero_axis: bool., optional
-    :param is_pause: flag for pausing before closing a figure.
-    :type is_pause: bool., optional
+    :param num_init: None, or the number of initial examples.
+    :type num_init: NoneType or int., optional
+    :param use_tex: flag for using latex.
+    :type use_tex: bool., optional
+    :param draw_zero_axis: flag for drawing a zero axis.
+    :type draw_zero_axis: bool., optional
+    :param pause_figure: flag for pausing before closing a figure.
+    :type pause_figure: bool., optional
     :param time_pause: pausing time.
-    :type time_pause: float, optional
+    :type time_pause: int. or float, optional
     :param range_shade: shade range for standard deviation.
     :type range_shade: float, optional
 
@@ -801,15 +814,16 @@ def plot_bo_step_acq(X_train, Y_train, X_test, Y_test, mean_test, std_test, acq_
     assert isinstance(Y_test, np.ndarray)
     assert isinstance(mean_test, np.ndarray)
     assert isinstance(std_test, np.ndarray)
-    assert isinstance(path_save, str) or path_save is None
-    assert isinstance(str_postfix, str) or str_postfix is None
+    assert isinstance(path_save, (str, type(None)))
+    assert isinstance(str_postfix, (str, type(None)))
     assert isinstance(str_x_axis, str)
     assert isinstance(str_y_axis, str)
     assert isinstance(str_acq_axis, str)
-    assert isinstance(int_init, int) or int_init is None
-    assert isinstance(is_tex, bool)
-    assert isinstance(is_zero_axis, bool)
-    assert isinstance(time_pause, float)
+    assert isinstance(num_init, (int, type(None)))
+    assert isinstance(use_tex, bool)
+    assert isinstance(draw_zero_axis, bool)
+    assert isinstance(pause_figure, bool)
+    assert isinstance(time_pause, (int, float))
     assert isinstance(range_shade, float)
     assert len(X_train.shape) == 2
     assert len(X_test.shape) == 2
@@ -825,13 +839,13 @@ def plot_bo_step_acq(X_train, Y_train, X_test, Y_test, mean_test, std_test, acq_
     assert std_test.shape[1] == 1
     assert acq_test.shape[1] == 1
     assert X_test.shape[0] == Y_test.shape[0] == mean_test.shape[0] == std_test.shape[0] == acq_test.shape[0]
-    if int_init is not None:
-        assert X_train.shape[0] >= int_init
+    if num_init is not None:
+        assert X_train.shape[0] >= num_init
 
     if plt is None or pylab is None:
         logger.info('matplotlib or pylab is not installed.')
         return
-    _set_font_config(is_tex)
+    _set_font_config(use_tex)
 
     fig, (ax1, ax2) = plt.subplots(2, 1, gridspec_kw = {'height_ratios':[3, 1]})
 
@@ -842,10 +856,10 @@ def plot_bo_step_acq(X_train, Y_train, X_test, Y_test, mean_test, std_test, acq_
         mean_test.flatten() + range_shade * std_test.flatten(), 
         color='b', 
         alpha=0.3)
-    if int_init is not None:
-        if X_train.shape[0] > int_init:
-            ax1.plot(X_train[:int_init, :], Y_train[:int_init, :], 'x', c='saddlebrown', ms=14, markeredgewidth=6)
-            ax1.plot(X_train[int_init:X_train.shape[0]-1, :], Y_train[int_init:X_train.shape[0]-1, :], 'rx', ms=14, markeredgewidth=6)
+    if num_init is not None:
+        if X_train.shape[0] > num_init:
+            ax1.plot(X_train[:num_init, :], Y_train[:num_init, :], 'x', c='saddlebrown', ms=14, markeredgewidth=6)
+            ax1.plot(X_train[num_init:X_train.shape[0]-1, :], Y_train[num_init:X_train.shape[0]-1, :], 'rx', ms=14, markeredgewidth=6)
             ax1.plot(X_train[X_train.shape[0]-1, :], Y_train[X_train.shape[0]-1, :], c='orange', marker='+', ms=18, markeredgewidth=6)
         else:
             ax1.plot(X_train, Y_train, 'x', c='saddlebrown', ms=14, markeredgewidth=6)
@@ -853,12 +867,12 @@ def plot_bo_step_acq(X_train, Y_train, X_test, Y_test, mean_test, std_test, acq_
         ax1.plot(X_train[:X_train.shape[0]-1, :], Y_train[:X_train.shape[0]-1, :], 'rx', ms=14, markeredgewidth=6)
         ax1.plot(X_train[X_train.shape[0]-1, :], Y_train[X_train.shape[0]-1, :], c='orange', marker='+', ms=18, markeredgewidth=6)
 
-    _set_ax_config(ax1, None, str_y_axis, xlim_min=np.min(X_test), xlim_max=np.max(X_test), is_zero_axis=is_zero_axis)
+    _set_ax_config(ax1, None, str_y_axis, xlim_min=np.min(X_test), xlim_max=np.max(X_test), draw_zero_axis=draw_zero_axis)
 
     ax2.plot(X_test, acq_test, 'b', linewidth=4)
-    _set_ax_config(ax2, str_x_axis, str_acq_axis, xlim_min=np.min(X_test), xlim_max=np.max(X_test), is_zero_axis=is_zero_axis)
+    _set_ax_config(ax2, str_x_axis, str_acq_axis, xlim_min=np.min(X_test), xlim_max=np.max(X_test), draw_zero_axis=draw_zero_axis)
 
     if path_save is not None and str_postfix is not None:
         _save_figure(path_save, str_postfix, str_prefix='bo_step_acq_')
-    _show_figure(is_pause, time_pause)
+    _show_figure(pause_figure, time_pause)
     return

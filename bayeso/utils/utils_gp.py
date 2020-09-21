@@ -11,7 +11,7 @@ from bayeso import constants
 @utils_common.validate_types
 def check_str_cov(str_fun: str, str_cov: str, shape_X1: tuple,
     shape_X2: tuple=None
-) -> type(None):
+) -> constants.TYPE_NONE:
     """
     It is for validating the shape of X1 (and optionally the shape of X2).
 

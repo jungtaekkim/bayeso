@@ -135,7 +135,7 @@ def test_run_single_round_typing():
     assert annos['str_initial_method_ao'] == str
     assert annos['num_samples_ao'] == int
     assert annos['str_mlm_method'] == str
-    assert annos['seed'] == typing.Union[int, None]
+    assert annos['seed'] == typing.Union[int, type(None)]
     assert annos['return'] == typing.Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]
 
 def test_run_single_round():

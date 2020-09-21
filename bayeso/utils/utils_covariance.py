@@ -3,7 +3,6 @@
 # last updated: September 16, 2020
 
 import numpy as np
-import typing
 
 from bayeso.utils import utils_common
 from bayeso import constants
@@ -208,7 +207,7 @@ def restore_hyps(str_cov: str, hyps: np.ndarray,
     return dict_hyps
 
 @utils_common.validate_types
-def validate_hyps_dict(hyps: dict, str_cov: str, dim: int) -> typing.Tuple[dict, bool]:
+def validate_hyps_dict(hyps: dict, str_cov: str, dim: int) -> constants.TYPING_TUPLE_DICT_BOOL:
     """
     It validates hyperparameters dictionary, `hyps`.
 
@@ -261,7 +260,7 @@ def validate_hyps_dict(hyps: dict, str_cov: str, dim: int) -> typing.Tuple[dict,
     return hyps, is_valid
 
 @utils_common.validate_types
-def validate_hyps_arr(hyps: np.ndarray, str_cov: str, dim: int) -> typing.Tuple[np.ndarray, bool]:
+def validate_hyps_arr(hyps: np.ndarray, str_cov: str, dim: int) -> constants.TYPING_TUPLE_ARRAY_BOOL:
     """
     It validates hyperparameters array, `hyps`.
 

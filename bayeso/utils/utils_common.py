@@ -8,7 +8,7 @@ import functools
 from bayeso import constants
 
 
-def validate_types(func):
+def validate_types(func: callable) -> callable:
     """
     It is a decorator for validating the number of types, which are declared for typing.
 
