@@ -4,7 +4,6 @@
 
 import pytest
 import numpy as np
-import typing
 
 from bayeso import bo
 from bayeso.utils import utils_bo
@@ -14,7 +13,7 @@ def test_get_best_acquisition_typing():
     annos = utils_bo.get_best_acquisition.__annotations__
 
     assert annos['initials'] == np.ndarray
-    assert annos['fun_objective'] == typing.Callable
+    assert annos['fun_objective'] == callable
     assert annos['return'] == np.ndarray
 
 def test_get_best_acquisition():
@@ -80,7 +79,7 @@ def test_choose_fun_acquisition_typing():
 
     assert annos['str_acq'] == str
     assert annos['hyps'] == dict
-    assert annos['return'] == typing.Callable
+    assert annos['return'] == callable
 
 def test_choose_fun_acquisition():
     dict_hyps = {'lengthscales': np.array([1.0, 1.0]), 'signal': 1.0, 'noise': 0.01}

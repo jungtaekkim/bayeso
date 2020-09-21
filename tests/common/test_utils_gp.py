@@ -2,13 +2,23 @@
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
 # last updated: August 12, 2020
 
-import numpy as np
 import pytest
+import numpy as np
+import typing
 
 from bayeso.utils import utils_gp
 
 TEST_EPSILON = 1e-7
 
+
+def test_check_str_cov_typing():
+    annos = utils_gp.check_str_cov.__annotations__
+
+    assert annos['str_fun'] == str
+    assert annos['str_cov'] == str
+    assert annos['shape_X1'] == tuple
+    assert annos['shape_X2'] == tuple
+    assert annos['return'] == type(None)
 
 def test_check_str_cov():
     with pytest.raises(AssertionError) as error:
@@ -30,6 +40,13 @@ def test_check_str_cov():
 
     with pytest.raises(ValueError) as error:
         utils_gp.check_str_cov('test', 'abc', (2, 1))
+
+def test_get_prior_mu_typing():
+    annos = utils_gp.get_prior_mu.__annotations__
+
+    assert annos['prior_mu'] == typing.Union[callable, None]
+    assert annos['X'] == np.ndarray
+    assert annos['return'] == np.ndarray
 
 def test_get_prior_mu():
     fun_prior = lambda X: np.expand_dims(np.linalg.norm(X, axis=1), axis=1)

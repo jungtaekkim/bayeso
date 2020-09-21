@@ -1,8 +1,9 @@
 # constants
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: September 11, 2020
+# last updated: September 21, 2020
 
 import numpy as np
+import typing
 
 
 JITTER_ACQ = 1e-5
@@ -88,3 +89,10 @@ MARKERS = [
     '2',
     '3',
 ]
+
+TYPING_TUPLE_THREE_ARRAYS = typing.Tuple[np.ndarray, np.ndarray, np.ndarray]
+TYPING_TUPLE_FIVE_ARRAYS = typing.Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]
+TYPING_UNION_INT_NONE = typing.Union[int, None]
+TYPING_UNION_ARRAY_NONE = typing.Union[np.ndarray, None]
+TYPING_UNION_CALLABLE_NONE = typing.Union[callable, None]
+TYPING_UNION_ARRAY_FLOAT = typing.Union[np.ndarray, float]

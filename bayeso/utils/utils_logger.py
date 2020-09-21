@@ -1,8 +1,15 @@
+# utils_logger
+# author: Jungtaek Kim (jtkim@postech.ac.kr)
+# last updated: September 21, 2020
+
 import logging
 import numpy as np
 
+from bayeso.utils import utils_common
 
-def get_logger(str_name):
+
+@utils_common.validate_types
+def get_logger(str_name: str) -> logging.Logger:
     assert isinstance(str_name, str)
 
     logger = logging.getLogger(str_name)
@@ -17,7 +24,8 @@ def get_logger(str_name):
     logger.addHandler(ch)
     return logger
 
-def get_str_array_1d(arr):
+@utils_common.validate_types
+def get_str_array_1d(arr: np.ndarray) -> str:
     assert isinstance(arr, np.ndarray)
     assert len(arr.shape) == 1
 
@@ -31,46 +39,50 @@ def get_str_array_1d(arr):
 
         list_str.append(elem_)
 
-    str_ = ', '.join(list_str)
-    str_ = '[' + str_ + ']'
-    return str_
+    str_arr = ', '.join(list_str)
+    str_arr = '[' + str_arr + ']'
+    return str_arr
 
-def get_str_array_2d(arr):
+@utils_common.validate_types
+def get_str_array_2d(arr: np.ndarray) -> str:
     assert isinstance(arr, np.ndarray)
     assert len(arr.shape) == 2
 
     list_str = [get_str_array_1d(elem) for elem in arr]
 
-    str_ = ',\n'.join(list_str)
-    str_ = '[' + str_ + ']'
-    return str_
+    str_arr = ',\n'.join(list_str)
+    str_arr = '[' + str_arr + ']'
+    return str_arr
 
-def get_str_array_3d(arr):
+@utils_common.validate_types
+def get_str_array_3d(arr: np.ndarray) -> str:
     assert isinstance(arr, np.ndarray)
     assert len(arr.shape) == 3
 
     list_str = [get_str_array_2d(elem) for elem in arr]
 
-    str_ = ',\n'.join(list_str)
-    str_ = '[' + str_ + ']'
-    return str_
+    str_arr = ',\n'.join(list_str)
+    str_arr = '[' + str_arr + ']'
+    return str_arr
 
-def get_str_array(arr):
+@utils_common.validate_types
+def get_str_array(arr: np.ndarray) -> str:
     assert isinstance(arr, np.ndarray)
     len_arr = len(arr.shape)
 
     if len_arr == 1:
-        str_ = get_str_array_1d(arr)
+        str_arr = get_str_array_1d(arr)
     elif len_arr == 2:
-        str_ = get_str_array_2d(arr)
+        str_arr = get_str_array_2d(arr)
     elif len_arr == 3:
-        str_ = get_str_array_3d(arr)
+        str_arr = get_str_array_3d(arr)
     else:
         raise NotImplementedError('invalid len_arr.')
 
-    return str_
+    return str_arr
 
-def get_str_hyps(hyps):
+@utils_common.validate_types
+def get_str_hyps(hyps: dict) -> str:
     assert isinstance(hyps, dict)
 
     list_str = []
@@ -85,6 +97,6 @@ def get_str_hyps(hyps):
 
         list_str.append("'{}'".format(key) + ': ' + str_val)
 
-    str_ = ', '.join(list_str)
-    str_ = '{' + str_ + '}'
-    return str_
+    str_hyps = ', '.join(list_str)
+    str_hyps = '{' + str_hyps + '}'
+    return str_hyps

@@ -4,7 +4,6 @@
 
 import numpy as np
 import time
-import typing
 try:
     from scipydirect import minimize as directminimize
 except: # pragma: no cover
@@ -24,7 +23,7 @@ logger = utils_logger.get_logger('utils_bo')
 
 
 @utils_common.validate_types
-def get_best_acquisition(initials: np.ndarray, fun_objective: typing.Callable) -> np.ndarray:
+def get_best_acquisition(initials: np.ndarray, fun_objective: callable) -> np.ndarray:
     """
     It returns the best example with respect to values of `fun_objective`.
     Here, the best acquisition is a minimizer of `fun_objective`.
@@ -93,7 +92,7 @@ def check_optimizer_method_bo(str_optimizer_method_bo: str, dim: int, debug: boo
     return str_optimizer_method_bo
 
 @utils_common.validate_types
-def choose_fun_acquisition(str_acq: str, hyps: dict) -> typing.Callable:
+def choose_fun_acquisition(str_acq: str, hyps: dict) -> callable:
     """
     It chooses and returns an acquisition function.
 

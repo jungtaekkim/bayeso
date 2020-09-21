@@ -4,9 +4,16 @@
 
 import pytest
 import numpy as np
+import logging
 
 from bayeso.utils import utils_logger
 
+
+def test_get_logger_typing():
+    annos = utils_logger.get_logger.__annotations__
+
+    assert annos['str_name'] == str
+    assert annos['return'] == logging.Logger
 
 def test_get_logger():
     with pytest.raises(AssertionError) as error:
@@ -15,6 +22,14 @@ def test_get_logger():
         utils_logger.get_logger(12.3)
 
     logger = utils_logger.get_logger('abc')
+
+    assert type(logger) == logging.Logger
+
+def test_get_str_array_1d_typing():
+    annos = utils_logger.get_str_array_1d.__annotations__
+
+    assert annos['arr'] == np.ndarray
+    assert annos['return'] == str
 
 def test_get_str_array_1d():
     with pytest.raises(AssertionError) as error:
@@ -36,6 +51,12 @@ def test_get_str_array_1d():
 
     assert str_ == '[1.100, 2.500, 3.000]'
 
+def test_get_str_array_2d_typing():
+    annos = utils_logger.get_str_array_2d.__annotations__
+
+    assert annos['arr'] == np.ndarray
+    assert annos['return'] == str
+
 def test_get_str_array_2d():
     with pytest.raises(AssertionError) as error:
         utils_logger.get_str_array_2d(123)
@@ -56,6 +77,12 @@ def test_get_str_array_2d():
 
     assert str_ == '[[1.100, 2.200, 3.330],\n[2.200, 2.400, 2.900]]'
 
+def test_get_str_array_3d_typing():
+    annos = utils_logger.get_str_array_3d.__annotations__
+
+    assert annos['arr'] == np.ndarray
+    assert annos['return'] == str
+
 def test_get_str_array_3d():
     with pytest.raises(AssertionError) as error:
         utils_logger.get_str_array_3d(123)
@@ -75,6 +102,12 @@ def test_get_str_array_3d():
     print(str_)
 
     assert str_ == '[[[1.100, 2.200, 3.330],\n[2.200, 2.400, 2.900]],\n[[1.100, 2.200, 3.330],\n[2.200, 2.400, 2.900]]]'
+
+def test_get_str_array_typing():
+    annos = utils_logger.get_str_array.__annotations__
+
+    assert annos['arr'] == np.ndarray
+    assert annos['return'] == str
 
 def test_get_str_array():
     with pytest.raises(AssertionError) as error:
@@ -105,6 +138,12 @@ def test_get_str_array():
     str_ = utils_logger.get_str_array(np.array([[[1.1, 2.2, 3.33], [2.2, 2.4, 2.9]], [[1.1, 2.2, 3.33], [2.2, 2.4, 2.9]]]))
     print(str_)
     assert str_ == '[[[1.100, 2.200, 3.330],\n[2.200, 2.400, 2.900]],\n[[1.100, 2.200, 3.330],\n[2.200, 2.400, 2.900]]]'
+
+def test_get_str_hyps_typing():
+    annos = utils_logger.get_str_hyps.__annotations__
+
+    assert annos['hyps'] == dict
+    assert annos['return'] == str
 
 def test_get_str_hyps():
     with pytest.raises(AssertionError) as error:
@@ -141,4 +180,3 @@ def test_get_str_hyps():
         "{'noise': 0.001, 'lengthscales': [1.000, 2.000], 'signal': 1}",
     ]
     assert str_ in list_truths
-

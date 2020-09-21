@@ -4,7 +4,6 @@
 
 import numpy as np
 import scipy.stats
-import typing
 
 from bayeso import constants
 from bayeso.utils import utils_common
@@ -84,7 +83,7 @@ def ei(pred_mean: np.ndarray, pred_std: np.ndarray, Y_train: np.ndarray,
 
 @utils_common.validate_types
 def ucb(pred_mean: np.ndarray, pred_std: np.ndarray,
-    Y_train: typing.Union[np.ndarray, None]=None,
+    Y_train: constants.TYPING_UNION_ARRAY_NONE=None,
     kappa: float=2.0,
     increase_kappa: bool=True
 ) -> np.ndarray:

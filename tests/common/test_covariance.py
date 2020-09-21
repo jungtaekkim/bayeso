@@ -17,7 +17,7 @@ def test_choose_fun_cov_typing():
 
     assert annos['str_cov'] == str
     assert annos['choose_grad'] == bool
-    assert annos['return'] == typing.Callable
+    assert annos['return'] == callable
 
 def test_choose_fun_cov():
     with pytest.raises(AssertionError) as error:

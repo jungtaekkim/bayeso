@@ -1,10 +1,9 @@
 # covariance
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: September 14, 2020
+# last updated: September 21, 2020
 
 import numpy as np
 import scipy.spatial.distance as scisd
-import typing
 
 from bayeso import constants
 from bayeso.utils import utils_covariance
@@ -12,7 +11,7 @@ from bayeso.utils import utils_common
 
 
 @utils_common.validate_types
-def choose_fun_cov(str_cov: str, choose_grad: bool) -> typing.Callable:
+def choose_fun_cov(str_cov: str, choose_grad: bool) -> callable:
     """
     It is for choosing a covariance function or a function for computing gradients of covariance function.
 
@@ -51,7 +50,7 @@ def choose_fun_cov(str_cov: str, choose_grad: bool) -> typing.Callable:
     return fun_cov
 
 @utils_common.validate_types
-def cov_se(X: np.ndarray, Xp: np.ndarray, lengthscales: typing.Union[np.ndarray, float], signal: float) -> np.ndarray:
+def cov_se(X: np.ndarray, Xp: np.ndarray, lengthscales: constants.TYPING_UNION_ARRAY_FLOAT, signal: float) -> np.ndarray:
     """
     It computes squared exponential kernel over `X` and `Xp`, where `lengthscales` and `signal` are given.
 
@@ -142,7 +141,7 @@ def grad_cov_se(cov_X_Xp: np.ndarray, X: np.ndarray, Xp: np.ndarray, hyps: dict,
     return grad_cov_X_Xp
 
 @utils_common.validate_types
-def cov_matern32(X: np.ndarray, Xp: np.ndarray, lengthscales: typing.Union[np.ndarray, float], signal: float) -> np.ndarray:
+def cov_matern32(X: np.ndarray, Xp: np.ndarray, lengthscales: constants.TYPING_UNION_ARRAY_FLOAT, signal: float) -> np.ndarray:
     """
     It computes Matern 3/2 kernel over `X` and `Xp`, where `lengthscales` and `signal` are given.
 
@@ -234,7 +233,7 @@ def grad_cov_matern32(cov_X_Xp: np.ndarray, X: np.ndarray, Xp: np.ndarray, hyps:
     return grad_cov_X_Xp
 
 @utils_common.validate_types
-def cov_matern52(X: np.ndarray, Xp:np.ndarray, lengthscales: typing.Union[np.ndarray, float], signal: float) -> np.ndarray:
+def cov_matern52(X: np.ndarray, Xp:np.ndarray, lengthscales: constants.TYPING_UNION_ARRAY_FLOAT, signal: float) -> np.ndarray:
     """
     It computes Matern 5/2 kernel over `X` and `Xp`, where `lengthscales` and `signal` are given.
 
@@ -326,7 +325,7 @@ def grad_cov_matern52(cov_X_Xp: np.ndarray, X: np.ndarray, Xp: np.ndarray, hyps:
     return grad_cov_X_Xp
 
 @utils_common.validate_types
-def cov_set(str_cov: str, X: np.ndarray, Xp: np.ndarray, lengthscales: typing.Union[np.ndarray, float], signal: float) -> np.ndarray:
+def cov_set(str_cov: str, X: np.ndarray, Xp: np.ndarray, lengthscales: constants.TYPING_UNION_ARRAY_FLOAT, signal: float) -> np.ndarray:
     """
     It computes set kernel matrix over `X` and `Xp`, where `lengthscales` and `signal` are given.
 

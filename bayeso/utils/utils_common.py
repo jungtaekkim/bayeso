@@ -4,7 +4,8 @@
 
 import numpy as np
 import functools
-import typing
+
+from bayeso import constants
 
 
 def validate_types(func):
@@ -66,7 +67,7 @@ def get_grids(ranges: np.ndarray, num_grids: int) -> np.ndarray:
     return arr_grids
 
 @validate_types
-def get_minimum(Y_all: np.ndarray, num_init: int) -> typing.Tuple[np.ndarray, np.ndarray, np.ndarray]:
+def get_minimum(Y_all: np.ndarray, num_init: int) -> constants.TYPING_TUPLE_THREE_ARRAYS:
     """
     It returns accumulated minima at each iteration, their arithmetic means over rounds, and their standard deviations over rounds, which is widely used in Bayesian optimization community.
 
