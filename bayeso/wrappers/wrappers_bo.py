@@ -16,8 +16,8 @@ logger = utils_logger.get_logger('wrappers_bo')
 
 @utils_common.validate_types
 def run_single_round_with_all_initial_information(model_bo: bo.BO, fun_target: callable, X_train: np.ndarray, Y_train: np.ndarray, num_iter: int,
-    str_initial_method_ao: str=constants.STR_AO_INITIALIZATION,
-    num_samples_ao: int=constants.NUM_ACQ_SAMPLES,
+    str_sampling_method_ao: str=constants.STR_SAMPLING_METHOD_AO,
+    num_samples_ao: int=constants.NUM_SAMPLES_AO,
     str_mlm_method: str=constants.STR_MLM_METHOD
 ) -> constants.TYPING_TUPLE_FIVE_ARRAYS:
     """
@@ -34,8 +34,8 @@ def run_single_round_with_all_initial_information(model_bo: bo.BO, fun_target: c
     :type Y_train: numpy.ndarray
     :param num_iter: the number of iterations for Bayesian optimization.
     :type num_iter: int.
-    :param str_initial_method_ao: the name of initialization method for acquisition function optimization.
-    :type str_initial_method_ao: str., optional
+    :param str_sampling_method_ao: the name of initialization method for acquisition function optimization.
+    :type str_sampling_method_ao: str., optional
     :param num_samples_ao: the number of samples for acquisition function optimization. If L-BFGS-B is used as an acquisition function optimization method, it is employed.
     :type num_samples_ao: int., optional
     :param str_mlm_method: the name of marginal likelihood maximization method for Gaussian process regression.
@@ -53,7 +53,7 @@ def run_single_round_with_all_initial_information(model_bo: bo.BO, fun_target: c
     assert isinstance(X_train, np.ndarray)
     assert isinstance(Y_train, np.ndarray)
     assert isinstance(num_iter, int)
-    assert isinstance(str_initial_method_ao, str)
+    assert isinstance(str_sampling_method_ao, str)
     assert isinstance(num_samples_ao, int)
     assert isinstance(str_mlm_method, str)
     assert len(X_train.shape) == 2
@@ -73,7 +73,7 @@ def run_single_round_with_all_initial_information(model_bo: bo.BO, fun_target: c
         logger.info('Iteration {}'.format(ind_iter + 1))
         time_iter_start = time.time()
 
-        next_point, dict_info = model_bo.optimize(X_final, Y_final, str_initial_method_ao=str_initial_method_ao, int_samples=num_samples_ao, str_mlm_method=str_mlm_method)
+        next_point, dict_info = model_bo.optimize(X_final, Y_final, str_sampling_method=str_sampling_method_ao, num_samples=num_samples_ao, str_mlm_method=str_mlm_method)
         next_points = dict_info['next_points']
         acquisitions = dict_info['acquisitions']
         time_gp = dict_info['time_gp']
@@ -109,8 +109,8 @@ def run_single_round_with_all_initial_information(model_bo: bo.BO, fun_target: c
 
 @utils_common.validate_types
 def run_single_round_with_initial_inputs(model_bo: bo.BO, fun_target: callable, X_train: np.ndarray, num_iter: int,
-    str_initial_method_ao: str=constants.STR_AO_INITIALIZATION,
-    num_samples_ao: int=constants.NUM_ACQ_SAMPLES,
+    str_sampling_method_ao: str=constants.STR_SAMPLING_METHOD_AO,
+    num_samples_ao: int=constants.NUM_SAMPLES_AO,
     str_mlm_method: str=constants.STR_MLM_METHOD,
 ) -> constants.TYPING_TUPLE_FIVE_ARRAYS:
     """
@@ -125,8 +125,8 @@ def run_single_round_with_initial_inputs(model_bo: bo.BO, fun_target: callable, 
     :type X_train: numpy.ndarray
     :param num_iter: the number of iterations for Bayesian optimization.
     :type num_iter: int.
-    :param str_initial_method_ao: the name of initialization method for acquisition function optimization.
-    :type str_initial_method_ao: str., optional
+    :param str_sampling_method_ao: the name of initialization method for acquisition function optimization.
+    :type str_sampling_method_ao: str., optional
     :param num_samples_ao: the number of samples for acquisition function optimization. If L-BFGS-B is used as an acquisition function optimization method, it is employed.
     :type num_samples_ao: int., optional
     :param str_mlm_method: the name of marginal likelihood maximization method for Gaussian process regression.
@@ -143,7 +143,7 @@ def run_single_round_with_initial_inputs(model_bo: bo.BO, fun_target: callable, 
     assert callable(fun_target)
     assert isinstance(X_train, np.ndarray)
     assert isinstance(num_iter, int)
-    assert isinstance(str_initial_method_ao, str)
+    assert isinstance(str_sampling_method_ao, str)
     assert isinstance(num_samples_ao, int)
     assert isinstance(str_mlm_method, str)
     assert len(X_train.shape) == 2
@@ -166,7 +166,7 @@ def run_single_round_with_initial_inputs(model_bo: bo.BO, fun_target: callable, 
         X_train,
         Y_train,
         num_iter,
-        str_initial_method_ao=str_initial_method_ao,
+        str_sampling_method_ao=str_sampling_method_ao,
         num_samples_ao=num_samples_ao,
         str_mlm_method=str_mlm_method
     )
@@ -174,15 +174,15 @@ def run_single_round_with_initial_inputs(model_bo: bo.BO, fun_target: callable, 
 
 @utils_common.validate_types
 def run_single_round(model_bo: bo.BO, fun_target: callable, num_init: int, num_iter: int,
-    str_initial_method_bo: str=constants.STR_BO_INITIALIZATION,
-    str_initial_method_ao: str=constants.STR_AO_INITIALIZATION,
-    num_samples_ao: int=constants.NUM_ACQ_SAMPLES,
+    str_initial_method_bo: str=constants.STR_INITIALIZING_METHOD_BO,
+    str_sampling_method_ao: str=constants.STR_SAMPLING_METHOD_AO,
+    num_samples_ao: int=constants.NUM_SAMPLES_AO,
     str_mlm_method: str=constants.STR_MLM_METHOD,
     seed: constants.TYPING_UNION_INT_NONE=None
 ) -> constants.TYPING_TUPLE_FIVE_ARRAYS:
     """
     It optimizes `fun_target` for `num_iter` iterations with given `model_bo` and `num_init` initial examples.
-    Initial examples are sampled by `get_initial` method in `model_bo`.
+    Initial examples are sampled by `get_initials` method in `model_bo`.
     It returns the optimization results and execution times.
 
     :param model_bo: Bayesian optimization model.
@@ -195,8 +195,8 @@ def run_single_round(model_bo: bo.BO, fun_target: callable, num_init: int, num_i
     :type num_iter: int.
     :param str_initial_method_bo: the name of initialization method for sampling initial examples in Bayesian optimization.
     :type str_initial_method_bo: str., optional
-    :param str_initial_method_ao: the name of initialization method for acquisition function optimization.
-    :type str_initial_method_ao: str., optional
+    :param str_sampling_method_ao: the name of initialization method for acquisition function optimization.
+    :type str_sampling_method_ao: str., optional
     :param num_samples_ao: the number of samples for acquisition function optimization. If L-BFGS-B is used as an acquisition function optimization method, it is employed.
     :type num_samples_ao: int., optional
     :param str_mlm_method: the name of marginal likelihood maximization method for Gaussian process regression.
@@ -216,14 +216,14 @@ def run_single_round(model_bo: bo.BO, fun_target: callable, num_init: int, num_i
     assert isinstance(num_init, int)
     assert isinstance(num_iter, int)
     assert isinstance(str_initial_method_bo, str)
-    assert isinstance(str_initial_method_ao, str)
+    assert isinstance(str_sampling_method_ao, str)
     assert isinstance(num_samples_ao, int)
     assert isinstance(str_mlm_method, str)
     assert isinstance(seed, (int, type(None)))
-    assert str_initial_method_bo in constants.ALLOWED_INITIALIZATIONS_BO
+    assert str_initial_method_bo in constants.ALLOWED_INITIALIZING_METHOD_BO
     assert str_mlm_method in constants.ALLOWED_MLM_METHOD
 
-    logger.info('arr_range:\n{}'.format(utils_logger.get_str_array(model_bo.arr_range)))
+    logger.info('range_X:\n{}'.format(utils_logger.get_str_array(model_bo.range_X)))
     logger.info('str_cov: {}'.format(model_bo.str_cov))
     logger.info('str_acq: {}'.format(model_bo.str_acq))
     logger.info('str_optimizer_method_gp: {}'.format(model_bo.str_optimizer_method_gp))
@@ -232,19 +232,19 @@ def run_single_round(model_bo: bo.BO, fun_target: callable, num_init: int, num_i
     logger.info('num_init: {}'.format(num_init))
     logger.info('num_iter: {}'.format(num_iter))
     logger.info('str_initial_method_bo: {}'.format(str_initial_method_bo))
-    logger.info('str_initial_method_ao: {}'.format(str_initial_method_ao))
+    logger.info('str_sampling_method_ao: {}'.format(str_sampling_method_ao))
     logger.info('num_samples_ao: {}'.format(num_samples_ao))
     logger.info('str_mlm_method: {}'.format(str_mlm_method))
     logger.info('seed: {}'.format(seed))
 
     time_start = time.time()
 
-    X_init = model_bo.get_initial(str_initial_method_bo, fun_objective=fun_target, int_samples=num_init, int_seed=seed)
+    X_init = model_bo.get_initials(str_initial_method_bo, num_init, seed=seed)
     if model_bo.debug: logger.debug('X_init:\n{}'.format(utils_logger.get_str_array(X_init)))
 
     X_final, Y_final, time_all_final, time_gp_final, time_acq_final = run_single_round_with_initial_inputs(
         model_bo, fun_target, X_init, num_iter,
-        str_initial_method_ao=str_initial_method_ao,
+        str_sampling_method_ao=str_sampling_method_ao,
         num_samples_ao=num_samples_ao,
         str_mlm_method=str_mlm_method
     )

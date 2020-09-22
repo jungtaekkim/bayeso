@@ -2,25 +2,40 @@
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
 # last updated: August 07, 2020
 
-import numpy as np
 import pytest
+import numpy as np
+import typing
 
 from bayeso import constants
 from bayeso.gp import gp_scipy
 from bayeso.utils import utils_covariance
 
-
 TEST_EPSILON = 1e-7
+
+
+def test_neg_log_ml_typing():
+    annos = gp_scipy.neg_log_ml.__annotations__
+
+    assert annos['X_train'] == np.ndarray
+    assert annos['Y_train'] == np.ndarray
+    assert annos['hyps'] == np.ndarray
+    assert annos['str_cov'] == str
+    assert annos['prior_mu_train'] == np.ndarray
+    assert annos['fix_noise'] == bool
+    assert annos['use_cholesky'] == bool
+    assert annos['use_gradient'] == bool
+    assert annos['debug'] == bool
+    assert annos['return'] == typing.Union[float, typing.Tuple[float, float]]
 
 def test_neg_log_ml():
     dim_X = 3
     str_cov = 'se'
     X = np.reshape(np.arange(0, 9), (3, dim_X))
     Y = np.expand_dims(np.arange(3, 10, 3), axis=1)
-    is_fixed_noise = False
+    fix_noise = False
 
     dict_hyps = utils_covariance.get_hyps(str_cov, dim_X)
-    arr_hyps = utils_covariance.convert_hyps(str_cov, dict_hyps, fix_noise=is_fixed_noise)
+    arr_hyps = utils_covariance.convert_hyps(str_cov, dict_hyps, fix_noise=fix_noise)
     prior_mu_X = np.zeros((3, 1))
 
     with pytest.raises(AssertionError) as error:
@@ -42,28 +57,28 @@ def test_neg_log_ml():
     with pytest.raises(AssertionError) as error:
         gp_scipy.neg_log_ml(X, Y, arr_hyps, str_cov, np.expand_dims(np.arange(0, 4), axis=1))
     with pytest.raises(AssertionError) as error:
-        gp_scipy.neg_log_ml(X, Y, arr_hyps, str_cov, prior_mu_X, is_cholesky=1)
+        gp_scipy.neg_log_ml(X, Y, arr_hyps, str_cov, prior_mu_X, use_cholesky=1)
     with pytest.raises(AssertionError) as error:
-        gp_scipy.neg_log_ml(X, Y, arr_hyps, str_cov, prior_mu_X, is_fixed_noise=1)
+        gp_scipy.neg_log_ml(X, Y, arr_hyps, str_cov, prior_mu_X, fix_noise=1)
     with pytest.raises(AssertionError) as error:
         gp_scipy.neg_log_ml(X, Y, arr_hyps, str_cov, prior_mu_X, debug=1)
 
-    neg_log_ml_ = gp_scipy.neg_log_ml(X, Y, arr_hyps, str_cov, prior_mu_X, is_fixed_noise=is_fixed_noise, is_gradient=False, is_cholesky=True)
+    neg_log_ml_ = gp_scipy.neg_log_ml(X, Y, arr_hyps, str_cov, prior_mu_X, fix_noise=fix_noise, use_gradient=False, use_cholesky=True)
     print(neg_log_ml_)
     truth_log_ml_ = 21.916650988532854
     assert np.abs(neg_log_ml_ - truth_log_ml_) < TEST_EPSILON
 
-    neg_log_ml_ = gp_scipy.neg_log_ml(X, Y, arr_hyps, str_cov, prior_mu_X, is_fixed_noise=is_fixed_noise, is_gradient=False, is_cholesky=False)
+    neg_log_ml_ = gp_scipy.neg_log_ml(X, Y, arr_hyps, str_cov, prior_mu_X, fix_noise=fix_noise, use_gradient=False, use_cholesky=False)
     print(neg_log_ml_)
     truth_log_ml_ = 21.91665090519953
     assert np.abs(neg_log_ml_ - truth_log_ml_) < TEST_EPSILON
 
-    neg_log_ml_ = gp_scipy.neg_log_ml(X, Y, arr_hyps, str_cov, prior_mu_X, is_fixed_noise=is_fixed_noise, is_gradient=True, is_cholesky=False)
+    neg_log_ml_ = gp_scipy.neg_log_ml(X, Y, arr_hyps, str_cov, prior_mu_X, fix_noise=fix_noise, use_gradient=True, use_cholesky=False)
     print(neg_log_ml_)
     truth_log_ml_ = 21.91665090519953
     assert np.abs(neg_log_ml_ - truth_log_ml_) < TEST_EPSILON
 
-    neg_log_ml_, neg_grad_log_ml_ = gp_scipy.neg_log_ml(X, Y, arr_hyps, str_cov, prior_mu_X, is_fixed_noise=is_fixed_noise, is_gradient=True, is_cholesky=True)
+    neg_log_ml_, neg_grad_log_ml_ = gp_scipy.neg_log_ml(X, Y, arr_hyps, str_cov, prior_mu_X, fix_noise=fix_noise, use_gradient=True, use_cholesky=True)
     print(neg_log_ml_)
     print(neg_grad_log_ml_)
 
@@ -78,13 +93,25 @@ def test_neg_log_ml():
     assert np.abs(neg_log_ml_ - truth_log_ml_) < TEST_EPSILON
     assert np.all(np.abs(neg_grad_log_ml_ - truth_grad_log_ml_) < TEST_EPSILON)
 
+def test_neg_log_pseudo_l_loocv_typing():
+    annos = gp_scipy.neg_log_pseudo_l_loocv.__annotations__
+
+    assert annos['X_train'] == np.ndarray
+    assert annos['Y_train'] == np.ndarray
+    assert annos['hyps'] == np.ndarray
+    assert annos['str_cov'] == str
+    assert annos['prior_mu_train'] == np.ndarray
+    assert annos['fix_noise'] == bool
+    assert annos['debug'] == bool
+    assert annos['return'] == float
+
 def test_neg_log_pseudo_l_loocv():
     dim_X = 3
     str_cov = 'se'
     X = np.reshape(np.arange(0, 9), (3, dim_X))
     Y = np.expand_dims(np.arange(3, 10, 3), axis=1)
     dict_hyps = utils_covariance.get_hyps(str_cov, dim_X)
-    arr_hyps = utils_covariance.convert_hyps(str_cov, dict_hyps, fix_noise=constants.IS_FIXED_GP_NOISE)
+    arr_hyps = utils_covariance.convert_hyps(str_cov, dict_hyps, fix_noise=constants.FIX_GP_NOISE)
     prior_mu_X = np.zeros((3, 1))
 
     with pytest.raises(AssertionError) as error:
@@ -106,7 +133,7 @@ def test_neg_log_pseudo_l_loocv():
     with pytest.raises(AssertionError) as error:
         gp_scipy.neg_log_pseudo_l_loocv(X, Y, arr_hyps, str_cov, np.expand_dims(np.arange(0, 4), axis=1))
     with pytest.raises(AssertionError) as error:
-        gp_scipy.neg_log_pseudo_l_loocv(X, Y, arr_hyps, str_cov, prior_mu_X, is_fixed_noise=1)
+        gp_scipy.neg_log_pseudo_l_loocv(X, Y, arr_hyps, str_cov, prior_mu_X, fix_noise=1)
     with pytest.raises(AssertionError) as error:
         gp_scipy.neg_log_pseudo_l_loocv(X, Y, arr_hyps, str_cov, prior_mu_X, debug=1)
 
@@ -114,6 +141,19 @@ def test_neg_log_pseudo_l_loocv():
     print(neg_log_pseudo_l_)
     truth_log_pseudo_l_ = 21.916822991658695
     assert np.abs(neg_log_pseudo_l_ - truth_log_pseudo_l_) < TEST_EPSILON
+
+def test_get_optimized_kernel_typing():
+    annos = gp_scipy.get_optimized_kernel.__annotations__
+
+    assert annos['X_train'] == np.ndarray
+    assert annos['Y_train'] == np.ndarray
+    assert annos['prior_mu'] == typing.Union[callable, type(None)]
+    assert annos['str_cov'] == str
+    assert annos['str_optimizer_method'] == str
+    assert annos['str_modelselection_method'] == str
+    assert annos['fix_noise'] == bool
+    assert annos['debug'] == bool
+    assert annos['return'] == typing.Tuple[np.ndarray, np.ndarray, dict]
 
 def test_get_optimized_kernel():
     np.random.seed(42)
@@ -135,6 +175,7 @@ def test_get_optimized_kernel():
         gp_scipy.get_optimized_kernel(1, Y, prior_mu, 'se')
     with pytest.raises(AssertionError) as error:
         gp_scipy.get_optimized_kernel(np.ones(num_X), Y, prior_mu, 'se')
+
     with pytest.raises(AssertionError) as error:
         gp_scipy.get_optimized_kernel(X, np.ones(num_X), prior_mu, 'se')
     with pytest.raises(AssertionError) as error:
@@ -145,10 +186,11 @@ def test_get_optimized_kernel():
         gp_scipy.get_optimized_kernel(X, Y, prior_mu, 'abc')
     with pytest.raises(AssertionError) as error:
         gp_scipy.get_optimized_kernel(X, Y, prior_mu, 'se', str_optimizer_method=1)
+
     with pytest.raises(AssertionError) as error:
         gp_scipy.get_optimized_kernel(X, Y, prior_mu, 'se', str_modelselection_method=1)
     with pytest.raises(AssertionError) as error:
-        gp_scipy.get_optimized_kernel(X, Y, prior_mu, 'se', is_fixed_noise=1)
+        gp_scipy.get_optimized_kernel(X, Y, prior_mu, 'se', fix_noise=1)
     with pytest.raises(AssertionError) as error:
         gp_scipy.get_optimized_kernel(X, Y, prior_mu, 'se', debug=1)
 

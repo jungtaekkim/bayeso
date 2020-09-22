@@ -75,7 +75,7 @@ def test_load_bo():
     model_bo = bo.BO(arr_range_1)
     model_bo = bo.BO(arr_range_2)
 
-def test_get_initial():
+def test_get_samples():
     np.random.seed(42)
     arr_range = np.array([
         [0.0, 10.0],
@@ -90,26 +90,28 @@ def test_get_initial():
     model_bo = bo.BO(arr_range)
 
     with pytest.raises(AssertionError) as error:
-        model_bo.get_initial(1)
+        model_bo.get_samples(1)
     with pytest.raises(AssertionError) as error:
-        model_bo.get_initial('grid', fun_objective=None)
+        model_bo.get_samples('grid', fun_objective=None)
     with pytest.raises(AssertionError) as error:
-        model_bo.get_initial('uniform', fun_objective=1)
+        model_bo.get_samples('uniform', fun_objective=1)
     with pytest.raises(AssertionError) as error:
-        model_bo.get_initial('uniform', int_samples='abc')
+        model_bo.get_samples('uniform', num_samples='abc')
     with pytest.raises(AssertionError) as error:
-        model_bo.get_initial('uniform', int_seed='abc')
+        model_bo.get_samples('uniform', seed='abc')
+    with pytest.raises(AssertionError) as error:
+        model_bo.get_samples('abc')
     with pytest.raises(NotImplementedError) as error:
-        model_bo.get_initial('abc')
+        model_bo.get_samples('latin')
 
-    arr_initials = model_bo.get_initial('grid', fun_objective=fun_objective)
+    arr_initials = model_bo.get_samples('grid', fun_objective=fun_objective)
     truth_arr_initials = np.array([
         [0.0, -2.0, -5.0],
     ])
     assert (np.abs(arr_initials - truth_arr_initials) < TEST_EPSILON).all()
 
-    arr_initials = model_bo.get_initial('sobol', int_samples=3)
-    arr_initials = model_bo.get_initial('sobol', int_samples=3, int_seed=42)
+    arr_initials = model_bo.get_samples('sobol', num_samples=3)
+    arr_initials = model_bo.get_samples('sobol', num_samples=3, seed=42)
     truth_arr_initials = np.array([
         [4.84375, 1.3125, 0.46875],
         [3.59375, -0.1875, -0.78125],
@@ -117,7 +119,51 @@ def test_get_initial():
     ])
     assert (np.abs(arr_initials - truth_arr_initials) < TEST_EPSILON).all()
 
-    arr_initials = model_bo.get_initial('uniform', int_samples=3, int_seed=42)
+    arr_initials = model_bo.get_samples('uniform', num_samples=3, seed=42)
+    truth_arr_initials = np.array([
+        [3.74540119, 1.80285723, 2.31993942],
+        [5.98658484, -1.37592544, -3.4400548],
+        [0.58083612, 1.46470458, 1.01115012],
+    ])
+    assert (np.abs(arr_initials - truth_arr_initials) < TEST_EPSILON).all()
+
+def test_get_initials():
+    np.random.seed(42)
+    arr_range = np.array([
+        [0.0, 10.0],
+        [-2.0, 2.0],
+        [-5.0, 5.0],
+    ])
+    dim_X = arr_range.shape[0]
+    num_X = 5
+    X = np.random.randn(num_X, dim_X)
+    Y = np.random.randn(num_X, 1)
+    fun_objective = lambda X: np.sum(X)
+    model_bo = bo.BO(arr_range)
+
+    with pytest.raises(AssertionError) as error:
+        model_bo.get_initials(1, 10)
+    with pytest.raises(AssertionError) as error:
+        model_bo.get_initials('grid', 'abc')
+    with pytest.raises(AssertionError) as error:
+        model_bo.get_initials('grid', 10)
+    with pytest.raises(AssertionError) as error:
+        model_bo.get_initials('uniform', 10, seed='abc')
+    with pytest.raises(AssertionError) as error:
+        model_bo.get_initials('abc', 10)
+    with pytest.raises(NotImplementedError) as error:
+        model_bo.get_initials('latin', 10)
+
+    arr_initials = model_bo.get_initials('sobol', 3)
+    arr_initials = model_bo.get_initials('sobol', 3, seed=42)
+    truth_arr_initials = np.array([
+        [4.84375, 1.3125, 0.46875],
+        [3.59375, -0.1875, -0.78125],
+        [8.59375, 1.8125, 4.21875],
+    ])
+    assert (np.abs(arr_initials - truth_arr_initials) < TEST_EPSILON).all()
+
+    arr_initials = model_bo.get_initials('uniform', 3, seed=42)
     truth_arr_initials = np.array([
         [3.74540119, 1.80285723, 2.31993942],
         [5.98658484, -1.37592544, -3.4400548],
@@ -153,15 +199,15 @@ def test_optimize():
     with pytest.raises(AssertionError) as error:
         model_bo.optimize(X, np.random.randn(3, 1))
     with pytest.raises(AssertionError) as error:
-        model_bo.optimize(X, Y, str_initial_method_ao=1)
+        model_bo.optimize(X, Y, str_sampling_method=1)
     with pytest.raises(AssertionError) as error:
-        model_bo.optimize(X, Y, str_initial_method_ao='abc')
+        model_bo.optimize(X, Y, str_sampling_method='abc')
     with pytest.raises(AssertionError) as error:
         model_bo.optimize(X, Y, str_mlm_method=1)
     with pytest.raises(AssertionError) as error:
         model_bo.optimize(X, Y, str_mlm_method='abc')
     with pytest.raises(AssertionError) as error:
-        model_bo.optimize(X, Y, int_samples='abc')
+        model_bo.optimize(X, Y, num_samples='abc')
 
     next_point, dict_info = model_bo.optimize(X, Y)
     next_points = dict_info['next_points']

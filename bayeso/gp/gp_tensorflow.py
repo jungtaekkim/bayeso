@@ -13,6 +13,7 @@ from bayeso import constants
 from bayeso.gp import gp_common
 from bayeso.utils import utils_gp
 from bayeso.utils import utils_covariance
+from bayeso.utils import utils_common
 from bayeso.utils import utils_logger
 
 logger = utils_logger.get_logger('gp_tensorflow')
@@ -25,11 +26,12 @@ if gpus: # pragma: no cover
         print(e)
 
 
-def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov,
-    is_fixed_noise=constants.IS_FIXED_GP_NOISE,
-    num_iters=1000,
-    debug=False
-):
+@utils_common.validate_types
+def get_optimized_kernel(X_train: np.ndarray, Y_train: np.ndarray, prior_mu: constants.TYPING_UNION_CALLABLE_NONE, str_cov: str,
+    fix_noise: bool=constants.FIX_GP_NOISE,
+    num_iters: int=1000,
+    debug: bool=False
+) -> constants.TYPING_TUPLE_TWO_ARRAYS_DICT:
     """
     This function computes the kernel matrix optimized by optimization method specified, its inverse matrix, and the optimized hyperparameters, using TensorFlow and TensorFlow probability.
 
@@ -41,8 +43,8 @@ def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov,
     :type prior_mu: function or NoneType
     :param str_cov: the name of covariance function.
     :type str_cov: str.
-    :param is_fixed_noise: flag for fixing a noise.
-    :type is_fixed_noise: bool., optional
+    :param fix_noise: flag for fixing a noise.
+    :type fix_noise: bool., optional
     :param num_iters: the number of iterations for optimizing negative log likelihood.
     :type num_iters: int., optional
     :param debug: flag for printing log messages.
@@ -55,12 +57,12 @@ def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov,
 
     """
 
-    # TODO: check to input same is_fixed_noise to convert_hyps and restore_hyps
+    # TODO: check to input same fix_noise to convert_hyps and restore_hyps
     assert isinstance(X_train, np.ndarray)
     assert isinstance(Y_train, np.ndarray)
     assert callable(prior_mu) or prior_mu is None
     assert isinstance(str_cov, str)
-    assert isinstance(is_fixed_noise, bool)
+    assert isinstance(fix_noise, bool)
     assert isinstance(num_iters, int)
     assert isinstance(debug, bool)
     assert len(Y_train.shape) == 2
@@ -68,9 +70,9 @@ def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov,
     utils_gp.check_str_cov('get_optimized_kernel', str_cov, X_train.shape)
     assert num_iters >= 10 or num_iters == 0
 
-    # TODO: prior_mu and is_fixed_noise are not working now.
+    # TODO: prior_mu and fix_noise are not working now.
     prior_mu = None
-    is_fixed_noise = False
+    fix_noise = False
 
     time_start = time.time()
 
@@ -161,7 +163,7 @@ def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov,
         'noise': np.sqrt(var_observation_noise_variance._value().numpy())
     }
 
-    cov_X_X, inv_cov_X_X, _ = gp_common.get_kernel_inverse(X_train, hyps, str_cov, is_fixed_noise=is_fixed_noise, debug=debug)
+    cov_X_X, inv_cov_X_X, _ = gp_common.get_kernel_inverse(X_train, hyps, str_cov, fix_noise=fix_noise, debug=debug)
 
     time_end = time.time()
 

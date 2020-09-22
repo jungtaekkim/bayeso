@@ -39,15 +39,15 @@ def _set_font_config(use_tex: bool) -> constants.TYPE_NONE: # pragma: no cover
         plt.rc('pdf', fonttype=42)
     return
 
-def _set_ax_config(ax, str_x_axis, str_y_axis,
-    size_labels=32,
-    size_ticks=22,
-    xlim_min=None,
-    xlim_max=None,
-    draw_box=True,
-    draw_zero_axis=False,
-    is_grid=True,
-): # pragma: no cover
+def _set_ax_config(ax, str_x_axis: str, str_y_axis: str,
+    size_labels: int=32,
+    size_ticks: int=22,
+    xlim_min: constants.TYPING_UNION_FLOAT_NONE=None,
+    xlim_max: constants.TYPING_UNION_FLOAT_NONE=None,
+    draw_box: bool=True,
+    draw_zero_axis: bool=False,
+    draw_grid: bool=True,
+) -> constants.TYPE_NONE: # pragma: no cover
     """
     It sets an axis configuration.
 
@@ -69,8 +69,8 @@ def _set_ax_config(ax, str_x_axis, str_y_axis,
     :type draw_box: bool., optional
     :param draw_zero_axis: flag for drawing a zero axis.
     :type draw_zero_axis: bool., optional
-    :param is_grid: flag for drawing grids.
-    :type is_grid: bool., optional
+    :param draw_grid: flag for drawing grids.
+    :type draw_grid: bool., optional
 
     :returns: None.
     :rtype: NoneType
@@ -89,7 +89,7 @@ def _set_ax_config(ax, str_x_axis, str_y_axis,
         ax.set_xlim([xlim_min, xlim_max])
     if draw_zero_axis:
         ax.spines['bottom'].set_position('zero')
-    if is_grid:
+    if draw_grid:
         ax.grid()
     return
 

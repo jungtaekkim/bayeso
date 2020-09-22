@@ -2,8 +2,9 @@
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
 # last updated: August 21, 2020
 
-import numpy as np
 import pytest
+import numpy as np
+import typing
 
 from bayeso import constants
 try:
@@ -15,6 +16,21 @@ from bayeso.utils import utils_covariance
 
 TEST_EPSILON = 1e-7
 
+
+def test_get_optimized_kernel_typing():
+    if gp_gpytorch is None: # pragma: no cover
+        pytest.skip('GPyTorch is not installed.')
+
+    annos = gp_gpytorch.get_optimized_kernel.__annotations__
+
+    assert annos['X_train'] == np.ndarray
+    assert annos['Y_train'] == np.ndarray
+    assert annos['prior_mu'] == typing.Union[callable, type(None)]
+    assert annos['str_cov'] == str
+    assert annos['fix_noise'] == bool
+    assert annos['num_iters'] == int
+    assert annos['debug'] == bool
+    assert annos['return'] == typing.Tuple[np.ndarray, np.ndarray, dict]
 
 def test_get_optimized_kernel():
     np.random.seed(42)
@@ -48,7 +64,7 @@ def test_get_optimized_kernel():
     with pytest.raises(ValueError) as error:
         gp_gpytorch.get_optimized_kernel(X, Y, prior_mu, 'abc')
     with pytest.raises(AssertionError) as error:
-        gp_gpytorch.get_optimized_kernel(X, Y, prior_mu, 'se', is_fixed_noise=1)
+        gp_gpytorch.get_optimized_kernel(X, Y, prior_mu, 'se', fix_noise=1)
     with pytest.raises(AssertionError) as error:
         gp_gpytorch.get_optimized_kernel(X, Y, prior_mu, 'se', num_iters='abc')
     with pytest.raises(AssertionError) as error:

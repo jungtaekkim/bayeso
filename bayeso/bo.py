@@ -26,12 +26,12 @@ from bayeso import constants
 logger = utils_logger.get_logger('bo')
 
 
-class BO(object):
+class BO:
     """
     It is a Bayesian optimization class.
 
-    :param arr_range: a search space. Shape: (d, 2).
-    :type arr_range: numpy.ndarray
+    :param range_X: a search space. Shape: (d, 2).
+    :type range_X: numpy.ndarray
     :param str_cov: the name of covariance function.
     :type str_cov: str., optional
     :param str_acq: the name of acquisition function.
@@ -53,14 +53,14 @@ class BO(object):
 
     """
 
-    def __init__(self, arr_range,
+    def __init__(self, range_X,
         str_cov=constants.STR_GP_COV,
         str_acq=constants.STR_BO_ACQ,
-        normalize_Y=constants.IS_NORMALIZED_RESPONSE,
+        normalize_Y=constants.NORMALIZE_RESPONSE,
         use_ard=True,
         prior_mu=None,
         str_optimizer_method_gp=constants.STR_OPTIMIZER_METHOD_GP,
-        str_optimizer_method_bo=constants.STR_OPTIMIZER_METHOD_BO,
+        str_optimizer_method_bo=constants.STR_OPTIMIZER_METHOD_AO,
         str_modelselection_method=constants.STR_MODELSELECTION_METHOD,
         debug=False
     ):
@@ -70,7 +70,7 @@ class BO(object):
         """
 
         # TODO: use use_ard.
-        assert isinstance(arr_range, np.ndarray)
+        assert isinstance(range_X, np.ndarray)
         assert isinstance(str_cov, str)
         assert isinstance(str_acq, str)
         assert isinstance(normalize_Y, bool)
@@ -80,22 +80,22 @@ class BO(object):
         assert isinstance(str_modelselection_method, str)
         assert isinstance(debug, bool)
         assert callable(prior_mu) or prior_mu is None
-        assert len(arr_range.shape) == 2
-        assert arr_range.shape[1] == 2
-        assert (arr_range[:, 0] <= arr_range[:, 1]).all()
+        assert len(range_X.shape) == 2
+        assert range_X.shape[1] == 2
+        assert (range_X[:, 0] <= range_X[:, 1]).all()
         assert str_cov in constants.ALLOWED_GP_COV
         assert str_acq in constants.ALLOWED_BO_ACQ
         assert str_optimizer_method_gp in constants.ALLOWED_OPTIMIZER_METHOD_GP
         assert str_optimizer_method_bo in constants.ALLOWED_OPTIMIZER_METHOD_BO
         assert str_modelselection_method in constants.ALLOWED_MODELSELECTION_METHOD
 
-        self.arr_range = arr_range
-        self.num_dim = arr_range.shape[0]
+        self.range_X = range_X
+        self.num_dim = range_X.shape[0]
         self.str_cov = str_cov
         self.str_acq = str_acq
         self.use_ard = use_ard
         self.normalize_Y = normalize_Y
-        self.str_optimizer_method_bo = utils_bo.check_optimizer_method_bo(str_optimizer_method_bo, arr_range.shape[0], debug)
+        self.str_optimizer_method_bo = utils_bo.check_optimizer_method_bo(str_optimizer_method_bo, range_X.shape[0], debug)
         self.str_optimizer_method_gp = str_optimizer_method_gp
         self.str_modelselection_method = str_modelselection_method
         self.debug = debug
@@ -104,119 +104,162 @@ class BO(object):
         self.is_optimize_hyps = True
         self.historical_hyps = []
 
-    def _get_initial_grid(self, int_grid=constants.NUM_BO_GRID):
+    def _get_samples_grid(self, num_grids=constants.NUM_GRIDS_AO):
         """
-        It returns grids of `self.arr_range`.
+        It returns grids of `self.range_X`.
 
-        :param int_grid: the number of grids.
-        :type int_grid: int., optional
+        :param num_grids: the number of grids.
+        :type num_grids: int., optional
 
-        :returns: grids of `self.arr_range`. Shape: (`int_grid`:math:`^{\\text{d}}`, d).
+        :returns: grids of `self.range_X`. Shape: (`num_grids`:math:`^{\\text{d}}`, d).
         :rtype: numpy.ndarray
 
         :raises: AssertionError
 
         """
 
-        assert isinstance(int_grid, int)
+        assert isinstance(num_grids, int)
 
-        arr_initials = utils_common.get_grids(self.arr_range, int_grid)
-        return arr_initials
+        initials = utils_common.get_grids(self.range_X, num_grids)
+        return initials
 
-    def _get_initial_uniform(self, int_samples, int_seed=None):
+    def _get_samples_uniform(self, num_samples, seed=None):
         """
-        It returns `int_samples` examples uniformly sampled.
+        It returns `num_samples` examples uniformly sampled.
 
-        :param int_samples: the number of samples.
-        :type int_samples: int.
-        :param int_seed: None, or random seed.
-        :type int_seed: NoneType or int., optional
+        :param num_samples: the number of samples.
+        :type num_samples: int.
+        :param seed: None, or random seed.
+        :type seed: NoneType or int., optional
 
-        :returns: random examples. Shape: (`int_samples`, d).
+        :returns: random examples. Shape: (`num_samples`, d).
         :rtype: numpy.ndarray
 
         :raises: AssertionError
 
         """
 
-        assert isinstance(int_samples, int)
-        assert isinstance(int_seed, int) or int_seed is None
-        
-        if int_seed is not None:
-            np.random.seed(int_seed)
+        assert isinstance(num_samples, int)
+        assert isinstance(seed, (int, type(None)))
+
+        if seed is not None:
+            np.random.seed(seed)
+
         list_initials = []
-        for _ in range(0, int_samples):
+        for _ in range(0, num_samples):
             list_initial = []
-            for elem in self.arr_range:
+            for elem in self.range_X:
                 list_initial.append(np.random.uniform(elem[0], elem[1]))
             list_initials.append(np.array(list_initial))
-        arr_initials = np.array(list_initials)
-        return arr_initials
+        initials = np.array(list_initials)
+        return initials
 
-    # TODO: noise should be added.
-    def _get_initial_sobol(self, int_samples, int_seed=None):
+    def _get_samples_sobol(self, num_samples, seed=None):
         """
-        It returns `int_samples` examples sampled from Sobol sequence.
+        It returns `num_samples` examples sampled from Sobol sequence.
 
-        :param int_samples: the number of samples.
-        :type int_samples: int.
-        :param int_seed: None, or random seed.
-        :type int_seed: NoneType or int., optional
+        :param num_samples: the number of samples.
+        :type num_samples: int.
+        :param seed: None, or random seed.
+        :type seed: NoneType or int., optional
 
-        :returns: examples sampled from Sobol sequence. Shape: (`int_samples`, d).
+        :returns: examples sampled from Sobol sequence. Shape: (`num_samples`, d).
         :rtype: numpy.ndarray
 
         :raises: AssertionError
 
         """
 
-        assert isinstance(int_samples, int)
-        assert isinstance(int_seed, int) or int_seed is None
+        assert isinstance(num_samples, int)
+        assert isinstance(seed, (int, type(None)))
 
-        if int_seed is None:
-            int_seed = np.random.randint(0, 10000)
-        if self.debug: logger.debug('seed: {}'.format(int_seed))
+        if seed is None:
+            seed = np.random.randint(0, 100000)
+        if self.debug: logger.debug('seed: {}'.format(seed))
 
-        arr_samples = sobol_seq.i4_sobol_generate(self.num_dim, int_samples, int_seed)
-        arr_samples = arr_samples * (self.arr_range[:, 1].flatten() - self.arr_range[:, 0].flatten()) + self.arr_range[:, 0].flatten()
-        return arr_samples
+        samples = sobol_seq.i4_sobol_generate(self.num_dim, num_samples, seed)
+        samples = samples * (self.range_X[:, 1].flatten() - self.range_X[:, 0].flatten()) + self.range_X[:, 0].flatten()
+        return samples
 
-    def _get_initial_latin(self, int_samples):
+    def _get_samples_latin(self, num_samples):
         """
-        It returns `int_samples` examples sampled from Latin hypercube.
+        It returns `num_samples` examples sampled from Latin hypercube.
 
-        :param int_samples: the number of samples.
-        :type int_samples: int.
+        :param num_samples: the number of samples.
+        :type num_samples: int.
 
-        :returns: examples sampled from Latin hypercube. Shape: (`int_samples`, d).
+        :returns: examples sampled from Latin hypercube. Shape: (`num_samples`, d).
         :rtype: numpy.ndarray
 
         :raises: AssertionError
 
         """
 
-        raise NotImplementedError('_get_initial_latin in bo.py')
+        raise NotImplementedError('_get_samples_latin in bo.py')
 
-    # TODO: int_grid should be able to be input.
-    # TODO: change this method name. More general name is needed like get_samples.
-    def get_initial(self, str_initial_method,
+    # TODO: num_grids should be able to be input.
+    def get_samples(self, str_sampling_method,
         fun_objective=None,
-        int_samples=constants.NUM_ACQ_SAMPLES,
-        int_seed=None,
+        num_samples=constants.NUM_SAMPLES_AO,
+        seed=None,
     ):
         """
-        It returns a single example or `int_samples` examples, sampled by a certian method `str_initial_method`.
+        It returns `num_samples` examples, sampled by a sampling method `str_sampling_method`.
+
+        :param str_sampling_method: the name of sampling method.
+        :type str_sampling_method: str.
+        :param fun_objective: None, or objective function.
+        :type fun_objective: NoneType or function, optional
+        :param num_samples: the number of samples.
+        :type num_samples: int., optional
+        :param seed: None, or random seed.
+        :type seed: NoneType or int., optional
+
+        :returns: sampled examples. Shape: (`num_samples`, d).
+        :rtype: numpy.ndarray
+
+        :raises: AssertionError
+
+        """
+
+        assert isinstance(str_sampling_method, str)
+        assert callable(fun_objective) or fun_objective is None
+        assert isinstance(num_samples, int)
+        assert isinstance(seed, (int, type(None)))
+        assert str_sampling_method in constants.ALLOWED_SAMPLING_METHOD
+
+        if str_sampling_method == 'grid':
+            assert fun_objective is not None
+            if self.debug: logger.debug('num_samples is ignored, because grid is chosen.')
+            samples = self._get_samples_grid()
+            samples = utils_bo.get_best_acquisition(samples, fun_objective)
+        elif str_sampling_method == 'uniform':
+            samples = self._get_samples_uniform(num_samples, seed=seed)
+        elif str_sampling_method == 'sobol':
+            samples = self._get_samples_sobol(num_samples, seed=seed)
+        elif str_sampling_method == 'latin':
+            raise NotImplementedError('get_samples: latin')
+        else:
+            raise NotImplementedError('get_samples: allowed str_sampling_method, but it is not implemented.')
+
+        if self.debug: logger.debug('samples:\n{}'.format(utils_logger.get_str_array(samples)))
+
+        return samples
+
+    def get_initials(self, str_initial_method, num_initials,
+        seed=None,
+    ):
+        """
+        It returns `num_initials` examples, sampled by a sampling method `str_initial_method`.
 
         :param str_initial_method: the name of sampling method.
         :type str_initial_method: str.
-        :param fun_objective: None, or objective function.
-        :type fun_objective: NoneType or function, optional
-        :param int_samples: the number of samples.
-        :type int_samples: int., optional
-        :param int_seed: None, or random seed.
-        :type int_seed: NoneType or int., optional
+        :param num_initials: the number of samples.
+        :type num_initials: int., optional
+        :param seed: None, or random seed.
+        :type seed: NoneType or int., optional
 
-        :returns: sampled examples. Shape: (1, d) or (`int_samples`, d).
+        :returns: sampled examples. Shape: (`num_samples`, d).
         :rtype: numpy.ndarray
 
         :raises: AssertionError
@@ -224,27 +267,11 @@ class BO(object):
         """
 
         assert isinstance(str_initial_method, str)
-        assert callable(fun_objective) or fun_objective is None
-        assert isinstance(int_samples, int)
-        assert isinstance(int_seed, int) or int_seed is None
+        assert isinstance(num_initials, int)
+        assert isinstance(seed, (int, type(None)))
+        assert str_initial_method in constants.ALLOWED_INITIALIZING_METHOD_BO
 
-        if str_initial_method == 'grid':
-            assert fun_objective is not None
-            if self.debug: logger.debug('int_samples is ignored, because grid is chosen.')
-            arr_initials = self._get_initial_grid()
-            arr_initials = utils_bo.get_best_acquisition(arr_initials, fun_objective)
-        elif str_initial_method == 'uniform':
-            arr_initials = self._get_initial_uniform(int_samples, int_seed=int_seed)
-        elif str_initial_method == 'sobol':
-            arr_initials = self._get_initial_sobol(int_samples, int_seed=int_seed)
-        elif str_initial_method == 'latin':
-            raise NotImplementedError('get_initial: latin')
-        else:
-            raise NotImplementedError('get_initial: allowed str_initial_method, but it is not implemented.')
-
-        if self.debug: logger.debug('arr_initials:\n{}'.format(utils_logger.get_str_array(arr_initials)))
-
-        return arr_initials
+        return self.get_samples(str_initial_method, num_samples=num_initials, seed=seed)
 
     def _optimize_objective(self, fun_acquisition, X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps):
         """
@@ -271,14 +298,14 @@ class BO(object):
         """
 
         X_test = np.atleast_2d(X_test)
-        pred_mean, pred_std, _ = gp.predict_test_(X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps, str_cov=self.str_cov, prior_mu=self.prior_mu, debug=self.debug)
+        pred_mean, pred_std, _ = gp.predict_with_cov(X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps, str_cov=self.str_cov, prior_mu=self.prior_mu, debug=self.debug)
         # no matter which acquisition functions are given, we input pred_mean, pred_std, and Y_train.
         acquisitions = fun_acquisition(pred_mean=np.ravel(pred_mean), pred_std=np.ravel(pred_std), Y_train=Y_train)
         return acquisitions
 
     def _get_bounds(self):
         """
-        It returns list of range tuples, obtained from `self.arr_range`.
+        It returns list of range tuples, obtained from `self.range_X`.
 
         :returns: list of range tuples.
         :rtype: list
@@ -286,23 +313,23 @@ class BO(object):
         """
 
         list_bounds = []
-        for elem in self.arr_range:
+        for elem in self.range_X:
             list_bounds.append(tuple(elem))
         return list_bounds
 
-    def _optimize(self, fun_negative_acquisition, str_initial_method, int_samples):
+    def _optimize(self, fun_negative_acquisition, str_sampling_method, num_samples):
         """
         It optimizes `fun_negative_function` with `self.str_optimizer_method_bo`.
-        `int_samples` examples are determined by `str_initial_method`, to start acquisition function optimization.
+        `num_samples` examples are determined by `str_sampling_method`, to start acquisition function optimization.
 
         :param fun_objective: negative acquisition function.
         :type fun_objective: function
-        :param str_initial_method: the name of sampling method.
-        :type str_initial_method: str.
-        :param int_samples: the number of samples.
-        :type int_samples: int.
+        :param str_sampling_method: the name of sampling method.
+        :type str_sampling_method: str.
+        :param num_samples: the number of samples.
+        :type num_samples: int.
 
-        :returns: tuple of next point to evaluate and all candidates determined by acquisition function optimization. Shape: ((d, ), (`int_samples`, d)).
+        :returns: tuple of next point to evaluate and all candidates determined by acquisition function optimization. Shape: ((d, ), (`num_samples`, d)).
         :rtype: (numpy.ndarray, numpy.ndarray)
 
         """
@@ -310,8 +337,8 @@ class BO(object):
         list_next_point = []
         if self.str_optimizer_method_bo == 'L-BFGS-B':
             list_bounds = self._get_bounds()
-            arr_initials = self.get_initial(str_initial_method, fun_objective=fun_negative_acquisition, int_samples=int_samples)
-            for arr_initial in arr_initials:
+            initials = self.get_samples(str_sampling_method, fun_objective=fun_negative_acquisition, num_samples=num_samples)
+            for arr_initial in initials:
                 next_point = minimize(
                     fun_negative_acquisition,
                     x0=arr_initial,
@@ -338,9 +365,9 @@ class BO(object):
                 def g(bx):
                     return f(bx)[0]
                 return g
-            arr_initials = self.get_initial(str_initial_method, fun_objective=fun_negative_acquisition, int_samples=1)
+            initials = self.get_samples(str_sampling_method, fun_objective=fun_negative_acquisition, num_samples=1)
             cur_sigma0 = np.mean(list_bounds[:, 1] - list_bounds[:, 0]) / 4.0
-            next_point_x = cma.fmin(fun_wrapper(fun_negative_acquisition), arr_initials[0], cur_sigma0, options={'bounds': [list_bounds[:, 0], list_bounds[:, 1]], 'verbose': -1, 'maxfevals': 1e5})[0]
+            next_point_x = cma.fmin(fun_wrapper(fun_negative_acquisition), initials[0], cur_sigma0, options={'bounds': [list_bounds[:, 0], list_bounds[:, 1]], 'verbose': -1, 'maxfevals': 1e5})[0]
             list_next_point.append(next_point_x)
 
         next_points = np.array(list_next_point)
@@ -348,8 +375,8 @@ class BO(object):
         return next_point, next_points
 
     def optimize(self, X_train, Y_train,
-        str_initial_method_ao=constants.STR_AO_INITIALIZATION,
-        int_samples=constants.NUM_ACQ_SAMPLES,
+        str_sampling_method=constants.STR_SAMPLING_METHOD_AO,
+        num_samples=constants.NUM_SAMPLES_AO,
         str_mlm_method=constants.STR_MLM_METHOD,
     ):
         """
@@ -359,10 +386,10 @@ class BO(object):
         :type X_train: numpy.ndarray
         :param Y_train: outputs. Shape: (n, 1).
         :type Y_train: numpy.ndarray
-        :param str_initial_method_ao: the name of initialization method for acquisition function optimization.
-        :type str_initial_method_ao: str., optional
-        :param int_samples: the number of samples.
-        :type int_samples: int., optional
+        :param str_sampling_method_method: the name of sampling method for acquisition function optimization.
+        :type str_sampling_method: str., optional
+        :param num_samples: the number of samples.
+        :type num_samples: int., optional
         :param str_mlm_method: the name of marginal likelihood maximization method for Gaussian process regression.
         :type str_mlm_method: str., optional
 
@@ -375,16 +402,16 @@ class BO(object):
 
         assert isinstance(X_train, np.ndarray)
         assert isinstance(Y_train, np.ndarray)
-        assert isinstance(str_initial_method_ao, str)
-        assert isinstance(int_samples, int)
+        assert isinstance(str_sampling_method, str)
+        assert isinstance(num_samples, int)
         assert isinstance(str_mlm_method, str)
         assert len(X_train.shape) == 2
         assert len(Y_train.shape) == 2
         assert Y_train.shape[1] == 1
         assert X_train.shape[0] == Y_train.shape[0]
         assert X_train.shape[1] == self.num_dim
-        assert int_samples > 0
-        assert str_initial_method_ao in constants.ALLOWED_INITIALIZATIONS_AO
+        assert num_samples > 0
+        assert str_sampling_method in constants.ALLOWED_SAMPLING_METHOD
         assert str_mlm_method in constants.ALLOWED_MLM_METHOD
 
         time_start = time.time()
@@ -396,15 +423,15 @@ class BO(object):
         if str_mlm_method == 'regular':
             cov_X_X, inv_cov_X_X, hyps = gp.get_optimized_kernel(X_train, Y_train, self.prior_mu, self.str_cov, str_optimizer_method=self.str_optimizer_method_gp, str_modelselection_method=self.str_modelselection_method, debug=self.debug)
         elif str_mlm_method == 'converged':
-            is_fixed_noise = constants.IS_FIXED_GP_NOISE
+            fix_noise = constants.FIX_GP_NOISE
 
             if self.is_optimize_hyps:
                 cov_X_X, inv_cov_X_X, hyps = gp.get_optimized_kernel(X_train, Y_train, self.prior_mu, self.str_cov, str_optimizer_method=self.str_optimizer_method_gp, str_modelselection_method=self.str_modelselection_method, debug=self.debug)
-                self.is_optimize_hyps = not utils_bo.check_hyps_convergence(self.historical_hyps, hyps, self.str_cov, is_fixed_noise)
+                self.is_optimize_hyps = not utils_bo.check_hyps_convergence(self.historical_hyps, hyps, self.str_cov, fix_noise)
             else: # pragma: no cover
                 if self.debug: logger.debug('hyps converged.')
                 hyps = self.historical_hyps[-1]
-                cov_X_X, inv_cov_X_X, _ = gp_common.get_kernel_inverse(X_train, hyps, self.str_cov, is_fixed_noise=is_fixed_noise, debug=self.debug)
+                cov_X_X, inv_cov_X_X, _ = gp_common.get_kernel_inverse(X_train, hyps, self.str_cov, fix_noise=fix_noise, debug=self.debug)
         else: # pragma: no cover
             raise ValueError('optimize: missing condition for str_mlm_method.')
         time_end_gp = time.time()
@@ -415,7 +442,7 @@ class BO(object):
 
         time_start_acq = time.time()
         fun_negative_acquisition = lambda X_test: -1.0 * constants.MULTIPLIER_ACQ * self._optimize_objective(fun_acquisition, X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps)
-        next_point, next_points = self._optimize(fun_negative_acquisition, str_initial_method=str_initial_method_ao, int_samples=int_samples)
+        next_point, next_points = self._optimize(fun_negative_acquisition, str_sampling_method=str_sampling_method, num_samples=num_samples)
         time_end_acq = time.time()
 
         acquisitions = fun_negative_acquisition(next_points)
