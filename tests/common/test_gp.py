@@ -267,6 +267,7 @@ def test_predict_with_optimized_hyps_typing():
     assert annos['Y_train'] == np.ndarray
     assert annos['X_test'] == np.ndarray
     assert annos['str_cov'] == str
+    assert annos['str_optimizer_method'] == str
     assert annos['prior_mu'] == typing.Union[callable, type(None)]
     assert annos['fix_noise'] == float
     assert annos['debug'] == bool
@@ -292,6 +293,7 @@ def test_predict_with_optimized_hyps():
         gp.predict_with_optimized_hyps(X, 1, X_test, str_cov='se', prior_mu=prior_mu)
     with pytest.raises(AssertionError) as error:
         gp.predict_with_optimized_hyps(1, Y, X_test, str_cov='se', prior_mu=prior_mu)
+
     with pytest.raises(AssertionError) as error:
         gp.predict_with_optimized_hyps(np.random.randn(num_X, 1), Y, X_test, str_cov='se', prior_mu=prior_mu)
     with pytest.raises(AssertionError) as error:
@@ -299,7 +301,10 @@ def test_predict_with_optimized_hyps():
     with pytest.raises(AssertionError) as error:
         gp.predict_with_optimized_hyps(X, np.random.randn(10, 1), X_test, str_cov='se', prior_mu=prior_mu)
     with pytest.raises(AssertionError) as error:
+        gp.predict_with_optimized_hyps(X, Y, X_test, str_optimizer_method=1)
+    with pytest.raises(AssertionError) as error:
         gp.predict_with_optimized_hyps(X, Y, X_test, fix_noise=1)
+
     with pytest.raises(AssertionError) as error:
         gp.predict_with_optimized_hyps(X, Y, X_test, debug=1)
     

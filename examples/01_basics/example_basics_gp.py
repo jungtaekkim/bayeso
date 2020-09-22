@@ -23,17 +23,16 @@ def main():
     num_test = 200
     X_test = np.linspace(-3, 3, num_test)
     X_test = X_test.reshape((num_test, 1))
-    Y_test_truth = np.cos(X_test)
+    Y_test = np.cos(X_test)
     hyps = {
         'signal': 0.5,
         'lengthscales': 0.5,
         'noise': 0.02,
     }
-    mu, sigma, Sigma = gp.predict_test(X_train, Y_train, X_test, hyps)
-    utils_plotting.plot_gp(X_train, Y_train, X_test, mu, sigma, Y_test_truth, path_save=PATH_SAVE, str_postfix='cos')
+    mu, sigma, Sigma = gp.predict_with_hyps(X_train, Y_train, X_test, hyps)
+    utils_plotting.plot_gp_via_distribution(X_train, Y_train, X_test, mu, sigma, Y_test, path_save=PATH_SAVE, str_postfix='cos')
 
 if __name__ == '__main__':
     if not os.path.isdir(PATH_SAVE):
         os.makedirs(PATH_SAVE)
     main()
-

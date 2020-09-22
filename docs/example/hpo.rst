@@ -15,7 +15,7 @@ First, import some packages we need.
     import sklearn.model_selection
 
     from bayeso import bo
-    from bayeso.utils import utils_bo
+    from bayeso.wrappers import wrappers_bo
     from bayeso.utils import utils_plotting
 
 Get handwritten digits dataset, which contains digit images of 0 to 9,
@@ -55,9 +55,9 @@ We optimize the objective function with our `bayeso.bo.BO` for 50 iterations.
 
     # (max_depth, n_estimators)
     bounds = np.array([[1, 10], [100, 500]])
-    int_bo = 10
-    int_iter = 50
-    int_init = 5
+    num_bo = 10
+    num_iter = 50
+    num_init = 5
 
 Optimze the objective function, after declaring the `bayeso.bo.BO` object.
 
@@ -68,15 +68,15 @@ Optimze the objective function, after declaring the `bayeso.bo.BO` object.
     list_Y = []
     list_time = []
 
-    for ind_bo in range(0, int_bo):
-        print('BO Iteration:', ind_bo + 1)
-        X_final, Y_final, time_final, _, _ = utils_bo.optimize_many_with_random_init(
-            model_bo, fun_target, int_init, int_iter,
-            str_initial_method_bo='uniform', str_initial_method_ao='uniform',
-            int_samples_ao=100, int_seed=42 * ind_bo)
+    for ind_bo in range(0, num_bo):
+        print('BO Round:', ind_bo + 1)
+        X_final, Y_final, time_final, _, _ = wrappers_bo.run_single_round(
+            model_bo, fun_target, num_init, num_iter,
+            str_initial_method_bo='uniform', str_sampling_method_ao='uniform',
+            num_samples_ao=100, seed=42 * ind_bo)
         list_Y.append(Y_final)
         list_time.append(time_final)
-    
+
     arr_Y = np.array(list_Y)
     arr_time = np.array(list_time)
 
@@ -87,12 +87,12 @@ Plot the results in terms of the number of iterations and time.
 
 .. code-block:: python
 
-    utils_plotting.plot_minimum(arr_Y, [str_fun], int_init, True,
-        is_tex=True,
+    utils_plotting.plot_minimum_vs_iter(arr_Y, [str_fun], num_init, True,
+        use_tex=True,
         str_x_axis=r'\textrm{Iteration}',
         str_y_axis=r'$1 - $\textrm{Accuracy}')
-    utils_plotting.plot_minimum_time(arr_time, arr_Y, [str_fun], int_init, True,
-        is_tex=True,
+    utils_plotting.plot_minimum_vs_time(arr_time, arr_Y, [str_fun], num_init, True,
+        use_tex=True,
         str_x_axis=r'\textrm{Time (sec.)}',
         str_y_axis=r'$1 - $\textrm{Accuracy}')
 
@@ -117,7 +117,7 @@ Full code:
     import sklearn.model_selection
 
     from bayeso import bo
-    from bayeso.utils import utils_bo
+    from bayeso.wrappers import wrappers_bo
     from bayeso.utils import utils_plotting
 
     digits = sklearn.datasets.load_digits()
@@ -142,36 +142,36 @@ Full code:
 
     # (max_depth, n_estimators)
     bounds = np.array([[1, 10], [100, 500]])
-    int_bo = 10
-    int_iter = 50
-    int_init = 5
+    num_bo = 10
+    num_iter = 50
+    num_init = 5
 
     model_bo = bo.BO(bounds, debug=False)
 
     list_Y = []
     list_time = []
 
-    for ind_bo in range(0, int_bo):
-        print('BO Iteration:', ind_bo + 1)
-        X_final, Y_final, time_final, _, _ = utils_bo.optimize_many_with_random_init(
-            model_bo, fun_target, int_init, int_iter,
-            str_initial_method_bo='uniform', str_initial_method_ao='uniform',
-            int_samples_ao=100, int_seed=42 * ind_bo)
+    for ind_bo in range(0, num_bo):
+        print('BO Round:', ind_bo + 1)
+        X_final, Y_final, time_final, _, _ = wrappers_bo.run_single_round(
+            model_bo, fun_target, num_init, num_iter,
+            str_initial_method_bo='uniform', str_sampling_method_ao='uniform',
+            num_samples_ao=100, seed=42 * ind_bo)
         list_Y.append(Y_final)
         list_time.append(time_final)
-    
+
     arr_Y = np.array(list_Y)
     arr_time = np.array(list_time)
 
     arr_Y = np.expand_dims(np.squeeze(arr_Y), axis=0)
     arr_time = np.expand_dims(arr_time, axis=0)
 
-    utils_plotting.plot_minimum(arr_Y, [str_fun], int_init, True,
-        is_tex=True,
+    utils_plotting.plot_minimum_vs_iter(arr_Y, [str_fun], num_init, True,
+        use_tex=True,
         str_x_axis=r'\textrm{Iteration}',
         str_y_axis=r'$1 - $\textrm{Accuracy}')
-    utils_plotting.plot_minimum_time(arr_time, arr_Y, [str_fun], int_init, True,
-        is_tex=True,
+    utils_plotting.plot_minimum_vs_time(arr_time, arr_Y, [str_fun], num_init, True,
+        use_tex=True,
         str_x_axis=r'\textrm{Time (sec.)}',
         str_y_axis=r'$1 - $\textrm{Accuracy}')
 

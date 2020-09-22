@@ -30,10 +30,10 @@ def main(str_cov):
     num_test = 200
     X_test = np.linspace(-3, 3, num_test)
     X_test = X_test.reshape((num_test, 1))
-    Y_test_truth = np.cos(X_test)
+    Y_test = np.cos(X_test)
 
-    mu, sigma, Sigma = gp.predict_optimized(X_train, Y_train, X_test, str_cov=str_cov, is_fixed_noise=False, debug=True)
-    utils_plotting.plot_gp(X_train, Y_train, X_test, mu, sigma, Y_test_truth, path_save=PATH_SAVE, str_postfix='cos_' + str_cov)
+    mu, sigma, Sigma = gp.predict_with_optimized_hyps(X_train, Y_train, X_test, str_cov=str_cov, fix_noise=False, debug=True)
+    utils_plotting.plot_gp_via_distribution(X_train, Y_train, X_test, mu, sigma, Y_test, path_save=PATH_SAVE, str_postfix='cos_' + str_cov)
 
 if __name__ == '__main__':
     if not os.path.isdir(PATH_SAVE):

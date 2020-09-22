@@ -24,9 +24,10 @@ def main(scale, str_postfix):
     num_test = 200
     X_test = np.linspace(-3, 3, num_test)
     X_test = X_test.reshape((num_test, 1))
-    Y_test_truth = np.cos(X_test) * scale
-    mu, sigma, Sigma = gp.predict_optimized(X_train, Y_train, X_test, is_fixed_noise=False)
-    utils_plotting.plot_gp(X_train, Y_train, X_test, mu, sigma, Y_test_truth, PATH_SAVE, 'test_optimized_{}_y'.format(str_postfix))
+    Y_test = np.cos(X_test) * scale
+
+    mu, sigma, Sigma = gp.predict_with_optimized_hyps(X_train, Y_train, X_test, fix_noise=False, debug=True)
+    utils_plotting.plot_gp_via_distribution(X_train, Y_train, X_test, mu, sigma, Y_test, PATH_SAVE, 'test_optimized_{}_y'.format(str_postfix))
 
 
 if __name__ == '__main__':

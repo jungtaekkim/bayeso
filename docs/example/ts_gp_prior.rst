@@ -19,9 +19,8 @@ Declare some parameters to control this example, including zero-mean prior, and 
 
     num_points = 1000
     str_cov = 'se'
-    int_init = 1
-    int_iter = 50
-    int_ts = 10
+    num_iter = 50
+    num_ts = 10
 
     list_Y_min = []
 
@@ -35,28 +34,28 @@ At each iteration, we sample a query point that outputs the mininum value of the
 
 .. code-block:: python
 
-    for ind_ts in range(0, int_ts):
+    for ind_ts in range(0, num_ts):
         print('TS:', ind_ts + 1, 'round')
         Y = gp.sample_functions(mu, Sigma, num_samples=1)[0]
 
         ind_init = np.argmin(Y)
         bx_min = X[ind_init]
         y_min = Y[ind_init]
-    
+
         ind_random = np.random.choice(num_points)
 
         X_ = np.expand_dims(X[ind_random], axis=0)
         Y_ = np.expand_dims(np.expand_dims(Y[ind_random], axis=0), axis=1)
 
-        for ind_iter in range(0, int_iter):
+        for ind_iter in range(0, num_iter):
             print(ind_iter + 1, 'iteration')
 
-            mu_, sigma_, Sigma_ = gp.predict_optimized(X_, Y_, X, str_cov=str_cov)
+            mu_, sigma_, Sigma_ = gp.predict_with_optimized_hyps(X_, Y_, X, str_cov=str_cov)
             ind_ = np.argmin(gp.sample_functions(np.squeeze(mu_, axis=1), Sigma_, num_samples=1)[0])
 
             X_ = np.concatenate([X_, [X[ind_]]], axis=0)
             Y_ = np.concatenate([Y_, [[Y[ind_]]]], axis=0)
-        
+
         list_Y_min.append(Y_ - y_min)
 
     Ys = np.array(list_Y_min)
@@ -67,10 +66,12 @@ Plot the result obtained from the code block above.
 
 .. code-block:: python
 
-    utils_plotting.plot_minimum(np.array([Ys]), ['TS'], 1, True,
-                                is_tex=True, range_shade=1.0,
-                                str_x_axis=r'\textrm{Iteration}',
-                                str_y_axis=r'\textrm{Minimum regret}')
+    utils_plotting.plot_minimum_vs_iter(
+        np.array([Ys]), ['TS'], 1, True,
+        use_tex=True, range_shade=1.0,
+        str_x_axis=r'\textrm{Iteration}',
+        str_y_axis=r'\textrm{Minimum regret}'
+    )
 
 .. image:: ../_static/examples/ts_gp_prior.*
     :width: 320
@@ -90,9 +91,8 @@ Full code:
 
     num_points = 1000
     str_cov = 'se'
-    int_init = 1
-    int_iter = 50
-    int_ts = 10
+    num_iter = 50
+    num_ts = 10
 
     list_Y_min = []
 
@@ -101,36 +101,38 @@ Full code:
     hyps = utils_covariance.get_hyps(str_cov, 1)
     Sigma = covariance.cov_main(str_cov, X, X, hyps, True)
 
-    for ind_ts in range(0, int_ts):
+    for ind_ts in range(0, num_ts):
         print('TS:', ind_ts + 1, 'round')
         Y = gp.sample_functions(mu, Sigma, num_samples=1)[0]
 
         ind_init = np.argmin(Y)
         bx_min = X[ind_init]
         y_min = Y[ind_init]
-    
+
         ind_random = np.random.choice(num_points)
 
         X_ = np.expand_dims(X[ind_random], axis=0)
         Y_ = np.expand_dims(np.expand_dims(Y[ind_random], axis=0), axis=1)
 
-        for ind_iter in range(0, int_iter):
+        for ind_iter in range(0, num_iter):
             print(ind_iter + 1, 'iteration')
 
-            mu_, sigma_, Sigma_ = gp.predict_optimized(X_, Y_, X, str_cov=str_cov)
+            mu_, sigma_, Sigma_ = gp.predict_with_optimized_hyps(X_, Y_, X, str_cov=str_cov)
             ind_ = np.argmin(gp.sample_functions(np.squeeze(mu_, axis=1), Sigma_, num_samples=1)[0])
 
             X_ = np.concatenate([X_, [X[ind_]]], axis=0)
             Y_ = np.concatenate([Y_, [[Y[ind_]]]], axis=0)
-        
+
         list_Y_min.append(Y_ - y_min)
 
     Ys = np.array(list_Y_min)
     Ys = np.squeeze(Ys, axis=2)
     print(Ys.shape)
 
-    utils_plotting.plot_minimum(np.array([Ys]), ['TS'], 1, True,
-                                is_tex=True, range_shade=1.0,
-                                str_x_axis=r'\textrm{Iteration}',
-                                str_y_axis=r'\textrm{Minimum regret}')
+    utils_plotting.plot_minimum_vs_iter(
+        np.array([Ys]), ['TS'], 1, True,
+        use_tex=True, range_shade=1.0,
+        str_x_axis=r'\textrm{Iteration}',
+        str_y_axis=r'\textrm{Minimum regret}'
+    )
 

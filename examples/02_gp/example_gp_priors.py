@@ -36,10 +36,10 @@ def main(fun_prior, str_prior):
     num_test = 200
     X_test = np.linspace(-3, 6, num_test)
     X_test = X_test.reshape((num_test, 1))
-    Y_test_truth = np.cos(X_test) + 2.0
+    Y_test = np.cos(X_test) + 2.0
 
-    mu, sigma, Sigma = gp.predict_optimized(X_train, Y_train, X_test, prior_mu=fun_prior)
-    utils_plotting.plot_gp(X_train, Y_train, X_test, mu, sigma, Y_test_truth, PATH_SAVE, 'optimized_prior_{}'.format(str_prior))
+    mu, sigma, Sigma = gp.predict_with_optimized_hyps(X_train, Y_train, X_test, prior_mu=fun_prior)
+    utils_plotting.plot_gp_via_distribution(X_train, Y_train, X_test, mu, sigma, Y_test, PATH_SAVE, 'optimized_prior_{}'.format(str_prior))
 
 
 if __name__ == '__main__':

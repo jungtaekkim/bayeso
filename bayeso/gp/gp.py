@@ -244,6 +244,7 @@ def predict_with_hyps(X_train: np.ndarray, Y_train: np.ndarray, X_test: np.ndarr
 @utils_common.validate_types
 def predict_with_optimized_hyps(X_train: np.ndarray, Y_train: np.ndarray, X_test: np.ndarray,
     str_cov: str=constants.STR_GP_COV,
+    str_optimizer_method: str=constants.STR_OPTIMIZER_METHOD_GP,
     prior_mu: constants.TYPING_UNION_CALLABLE_NONE=None,
     fix_noise: float=constants.FIX_GP_NOISE,
     debug: bool=False
@@ -259,6 +260,8 @@ def predict_with_optimized_hyps(X_train: np.ndarray, Y_train: np.ndarray, X_test
     :type X_test: numpy.ndarray
     :param str_cov: the name of covariance function.
     :type str_cov: str., optional
+    :param str_optimizer_method: the name of optimization method.
+    :type str_optimizer_method: str., optional
     :param prior_mu: None, or prior mean function.
     :type prior_mu: NoneType, or function, optional
     :param fix_noise: flag for fixing a noise.
@@ -277,6 +280,7 @@ def predict_with_optimized_hyps(X_train: np.ndarray, Y_train: np.ndarray, X_test
     assert isinstance(Y_train, np.ndarray)
     assert isinstance(X_test, np.ndarray)
     assert isinstance(str_cov, str)
+    assert isinstance(str_optimizer_method, str)
     assert isinstance(fix_noise, bool)
     assert isinstance(debug, bool)
     assert callable(prior_mu) or prior_mu is None
@@ -284,10 +288,11 @@ def predict_with_optimized_hyps(X_train: np.ndarray, Y_train: np.ndarray, X_test
     utils_gp.check_str_cov('predict_with_optimized_kernel', str_cov, X_train.shape, shape_X2=X_test.shape)
     assert X_train.shape[0] == Y_train.shape[0]
     assert X_train.shape[1] == X_test.shape[1]
+    assert str_optimizer_method in constants.ALLOWED_OPTIMIZER_METHOD_GP
 
     time_start = time.time()
 
-    cov_X_X, inv_cov_X_X, hyps = get_optimized_kernel(X_train, Y_train, prior_mu, str_cov, fix_noise=fix_noise, debug=debug)
+    cov_X_X, inv_cov_X_X, hyps = get_optimized_kernel(X_train, Y_train, prior_mu, str_cov, str_optimizer_method=str_optimizer_method, fix_noise=fix_noise, debug=debug)
     mu_Xs, sigma_Xs, Sigma_Xs = predict_with_cov(X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps, str_cov=str_cov, prior_mu=prior_mu, debug=debug)
 
     time_end = time.time()
