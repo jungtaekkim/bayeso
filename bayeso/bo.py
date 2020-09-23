@@ -53,16 +53,16 @@ class BO:
 
     """
 
-    def __init__(self, range_X,
-        str_cov=constants.STR_GP_COV,
-        str_acq=constants.STR_BO_ACQ,
-        normalize_Y=constants.NORMALIZE_RESPONSE,
-        use_ard=True,
-        prior_mu=None,
-        str_optimizer_method_gp=constants.STR_OPTIMIZER_METHOD_GP,
-        str_optimizer_method_bo=constants.STR_OPTIMIZER_METHOD_AO,
-        str_modelselection_method=constants.STR_MODELSELECTION_METHOD,
-        debug=False
+    def __init__(self, range_X: np.ndarray,
+        str_cov: str=constants.STR_GP_COV,
+        str_acq: str=constants.STR_BO_ACQ,
+        normalize_Y: bool=constants.NORMALIZE_RESPONSE,
+        use_ard: bool=True,
+        prior_mu: constants.TYPING_UNION_CALLABLE_NONE=None,
+        str_optimizer_method_gp: str=constants.STR_OPTIMIZER_METHOD_GP,
+        str_optimizer_method_bo: str=constants.STR_OPTIMIZER_METHOD_AO,
+        str_modelselection_method: str=constants.STR_MODELSELECTION_METHOD,
+        debug: bool=False
     ):
         """
         Constructor method
@@ -104,7 +104,7 @@ class BO:
         self.is_optimize_hyps = True
         self.historical_hyps = []
 
-    def _get_samples_grid(self, num_grids=constants.NUM_GRIDS_AO):
+    def _get_samples_grid(self, num_grids: int=constants.NUM_GRIDS_AO) -> np.ndarray:
         """
         It returns grids of `self.range_X`.
 
@@ -123,7 +123,9 @@ class BO:
         initials = utils_common.get_grids(self.range_X, num_grids)
         return initials
 
-    def _get_samples_uniform(self, num_samples, seed=None):
+    def _get_samples_uniform(self, num_samples: int,
+        seed: constants.TYPING_UNION_INT_NONE=None
+    ) -> np.ndarray:
         """
         It returns `num_samples` examples uniformly sampled.
 
@@ -154,7 +156,9 @@ class BO:
         initials = np.array(list_initials)
         return initials
 
-    def _get_samples_sobol(self, num_samples, seed=None):
+    def _get_samples_sobol(self, num_samples: int,
+        seed: constants.TYPING_UNION_INT_NONE=None
+    ) -> np.ndarray:
         """
         It returns `num_samples` examples sampled from Sobol sequence.
 
@@ -181,7 +185,7 @@ class BO:
         samples = samples * (self.range_X[:, 1].flatten() - self.range_X[:, 0].flatten()) + self.range_X[:, 0].flatten()
         return samples
 
-    def _get_samples_latin(self, num_samples):
+    def _get_samples_latin(self, num_samples: int) -> np.ndarray:
         """
         It returns `num_samples` examples sampled from Latin hypercube.
 
@@ -198,11 +202,11 @@ class BO:
         raise NotImplementedError('_get_samples_latin in bo.py')
 
     # TODO: num_grids should be able to be input.
-    def get_samples(self, str_sampling_method,
-        fun_objective=None,
-        num_samples=constants.NUM_SAMPLES_AO,
-        seed=None,
-    ):
+    def get_samples(self, str_sampling_method: str,
+        fun_objective: constants.TYPING_UNION_CALLABLE_NONE=None,
+        num_samples: int=constants.NUM_SAMPLES_AO,
+        seed: constants.TYPING_UNION_INT_NONE=None,
+    ) -> np.ndarray:
         """
         It returns `num_samples` examples, sampled by a sampling method `str_sampling_method`.
 
@@ -246,9 +250,9 @@ class BO:
 
         return samples
 
-    def get_initials(self, str_initial_method, num_initials,
-        seed=None,
-    ):
+    def get_initials(self, str_initial_method: str, num_initials: int,
+        seed: constants.TYPING_UNION_INT_NONE=None,
+    ) -> np.ndarray:
         """
         It returns `num_initials` examples, sampled by a sampling method `str_initial_method`.
 
@@ -273,7 +277,7 @@ class BO:
 
         return self.get_samples(str_initial_method, num_samples=num_initials, seed=seed)
 
-    def _optimize_objective(self, fun_acquisition, X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps):
+    def _optimize_objective(self, fun_acquisition: callable, X_train: np.ndarray, Y_train: np.ndarray, X_test: np.ndarray, cov_X_X: np.ndarray, inv_cov_X_X: np.ndarray, hyps: dict) -> np.ndarray:
         """
         It returns acquisition function values over `X_test`.
 
@@ -303,7 +307,7 @@ class BO:
         acquisitions = fun_acquisition(pred_mean=np.ravel(pred_mean), pred_std=np.ravel(pred_std), Y_train=Y_train)
         return acquisitions
 
-    def _get_bounds(self):
+    def _get_bounds(self) -> list:
         """
         It returns list of range tuples, obtained from `self.range_X`.
 
@@ -317,7 +321,7 @@ class BO:
             list_bounds.append(tuple(elem))
         return list_bounds
 
-    def _optimize(self, fun_negative_acquisition, str_sampling_method, num_samples):
+    def _optimize(self, fun_negative_acquisition: callable, str_sampling_method: str, num_samples: int) -> constants.TYPING_TUPLE_TWO_ARRAYS:
         """
         It optimizes `fun_negative_function` with `self.str_optimizer_method_bo`.
         `num_samples` examples are determined by `str_sampling_method`, to start acquisition function optimization.
@@ -374,11 +378,11 @@ class BO:
         next_point = utils_bo.get_best_acquisition(next_points, fun_negative_acquisition)[0]
         return next_point, next_points
 
-    def optimize(self, X_train, Y_train,
-        str_sampling_method=constants.STR_SAMPLING_METHOD_AO,
-        num_samples=constants.NUM_SAMPLES_AO,
-        str_mlm_method=constants.STR_MLM_METHOD,
-    ):
+    def optimize(self, X_train: np.ndarray, Y_train: np.ndarray,
+        str_sampling_method: str=constants.STR_SAMPLING_METHOD_AO,
+        num_samples: int=constants.NUM_SAMPLES_AO,
+        str_mlm_method: str=constants.STR_MLM_METHOD,
+    ) -> constants.TYPING_TUPLE_ARRAY_DICT:
         """
         It computes acquired example, candidates of acquired examples, acquisition function values for the candidates, covariance matrix, inverse matrix of the covariance matrix, hyperparameters optimized, and execution times.
 

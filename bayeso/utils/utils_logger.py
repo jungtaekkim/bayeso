@@ -10,6 +10,19 @@ from bayeso.utils import utils_common
 
 @utils_common.validate_types
 def get_logger(str_name: str) -> logging.Logger:
+    """
+    It returns a logger to record the messages generated in our package.
+
+    :param str_name: a logger name.
+    :type str_name: str.
+
+    :returns: a logger.
+    :rtype: logging.Logger
+
+    :raises: AssertionError
+
+    """
+
     assert isinstance(str_name, str)
 
     logger = logging.getLogger(str_name)
@@ -26,6 +39,19 @@ def get_logger(str_name: str) -> logging.Logger:
 
 @utils_common.validate_types
 def get_str_array_1d(arr: np.ndarray) -> str:
+    """
+    It converts a one-dimensional array into string.
+
+    :param arr: an array to be converted.
+    :type arr: numpy.ndarray
+
+    :returns: a string.
+    :rtype: str.
+
+    :raises: AssertionError
+
+    """
+
     assert isinstance(arr, np.ndarray)
     assert len(arr.shape) == 1
 
@@ -45,6 +71,19 @@ def get_str_array_1d(arr: np.ndarray) -> str:
 
 @utils_common.validate_types
 def get_str_array_2d(arr: np.ndarray) -> str:
+    """
+    It converts a two-dimensional array into string.
+
+    :param arr: an array to be converted.
+    :type arr: numpy.ndarray
+
+    :returns: a string.
+    :rtype: str.
+
+    :raises: AssertionError
+
+    """
+
     assert isinstance(arr, np.ndarray)
     assert len(arr.shape) == 2
 
@@ -56,6 +95,19 @@ def get_str_array_2d(arr: np.ndarray) -> str:
 
 @utils_common.validate_types
 def get_str_array_3d(arr: np.ndarray) -> str:
+    """
+    It converts a three-dimensional array into string.
+
+    :param arr: an array to be converted.
+    :type arr: numpy.ndarray
+
+    :returns: a string.
+    :rtype: str.
+
+    :raises: AssertionError
+
+    """
+
     assert isinstance(arr, np.ndarray)
     assert len(arr.shape) == 3
 
@@ -67,6 +119,19 @@ def get_str_array_3d(arr: np.ndarray) -> str:
 
 @utils_common.validate_types
 def get_str_array(arr: np.ndarray) -> str:
+    """
+    It converts an array into string. It can take one-dimensional, two-dimensional, and three-dimensional arrays.
+
+    :param arr: an array to be converted.
+    :type arr: numpy.ndarray
+
+    :returns: a string.
+    :rtype: str.
+
+    :raises: AssertionError
+
+    """
+
     assert isinstance(arr, np.ndarray)
     len_arr = len(arr.shape)
 
@@ -83,6 +148,19 @@ def get_str_array(arr: np.ndarray) -> str:
 
 @utils_common.validate_types
 def get_str_hyps(hyps: dict) -> str:
+    """
+    It converts a dictionary of hyperparameters into string.
+
+    :param hyps: a hyperparameter dictionary to be converted.
+    :type hyps: dict.
+
+    :returns: a string.
+    :rtype: str.
+
+    :raises: AssertionError
+
+    """
+
     assert isinstance(hyps, dict)
 
     list_str = []

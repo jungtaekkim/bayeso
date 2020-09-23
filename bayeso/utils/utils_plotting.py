@@ -39,7 +39,7 @@ def _set_font_config(use_tex: bool) -> constants.TYPE_NONE: # pragma: no cover
         plt.rc('pdf', fonttype=42)
     return
 
-def _set_ax_config(ax, str_x_axis: str, str_y_axis: str,
+def _set_ax_config(ax: 'matplotlib.axes._subplots.AxesSubplot', str_x_axis: str, str_y_axis: str,
     size_labels: int=32,
     size_ticks: int=22,
     xlim_min: constants.TYPING_UNION_FLOAT_NONE=None,
