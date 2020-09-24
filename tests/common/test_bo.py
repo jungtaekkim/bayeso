@@ -88,7 +88,7 @@ def test_get_samples():
     X = np.random.randn(num_X, dim_X)
     Y = np.random.randn(num_X, 1)
     fun_objective = lambda X: np.sum(X)
-    model_bo = bo.BO(arr_range)
+    model_bo = bo.BO(arr_range, debug=True)
 
     with pytest.raises(AssertionError) as error:
         model_bo.get_samples(1)

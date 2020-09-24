@@ -310,7 +310,7 @@ def test_predict_with_optimized_hyps():
     with pytest.raises(AssertionError) as error:
         gp.predict_with_optimized_hyps(X, Y, X_test, debug=1)
     
-    mu_test, sigma_test, Sigma_test = gp.predict_with_optimized_hyps(X, Y, X_test)
+    mu_test, sigma_test, Sigma_test = gp.predict_with_optimized_hyps(X, Y, X_test, debug=True)
     print(mu_test)
     print(sigma_test)
     print(Sigma_test)
