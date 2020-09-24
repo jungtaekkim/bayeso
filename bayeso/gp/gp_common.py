@@ -1,6 +1,8 @@
-# gp_common
+#
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: August 07, 2020
+# last updated: September 24, 2020
+#
+"""gp_common"""
 
 import numpy as np
 import scipy.linalg
@@ -9,9 +11,6 @@ from bayeso import covariance
 from bayeso import constants
 from bayeso.utils import utils_gp
 from bayeso.utils import utils_common
-from bayeso.utils import utils_logger
-
-logger = utils_logger.get_logger('gp_common')
 
 
 @utils_common.validate_types
@@ -31,12 +30,15 @@ def get_kernel_inverse(X_train: np.ndarray, hyps: dict, str_cov: str,
     :type str_cov: str.
     :param fix_noise: flag for fixing a noise.
     :type fix_noise: bool., optional
-    :param use_gradient: flag for computing and returning gradients of negative log marginal likelihood.
+    :param use_gradient: flag for computing and returning gradients of
+        negative log marginal likelihood.
     :type use_gradient: bool., optional
     :param debug: flag for printing log messages.
     :type debug: bool., optional
 
-    :returns: a tuple of kernel matrix over `X_train`, kernel matrix inverse, and gradients of kernel matrix. If `use_gradient` is False, gradients of kernel matrix would be None.
+    :returns: a tuple of kernel matrix over `X_train`, kernel matrix
+        inverse, and gradients of kernel matrix. If `use_gradient` is False,
+        gradients of kernel matrix would be None.
     :rtype: tuple of (numpy.ndarray, numpy.ndarray, numpy.ndarray)
 
     :raises: AssertionError
@@ -51,12 +53,14 @@ def get_kernel_inverse(X_train: np.ndarray, hyps: dict, str_cov: str,
     assert isinstance(debug, bool)
     utils_gp.check_str_cov('get_kernel_inverse', str_cov, X_train.shape)
 
-    cov_X_X = covariance.cov_main(str_cov, X_train, X_train, hyps, True) + hyps['noise']**2 * np.eye(X_train.shape[0])
+    cov_X_X = covariance.cov_main(str_cov, X_train, X_train, hyps, True) \
+        + hyps['noise']**2 * np.eye(X_train.shape[0])
     cov_X_X = (cov_X_X + cov_X_X.T) / 2.0
     inv_cov_X_X = np.linalg.inv(cov_X_X)
 
     if use_gradient:
-        grad_cov_X_X = covariance.grad_cov_main(str_cov, X_train, X_train, hyps, fix_noise, same_X_Xp=True)
+        grad_cov_X_X = covariance.grad_cov_main(str_cov, X_train, X_train,
+            hyps, fix_noise, same_X_Xp=True)
     else:
         grad_cov_X_X = None
 
@@ -79,12 +83,15 @@ def get_kernel_cholesky(X_train: np.ndarray, hyps: dict, str_cov: str,
     :type str_cov: str.
     :param fix_noise: flag for fixing a noise.
     :type fix_noise: bool., optional
-    :param use_gradient: flag for computing and returning gradients of negative log marginal likelihood.
+    :param use_gradient: flag for computing and returning gradients of
+        negative log marginal likelihood.
     :type use_gradient: bool., optional
     :param debug: flag for printing log messages.
     :type debug: bool., optional
 
-    :returns: a tuple of kernel matrix over `X_train`, lower matrix computed by Cholesky decomposition, and gradients of kernel matrix. If `use_gradient` is False, gradients of kernel matrix would be None.
+    :returns: a tuple of kernel matrix over `X_train`, lower matrix computed
+        by Cholesky decomposition, and gradients of kernel matrix. If
+        `use_gradient` is False, gradients of kernel matrix would be None.
     :rtype: tuple of (numpy.ndarray, numpy.ndarray, numpy.ndarray)
 
     :raises: AssertionError
@@ -99,7 +106,8 @@ def get_kernel_cholesky(X_train: np.ndarray, hyps: dict, str_cov: str,
     assert isinstance(debug, bool)
     utils_gp.check_str_cov('get_kernel_cholesky', str_cov, X_train.shape)
 
-    cov_X_X = covariance.cov_main(str_cov, X_train, X_train, hyps, True) + hyps['noise']**2 * np.eye(X_train.shape[0])
+    cov_X_X = covariance.cov_main(str_cov, X_train, X_train, hyps, True) \
+        + hyps['noise']**2 * np.eye(X_train.shape[0])
     cov_X_X = (cov_X_X + cov_X_X.T) / 2.0
     try:
         lower = scipy.linalg.cholesky(cov_X_X, lower=True)
@@ -108,7 +116,8 @@ def get_kernel_cholesky(X_train: np.ndarray, hyps: dict, str_cov: str,
         lower = scipy.linalg.cholesky(cov_X_X, lower=True)
 
     if use_gradient:
-        grad_cov_X_X = covariance.grad_cov_main(str_cov, X_train, X_train, hyps, fix_noise, same_X_Xp=True)
+        grad_cov_X_X = covariance.grad_cov_main(str_cov, X_train, X_train,
+            hyps, fix_noise, same_X_Xp=True)
     else:
         grad_cov_X_X = None
     return cov_X_X, lower, grad_cov_X_X

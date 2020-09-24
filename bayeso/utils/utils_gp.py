@@ -1,6 +1,8 @@
-# utils_gp
+#
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: September 21, 2020
+# last updated: September 24, 2020
+#
+"""utils_gp"""
 
 import numpy as np
 
@@ -48,7 +50,6 @@ def check_str_cov(str_fun: str, str_cov: str, shape_X1: tuple,
         raise ValueError('{}: missing conditions for str_cov.'.format(str_fun))
     else:
         raise ValueError('{}: invalid str_cov.'.format(str_fun))
-    return
 
 @utils_common.validate_types
 def get_prior_mu(prior_mu: constants.TYPING_UNION_CALLABLE_NONE, X: np.ndarray) -> np.ndarray:

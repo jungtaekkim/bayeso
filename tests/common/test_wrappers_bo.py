@@ -1,10 +1,12 @@
-# test_wrappers_bo
+#
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: September 21, 2020
+# last updated: September 24, 2020
+#
+"""test_wrappers_bo"""
 
+import typing
 import pytest
 import numpy as np
-import typing
 
 from bayeso import bo
 from bayeso.wrappers import wrappers_bo

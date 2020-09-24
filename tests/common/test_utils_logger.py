@@ -1,10 +1,12 @@
-# test_utils_logger
+#
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: April 29, 2020
+# last updated: September 24, 2020
+#
+"""test_utils_logger"""
 
+import logging
 import pytest
 import numpy as np
-import logging
 
 from bayeso.utils import utils_logger
 

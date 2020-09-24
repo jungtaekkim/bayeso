@@ -1,11 +1,12 @@
-# test_utils_bo
+#
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: September 16, 2020
+# last updated: September 24, 2020
+#
+"""test_utils_bo"""
 
 import pytest
 import numpy as np
 
-from bayeso import bo
 from bayeso.utils import utils_bo
 
 
@@ -112,7 +113,7 @@ def test_check_hyps_convergence():
         utils_bo.check_hyps_convergence([dict_hyps_1], dict_hyps_1, 1, True)
     with pytest.raises(AssertionError) as error:
         utils_bo.check_hyps_convergence([dict_hyps_1], dict_hyps_1, 1, 'abc')
-    
+
     assert utils_bo.check_hyps_convergence([dict_hyps_1], dict_hyps_1, 'se', False)
     assert not utils_bo.check_hyps_convergence([dict_hyps_2], dict_hyps_1, 'se', False)
 

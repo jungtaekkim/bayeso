@@ -1,6 +1,8 @@
-# test_import
+#
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: September 17, 2020
+# last updated: September 24, 2020
+#
+"""test_import"""
 
 def test_import_bayeso():
     import bayeso

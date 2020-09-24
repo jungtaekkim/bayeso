@@ -1,10 +1,12 @@
-# test_utils_common
+#
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: September 16, 2020
+# last updated: September 24, 2020
+#
+"""test_utils_common"""
 
+import typing
 import pytest
 import numpy as np
-import typing
 
 from bayeso.utils import utils_common
 

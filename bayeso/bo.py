@@ -1,9 +1,11 @@
-# bo
+#
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: September 16, 2020
+# last updated: September 24, 2020
+#
+"""bo"""
 
-import numpy as np
 import time
+import numpy as np
 from scipy.optimize import minimize
 try:
     from scipydirect import minimize as directminimize
@@ -18,7 +20,6 @@ import sobol_seq
 from bayeso.gp import gp
 from bayeso.gp import gp_common
 from bayeso.utils import utils_bo
-from bayeso.utils import utils_covariance
 from bayeso.utils import utils_common
 from bayeso.utils import utils_logger
 from bayeso import constants
@@ -42,11 +43,14 @@ class BO:
     :type use_ard: bool., optional
     :param prior_mu: None, or prior mean function.
     :type prior_mu: NoneType, or function, optional
-    :param str_optimizer_method_gp: the name of optimization method for Gaussian process regression.
+    :param str_optimizer_method_gp: the name of optimization method for
+        Gaussian process regression.
     :type str_optimizer_method_gp: str., optional
-    :param str_optimizer_method_bo: the name of optimization method for Bayesian optimization.
+    :param str_optimizer_method_bo: the name of optimization method for
+        Bayesian optimization.
     :type str_optimizer_method_bo: str., optional
-    :param str_modelselection_method: the name of model selection method for Gaussian process regression.
+    :param str_modelselection_method: the name of model selection method
+        for Gaussian process regression.
     :type str_modelselection_method: str., optional
     :param debug: flag for printing log messages.
     :type debug: bool., optional
@@ -95,7 +99,8 @@ class BO:
         self.str_acq = str_acq
         self.use_ard = use_ard
         self.normalize_Y = normalize_Y
-        self.str_optimizer_method_bo = utils_bo.check_optimizer_method_bo(str_optimizer_method_bo, range_X.shape[0], debug)
+        self.str_optimizer_method_bo = utils_bo.check_optimizer_method_bo(
+            str_optimizer_method_bo, range_X.shape[0], debug)
         self.str_optimizer_method_gp = str_optimizer_method_gp
         self.str_modelselection_method = str_modelselection_method
         self.debug = debug
@@ -179,10 +184,12 @@ class BO:
 
         if seed is None:
             seed = np.random.randint(0, 100000)
-        if self.debug: logger.debug('seed: {}'.format(seed))
+        if self.debug:
+            logger.debug('seed: %d', seed)
 
         samples = sobol_seq.i4_sobol_generate(self.num_dim, num_samples, seed)
-        samples = samples * (self.range_X[:, 1].flatten() - self.range_X[:, 0].flatten()) + self.range_X[:, 0].flatten()
+        samples = samples * (self.range_X[:, 1].flatten() - self.range_X[:, 0].flatten()) \
+            + self.range_X[:, 0].flatten()
         return samples
 
     def _get_samples_latin(self, num_samples: int) -> np.ndarray:
@@ -234,7 +241,8 @@ class BO:
 
         if str_sampling_method == 'grid':
             assert fun_objective is not None
-            if self.debug: logger.debug('num_samples is ignored, because grid is chosen.')
+            if self.debug:
+                logger.debug('num_samples is ignored, because grid is chosen.')
             samples = self._get_samples_grid()
             samples = utils_bo.get_best_acquisition(samples, fun_objective)
         elif str_sampling_method == 'uniform':
@@ -244,9 +252,11 @@ class BO:
         elif str_sampling_method == 'latin':
             raise NotImplementedError('get_samples: latin')
         else:
-            raise NotImplementedError('get_samples: allowed str_sampling_method, but it is not implemented.')
+            raise NotImplementedError('get_samples: allowed str_sampling_method,\
+                but it is not implemented.')
 
-        if self.debug: logger.debug('samples:\n{}'.format(utils_logger.get_str_array(samples)))
+        if self.debug:
+            logger.debug('samples:\n%s', utils_logger.get_str_array(samples))
 
         return samples
 
@@ -277,7 +287,10 @@ class BO:
 
         return self.get_samples(str_initial_method, num_samples=num_initials, seed=seed)
 
-    def _optimize_objective(self, fun_acquisition: callable, X_train: np.ndarray, Y_train: np.ndarray, X_test: np.ndarray, cov_X_X: np.ndarray, inv_cov_X_X: np.ndarray, hyps: dict) -> np.ndarray:
+    def _optimize_objective(self, fun_acquisition: callable, X_train: np.ndarray,
+        Y_train: np.ndarray, X_test: np.ndarray, cov_X_X: np.ndarray,
+        inv_cov_X_X: np.ndarray, hyps: dict
+    ) -> np.ndarray:
         """
         It returns acquisition function values over `X_test`.
 
@@ -302,9 +315,12 @@ class BO:
         """
 
         X_test = np.atleast_2d(X_test)
-        pred_mean, pred_std, _ = gp.predict_with_cov(X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps, str_cov=self.str_cov, prior_mu=self.prior_mu, debug=self.debug)
-        # no matter which acquisition functions are given, we input pred_mean, pred_std, and Y_train.
-        acquisitions = fun_acquisition(pred_mean=np.ravel(pred_mean), pred_std=np.ravel(pred_std), Y_train=Y_train)
+        pred_mean, pred_std, _ = gp.predict_with_cov(X_train, Y_train, X_test,
+            cov_X_X, inv_cov_X_X, hyps, str_cov=self.str_cov,
+            prior_mu=self.prior_mu, debug=self.debug)
+
+        acquisitions = fun_acquisition(pred_mean=np.ravel(pred_mean),
+            pred_std=np.ravel(pred_std), Y_train=Y_train)
         return acquisitions
 
     def _get_bounds(self) -> list:
@@ -321,10 +337,13 @@ class BO:
             list_bounds.append(tuple(elem))
         return list_bounds
 
-    def _optimize(self, fun_negative_acquisition: callable, str_sampling_method: str, num_samples: int) -> constants.TYPING_TUPLE_TWO_ARRAYS:
+    def _optimize(self, fun_negative_acquisition: callable, str_sampling_method: str,
+        num_samples: int
+    ) -> constants.TYPING_TUPLE_TWO_ARRAYS:
         """
         It optimizes `fun_negative_function` with `self.str_optimizer_method_bo`.
-        `num_samples` examples are determined by `str_sampling_method`, to start acquisition function optimization.
+        `num_samples` examples are determined by `str_sampling_method`, to
+        start acquisition function optimization.
 
         :param fun_objective: negative acquisition function.
         :type fun_objective: function
@@ -333,7 +352,9 @@ class BO:
         :param num_samples: the number of samples.
         :type num_samples: int.
 
-        :returns: tuple of next point to evaluate and all candidates determined by acquisition function optimization. Shape: ((d, ), (`num_samples`, d)).
+        :returns: tuple of next point to evaluate and all candidates
+            determined by acquisition function optimization.
+            Shape: ((d, ), (`num_samples`, d)).
         :rtype: (numpy.ndarray, numpy.ndarray)
 
         """
@@ -341,7 +362,10 @@ class BO:
         list_next_point = []
         if self.str_optimizer_method_bo == 'L-BFGS-B':
             list_bounds = self._get_bounds()
-            initials = self.get_samples(str_sampling_method, fun_objective=fun_negative_acquisition, num_samples=num_samples)
+            initials = self.get_samples(str_sampling_method,
+                fun_objective=fun_negative_acquisition,
+                num_samples=num_samples)
+
             for arr_initial in initials:
                 next_point = minimize(
                     fun_negative_acquisition,
@@ -352,7 +376,8 @@ class BO:
                 )
                 next_point_x = next_point.x
                 list_next_point.append(next_point_x)
-                if self.debug: logger.debug('acquired sample: {}'.format(utils_logger.get_str_array(next_point_x)))
+                if self.debug:
+                    logger.debug('acquired sample: %s', utils_logger.get_str_array(next_point_x))
         elif self.str_optimizer_method_bo == 'DIRECT': # pragma: no cover
             list_bounds = self._get_bounds()
             next_point = directminimize(
@@ -369,9 +394,15 @@ class BO:
                 def g(bx):
                     return f(bx)[0]
                 return g
-            initials = self.get_samples(str_sampling_method, fun_objective=fun_negative_acquisition, num_samples=1)
+            initials = self.get_samples(str_sampling_method,
+                fun_objective=fun_negative_acquisition, num_samples=1)
             cur_sigma0 = np.mean(list_bounds[:, 1] - list_bounds[:, 0]) / 4.0
-            next_point_x = cma.fmin(fun_wrapper(fun_negative_acquisition), initials[0], cur_sigma0, options={'bounds': [list_bounds[:, 0], list_bounds[:, 1]], 'verbose': -1, 'maxfevals': 1e5})[0]
+            next_point_x = cma.fmin(fun_wrapper(fun_negative_acquisition),
+                initials[0], cur_sigma0,
+                options={
+                    'bounds': [list_bounds[:, 0], list_bounds[:, 1]],
+                    'verbose': -1, 'maxfevals': 1e5
+                })[0]
             list_next_point.append(next_point_x)
 
         next_points = np.array(list_next_point)
@@ -384,17 +415,22 @@ class BO:
         str_mlm_method: str=constants.STR_MLM_METHOD,
     ) -> constants.TYPING_TUPLE_ARRAY_DICT:
         """
-        It computes acquired example, candidates of acquired examples, acquisition function values for the candidates, covariance matrix, inverse matrix of the covariance matrix, hyperparameters optimized, and execution times.
+        It computes acquired example, candidates of acquired examples,
+        acquisition function values for the candidates, covariance matrix,
+        inverse matrix of the covariance matrix, hyperparameters optimized,
+        and execution times.
 
         :param X_train: inputs. Shape: (n, d) or (n, m, d).
         :type X_train: numpy.ndarray
         :param Y_train: outputs. Shape: (n, 1).
         :type Y_train: numpy.ndarray
-        :param str_sampling_method_method: the name of sampling method for acquisition function optimization.
+        :param str_sampling_method_method: the name of sampling method for
+            acquisition function optimization.
         :type str_sampling_method: str., optional
         :param num_samples: the number of samples.
         :type num_samples: int., optional
-        :param str_mlm_method: the name of marginal likelihood maximization method for Gaussian process regression.
+        :param str_mlm_method: the name of marginal likelihood maximization
+            method for Gaussian process regression.
         :type str_mlm_method: str., optional
 
         :returns: acquired example and dictionary of information. Shape: ((d, ), dict.).
@@ -420,22 +456,35 @@ class BO:
 
         time_start = time.time()
 
-        if self.normalize_Y and not np.max(Y_train) == np.min(Y_train):
-            Y_train = (Y_train - np.min(Y_train)) / (np.max(Y_train) - np.min(Y_train)) * constants.MULTIPLIER_RESPONSE
+        if self.normalize_Y and np.max(Y_train) != np.min(Y_train):
+            Y_train = (Y_train - np.min(Y_train)) / (np.max(Y_train) - np.min(Y_train)) \
+                * constants.MULTIPLIER_RESPONSE
 
         time_start_gp = time.time()
         if str_mlm_method == 'regular':
-            cov_X_X, inv_cov_X_X, hyps = gp.get_optimized_kernel(X_train, Y_train, self.prior_mu, self.str_cov, str_optimizer_method=self.str_optimizer_method_gp, str_modelselection_method=self.str_modelselection_method, debug=self.debug)
+            cov_X_X, inv_cov_X_X, hyps = gp.get_optimized_kernel(X_train, Y_train,
+                self.prior_mu, self.str_cov,
+                str_optimizer_method=self.str_optimizer_method_gp,
+                str_modelselection_method=self.str_modelselection_method,
+                debug=self.debug)
         elif str_mlm_method == 'converged':
             fix_noise = constants.FIX_GP_NOISE
 
             if self.is_optimize_hyps:
-                cov_X_X, inv_cov_X_X, hyps = gp.get_optimized_kernel(X_train, Y_train, self.prior_mu, self.str_cov, str_optimizer_method=self.str_optimizer_method_gp, str_modelselection_method=self.str_modelselection_method, debug=self.debug)
-                self.is_optimize_hyps = not utils_bo.check_hyps_convergence(self.historical_hyps, hyps, self.str_cov, fix_noise)
+                cov_X_X, inv_cov_X_X, hyps = gp.get_optimized_kernel(X_train, Y_train,
+                    self.prior_mu, self.str_cov,
+                    str_optimizer_method=self.str_optimizer_method_gp,
+                    str_modelselection_method=self.str_modelselection_method,
+                    debug=self.debug)
+
+                self.is_optimize_hyps = not utils_bo.check_hyps_convergence(self.historical_hyps,
+                    hyps, self.str_cov, fix_noise)
             else: # pragma: no cover
-                if self.debug: logger.debug('hyps converged.')
+                if self.debug:
+                    logger.debug('hyps converged.')
                 hyps = self.historical_hyps[-1]
-                cov_X_X, inv_cov_X_X, _ = gp_common.get_kernel_inverse(X_train, hyps, self.str_cov, fix_noise=fix_noise, debug=self.debug)
+                cov_X_X, inv_cov_X_X, _ = gp_common.get_kernel_inverse(X_train, hyps,
+                    self.str_cov, fix_noise=fix_noise, debug=self.debug)
         else: # pragma: no cover
             raise ValueError('optimize: missing condition for str_mlm_method.')
         time_end_gp = time.time()
@@ -445,8 +494,11 @@ class BO:
         fun_acquisition = utils_bo.choose_fun_acquisition(self.str_acq, hyps)
 
         time_start_acq = time.time()
-        fun_negative_acquisition = lambda X_test: -1.0 * constants.MULTIPLIER_ACQ * self._optimize_objective(fun_acquisition, X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps)
-        next_point, next_points = self._optimize(fun_negative_acquisition, str_sampling_method=str_sampling_method, num_samples=num_samples)
+        fun_negative_acquisition = lambda X_test: -1.0 * constants.MULTIPLIER_ACQ \
+            * self._optimize_objective(fun_acquisition, X_train, Y_train,
+                X_test, cov_X_X, inv_cov_X_X, hyps)
+        next_point, next_points = self._optimize(fun_negative_acquisition,
+            str_sampling_method=str_sampling_method, num_samples=num_samples)
         time_end_acq = time.time()
 
         acquisitions = fun_negative_acquisition(next_points)
@@ -464,6 +516,7 @@ class BO:
             'time_acq': time_end_acq - time_start_acq,
         }
 
-        if self.debug: logger.debug('overall time consumed to acquire: {:.4f} sec.'.format(time_end - time_start))
+        if self.debug:
+            logger.debug('overall time consumed to acquire: %.4f sec.', time_end - time_start)
 
         return next_point, dict_info

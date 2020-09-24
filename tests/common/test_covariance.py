@@ -1,10 +1,12 @@
-# test_covariance
+#
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: September 11, 2020
+# last updated: September 24, 2020
+#
+"""test_covariance"""
 
+import typing
 import pytest
 import numpy as np
-import typing
 
 from bayeso import covariance
 from bayeso.utils import utils_covariance

@@ -1,12 +1,13 @@
-# test_gp_common
+#
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: August 07, 2020
+# last updated: September 24, 2020
+#
+"""test_gp_common"""
 
+import typing
 import pytest
 import numpy as np
-import typing
 
-from bayeso import constants
 from bayeso.gp import gp_common
 from bayeso.utils import utils_covariance
 

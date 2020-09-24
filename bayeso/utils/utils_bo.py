@@ -1,9 +1,10 @@
-# utils_bo
+#
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: September 16, 2020
+# last updated: September 24, 2020
+#
+"""utils_bo"""
 
 import numpy as np
-import time
 try:
     from scipydirect import minimize as directminimize
 except: # pragma: no cover
@@ -58,9 +59,12 @@ def get_best_acquisition(initials: np.ndarray, fun_objective: callable) -> np.nd
 def check_optimizer_method_bo(str_optimizer_method_bo: str, dim: int, debug: bool) -> str:
     """
     It checks the availability of optimization methods.
-    It helps to run Bayesian optimization, even though additional optimization methods are not installed or there exist the conditions some of optimization methods cannot be run.
+    It helps to run Bayesian optimization, even though additional
+    optimization methods are not installed or there exist the conditions
+    some of optimization methods cannot be run.
 
-    :param str_optimizer_method_bo: the name of optimization method for Bayesian optimization.
+    :param str_optimizer_method_bo: the name of optimization method for
+        Bayesian optimization.
     :type str_optimizer_method_bo: str.
     :param dim: dimensionality of the problem we solve.
     :type dim: int.
@@ -119,13 +123,16 @@ def choose_fun_acquisition(str_acq: str, hyps: dict) -> callable:
     elif str_acq == 'ucb':
         fun_acquisition = acquisition.ucb
     elif str_acq == 'aei':
-        fun_acquisition = lambda pred_mean, pred_std, Y_train: acquisition.aei(pred_mean, pred_std, Y_train, hyps['noise'])
+        fun_acquisition = lambda pred_mean, pred_std, Y_train: acquisition.aei(
+            pred_mean, pred_std, Y_train, hyps['noise'])
     elif str_acq == 'pure_exploit':
-        fun_acquisition = lambda pred_mean, pred_std, Y_train: acquisition.pure_exploit(pred_mean)
+        fun_acquisition = lambda pred_mean, pred_std, Y_train: acquisition.pure_exploit(
+            pred_mean)
     elif str_acq == 'pure_explore':
         fun_acquisition = lambda pred_mean, pred_std, Y_train: acquisition.pure_explore(pred_std)
     else:
-        raise NotImplementedError('_choose_fun_acquisition: allowed str_acq, but it is not implemented.')
+        raise NotImplementedError('_choose_fun_acquisition: allowed str_acq,\
+            but it is not implemented.')
     return fun_acquisition
 
 @utils_common.validate_types
@@ -162,16 +169,18 @@ def check_hyps_convergence(list_hyps: list, hyps: dict, str_cov: str, fix_noise:
     converged = False
     if len(list_hyps) > 0:
         hyps_converted = utils_covariance.convert_hyps(str_cov, hyps, fix_noise=fix_noise)
-        target_hyps_converted = utils_covariance.convert_hyps(str_cov, list_hyps[-1], fix_noise=fix_noise)
+        target_hyps_converted = utils_covariance.convert_hyps(str_cov, list_hyps[-1],
+            fix_noise=fix_noise)
 
-        cur_norm = np.linalg.norm(hyps_converted - target_hyps_converted, ord=2)
         threshold = np.linalg.norm(target_hyps_converted) * ratio_threshold
         if np.linalg.norm(hyps_converted - target_hyps_converted, ord=2) < threshold:
             converged = True
     return converged
 
 @utils_common.validate_types
-def get_next_best_acquisition(points: np.ndarray, acquisitions: np.ndarray, points_evaluated: np.ndarray) -> np.ndarray:
+def get_next_best_acquisition(points: np.ndarray, acquisitions: np.ndarray,
+    points_evaluated: np.ndarray
+) -> np.ndarray:
     """
     It returns the next best acquired example.
 
@@ -197,7 +206,7 @@ def get_next_best_acquisition(points: np.ndarray, acquisitions: np.ndarray, poin
     assert len(points_evaluated.shape) == 2
     assert points.shape[0] == acquisitions.shape[0]
     assert points.shape[1] == points_evaluated.shape[1]
-   
+
     for cur_point in points_evaluated:
         ind_same, = np.where(np.linalg.norm(points - cur_point, axis=1) < 1e-2)
         points = np.delete(points, ind_same, axis=0)

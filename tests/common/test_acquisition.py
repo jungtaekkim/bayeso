@@ -1,10 +1,12 @@
-# test_acquisition
+#
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: September 14, 2020
+# last updated: September 24, 2020
+#
+"""test_acquisition"""
 
+import typing
 import pytest
 import numpy as np
-import typing
 
 from bayeso import acquisition
 

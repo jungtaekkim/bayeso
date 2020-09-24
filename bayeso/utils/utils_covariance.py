@@ -1,6 +1,8 @@
-# utils_covariance
+#
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: September 16, 2020
+# last updated: September 24, 2020
+#
+"""utils_covariance"""
 
 import numpy as np
 
@@ -29,7 +31,9 @@ def get_hyps(str_cov: str, dim: int,
     use_ard: bool=True
 ) -> dict:
     """
-    It returns a dictionary of default hyperparameters for covariance function, where `str_cov` and `dim` are given. If `use_ard` is True, the length scales would be `dim`-dimensional vector.
+    It returns a dictionary of default hyperparameters for covariance
+    function, where `str_cov` and `dim` are given. If `use_ard` is True,
+    the length scales would be `dim`-dimensional vector.
 
     :param str_cov: the name of covariance function.
     :type str_cov: str.
@@ -241,13 +245,15 @@ def validate_hyps_dict(hyps: dict, str_cov: str, dim: int) -> constants.TYPING_T
             if np.abs(hyps['noise']) >= constants.BOUND_UPPER_GP_NOISE:
                 hyps['noise'] = constants.BOUND_UPPER_GP_NOISE
 
-    if str_cov == 'eq' or str_cov == 'se' or str_cov == 'matern32' or str_cov == 'matern52':
+    if str_cov in ('eq', 'se', 'matern32', 'matern52'):
         if 'lengthscales' not in hyps:
             is_valid = False
         else:
-            if isinstance(hyps['lengthscales'], np.ndarray) and hyps['lengthscales'].shape[0] != dim:
+            if isinstance(hyps['lengthscales'], np.ndarray) \
+                and hyps['lengthscales'].shape[0] != dim:
                 is_valid = False
-            if not isinstance(hyps['lengthscales'], np.ndarray) and not isinstance(hyps['lengthscales'], float):
+            if not isinstance(hyps['lengthscales'], np.ndarray) \
+                and not isinstance(hyps['lengthscales'], float):
                 is_valid = False
         if 'signal' not in hyps:
             is_valid = False
@@ -260,7 +266,8 @@ def validate_hyps_dict(hyps: dict, str_cov: str, dim: int) -> constants.TYPING_T
     return hyps, is_valid
 
 @utils_common.validate_types
-def validate_hyps_arr(hyps: np.ndarray, str_cov: str, dim: int) -> constants.TYPING_TUPLE_ARRAY_BOOL:
+def validate_hyps_arr(hyps: np.ndarray, str_cov: str, dim: int
+) -> constants.TYPING_TUPLE_ARRAY_BOOL:
     """
     It validates hyperparameters array, `hyps`.
 

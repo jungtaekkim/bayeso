@@ -1,10 +1,11 @@
-# test_bo
+#
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: September 16, 2020
+# last updated: September 24, 2020
+#
+"""test_bo"""
 
 import pytest
 import numpy as np
-import typing
 
 from bayeso import bo
 
@@ -604,4 +605,3 @@ def test_optimize_normalize_Y():
     assert next_point.shape[0] == dim_X
     assert next_points.shape[1] == dim_X
     assert next_points.shape[0] == acquisitions.shape[0]
-

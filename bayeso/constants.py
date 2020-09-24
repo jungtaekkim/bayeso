@@ -1,9 +1,11 @@
-# constants
+#
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: September 21, 2020
+# last updated: September 24, 2020
+#
+"""constants"""
 
-import numpy as np
 import typing
+import numpy as np
 
 
 JITTER_ACQ = 1e-5

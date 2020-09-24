@@ -1,6 +1,8 @@
-# utils_logger
+#
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: September 21, 2020
+# last updated: September 24, 2020
+#
+"""utils_logger"""
 
 import logging
 import numpy as np
@@ -31,7 +33,8 @@ def get_logger(str_name: str) -> logging.Logger:
     ch = logging.StreamHandler()
     ch.setLevel(logging.DEBUG)
 
-    formatter = logging.Formatter('[%(levelname)s-%(name)s-%(asctime)s] %(message)s', datefmt='%m/%d/%Y-%H:%M:%S')
+    formatter = logging.Formatter('[%(levelname)s-%(name)s-%(asctime)s] %(message)s',
+        datefmt='%m/%d/%Y-%H:%M:%S')
     ch.setFormatter(formatter)
 
     logger.addHandler(ch)
@@ -120,7 +123,8 @@ def get_str_array_3d(arr: np.ndarray) -> str:
 @utils_common.validate_types
 def get_str_array(arr: np.ndarray) -> str:
     """
-    It converts an array into string. It can take one-dimensional, two-dimensional, and three-dimensional arrays.
+    It converts an array into string. It can take one-dimensional,
+    two-dimensional, and three-dimensional arrays.
 
     :param arr: an array to be converted.
     :type arr: numpy.ndarray

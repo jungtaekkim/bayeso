@@ -1,10 +1,12 @@
-# test_utils_gp
+#
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: August 12, 2020
+# last updated: September 24, 2020
+#
+"""test_utils_gp"""
 
+import typing
 import pytest
 import numpy as np
-import typing
 
 from bayeso.utils import utils_gp
 

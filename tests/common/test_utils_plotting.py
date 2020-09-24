@@ -1,10 +1,12 @@
-# test_utils_plotting
+#
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: September 21, 2020
+# last updated: September 24, 2020
+#
+"""test_utils_plotting"""
 
+import typing
 import pytest
 import numpy as np
-import typing
 
 from bayeso.utils import utils_plotting
 

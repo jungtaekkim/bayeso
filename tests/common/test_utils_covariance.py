@@ -1,10 +1,12 @@
-# test_utils_covariance
+#
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: September 17, 2020
+# last updated: September 24, 2020
+#
+"""test_utils_covariance"""
 
+import typing
 import pytest
 import numpy as np
-import typing
 
 from bayeso.utils import utils_covariance
 from bayeso import constants
@@ -34,7 +36,7 @@ def test_get_hyps():
         utils_covariance.get_hyps('abc', 2)
     with pytest.raises(AssertionError) as error:
         utils_covariance.get_hyps('se', 2, use_ard='abc')
-   
+
     cur_hyps =  utils_covariance.get_hyps('se', 2)
     assert cur_hyps['noise'] == constants.GP_NOISE
     assert cur_hyps['signal'] == 1.0
@@ -80,7 +82,7 @@ def test_get_range_hyps():
         utils_covariance.get_range_hyps('se', 2, fix_noise=1)
     with pytest.raises(AssertionError) as error:
         utils_covariance.get_range_hyps('se', 2, fix_noise='abc')
-    
+
     cur_range = utils_covariance.get_range_hyps('se', 2, use_ard=False, fix_noise=False)
     print(type(cur_range))
     print(cur_range)
@@ -246,4 +248,3 @@ def test_validate_hyps_arr():
         _, is_valid = utils_covariance.validate_hyps_arr(cur_hyps, 'abc', num_dim)
     with pytest.raises(AssertionError) as error:
         _, is_valid = utils_covariance.validate_hyps_arr(cur_hyps, str_cov, 'abc')
-

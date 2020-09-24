@@ -1,6 +1,8 @@
-# gp
+#
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: August 21, 2020
+# last updated: September 24, 2020
+#
+"""gp"""
 
 import time
 import numpy as np
@@ -50,7 +52,8 @@ def sample_functions(mu: np.ndarray, Sigma: np.ndarray,
     return np.array(list_rvs)
 
 @utils_common.validate_types
-def get_optimized_kernel(X_train: np.ndarray, Y_train: np.ndarray, prior_mu: constants.TYPING_UNION_CALLABLE_NONE, str_cov: str,
+def get_optimized_kernel(X_train: np.ndarray, Y_train: np.ndarray,
+    prior_mu: constants.TYPING_UNION_CALLABLE_NONE, str_cov: str,
     str_framework: str=constants.STR_FRAMEWORK_GP,
     str_optimizer_method: str=constants.STR_OPTIMIZER_METHOD_GP,
     str_modelselection_method: str=constants.STR_MODELSELECTION_METHOD,
@@ -58,7 +61,8 @@ def get_optimized_kernel(X_train: np.ndarray, Y_train: np.ndarray, prior_mu: con
     debug: bool=False
 ) -> constants.TYPING_TUPLE_TWO_ARRAYS_DICT:
     """
-    This function computes the kernel matrix optimized by optimization method specified, its inverse matrix, and the optimized hyperparameters.
+    This function computes the kernel matrix optimized by optimization
+    method specified, its inverse matrix, and the optimized hyperparameters.
 
     :param X_train: inputs. Shape: (n, d) or (n, m, d).
     :type X_train: numpy.ndarray
@@ -79,7 +83,8 @@ def get_optimized_kernel(X_train: np.ndarray, Y_train: np.ndarray, prior_mu: con
     :param debug: flag for printing log messages.
     :type debug: bool., optional
 
-    :returns: a tuple of kernel matrix over `X_train`, kernel matrix inverse, and dictionary of hyperparameters.
+    :returns: a tuple of kernel matrix over `X_train`, kernel matrix
+        inverse, and dictionary of hyperparameters.
     :rtype: tuple of (numpy.ndarray, numpy.ndarray, dict.)
 
     :raises: AssertionError, ValueError
@@ -103,27 +108,30 @@ def get_optimized_kernel(X_train: np.ndarray, Y_train: np.ndarray, prior_mu: con
     assert str_framework in constants.ALLOWED_FRAMEWORK_GP
 
     try:
-        if str_framework == 'tensorflow': import tensorflow as tf
-        elif str_framework == 'gpytorch': import gpytorch
+        if str_framework == 'tensorflow':
+            from bayeso.gp import gp_tensorflow
+        elif str_framework == 'gpytorch':
+            from bayeso.gp import gp_gpytorch
     except: # pragma: no cover
         str_framework = 'scipy'
 
     if str_framework == 'scipy':
-        cov_X_X, inv_cov_X_X, hyps = gp_scipy.get_optimized_kernel(X_train, Y_train, prior_mu, str_cov,
+        cov_X_X, inv_cov_X_X, hyps = gp_scipy.get_optimized_kernel(
+            X_train, Y_train, prior_mu, str_cov,
             str_optimizer_method=str_optimizer_method,
             str_modelselection_method=str_modelselection_method,
             fix_noise=fix_noise,
             debug=debug
         )
     elif str_framework == 'tensorflow':
-        from bayeso.gp import gp_tensorflow
-        cov_X_X, inv_cov_X_X, hyps = gp_tensorflow.get_optimized_kernel(X_train, Y_train, prior_mu, str_cov,
+        cov_X_X, inv_cov_X_X, hyps = gp_tensorflow.get_optimized_kernel(
+            X_train, Y_train, prior_mu, str_cov,
             fix_noise=fix_noise,
             debug=debug
         )
     elif str_framework == 'gpytorch':
-        from bayeso.gp import gp_gpytorch
-        cov_X_X, inv_cov_X_X, hyps = gp_gpytorch.get_optimized_kernel(X_train, Y_train, prior_mu, str_cov,
+        cov_X_X, inv_cov_X_X, hyps = gp_gpytorch.get_optimized_kernel(
+            X_train, Y_train, prior_mu, str_cov,
             fix_noise=fix_noise,
             debug=debug
         )
@@ -133,13 +141,16 @@ def get_optimized_kernel(X_train: np.ndarray, Y_train: np.ndarray, prior_mu: con
     return cov_X_X, inv_cov_X_X, hyps
 
 @utils_common.validate_types
-def predict_with_cov(X_train: np.ndarray, Y_train: np.ndarray, X_test: np.ndarray, cov_X_X: np.ndarray, inv_cov_X_X: np.ndarray, hyps: dict,
+def predict_with_cov(X_train: np.ndarray, Y_train: np.ndarray, X_test: np.ndarray,
+    cov_X_X: np.ndarray, inv_cov_X_X: np.ndarray, hyps: dict,
     str_cov: str=constants.STR_GP_COV,
     prior_mu: constants.TYPING_UNION_CALLABLE_NONE=None,
     debug: bool=False
 ) -> constants.TYPING_TUPLE_THREE_ARRAYS:
     """
-    This function returns posterior mean and posterior standard deviation functions over `X_test`, computed by Gaussian process regression with `X_train`, `Y_train`, `cov_X_X`, `inv_cov_X_X`, and `hyps`.
+    This function returns posterior mean and posterior standard deviation
+    functions over `X_test`, computed by Gaussian process regression with
+    `X_train`, `Y_train`, `cov_X_X`, `inv_cov_X_X`, and `hyps`.
 
     :param X_train: inputs. Shape: (n, d) or (n, m, d).
     :type X_train: numpy.ndarray
@@ -160,7 +171,9 @@ def predict_with_cov(X_train: np.ndarray, Y_train: np.ndarray, X_test: np.ndarra
     :param debug: flag for printing log messages.
     :type debug: bool., optional
 
-    :returns: a tuple of posterior mean function over `X_test`, posterior standard deviation function over `X_test`, and posterior covariance matrix over `X_test`. Shape: ((l, 1), (l, 1), (l, l)).
+    :returns: a tuple of posterior mean function over `X_test`, posterior
+        standard deviation function over `X_test`, and posterior covariance
+        matrix over `X_test`. Shape: ((l, 1), (l, 1), (l, l)).
     :rtype: tuple of (numpy.ndarray, numpy.ndarray, numpy.ndarray)
 
     :raises: AssertionError
@@ -201,7 +214,9 @@ def predict_with_hyps(X_train: np.ndarray, Y_train: np.ndarray, X_test: np.ndarr
     debug: bool=False
 ) -> constants.TYPING_TUPLE_THREE_ARRAYS:
     """
-    This function returns posterior mean and posterior standard deviation functions over `X_test`, computed by Gaussian process regression with `X_train`, `Y_train`, and `hyps`.
+    This function returns posterior mean and posterior standard deviation
+    functions over `X_test`, computed by Gaussian process regression with
+    `X_train`, `Y_train`, and `hyps`.
 
     :param X_train: inputs. Shape: (n, d) or (n, m, d).
     :type X_train: numpy.ndarray
@@ -218,7 +233,9 @@ def predict_with_hyps(X_train: np.ndarray, Y_train: np.ndarray, X_test: np.ndarr
     :param debug: flag for printing log messages.
     :type debug: bool., optional
 
-    :returns: a tuple of posterior mean function over `X_test`, posterior standard deviation function over `X_test`, and posterior covariance matrix over `X_test`. Shape: ((l, 1), (l, 1), (l, l)).
+    :returns: a tuple of posterior mean function over `X_test`, posterior
+        standard deviation function over `X_test`, and posterior covariance
+        matrix over `X_test`. Shape: ((l, 1), (l, 1), (l, l)).
     :rtype: tuple of (numpy.ndarray, numpy.ndarray, numpy.ndarray)
 
     :raises: AssertionError
@@ -236,9 +253,13 @@ def predict_with_hyps(X_train: np.ndarray, Y_train: np.ndarray, X_test: np.ndarr
     utils_gp.check_str_cov('predict_with_hyps', str_cov, X_train.shape, shape_X2=X_test.shape)
     assert X_train.shape[0] == Y_train.shape[0]
     assert X_train.shape[1] == X_test.shape[1]
-    
-    cov_X_X, inv_cov_X_X, grad_cov_X_X = gp_common.get_kernel_inverse(X_train, hyps, str_cov, debug=debug)
-    mu_Xs, sigma_Xs, Sigma_Xs = predict_with_cov(X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps, str_cov=str_cov, prior_mu=prior_mu, debug=debug)
+
+    cov_X_X, inv_cov_X_X, _ = gp_common.get_kernel_inverse(X_train,
+        hyps, str_cov, debug=debug)
+    mu_Xs, sigma_Xs, Sigma_Xs = predict_with_cov(X_train, Y_train, X_test,
+        cov_X_X, inv_cov_X_X, hyps, str_cov=str_cov,
+        prior_mu=prior_mu, debug=debug)
+
     return mu_Xs, sigma_Xs, Sigma_Xs
 
 @utils_common.validate_types
@@ -250,7 +271,9 @@ def predict_with_optimized_hyps(X_train: np.ndarray, Y_train: np.ndarray, X_test
     debug: bool=False
 ) -> constants.TYPING_TUPLE_THREE_ARRAYS:
     """
-    This function returns posterior mean and posterior standard deviation functions over `X_test`, computed by the Gaussian process regression optimized with `X_train` and `Y_train`.
+    This function returns posterior mean and posterior standard deviation
+    functions over `X_test`, computed by the Gaussian process regression
+    optimized with `X_train` and `Y_train`.
 
     :param X_train: inputs. Shape: (n, d) or (n, m, d).
     :type X_train: numpy.ndarray
@@ -269,7 +292,9 @@ def predict_with_optimized_hyps(X_train: np.ndarray, Y_train: np.ndarray, X_test
     :param debug: flag for printing log messages.
     :type debug: bool., optional
 
-    :returns: a tuple of posterior mean function over `X_test`, posterior standard deviation function over `X_test`, and posterior covariance matrix over `X_test`. Shape: ((l, 1), (l, 1), (l, l)).
+    :returns: a tuple of posterior mean function over `X_test`, posterior
+        standard deviation function over `X_test`, and posterior covariance
+        matrix over `X_test`. Shape: ((l, 1), (l, 1), (l, l)).
     :rtype: tuple of (numpy.ndarray, numpy.ndarray, numpy.ndarray)
 
     :raises: AssertionError
@@ -285,16 +310,22 @@ def predict_with_optimized_hyps(X_train: np.ndarray, Y_train: np.ndarray, X_test
     assert isinstance(debug, bool)
     assert callable(prior_mu) or prior_mu is None
     assert len(Y_train.shape) == 2
-    utils_gp.check_str_cov('predict_with_optimized_kernel', str_cov, X_train.shape, shape_X2=X_test.shape)
+    utils_gp.check_str_cov('predict_with_optimized_kernel', str_cov,
+        X_train.shape, shape_X2=X_test.shape)
     assert X_train.shape[0] == Y_train.shape[0]
     assert X_train.shape[1] == X_test.shape[1]
     assert str_optimizer_method in constants.ALLOWED_OPTIMIZER_METHOD_GP
 
     time_start = time.time()
 
-    cov_X_X, inv_cov_X_X, hyps = get_optimized_kernel(X_train, Y_train, prior_mu, str_cov, str_optimizer_method=str_optimizer_method, fix_noise=fix_noise, debug=debug)
-    mu_Xs, sigma_Xs, Sigma_Xs = predict_with_cov(X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps, str_cov=str_cov, prior_mu=prior_mu, debug=debug)
+    cov_X_X, inv_cov_X_X, hyps = get_optimized_kernel(X_train, Y_train,
+        prior_mu, str_cov, str_optimizer_method=str_optimizer_method,
+        fix_noise=fix_noise, debug=debug)
+    mu_Xs, sigma_Xs, Sigma_Xs = predict_with_cov(X_train, Y_train, X_test,
+        cov_X_X, inv_cov_X_X, hyps, str_cov=str_cov, prior_mu=prior_mu,
+        debug=debug)
 
     time_end = time.time()
-    if debug: logger.debug('time consumed to construct gpr: {:.4f} sec.'.format(time_end - time_start))
+    if debug:
+        logger.debug('time consumed to construct gpr: %.4f sec.', time_end - time_start)
     return mu_Xs, sigma_Xs, Sigma_Xs

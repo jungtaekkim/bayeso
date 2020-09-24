@@ -1,6 +1,8 @@
-# test_import
+#
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: August 24, 2020
+# last updated: September 24, 2020
+#
+"""test_import"""
 
 
 STR_VERSION = '0.4.3'
