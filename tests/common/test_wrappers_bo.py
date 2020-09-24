@@ -149,7 +149,7 @@ def test_run_single_round():
     num_X = 3
     num_iter = 10
     fun_target = lambda x: x**2 - 2.0 * x + 1.0
-    model_bo = bo.BO(arr_range)
+    model_bo = bo.BO(arr_range, debug=True)
 
     with pytest.raises(AssertionError) as error:
         wrappers_bo.run_single_round(1, fun_target, num_X, num_iter)
