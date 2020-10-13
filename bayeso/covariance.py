@@ -2,7 +2,7 @@
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
 # last updated: September 24, 2020
 #
-"""covariance"""
+"""It defines covariance functions and their associated functions."""
 
 import numpy as np
 import scipy.spatial.distance as scisd

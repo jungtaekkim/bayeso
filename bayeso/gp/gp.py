@@ -2,7 +2,7 @@
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
 # last updated: September 24, 2020
 #
-"""gp"""
+"""It defines Gaussian process regression."""
 
 import time
 import numpy as np

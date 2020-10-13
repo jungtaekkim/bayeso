@@ -2,7 +2,7 @@
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
 # last updated: September 24, 2020
 #
-"""constants"""
+"""It defines constants."""
 
 import typing
 import numpy as np

@@ -2,7 +2,7 @@
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
 # last updated: September 24, 2020
 #
-"""utils_logger"""
+"""It is utilities for loggers."""
 
 import logging
 import numpy as np

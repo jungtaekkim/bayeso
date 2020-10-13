@@ -2,7 +2,7 @@
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
 # last updated: September 24, 2020
 #
-"""utils_plotting"""
+"""It is utilities for plotting figures."""
 
 import os
 import numpy as np

@@ -2,7 +2,7 @@
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
 # last updated: September 24, 2020
 #
-"""utils_common"""
+"""It is utilities for common features."""
 
 import functools
 import numpy as np

@@ -2,7 +2,7 @@
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
 # last updated: September 24, 2020
 #
-"""gp_common"""
+"""It defines functions for Gaussian process regression."""
 
 import numpy as np
 import scipy.linalg

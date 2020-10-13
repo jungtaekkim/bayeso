@@ -2,7 +2,7 @@
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
 # last updated: September 24, 2020
 #
-"""wrappers_bo"""
+"""It defines wrappers for Bayesian optimization."""
 
 import time
 import numpy as np

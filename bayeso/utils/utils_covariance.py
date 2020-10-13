@@ -2,7 +2,7 @@
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
 # last updated: September 24, 2020
 #
-"""utils_covariance"""
+"""It is utilities for covariance functions."""
 
 import numpy as np
 

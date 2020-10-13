@@ -2,7 +2,7 @@
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
 # last updated: September 24, 2020
 #
-"""gp_scipy"""
+"""It is Gaussian process regression implementations with SciPy."""
 
 import time
 import numpy as np

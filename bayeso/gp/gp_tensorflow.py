@@ -2,7 +2,7 @@
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
 # last updated: September 24, 2020
 #
-"""gp_tensorflow"""
+"""It is Gaussian process regression implementations with TensorFlow."""
 
 import time
 import numpy as np

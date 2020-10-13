@@ -2,7 +2,7 @@
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
 # last updated: September 24, 2020
 #
-"""bo"""
+"""It defines a class for Bayesian optimization."""
 
 import time
 import numpy as np
@@ -379,6 +379,8 @@ class BO:
                 if self.debug:
                     logger.debug('acquired sample: %s', utils_logger.get_str_array(next_point_x))
         elif self.str_optimizer_method_bo == 'DIRECT': # pragma: no cover
+            logger.debug('num_samples is ignored.')
+
             list_bounds = self._get_bounds()
             next_point = directminimize(
                 fun_negative_acquisition,
@@ -388,6 +390,8 @@ class BO:
             next_point_x = next_point.x
             list_next_point.append(next_point_x)
         elif self.str_optimizer_method_bo == 'CMA-ES':
+            logger.debug('num_samples is ignored.')
+
             list_bounds = self._get_bounds()
             list_bounds = np.array(list_bounds)
             def fun_wrapper(f):
