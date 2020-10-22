@@ -155,6 +155,6 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
     (master_doc, 'BayesO', 'BayesO Documentation',
-     author, 'bayeso', 'Simple, but essential Bayesian optimization package.',
+     author, 'BayesO', 'Simple, but essential Bayesian optimization package.',
      'Machine learning, Global optimization, Bayesian optimization, Hyperparameter optimization'),
 ]
