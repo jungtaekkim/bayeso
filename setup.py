@@ -16,7 +16,7 @@ with open(path_requirements) as f:
     required = f.read().splitlines()
 
 setup(
-    name='bayeso',
+    name='BayesO',
     version='0.4.3',
     author='Jungtaek Kim',
     author_email='jtkim@postech.ac.kr',

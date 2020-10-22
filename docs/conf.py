@@ -132,7 +132,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'bayeso.tex', 'BayesO Documentation',
+    (master_doc, 'BayesO.tex', 'BayesO Documentation',
      'Jungtaek Kim and Seungjin Choi', 'manual'),
 ]
 
