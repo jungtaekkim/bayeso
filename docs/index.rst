@@ -1,18 +1,18 @@
-.. image:: _static/assets/logo_bayeso.*
-    :alt: bayeso logo
+.. image:: _static/assets/logo_bayeso_capitalized.*
+    :alt: BayesO logo
     :width: 400px
     :align: center
 
 ----------------------------------
 
-bayeso: A Bayesian optimization framework in Python
+BayesO: A Bayesian optimization framework in Python
 ===================================================
 
-`bayeso <http://bayeso.org>`_ is a simple, but essential Bayesian optimization package, written in Python.
+`BayesO <http://bayeso.org>`_ (pronounced "bayes-o") is a simple, but essential Bayesian optimization package, written in Python.
 It is developed by `machine learning group <http://mlg.postech.ac.kr>`_ at POSTECH.
 This project is licensed under `the MIT license <https://opensource.org/licenses/MIT>`_.
 
-This documentation describes the details of implementation, getting started guides, some examples with bayeso, and Python API specifications.
+This documentation describes the details of implementation, getting started guides, some examples with BayesO, and Python API specifications.
 The code can be found in `our GitHub repository <https://github.com/jungtaekkim/bayeso>`_.
 
 

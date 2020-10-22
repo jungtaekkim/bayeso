@@ -1,4 +1,4 @@
-About bayeso
+About BayesO
 ############
 
 Simple, but essential Bayesian optimization package.
@@ -34,7 +34,7 @@ Citation
 
     @misc{KimJ2017bayeso,
         author={Kim, Jungtaek and Choi, Seungjin},
-        title={{bayeso}: A {Bayesian} optimization framework in {Python}},
+        title={{BayesO}: A {Bayesian} optimization framework in {Python}},
         howpublished={\url{http://bayeso.org}},
         year={2017}
     }

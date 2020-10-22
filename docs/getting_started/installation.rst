@@ -1,4 +1,4 @@
-Installing bayeso
+Installing BayesO
 #################
 
 We recommend it should be installed in **virtualenv**.
@@ -42,7 +42,7 @@ in the **bayeso** root.
 Uninstalling
 ============
 
-If you would like to uninstall bayeso, command it.
+If you would like to uninstall **bayeso**, command it.
 
 .. code-block:: console
 
