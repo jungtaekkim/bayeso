@@ -5,7 +5,7 @@
 [![Documentation Status](https://readthedocs.org/projects/bayeso/badge/?version=master)](https://bayeso.readthedocs.io/en/master/?badge=master)
 
 <p align="center">
-<img src="logo_bayeso.svg" width="400" />
+<img src="logo_bayeso_capitalized.svg" width="400" />
 </p>
 
 Simple, but essential Bayesian optimization package.
@@ -27,12 +27,12 @@ $ pip install bayeso
 
 * Using source code (for developer installation)
 
-To install bayeso from source code, command
+To install BayesO from source code, command
 
 ```shell
 $ pip install .
 ```
-in the bayeso root.
+in the BayesO root.
 
 * Using source code (for editable development mode)
 
@@ -42,11 +42,11 @@ To use editable development mode, command
 $ pip install -r requirements.txt
 $ python setup.py develop
 ```
-in the bayeso root.
+in the BayesO root.
 
 * Uninstallation
 
-If you would like to uninstall bayeso, command it.
+If you would like to uninstall BayesO, command it.
 
 ```shell
 $ pip uninstall bayeso
@@ -56,9 +56,9 @@ $ pip uninstall bayeso
 Mandatory pacakges are inlcuded in requirements.txt.
 The following requirements files include the package list, the purpose of which is described as follows.
 
-* requirements-optional.txt: It is an optional package list, but it needs to be installed to execute some features of bayeso.
-* requirements-dev.txt: It is for developing the bayeso package.
-* requirements-examples.txt: It needs to be installed to execute the examples included in the bayeso repository.
+* requirements-optional.txt: It is an optional package list, but it needs to be installed to execute some features of BayesO.
+* requirements-dev.txt: It is for developing the BayesO package.
+* requirements-examples.txt: It needs to be installed to execute the examples included in the BayesO repository.
 
 ## Related Package
 * [bayeso-benchmarks](https://github.com/jungtaekkim/bayeso-benchmarks): We implement benchmark functions for Bayesian optimization. This package is included in requirements-optional.txt.
@@ -66,7 +66,6 @@ The following requirements files include the package list, the purpose of which 
 ## Supported Python Version
 We test our package in the following versions.
 
-* Python 2.7 (It will be excluded due to the maintenance schedule for Python 2.7, but it is currently tested.)
 * Python 3.6
 * Python 3.7
 * Python 3.8
@@ -78,7 +77,7 @@ We test our package in the following versions.
 ```
 @misc{KimJ2017bayeso,
     author="Kim, Jungtaek and Choi, Seungjin",
-    title="{bayeso}: A {Bayesian} optimization framework in {Python}",
+    title="{BayesO}: A {Bayesian} optimization framework in {Python}",
     howpublished="\url{http://bayeso.org}",
     year="2017"
 }
