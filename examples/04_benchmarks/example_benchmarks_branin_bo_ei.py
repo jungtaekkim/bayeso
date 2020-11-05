@@ -8,6 +8,7 @@ import os
 from bayeso import bo
 from benchmarks.two_dim_branin import Branin
 from bayeso.wrappers import wrappers_bo
+from bayeso.utils import utils_bo
 from bayeso.utils import utils_plotting
 
 
@@ -37,6 +38,9 @@ def main():
         print(time_final)
         list_Y.append(Y_final)
         list_time.append(time_final)
+
+        bx_best, y_best = utils_bo.get_best_acquisition_by_history(X_final, Y_final)
+        print(bx_best, y_best)
 
     arr_Y = np.array(list_Y)
     arr_Y = np.expand_dims(np.squeeze(arr_Y), axis=0)

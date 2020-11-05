@@ -8,6 +8,7 @@ import os
 from bayeso import bo
 from benchmarks.six_dim_hartmann6d import Hartmann6D
 from bayeso.wrappers import wrappers_bo
+from bayeso.utils import utils_bo
 from bayeso.utils import utils_plotting
 
 STR_FUN_TARGET = 'hartmann6d'
@@ -36,6 +37,9 @@ def main():
         print(time_final)
         list_Y.append(Y_final)
         list_time.append(time_final)
+
+        bx_best, y_best = utils_bo.get_best_acquisition_by_history(X_final, Y_final)
+        print(bx_best, y_best)
 
     arr_Y = np.array(list_Y)
     arr_Y = np.expand_dims(np.squeeze(arr_Y), axis=0)

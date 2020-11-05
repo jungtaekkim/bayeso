@@ -7,28 +7,29 @@
 import pytest
 import numpy as np
 
+from bayeso import constants
 from bayeso.utils import utils_bo
 
 
-def test_get_best_acquisition_typing():
-    annos = utils_bo.get_best_acquisition.__annotations__
+def test_get_best_acquisition_by_evaluation_typing():
+    annos = utils_bo.get_best_acquisition_by_evaluation.__annotations__
 
     assert annos['initials'] == np.ndarray
     assert annos['fun_objective'] == callable
     assert annos['return'] == np.ndarray
 
-def test_get_best_acquisition():
+def test_get_best_acquisition_by_evaluation():
     fun_objective = lambda x: x**2 - 2.0 * x + 1.0
     arr_initials = np.expand_dims(np.arange(-5, 5), axis=1)
 
     with pytest.raises(AssertionError) as error:
-        utils_bo.get_best_acquisition(1, fun_objective)
+        utils_bo.get_best_acquisition_by_evaluation(1, fun_objective)
     with pytest.raises(AssertionError) as error:
-        utils_bo.get_best_acquisition(arr_initials, None)
+        utils_bo.get_best_acquisition_by_evaluation(arr_initials, None)
     with pytest.raises(AssertionError) as error:
-        utils_bo.get_best_acquisition(np.arange(-5, 5), fun_objective)
+        utils_bo.get_best_acquisition_by_evaluation(np.arange(-5, 5), fun_objective)
 
-    best_initial = utils_bo.get_best_acquisition(arr_initials, fun_objective)
+    best_initial = utils_bo.get_best_acquisition_by_evaluation(arr_initials, fun_objective)
     assert len(best_initial.shape) == 2
     assert best_initial.shape[0] == 1
     assert best_initial.shape[1] == arr_initials.shape[1]
@@ -38,13 +39,13 @@ def test_get_best_acquisition():
     arr_initials = np.reshape(np.arange(-10, 10), (5, 4))
 
     with pytest.raises(AssertionError) as error:
-        utils_bo.get_best_acquisition(1, fun_objective)
+        utils_bo.get_best_acquisition_by_evaluation(1, fun_objective)
     with pytest.raises(AssertionError) as error:
-        utils_bo.get_best_acquisition(arr_initials, None)
+        utils_bo.get_best_acquisition_by_evaluation(arr_initials, None)
     with pytest.raises(AssertionError) as error:
-        utils_bo.get_best_acquisition(np.arange(-5, 5), fun_objective)
+        utils_bo.get_best_acquisition_by_evaluation(np.arange(-5, 5), fun_objective)
 
-    best_initial = utils_bo.get_best_acquisition(arr_initials, fun_objective)
+    best_initial = utils_bo.get_best_acquisition_by_evaluation(arr_initials, fun_objective)
     assert len(best_initial.shape) == 2
     assert best_initial.shape[0] == 1
     assert best_initial.shape[1] == arr_initials.shape[1]
@@ -170,3 +171,42 @@ def test_get_next_best_acquisition():
     ])
     next_point = utils_bo.get_next_best_acquisition(arr_points, arr_acquisitions, cur_points)
     assert (next_point == np.array([1.0, 3.0])).all()
+
+def test_get_best_acquisition_by_history_typing():
+    annos = utils_bo.get_best_acquisition_by_history.__annotations__
+
+    assert annos['X'] == np.ndarray
+    assert annos['Y'] == np.ndarray
+    assert annos['return'] == constants.TYPING_TUPLE_ARRAY_FLOAT
+
+def test_get_best_acquisition_by_history():
+    X = np.array([
+        [1.0, 2.0, 1.0, 5.0],
+        [2.0, 1.0, 2.0, 1.1],
+        [4.0, 4.0, 4.0, 4.0],
+        [2.0, 3.1, 2.2, 5.1],
+        [4.2, 4.1, 9.1, 2.2],
+    ])
+    Y = np.array([
+        [1.0],
+        [2.0],
+        [4.0],
+        [0.0],
+        [5.0],
+    ])
+
+    with pytest.raises(AssertionError) as error:
+        utils_bo.get_best_acquisition_by_history(1, Y)
+    with pytest.raises(AssertionError) as error:
+        utils_bo.get_best_acquisition_by_history(X, 1)
+    with pytest.raises(AssertionError) as error:
+        utils_bo.get_best_acquisition_by_history(X[:4], Y)
+    with pytest.raises(AssertionError) as error:
+        utils_bo.get_best_acquisition_by_history(X, Y[:3])
+    with pytest.raises(AssertionError) as error:
+        utils_bo.get_best_acquisition_by_history(X, Y[:, 0])
+
+    bx_best, y_best = utils_bo.get_best_acquisition_by_history(X, Y)
+
+    assert np.all(bx_best == np.array([2.0, 3.1, 2.2, 5.1]))
+    assert y_best == 0.0

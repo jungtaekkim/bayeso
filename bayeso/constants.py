@@ -95,6 +95,7 @@ TYPE_NONE = type(None)
 TYPING_TUPLE_DICT_BOOL = typing.Tuple[dict, bool]
 TYPING_TUPLE_ARRAY_BOOL = typing.Tuple[np.ndarray, bool]
 TYPING_TUPLE_ARRAY_DICT = typing.Tuple[np.ndarray, dict]
+TYPING_TUPLE_ARRAY_FLOAT = typing.Tuple[np.ndarray, float]
 TYPING_TUPLE_TWO_ARRAYS = typing.Tuple[np.ndarray, np.ndarray]
 TYPING_TUPLE_TWO_ARRAYS_DICT = typing.Tuple[np.ndarray, np.ndarray, dict]
 TYPING_TUPLE_THREE_ARRAYS = typing.Tuple[np.ndarray, np.ndarray, np.ndarray]

@@ -1,6 +1,6 @@
 #
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: September 24, 2020
+# last updated: November 5, 2020
 #
 """It is utilities for Bayesian optimization."""
 
@@ -24,9 +24,9 @@ logger = utils_logger.get_logger('utils_bo')
 
 
 @utils_common.validate_types
-def get_best_acquisition(initials: np.ndarray, fun_objective: callable) -> np.ndarray:
+def get_best_acquisition_by_evaluation(initials: np.ndarray, fun_objective: callable) -> np.ndarray:
     """
-    It returns the best example with respect to values of `fun_objective`.
+    It returns the best acquisition with respect to values of `fun_objective`.
     Here, the best acquisition is a minimizer of `fun_objective`.
 
     :param initials: inputs. Shape: (n, d).
@@ -54,6 +54,82 @@ def get_best_acquisition(initials: np.ndarray, fun_objective: callable) -> np.nd
             acq_val_best = acq_val
     initial_best = initial_best[np.newaxis, ...]
     return initial_best
+
+@utils_common.validate_types
+def get_best_acquisition_by_history(X: np.ndarray, Y: np.ndarray) -> constants.TYPING_TUPLE_ARRAY_FLOAT:
+    """
+    It returns the best acquisition that has shown minimum result, and its minimum result.
+
+    :param X: historical queries. Shape: (n, d).
+    :type X: numpy.ndarray
+    :param Y: the observations of `X`. Shape: (n, 1).
+    :type Y: numpy.ndarray
+
+    :returns: a tuple of the best query and its result.
+    :rtype: (numpy.ndarray, float)
+
+    :raises: AssertionError
+
+    """
+
+    assert isinstance(X, np.ndarray)
+    assert isinstance(Y, np.ndarray)
+    assert len(X.shape) == 2
+    assert len(Y.shape) == 2
+    assert X.shape[0] == Y.shape[0]
+    assert Y.shape[1] == 1
+
+    ind_best = np.argmin(Y)
+    bx_best = X[ind_best]
+    y_best = Y[ind_best, 0]
+
+    return bx_best, y_best
+
+@utils_common.validate_types
+def get_next_best_acquisition(points: np.ndarray, acquisitions: np.ndarray,
+    points_evaluated: np.ndarray
+) -> np.ndarray:
+    """
+    It returns the next best acquired example.
+
+    :param points: inputs for acquisition function. Shape: (n, d).
+    :type points: numpy.ndarray
+    :param acquisitions: acquisition function values over `points`. Shape: (n, ).
+    :type acquisitions: numpy.ndarray
+    :param points_evaluated: examples evaluated so far. Shape: (m, d).
+    :type points_evaluated: numpy.ndarray
+
+    :returns: next best acquired point. Shape: (d, ).
+    :rtype: numpy.ndarray
+
+    :raises: AssertionError
+
+    """
+
+    assert isinstance(points, np.ndarray)
+    assert isinstance(acquisitions, np.ndarray)
+    assert isinstance(points_evaluated, np.ndarray)
+    assert len(points.shape) == 2
+    assert len(acquisitions.shape) == 1
+    assert len(points_evaluated.shape) == 2
+    assert points.shape[0] == acquisitions.shape[0]
+    assert points.shape[1] == points_evaluated.shape[1]
+
+    for cur_point in points_evaluated:
+        ind_same, = np.where(np.linalg.norm(points - cur_point, axis=1) < 1e-2)
+        points = np.delete(points, ind_same, axis=0)
+        acquisitions = np.delete(acquisitions, ind_same)
+    cur_best = np.inf
+    next_point = None
+
+    if points.shape[0] > 0:
+        for arr_point, cur_acq in zip(points, acquisitions):
+            if cur_acq < cur_best:
+                cur_best = cur_acq
+                next_point = arr_point
+    else:
+        next_point = points_evaluated[-1]
+    return next_point
 
 @utils_common.validate_types
 def check_optimizer_method_bo(str_optimizer_method_bo: str, dim: int, debug: bool) -> str:
@@ -176,49 +252,3 @@ def check_hyps_convergence(list_hyps: list, hyps: dict, str_cov: str, fix_noise:
         if np.linalg.norm(hyps_converted - target_hyps_converted, ord=2) < threshold:
             converged = True
     return converged
-
-@utils_common.validate_types
-def get_next_best_acquisition(points: np.ndarray, acquisitions: np.ndarray,
-    points_evaluated: np.ndarray
-) -> np.ndarray:
-    """
-    It returns the next best acquired example.
-
-    :param points: inputs for acquisition function. Shape: (n, d).
-    :type points: numpy.ndarray
-    :param acquisitions: acquisition function values over `points`. Shape: (n, ).
-    :type acquisitions: numpy.ndarray
-    :param points_evaluated: examples evaluated so far. Shape: (m, d).
-    :type points_evaluated: numpy.ndarray
-
-    :returns: next best acquired point. Shape: (d, ).
-    :rtype: numpy.ndarray
-
-    :raises: AssertionError
-
-    """
-
-    assert isinstance(points, np.ndarray)
-    assert isinstance(acquisitions, np.ndarray)
-    assert isinstance(points_evaluated, np.ndarray)
-    assert len(points.shape) == 2
-    assert len(acquisitions.shape) == 1
-    assert len(points_evaluated.shape) == 2
-    assert points.shape[0] == acquisitions.shape[0]
-    assert points.shape[1] == points_evaluated.shape[1]
-
-    for cur_point in points_evaluated:
-        ind_same, = np.where(np.linalg.norm(points - cur_point, axis=1) < 1e-2)
-        points = np.delete(points, ind_same, axis=0)
-        acquisitions = np.delete(acquisitions, ind_same)
-    cur_best = np.inf
-    next_point = None
-
-    if points.shape[0] > 0:
-        for arr_point, cur_acq in zip(points, acquisitions):
-            if cur_acq < cur_best:
-                cur_best = cur_acq
-                next_point = arr_point
-    else:
-        next_point = points_evaluated[-1]
-    return next_point

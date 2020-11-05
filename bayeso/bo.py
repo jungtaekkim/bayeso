@@ -244,7 +244,7 @@ class BO:
             if self.debug:
                 logger.debug('num_samples is ignored, because grid is chosen.')
             samples = self._get_samples_grid()
-            samples = utils_bo.get_best_acquisition(samples, fun_objective)
+            samples = utils_bo.get_best_acquisition_by_evaluation(samples, fun_objective)
         elif str_sampling_method == 'uniform':
             samples = self._get_samples_uniform(num_samples, seed=seed)
         elif str_sampling_method == 'sobol':
@@ -410,7 +410,7 @@ class BO:
             list_next_point.append(next_point_x)
 
         next_points = np.array(list_next_point)
-        next_point = utils_bo.get_best_acquisition(next_points, fun_negative_acquisition)[0]
+        next_point = utils_bo.get_best_acquisition_by_evaluation(next_points, fun_negative_acquisition)[0]
         return next_point, next_points
 
     def optimize(self, X_train: np.ndarray, Y_train: np.ndarray,
