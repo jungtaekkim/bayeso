@@ -1,8 +1,8 @@
 <p align="center">
-<img src="docs/_static/assets/logo_bayeso.svg" width="400" />
+<img src="docs/_static/assets/logo_bayeso_capitalized.svg" width="400" />
 </p>
 
-# bayeso: A Bayesian optimization framework in Python
+# BayesO: A Bayesian optimization framework in Python
 [![Build Status](https://travis-ci.org/jungtaekkim/bayeso.svg?branch=master)](https://travis-ci.org/jungtaekkim/bayeso)
 [![Coverage Status](https://coveralls.io/repos/github/jungtaekkim/bayeso/badge.svg?branch=master)](https://coveralls.io/github/jungtaekkim/bayeso?branch=master)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/bayeso)](https://pypi.org/project/bayeso/)
@@ -47,7 +47,7 @@ in the `bayeso` root.
 
 * Uninstallation
 
-If you would like to uninstall bayeso, command it.
+If you would like to uninstall `bayeso`, command it.
 
 ```shell
 $ pip uninstall bayeso
@@ -64,7 +64,6 @@ The following `requirements` files include the package list, the purpose of whic
 ## Supported Python Version
 We test our package in the following versions.
 
-* Python 2.7 (It will be excluded due to the maintenance schedule for Python 2.7, but it is currently tested.)
 * Python 3.6
 * Python 3.7
 * Python 3.8
@@ -76,7 +75,7 @@ We test our package in the following versions.
 ```
 @misc{KimJ2017bayeso,
     author={Kim, Jungtaek and Choi, Seungjin},
-    title={{bayeso}: A {Bayesian} optimization framework in {Python}},
+    title={{BayesO}: A {Bayesian} optimization framework in {Python}},
     howpublished={\url{http://bayeso.org}},
     year={2017}
 }

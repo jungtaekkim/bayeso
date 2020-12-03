@@ -1,18 +1,18 @@
-# gp_tensorflow
+#
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: August 10, 2020
+# last updated: September 24, 2020
+#
+"""It is Gaussian process regression implementations with TensorFlow."""
 
-import os
 import time
 import numpy as np
 import tensorflow as tf
 import tensorflow_probability as tfp
 
-from bayeso import covariance
 from bayeso import constants
 from bayeso.gp import gp_common
 from bayeso.utils import utils_gp
-from bayeso.utils import utils_covariance
+from bayeso.utils import utils_common
 from bayeso.utils import utils_logger
 
 logger = utils_logger.get_logger('gp_tensorflow')
@@ -25,13 +25,17 @@ if gpus: # pragma: no cover
         print(e)
 
 
-def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov,
-    is_fixed_noise=constants.IS_FIXED_GP_NOISE,
-    num_iters=1000,
-    debug=False
-):
+@utils_common.validate_types
+def get_optimized_kernel(X_train: np.ndarray, Y_train: np.ndarray,
+    prior_mu: constants.TYPING_UNION_CALLABLE_NONE, str_cov: str,
+    fix_noise: bool=constants.FIX_GP_NOISE,
+    num_iters: int=1000,
+    debug: bool=False
+) -> constants.TYPING_TUPLE_TWO_ARRAYS_DICT:
     """
-    This function computes the kernel matrix optimized by optimization method specified, its inverse matrix, and the optimized hyperparameters, using TensorFlow and TensorFlow probability.
+    This function computes the kernel matrix optimized by optimization
+    method specified, its inverse matrix, and the optimized hyperparameters,
+    using TensorFlow and TensorFlow probability.
 
     :param X_train: inputs. Shape: (n, d) or (n, m, d).
     :type X_train: numpy.ndarray
@@ -41,26 +45,28 @@ def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov,
     :type prior_mu: function or NoneType
     :param str_cov: the name of covariance function.
     :type str_cov: str.
-    :param is_fixed_noise: flag for fixing a noise.
-    :type is_fixed_noise: bool., optional
-    :param num_iters: the number of iterations for optimizing negative log likelihood.
+    :param fix_noise: flag for fixing a noise.
+    :type fix_noise: bool., optional
+    :param num_iters: the number of iterations for optimizing negative log
+        likelihood.
     :type num_iters: int., optional
     :param debug: flag for printing log messages.
     :type debug: bool., optional
 
-    :returns: a tuple of kernel matrix over `X_train`, kernel matrix inverse, and dictionary of hyperparameters.
+    :returns: a tuple of kernel matrix over `X_train`, kernel matrix inverse,
+        and dictionary of hyperparameters.
     :rtype: tuple of (numpy.ndarray, numpy.ndarray, dict.)
 
     :raises: AssertionError, ValueError
 
     """
 
-    # TODO: check to input same is_fixed_noise to convert_hyps and restore_hyps
+    # TODO: check to input same fix_noise to convert_hyps and restore_hyps
     assert isinstance(X_train, np.ndarray)
     assert isinstance(Y_train, np.ndarray)
     assert callable(prior_mu) or prior_mu is None
     assert isinstance(str_cov, str)
-    assert isinstance(is_fixed_noise, bool)
+    assert isinstance(fix_noise, bool)
     assert isinstance(num_iters, int)
     assert isinstance(debug, bool)
     assert len(Y_train.shape) == 2
@@ -68,9 +74,9 @@ def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov,
     utils_gp.check_str_cov('get_optimized_kernel', str_cov, X_train.shape)
     assert num_iters >= 10 or num_iters == 0
 
-    # TODO: prior_mu and is_fixed_noise are not working now.
+    # TODO: prior_mu and fix_noise are not working now.
     prior_mu = None
-    is_fixed_noise = False
+    fix_noise = False
 
     time_start = time.time()
 
@@ -101,12 +107,15 @@ def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov,
     )
 
     def create_kernel(str_cov):
-        if str_cov == 'eq' or str_cov == 'se':
-            kernel_main = tfp.math.psd_kernels.ExponentiatedQuadratic(amplitude=var_amplitude, length_scale=None)
+        if str_cov in ('eq', 'se'):
+            kernel_main = tfp.math.psd_kernels.ExponentiatedQuadratic(
+                amplitude=var_amplitude, length_scale=None)
         elif str_cov == 'matern32':
-            kernel_main = tfp.math.psd_kernels.MaternThreeHalves(amplitude=var_amplitude, length_scale=None)
+            kernel_main = tfp.math.psd_kernels.MaternThreeHalves(
+                amplitude=var_amplitude, length_scale=None)
         elif str_cov == 'matern52':
-            kernel_main = tfp.math.psd_kernels.MaternFiveHalves(amplitude=var_amplitude, length_scale=None)
+            kernel_main = tfp.math.psd_kernels.MaternFiveHalves(
+                amplitude=var_amplitude, length_scale=None)
         else:
             raise NotImplementedError('allowed str_cov conditions, but it is not implemented.')
 
@@ -143,30 +152,35 @@ def get_optimized_kernel(X_train, Y_train, prior_mu, str_cov,
     while num_iters >= 10:
         with tf.GradientTape() as tape:
             loss = -1.0 * log_prob_outputs()
-        
+
         grads = tape.gradient(loss, trainable_variables)
         optimizer.apply_gradients(zip(grads, trainable_variables))
         list_neg_log_likelihoods.append(loss)
 
         if ind_iter > num_iters and np.abs(np.mean(list_neg_log_likelihoods[-6:-1]) - loss) < 5e-2:
             break
-        elif ind_iter > 10 * num_iters: # pragma: no cover
+        if ind_iter > 10 * num_iters: # pragma: no cover
             break
-        else:
-            ind_iter += 1
+
+        ind_iter += 1
 
     hyps = {
-        'signal': var_amplitude._value().numpy(),
-        'lengthscales': var_length_scale._value().numpy(),
-        'noise': np.sqrt(var_observation_noise_variance._value().numpy())
+        'signal': tf.convert_to_tensor(var_amplitude).numpy(),
+        'lengthscales': tf.convert_to_tensor(var_length_scale).numpy(),
+        'noise': np.sqrt(tf.convert_to_tensor(var_observation_noise_variance).numpy())
+#        'signal': var_amplitude._value().numpy(),
+#        'lengthscales': var_length_scale._value().numpy(),
+#        'noise': np.sqrt(var_observation_noise_variance._value().numpy())
     }
 
-    cov_X_X, inv_cov_X_X, _ = gp_common.get_kernel_inverse(X_train, hyps, str_cov, is_fixed_noise=is_fixed_noise, debug=debug)
+    cov_X_X, inv_cov_X_X, _ = gp_common.get_kernel_inverse(X_train, hyps,
+        str_cov, fix_noise=fix_noise, debug=debug)
 
     time_end = time.time()
 
-    if debug: logger.debug('iterations to be converged: {}'.format(ind_iter))
-    if debug: logger.debug('hyps optimized: {}'.format(utils_logger.get_str_hyps(hyps)))
-    if debug: logger.debug('time consumed to construct gpr: {:.4f} sec.'.format(time_end - time_start))
+    if debug:
+        logger.debug('iterations to be converged: %d', ind_iter)
+        logger.debug('hyps optimized: %s', utils_logger.get_str_hyps(hyps))
+        logger.debug('time consumed to construct gpr: %.4f sec.', time_end - time_start)
 
     return cov_X_X, inv_cov_X_X, hyps

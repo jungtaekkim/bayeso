@@ -4,3 +4,8 @@ python3 setup.py sdist bdist_wheel
 
 # Install twine
 twine upload dist/*
+
+## (Optional) Upload to Anaconda repository.
+~/anaconda3/bin/anaconda upload dist/*.tar.gz
+# or, just
+anaconda upload dist/*.tar.gz

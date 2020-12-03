@@ -1,13 +1,17 @@
-# utils_covariance
+#
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: April 15, 2019
+# last updated: September 24, 2020
+#
+"""It is utilities for covariance functions."""
 
 import numpy as np
 
+from bayeso.utils import utils_common
 from bayeso import constants
 
 
-def _get_list_first():
+@utils_common.validate_types
+def _get_list_first() -> list:
     """
     It provides list of strings.
     The strings in that list require two hyperparameters, `signal` and `lengthscales`.
@@ -22,16 +26,21 @@ def _get_list_first():
     list_first += ['set_' + str_ for str_ in list_first]
     return list_first
 
-def get_hyps(str_cov, int_dim, is_ard=True):
+@utils_common.validate_types
+def get_hyps(str_cov: str, dim: int,
+    use_ard: bool=True
+) -> dict:
     """
-    It returns a dictionary of default hyperparameters for covariance function, where `str_cov` and `int_dim` are given. If `is_ard` is True, the length scales would be `int_dim`-dimensional vector.
+    It returns a dictionary of default hyperparameters for covariance
+    function, where `str_cov` and `dim` are given. If `use_ard` is True,
+    the length scales would be `dim`-dimensional vector.
 
     :param str_cov: the name of covariance function.
     :type str_cov: str.
-    :param int_dim: dimensionality of the problem we are solving.
-    :type int_dim: int.
-    :param is_ard: flag for automatic relevance determination.
-    :type is_ard: bool., optional
+    :param dim: dimensionality of the problem we are solving.
+    :type dim: int.
+    :param use_ard: flag for automatic relevance determination.
+    :type use_ard: bool., optional
 
     :returns: dictionary of default hyperparameters for covariance function.
     :rtype: dict.
@@ -41,8 +50,8 @@ def get_hyps(str_cov, int_dim, is_ard=True):
     """
 
     assert isinstance(str_cov, str)
-    assert isinstance(int_dim, int)
-    assert isinstance(is_ard, bool)
+    assert isinstance(dim, int)
+    assert isinstance(use_ard, bool)
     assert str_cov in constants.ALLOWED_GP_COV
 
     hyps = dict()
@@ -52,8 +61,8 @@ def get_hyps(str_cov, int_dim, is_ard=True):
 
     if str_cov in list_first:
         hyps['signal'] = 1.0
-        if is_ard:
-            hyps['lengthscales'] = np.ones(int_dim)
+        if use_ard:
+            hyps['lengthscales'] = np.ones(dim)
         else:
             # TODO: It makes bunch of erros. I should fix it.
             hyps['lengthscales'] = 1.0
@@ -61,21 +70,22 @@ def get_hyps(str_cov, int_dim, is_ard=True):
         raise NotImplementedError('get_hyps: allowed str_cov, but it is not implemented.')
     return hyps
 
-def get_range_hyps(str_cov, int_dim,
-    is_ard=True,
-    is_fixed_noise=False
-):
+@utils_common.validate_types
+def get_range_hyps(str_cov: str, dim: int,
+    use_ard: bool=True,
+    fix_noise: bool=False
+) -> list:
     """
     It returns default optimization ranges of hyperparameters for Gaussian process regression.
 
     :param str_cov: the name of covariance function.
     :type str_cov: str.
-    :param int_dim: dimensionality of the problem we are solving.
-    :type int_dim: int.
-    :param is_ard: flag for automatic relevance determination.
-    :type is_ard: bool., optional
-    :param is_fixed_noise: flag for fixing a noise.
-    :type is_fixed_noise: bool., optional
+    :param dim: dimensionality of the problem we are solving.
+    :type dim: int.
+    :param use_ard: flag for automatic relevance determination.
+    :type use_ard: bool., optional
+    :param fix_noise: flag for fixing a noise.
+    :type fix_noise: bool., optional
 
     :returns: list of default optimization ranges for hyperparameters.
     :rtype: list
@@ -85,22 +95,22 @@ def get_range_hyps(str_cov, int_dim,
     """
 
     assert isinstance(str_cov, str)
-    assert isinstance(int_dim, int)
-    assert isinstance(is_ard, bool)
-    assert isinstance(is_fixed_noise, bool)
+    assert isinstance(dim, int)
+    assert isinstance(use_ard, bool)
+    assert isinstance(fix_noise, bool)
     assert str_cov in constants.ALLOWED_GP_COV
 
     range_hyps = []
 
     list_first = _get_list_first()
 
-    if not is_fixed_noise:
+    if not fix_noise:
         range_hyps += constants.RANGE_NOISE
 
     if str_cov in list_first:
         range_hyps += constants.RANGE_SIGNAL # for signal scale
-        if is_ard: # for lengthscales
-            for _ in range(0, int_dim):
+        if use_ard: # for lengthscales
+            for _ in range(0, dim):
                 range_hyps += constants.RANGE_LENGTHSCALES
         else:
             range_hyps += constants.RANGE_LENGTHSCALES
@@ -109,7 +119,10 @@ def get_range_hyps(str_cov, int_dim,
 
     return range_hyps
 
-def convert_hyps(str_cov, hyps, is_fixed_noise=False):
+@utils_common.validate_types
+def convert_hyps(str_cov: str, hyps: dict,
+    fix_noise: bool=False
+) -> np.ndarray:
     """
     It converts hyperparameters dictionary, `hyps` to numpy array.
 
@@ -117,8 +130,8 @@ def convert_hyps(str_cov, hyps, is_fixed_noise=False):
     :type str_cov: str.
     :param hyps: dictionary of hyperparameters for covariance function.
     :type hyps: dict.
-    :param is_fixed_noise: flag for fixing a noise.
-    :type is_fixed_noise: bool., optional
+    :param fix_noise: flag for fixing a noise.
+    :type fix_noise: bool., optional
 
     :returns: converted array of the hyperparameters given by `hyps`.
     :rtype: numpy.ndarray
@@ -129,11 +142,11 @@ def convert_hyps(str_cov, hyps, is_fixed_noise=False):
 
     assert isinstance(str_cov, str)
     assert isinstance(hyps, dict)
-    assert isinstance(is_fixed_noise, bool)
+    assert isinstance(fix_noise, bool)
     assert str_cov in constants.ALLOWED_GP_COV
 
     list_hyps = []
-    if not is_fixed_noise:
+    if not fix_noise:
         list_hyps.append(hyps['noise'])
 
     list_first = _get_list_first()
@@ -146,7 +159,11 @@ def convert_hyps(str_cov, hyps, is_fixed_noise=False):
         raise NotImplementedError('convert_hyps: allowed str_cov, but it is not implemented.')
     return np.array(list_hyps)
 
-def restore_hyps(str_cov, hyps, is_fixed_noise=False, fixed_noise=constants.GP_NOISE):
+@utils_common.validate_types
+def restore_hyps(str_cov: str, hyps: np.ndarray,
+    fix_noise: bool=False,
+    noise: float=constants.GP_NOISE
+) -> dict:
     """
     It restores hyperparameters array, `hyps` to dictionary.
 
@@ -154,13 +171,13 @@ def restore_hyps(str_cov, hyps, is_fixed_noise=False, fixed_noise=constants.GP_N
     :type str_cov: str.
     :param hyps: array of hyperparameters for covariance function.
     :type hyps: numpy.ndarray
-    :param is_fixed_noise: flag for fixing a noise.
-    :type is_fixed_noise: bool., optional
-    :param fixed_noise: fixed noise value.
-    :type fixed_noise: float, optional
+    :param fix_noise: flag for fixing a noise.
+    :type fix_noise: bool., optional
+    :param noise: fixed noise value.
+    :type noise: float, optional
 
     :returns: restored dictionary of the hyperparameters given by `hyps`.
-    :rtype: numpy.ndarray
+    :rtype: dict.
 
     :raises: AssertionError
 
@@ -168,17 +185,17 @@ def restore_hyps(str_cov, hyps, is_fixed_noise=False, fixed_noise=constants.GP_N
 
     assert isinstance(str_cov, str)
     assert isinstance(hyps, np.ndarray)
-    assert isinstance(is_fixed_noise, bool)
-    assert isinstance(fixed_noise, float)
+    assert isinstance(fix_noise, bool)
+    assert isinstance(noise, float)
     assert len(hyps.shape) == 1
     assert str_cov in constants.ALLOWED_GP_COV
 
     dict_hyps = dict()
-    if not is_fixed_noise:
+    if not fix_noise:
         dict_hyps['noise'] = hyps[0]
         ind_start = 1
     else:
-        dict_hyps['noise'] = fixed_noise
+        dict_hyps['noise'] = noise
         ind_start = 0
 
     list_first = _get_list_first()
@@ -193,16 +210,17 @@ def restore_hyps(str_cov, hyps, is_fixed_noise=False, fixed_noise=constants.GP_N
         raise NotImplementedError('restore_hyps: allowed str_cov, but it is not implemented.')
     return dict_hyps
 
-def validate_hyps_dict(dict_hyps, str_cov, int_dim):
+@utils_common.validate_types
+def validate_hyps_dict(hyps: dict, str_cov: str, dim: int) -> constants.TYPING_TUPLE_DICT_BOOL:
     """
-    It validates hyperparameters dictionary, `dict_hyps`.
+    It validates hyperparameters dictionary, `hyps`.
 
-    :param dict_hyps: dictionary of hyperparameters for covariance function.
-    :type dict_hyps: dict.
+    :param hyps: dictionary of hyperparameters for covariance function.
+    :type hyps: dict.
     :param str_cov: the name of covariance function.
     :type str_cov: str.
-    :param int_dim: dimensionality of the problem we are solving.
-    :type int_dim: int.
+    :param dim: dimensionality of the problem we are solving.
+    :type dim: int.
 
     :returns: a tuple of valid hyperparameters and validity flag.
     :rtype: (dict., bool.)
@@ -211,49 +229,54 @@ def validate_hyps_dict(dict_hyps, str_cov, int_dim):
 
     """
 
-    assert isinstance(dict_hyps, dict)
+    assert isinstance(hyps, dict)
     assert isinstance(str_cov, str)
-    assert isinstance(int_dim, int)
+    assert isinstance(dim, int)
     assert str_cov in constants.ALLOWED_GP_COV
 
     is_valid = True
 
-    if 'noise' not in dict_hyps:
+    if 'noise' not in hyps:
         is_valid = False
     else:
-        if not isinstance(dict_hyps['noise'], float):
+        if not isinstance(hyps['noise'], float):
             is_valid = False
         else:
-            if np.abs(dict_hyps['noise']) >= constants.BOUND_UPPER_GP_NOISE:
-                dict_hyps['noise'] = constants.BOUND_UPPER_GP_NOISE
+            if np.abs(hyps['noise']) >= constants.BOUND_UPPER_GP_NOISE:
+                hyps['noise'] = constants.BOUND_UPPER_GP_NOISE
 
-    if str_cov == 'eq' or str_cov == 'se' or str_cov == 'matern32' or str_cov == 'matern52':
-        if 'lengthscales' not in dict_hyps:
+    if str_cov in ('eq', 'se', 'matern32', 'matern52'):
+        if 'lengthscales' not in hyps:
             is_valid = False
         else:
-            if isinstance(dict_hyps['lengthscales'], np.ndarray) and dict_hyps['lengthscales'].shape[0] != int_dim:
+            if isinstance(hyps['lengthscales'], np.ndarray) \
+                and hyps['lengthscales'].shape[0] != dim:
                 is_valid = False
-            if not isinstance(dict_hyps['lengthscales'], np.ndarray) and not isinstance(dict_hyps['lengthscales'], float):
+            if not isinstance(hyps['lengthscales'], np.ndarray) \
+                and not isinstance(hyps['lengthscales'], float):
                 is_valid = False
-        if 'signal' not in dict_hyps:
+        if 'signal' not in hyps:
             is_valid = False
         else:
-            if not isinstance(dict_hyps['signal'], float):
+            if not isinstance(hyps['signal'], float):
                 is_valid = False
     else:
         is_valid = False
-    return dict_hyps, is_valid
 
-def validate_hyps_arr(arr_hyps, str_cov, int_dim):
+    return hyps, is_valid
+
+@utils_common.validate_types
+def validate_hyps_arr(hyps: np.ndarray, str_cov: str, dim: int
+) -> constants.TYPING_TUPLE_ARRAY_BOOL:
     """
-    It validates hyperparameters array, `arr_hyps`.
+    It validates hyperparameters array, `hyps`.
 
-    :param arr_hyps: array of hyperparameters for covariance function.
-    :type arr_hyps: numpy.ndarray
+    :param hyps: array of hyperparameters for covariance function.
+    :type hyps: numpy.ndarray
     :param str_cov: the name of covariance function.
     :type str_cov: str.
-    :param int_dim: dimensionality of the problem we are solving.
-    :type int_dim: int.
+    :param dim: dimensionality of the problem we are solving.
+    :type dim: int.
 
     :returns: a tuple of valid hyperparameters and validity flag.
     :rtype: (numpy.ndarray, bool.)
@@ -262,9 +285,9 @@ def validate_hyps_arr(arr_hyps, str_cov, int_dim):
 
     """
 
-    assert isinstance(arr_hyps, np.ndarray)
+    assert isinstance(hyps, np.ndarray)
     assert isinstance(str_cov, str)
-    assert isinstance(int_dim, int)
+    assert isinstance(dim, int)
     assert str_cov in constants.ALLOWED_GP_COV
 
 #    is_valid = True

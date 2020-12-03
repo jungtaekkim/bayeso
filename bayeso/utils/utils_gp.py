@@ -1,13 +1,19 @@
-# utils_gp
+#
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: August 12, 2020
+# last updated: September 24, 2020
+#
+"""It is utilities for Gaussian process regression."""
 
 import numpy as np
 
+from bayeso.utils import utils_common
 from bayeso import constants
 
 
-def check_str_cov(str_fun, str_cov, shape_X1, shape_X2=None):
+@utils_common.validate_types
+def check_str_cov(str_fun: str, str_cov: str, shape_X1: tuple,
+    shape_X2: tuple=None
+) -> constants.TYPE_NONE:
     """
     It is for validating the shape of X1 (and optionally the shape of X2).
 
@@ -44,9 +50,9 @@ def check_str_cov(str_fun, str_cov, shape_X1, shape_X2=None):
         raise ValueError('{}: missing conditions for str_cov.'.format(str_fun))
     else:
         raise ValueError('{}: invalid str_cov.'.format(str_fun))
-    return
 
-def get_prior_mu(prior_mu, X):
+@utils_common.validate_types
+def get_prior_mu(prior_mu: constants.TYPING_UNION_CALLABLE_NONE, X: np.ndarray) -> np.ndarray:
     """
     It computes the prior mean function values over inputs X.
 
@@ -73,4 +79,3 @@ def get_prior_mu(prior_mu, X):
         assert len(prior_mu_X.shape) == 2
         assert X.shape[0] == prior_mu_X.shape[0]
     return prior_mu_X
-

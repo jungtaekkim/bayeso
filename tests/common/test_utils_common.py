@@ -1,7 +1,10 @@
-# test_utils_common
+#
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: June 01, 2018
+# last updated: September 24, 2020
+#
+"""test_utils_common"""
 
+import typing
 import pytest
 import numpy as np
 
@@ -9,6 +12,109 @@ from bayeso.utils import utils_common
 
 
 TEST_EPSILON = 1e-5
+
+def test_get_grids_typing():
+    annos = utils_common.get_grids.__annotations__
+
+    assert annos['ranges'] == np.ndarray
+    assert annos['num_grids'] == int
+    assert annos['return'] == np.ndarray
+
+def test_get_grids():
+    arr_range_1 = np.array([
+        [0.0, 10.0],
+        [-2.0, 2.0],
+        [-5.0, 5.0],
+    ])
+    arr_range_2 = np.array([
+        [0.0, 10.0],
+        [2.0, 2.0],
+        [5.0, 5.0],
+    ])
+
+    truth_arr_grid_1 = np.array([
+        [0., -2., -5.],
+        [0., -2., 0.],
+        [0., -2., 5.],
+        [5., -2., -5.],
+        [5., -2., 0.],
+        [5., -2., 5.],
+        [10., -2., -5.],
+        [10., -2., 0.],
+        [10., -2., 5.],
+        [0., 0., -5.],
+        [0., 0., 0.],
+        [0., 0., 5.],
+        [5., 0., -5.],
+        [5., 0., 0.],
+        [5., 0., 5.],
+        [10., 0., -5.],
+        [10., 0., 0.],
+        [10., 0., 5.],
+        [0., 2., -5.],
+        [0., 2., 0.],
+        [0., 2., 5.],
+        [5., 2., -5.],
+        [5., 2., 0.],
+        [5., 2., 5.],
+        [10., 2., -5.],
+        [10., 2., 0.],
+        [10., 2., 5.],
+    ])
+
+    truth_arr_grid_2 = np.array([
+        [0., 2., 5.],
+        [0., 2., 5.],
+        [0., 2., 5.],
+        [5., 2., 5.],
+        [5., 2., 5.],
+        [5., 2., 5.],
+        [10., 2., 5.],
+        [10., 2., 5.],
+        [10., 2., 5.],
+        [0., 2., 5.],
+        [0., 2., 5.],
+        [0., 2., 5.],
+        [5., 2., 5.],
+        [5., 2., 5.],
+        [5., 2., 5.],
+        [10., 2., 5.],
+        [10., 2., 5.],
+        [10., 2., 5.],
+        [0., 2., 5.],
+        [0., 2., 5.],
+        [0., 2., 5.],
+        [5., 2., 5.],
+        [5., 2., 5.],
+        [5., 2., 5.],
+        [10., 2., 5.],
+        [10., 2., 5.],
+        [10., 2., 5.],
+    ])
+
+    with pytest.raises(AssertionError) as error:
+        utils_common.get_grids('abc', 3)
+    with pytest.raises(AssertionError) as error:
+        utils_common.get_grids(arr_range_1, 'abc')
+    with pytest.raises(AssertionError) as error:
+        utils_common.get_grids(np.arange(0, 10), 3)
+    with pytest.raises(AssertionError) as error:
+        utils_common.get_grids(np.ones((3, 3)), 3)
+    with pytest.raises(AssertionError) as error:
+        utils_common.get_grids(np.array([[0.0, -2.0], [10.0, 20.0]]), 3)
+
+    arr_grid_1 = utils_common.get_grids(arr_range_1, 3)
+    arr_grid_2 = utils_common.get_grids(arr_range_2, 3)
+
+    assert (arr_grid_1 == truth_arr_grid_1).all()
+    assert (arr_grid_2 == truth_arr_grid_2).all()
+
+def test_get_minimum_typing():
+    annos = utils_common.get_minimum.__annotations__
+
+    assert annos['Y_all'] == np.ndarray
+    assert annos['num_init'] == int
+    assert annos['return'] == typing.Tuple[np.ndarray, np.ndarray, np.ndarray]
 
 def test_get_minimum():
     with pytest.raises(AssertionError) as error:
@@ -52,6 +158,14 @@ def test_get_minimum():
     assert (cur_minimum == truth_all_data).all()
     assert (cur_mean == np.mean(truth_all_data, axis=0)).all()
     assert (cur_std == np.std(truth_all_data, axis=0)).all()
+
+def test_get_time_typing():
+    annos = utils_common.get_time.__annotations__
+
+    assert annos['time_all'] == np.ndarray
+    assert annos['num_init'] == int
+    assert annos['include_init'] == bool
+    assert annos['return'] == np.ndarray
 
 def test_get_time():
     arr_time = np.array([

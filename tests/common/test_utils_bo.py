@@ -1,13 +1,130 @@
-# test_utils_bo
+#
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: June 24, 2018
+# last updated: September 24, 2020
+#
+"""test_utils_bo"""
 
-import numpy as np
 import pytest
+import numpy as np
 
-from bayeso import bo
+from bayeso import constants
 from bayeso.utils import utils_bo
 
+
+def test_get_best_acquisition_by_evaluation_typing():
+    annos = utils_bo.get_best_acquisition_by_evaluation.__annotations__
+
+    assert annos['initials'] == np.ndarray
+    assert annos['fun_objective'] == callable
+    assert annos['return'] == np.ndarray
+
+def test_get_best_acquisition_by_evaluation():
+    fun_objective = lambda x: x**2 - 2.0 * x + 1.0
+    arr_initials = np.expand_dims(np.arange(-5, 5), axis=1)
+
+    with pytest.raises(AssertionError) as error:
+        utils_bo.get_best_acquisition_by_evaluation(1, fun_objective)
+    with pytest.raises(AssertionError) as error:
+        utils_bo.get_best_acquisition_by_evaluation(arr_initials, None)
+    with pytest.raises(AssertionError) as error:
+        utils_bo.get_best_acquisition_by_evaluation(np.arange(-5, 5), fun_objective)
+
+    best_initial = utils_bo.get_best_acquisition_by_evaluation(arr_initials, fun_objective)
+    assert len(best_initial.shape) == 2
+    assert best_initial.shape[0] == 1
+    assert best_initial.shape[1] == arr_initials.shape[1]
+    assert best_initial == np.array([[1]])
+
+    fun_objective = lambda x: np.linalg.norm(x, ord=2, axis=0)**2
+    arr_initials = np.reshape(np.arange(-10, 10), (5, 4))
+
+    with pytest.raises(AssertionError) as error:
+        utils_bo.get_best_acquisition_by_evaluation(1, fun_objective)
+    with pytest.raises(AssertionError) as error:
+        utils_bo.get_best_acquisition_by_evaluation(arr_initials, None)
+    with pytest.raises(AssertionError) as error:
+        utils_bo.get_best_acquisition_by_evaluation(np.arange(-5, 5), fun_objective)
+
+    best_initial = utils_bo.get_best_acquisition_by_evaluation(arr_initials, fun_objective)
+    assert len(best_initial.shape) == 2
+    assert best_initial.shape[0] == 1
+    assert best_initial.shape[1] == arr_initials.shape[1]
+    assert np.all(best_initial == np.array([[-2, -1, 0, 1]]))
+
+def test_check_optimizer_method_bo_typing():
+    annos = utils_bo.check_optimizer_method_bo.__annotations__
+
+    assert annos['str_optimizer_method_bo'] == str
+    assert annos['dim'] == int
+    assert annos['debug'] == bool
+    assert annos['return'] == str
+
+def test_check_optimizer_method_bo():
+    directminimize = None
+    cma = None
+
+    with pytest.raises(AssertionError) as error:
+        utils_bo.check_optimizer_method_bo(2, 2, True)
+    with pytest.raises(AssertionError) as error:
+        utils_bo.check_optimizer_method_bo('DIRECT', 'abc', True)
+    with pytest.raises(AssertionError) as error:
+        utils_bo.check_optimizer_method_bo('DIRECT', 2, 'abc')
+    with pytest.raises(AssertionError) as error:
+        utils_bo.check_optimizer_method_bo('ABC', 2, True)
+
+    utils_bo.check_optimizer_method_bo('L-BFGS-B', 2, False)
+    utils_bo.check_optimizer_method_bo('DIRECT', 2, False)
+    utils_bo.check_optimizer_method_bo('CMA-ES', 2, False)
+
+def test_choose_fun_acquisition_typing():
+    annos = utils_bo.choose_fun_acquisition.__annotations__
+
+    assert annos['str_acq'] == str
+    assert annos['hyps'] == dict
+    assert annos['return'] == callable
+
+def test_choose_fun_acquisition():
+    dict_hyps = {'lengthscales': np.array([1.0, 1.0]), 'signal': 1.0, 'noise': 0.01}
+    with pytest.raises(AssertionError) as error:
+        utils_bo.choose_fun_acquisition(1, dict_hyps)
+    with pytest.raises(AssertionError) as error:
+        utils_bo.choose_fun_acquisition('abc', dict_hyps)
+    with pytest.raises(AssertionError) as error:
+        utils_bo.choose_fun_acquisition('pi', 1)
+
+def test_check_hyps_convergence_typing():
+    annos = utils_bo.check_hyps_convergence.__annotations__
+
+    assert annos['list_hyps'] == list
+    assert annos['hyps'] == dict
+    assert annos['str_cov'] == str
+    assert annos['fix_noise'] == bool
+    assert annos['ratio_threshold'] == float
+    assert annos['return'] == bool
+
+def test_check_hyps_convergence():
+    dict_hyps_1 = {'lengthscales': np.array([1.0, 1.0]), 'signal': 1.0, 'noise': 0.01}
+    dict_hyps_2 = {'lengthscales': np.array([2.0, 1.0]), 'signal': 1.0, 'noise': 0.01}
+
+    with pytest.raises(AssertionError) as error:
+        utils_bo.check_hyps_convergence(1, dict_hyps_1, 'se', True)
+    with pytest.raises(AssertionError) as error:
+        utils_bo.check_hyps_convergence([dict_hyps_1], 1, 'se', True)
+    with pytest.raises(AssertionError) as error:
+        utils_bo.check_hyps_convergence([dict_hyps_1], dict_hyps_1, 1, True)
+    with pytest.raises(AssertionError) as error:
+        utils_bo.check_hyps_convergence([dict_hyps_1], dict_hyps_1, 1, 'abc')
+
+    assert utils_bo.check_hyps_convergence([dict_hyps_1], dict_hyps_1, 'se', False)
+    assert not utils_bo.check_hyps_convergence([dict_hyps_2], dict_hyps_1, 'se', False)
+
+def test_get_next_best_acquisition_typing():
+    annos = utils_bo.get_next_best_acquisition.__annotations__
+
+    assert annos['points'] == np.ndarray
+    assert annos['acquisitions'] == np.ndarray
+    assert annos['points_evaluated'] == np.ndarray
+    assert annos['return'] == np.ndarray
 
 def test_get_next_best_acquisition():
     arr_points = np.array([
@@ -55,135 +172,41 @@ def test_get_next_best_acquisition():
     next_point = utils_bo.get_next_best_acquisition(arr_points, arr_acquisitions, cur_points)
     assert (next_point == np.array([1.0, 3.0])).all()
 
-def test_optimize_many_():
-    np.random.seed(42)
-    arr_range = np.array([
-        [-5.0, 5.0],
+def test_get_best_acquisition_by_history_typing():
+    annos = utils_bo.get_best_acquisition_by_history.__annotations__
+
+    assert annos['X'] == np.ndarray
+    assert annos['Y'] == np.ndarray
+    assert annos['return'] == constants.TYPING_TUPLE_ARRAY_FLOAT
+
+def test_get_best_acquisition_by_history():
+    X = np.array([
+        [1.0, 2.0, 1.0, 5.0],
+        [2.0, 1.0, 2.0, 1.1],
+        [4.0, 4.0, 4.0, 4.0],
+        [2.0, 3.1, 2.2, 5.1],
+        [4.2, 4.1, 9.1, 2.2],
     ])
-    dim_X = arr_range.shape[0]
-    num_X = 3
-    num_iter = 10
-    X = np.random.randn(num_X, dim_X)
-    Y = np.random.randn(num_X, 1)
-    fun_target = lambda x: 2.0 * x + 1.0
-    model_bo = bo.BO(arr_range)
-
-    with pytest.raises(AssertionError) as error:
-        utils_bo.optimize_many_(1, fun_target, X, Y, num_iter)
-    with pytest.raises(AssertionError) as error:
-        utils_bo.optimize_many_(model_bo, 1, X, Y, num_iter)
-    with pytest.raises(AssertionError) as error:
-        utils_bo.optimize_many_(model_bo, fun_target, 1, Y, num_iter)
-    with pytest.raises(AssertionError) as error:
-        utils_bo.optimize_many_(model_bo, fun_target, X, 1, num_iter)
-    with pytest.raises(AssertionError) as error:
-        utils_bo.optimize_many_(model_bo, fun_target, X, Y, 'abc')
-    with pytest.raises(AssertionError) as error:
-        utils_bo.optimize_many_(model_bo, fun_target, np.random.randn(num_X), Y, num_iter)
-    with pytest.raises(AssertionError) as error:
-        utils_bo.optimize_many_(model_bo, fun_target, X, np.random.randn(num_X), num_iter)
-    with pytest.raises(AssertionError) as error:
-        utils_bo.optimize_many_(model_bo, fun_target, np.random.randn(2, dim_X), Y, num_iter)
-    with pytest.raises(AssertionError) as error:
-        utils_bo.optimize_many_(model_bo, fun_target, X, np.random.randn(num_X, 2), num_iter)
-    with pytest.raises(AssertionError) as error:
-        utils_bo.optimize_many_(model_bo, fun_target, X, Y, num_iter, str_initial_method_ao=1)
-    with pytest.raises(AssertionError) as error:
-        utils_bo.optimize_many_(model_bo, fun_target, X, Y, num_iter, str_initial_method_ao='abc')
-    with pytest.raises(AssertionError) as error:
-        utils_bo.optimize_many_(model_bo, fun_target, X, Y, num_iter, int_samples_ao='abc')
-
-    X_final, Y_final, time_all_final, time_gp_final, time_acq_final = utils_bo.optimize_many_(model_bo, fun_target, X, Y, num_iter)
-    assert len(X_final.shape) == 2
-    assert len(Y_final.shape) == 2
-    assert len(time_all_final.shape) == 1
-    assert len(time_gp_final.shape) == 1
-    assert len(time_acq_final.shape) == 1
-    assert X_final.shape[1] == dim_X
-    assert X_final.shape[0] == Y_final.shape[0] == num_X + num_iter
-    assert time_all_final.shape[0] == num_iter
-    assert Y_final.shape[1] == 1
-    assert time_gp_final.shape[0] == time_acq_final.shape[0]
-
-def test_optimize_many():
-    np.random.seed(42)
-    arr_range = np.array([
-        [-5.0, 5.0],
+    Y = np.array([
+        [1.0],
+        [2.0],
+        [4.0],
+        [0.0],
+        [5.0],
     ])
-    dim_X = arr_range.shape[0]
-    num_X = 3
-    num_iter = 10
-    X = np.random.randn(num_X, dim_X)
-    fun_target = lambda x: x**2 - 2.0 * x + 1.0
-    model_bo = bo.BO(arr_range)
 
     with pytest.raises(AssertionError) as error:
-        utils_bo.optimize_many(1, fun_target, X, num_iter)
+        utils_bo.get_best_acquisition_by_history(1, Y)
     with pytest.raises(AssertionError) as error:
-        utils_bo.optimize_many(model_bo, 1, X, num_iter)
+        utils_bo.get_best_acquisition_by_history(X, 1)
     with pytest.raises(AssertionError) as error:
-        utils_bo.optimize_many(model_bo, fun_target, 1, num_iter)
+        utils_bo.get_best_acquisition_by_history(X[:4], Y)
     with pytest.raises(AssertionError) as error:
-        utils_bo.optimize_many(model_bo, fun_target, X, 1.2)
+        utils_bo.get_best_acquisition_by_history(X, Y[:3])
     with pytest.raises(AssertionError) as error:
-        utils_bo.optimize_many(model_bo, fun_target, np.random.randn(num_X), num_iter)
-    with pytest.raises(AssertionError) as error:
-        utils_bo.optimize_many(model_bo, fun_target, X, num_iter, str_initial_method_ao=1)
-    with pytest.raises(AssertionError) as error:
-        utils_bo.optimize_many(model_bo, fun_target, X, num_iter, str_initial_method_ao='abc')
-    with pytest.raises(AssertionError) as error:
-        utils_bo.optimize_many(model_bo, fun_target, X, num_iter, int_samples_ao='abc')
+        utils_bo.get_best_acquisition_by_history(X, Y[:, 0])
 
-    X_final, Y_final, time_all_final, time_gp_final, time_acq_final = utils_bo.optimize_many(model_bo, fun_target, X, num_iter)
-    assert len(X_final.shape) == 2
-    assert len(Y_final.shape) == 2
-    assert len(time_all_final.shape) == 1
-    assert len(time_gp_final.shape) == 1
-    assert len(time_acq_final.shape) == 1
-    assert X_final.shape[1] == dim_X
-    assert X_final.shape[0] == Y_final.shape[0] == time_all_final.shape[0] == num_X + num_iter
-    assert Y_final.shape[1] == 1
-    assert time_gp_final.shape[0] == time_acq_final.shape[0]
+    bx_best, y_best = utils_bo.get_best_acquisition_by_history(X, Y)
 
-def test_optimize_many_with_random_init():
-    np.random.seed(42)
-    arr_range = np.array([
-        [-5.0, 5.0],
-    ])
-    dim_X = arr_range.shape[0]
-    num_X = 3
-    num_iter = 10
-    fun_target = lambda x: x**2 - 2.0 * x + 1.0
-    model_bo = bo.BO(arr_range)
-
-    with pytest.raises(AssertionError) as error:
-        utils_bo.optimize_many_with_random_init(1, fun_target, num_X, num_iter)
-    with pytest.raises(AssertionError) as error:
-        utils_bo.optimize_many_with_random_init(model_bo, 1, num_X, num_iter)
-    with pytest.raises(AssertionError) as error:
-        utils_bo.optimize_many_with_random_init(model_bo, fun_target, 1.2, num_iter)
-    with pytest.raises(AssertionError) as error:
-        utils_bo.optimize_many_with_random_init(model_bo, fun_target, num_X, 1.2)
-    with pytest.raises(AssertionError) as error:
-        utils_bo.optimize_many_with_random_init(model_bo, fun_target, num_X, num_iter, str_initial_method_bo=1)
-    with pytest.raises(AssertionError) as error:
-        utils_bo.optimize_many_with_random_init(model_bo, fun_target, num_X, num_iter, str_initial_method_bo='abc')
-    with pytest.raises(AssertionError) as error:
-        utils_bo.optimize_many_with_random_init(model_bo, fun_target, num_X, num_iter, str_initial_method_bo='grid')
-    with pytest.raises(AssertionError) as error:
-        utils_bo.optimize_many_with_random_init(model_bo, fun_target, num_X, num_iter, str_initial_method_ao=1)
-    with pytest.raises(AssertionError) as error:
-        utils_bo.optimize_many_with_random_init(model_bo, fun_target, num_X, num_iter, str_initial_method_ao='abc')
-    with pytest.raises(AssertionError) as error:
-        utils_bo.optimize_many_with_random_init(model_bo, fun_target, num_X, num_iter, int_seed=1.2)
-
-    X_final, Y_final, time_all_final, time_gp_final, time_acq_final = utils_bo.optimize_many_with_random_init(model_bo, fun_target, num_X, num_iter, str_initial_method_bo='uniform')
-    assert len(X_final.shape) == 2
-    assert len(Y_final.shape) == 2
-    assert len(time_all_final.shape) == 1
-    assert len(time_gp_final.shape) == 1
-    assert len(time_acq_final.shape) == 1
-    assert X_final.shape[1] == dim_X
-    assert X_final.shape[0] == Y_final.shape[0] == time_all_final.shape[0] == num_X + num_iter
-    assert Y_final.shape[1] == 1
-    assert time_gp_final.shape[0] == time_acq_final.shape[0]
+    assert np.all(bx_best == np.array([2.0, 3.1, 2.2, 5.1]))
+    assert y_best == 0.0

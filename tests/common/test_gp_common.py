@@ -1,16 +1,29 @@
-# test_gp_common
+#
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: August 07, 2020
+# last updated: September 24, 2020
+#
+"""test_gp_common"""
 
-import numpy as np
+import typing
 import pytest
+import numpy as np
 
-from bayeso import constants
 from bayeso.gp import gp_common
 from bayeso.utils import utils_covariance
 
 TEST_EPSILON = 1e-7
 
+
+def test_get_kernel_inverse_typing():
+    annos = gp_common.get_kernel_inverse.__annotations__
+
+    assert annos['X_train'] == np.ndarray
+    assert annos['hyps'] == dict
+    assert annos['str_cov'] == str
+    assert annos['fix_noise'] == bool
+    assert annos['use_gradient'] == bool
+    assert annos['debug'] == bool
+    assert annos['return'] == typing.Tuple[np.ndarray, np.ndarray, np.ndarray]
 
 def test_get_kernel_inverse():
     dim_X = 3
@@ -30,9 +43,9 @@ def test_get_kernel_inverse():
     with pytest.raises(AssertionError) as error:
         gp_common.get_kernel_inverse(X, hyps, 'se', debug=1)
     with pytest.raises(AssertionError) as error:
-        gp_common.get_kernel_inverse(X, hyps, 'se', is_gradient='abc')
+        gp_common.get_kernel_inverse(X, hyps, 'se', use_gradient='abc')
     with pytest.raises(AssertionError) as error:
-        gp_common.get_kernel_inverse(X, hyps, 'se', is_fixed_noise='abc')
+        gp_common.get_kernel_inverse(X, hyps, 'se', fix_noise='abc')
 
     cov_X_X, inv_cov_X_X, grad_cov_X_X = gp_common.get_kernel_inverse(X, hyps, 'se')
     print(cov_X_X)
@@ -51,7 +64,7 @@ def test_get_kernel_inverse():
     assert (np.abs(inv_cov_X_X - truth_inv_cov_X_X) < TEST_EPSILON).all()
     assert cov_X_X.shape == inv_cov_X_X.shape
 
-    cov_X_X, inv_cov_X_X, grad_cov_X_X = gp_common.get_kernel_inverse(X, hyps, 'se', is_gradient=True, is_fixed_noise=True)
+    cov_X_X, inv_cov_X_X, grad_cov_X_X = gp_common.get_kernel_inverse(X, hyps, 'se', use_gradient=True, fix_noise=True)
     print(grad_cov_X_X)
     print(grad_cov_X_X.shape)
 
@@ -74,6 +87,17 @@ def test_get_kernel_inverse():
     assert (np.abs(inv_cov_X_X - truth_inv_cov_X_X) < TEST_EPSILON).all()
     assert (np.abs(grad_cov_X_X - truth_grad_cov_X_X) < TEST_EPSILON).all()
     assert cov_X_X.shape == inv_cov_X_X.shape == grad_cov_X_X.shape[:2]
+
+def test_get_kernel_cholesky_typing():
+    annos = gp_common.get_kernel_cholesky.__annotations__
+
+    assert annos['X_train'] == np.ndarray
+    assert annos['hyps'] == dict
+    assert annos['str_cov'] == str
+    assert annos['fix_noise'] == bool
+    assert annos['use_gradient'] == bool
+    assert annos['debug'] == bool
+    assert annos['return'] == typing.Tuple[np.ndarray, np.ndarray, np.ndarray]
 
 def test_get_kernel_cholesky():
     dim_X = 3

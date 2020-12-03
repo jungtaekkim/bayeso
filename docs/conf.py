@@ -19,12 +19,12 @@ sys.path.insert(0, os.path.abspath('../'))
 
 # -- Project information -----------------------------------------------------
 
-project = 'bayeso'
+project = 'BayesO'
 copyright = '2017-2020, Jungtaek Kim and Seungjin Choi'
 author = 'Jungtaek Kim and Seungjin Choi'
 
 # The short X.Y version
-version = '0.4.2'
+version = '0.4.3'
 # The full version, including alpha/beta/rc tags
 release = '{} alpha'.format(version)
 
@@ -132,18 +132,18 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'bayeso.tex', 'bayeso Documentation',
+    (master_doc, 'BayesO.tex', 'BayesO Documentation',
      'Jungtaek Kim and Seungjin Choi', 'manual'),
 ]
 
-latex_logo = '_static/assets/logo_bayeso.pdf'
+latex_logo = '_static/assets/logo_bayeso_capitalized.pdf'
 
 # -- Options for manual page output ------------------------------------------
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'bayeso', 'bayeso Documentation',
+    (master_doc, 'BayesO', 'BayesO Documentation',
      [author], 1)
 ]
 
@@ -154,7 +154,7 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'bayeso', 'bayeso Documentation',
-     author, 'bayeso', 'Simple, but essential Bayesian optimization package.',
+    (master_doc, 'BayesO', 'BayesO Documentation',
+     author, 'BayesO', 'Simple, but essential Bayesian optimization package.',
      'Machine learning, Global optimization, Bayesian optimization, Hyperparameter optimization'),
 ]

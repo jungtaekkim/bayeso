@@ -1,24 +1,30 @@
-# covariance
+#
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: April 23, 2020
+# last updated: September 24, 2020
+#
+"""It defines covariance functions and their associated functions."""
 
 import numpy as np
 import scipy.spatial.distance as scisd
 
 from bayeso import constants
 from bayeso.utils import utils_covariance
+from bayeso.utils import utils_common
 
 
-def choose_fun_cov(str_cov, is_grad=False):
+@utils_common.validate_types
+def choose_fun_cov(str_cov: str, choose_grad: bool) -> callable:
     """
-    It is for choosing a covariance function or a function for computing gradients of covariance function.
+    It is for choosing a covariance function or a function for computing
+    gradients of covariance function.
 
     :param str_cov: the name of covariance function.
     :type str_cov: str.
-    :param is_grad: flag for returning a function for the gradients
-    :type is_grad: bool., optional
+    :param choose_grad: flag for returning a function for the gradients
+    :type choose_grad: bool.
 
-    :returns: covariance function, or function for computing gradients of covariance function.
+    :returns: covariance function, or function for computing gradients of
+        covariance function.
     :rtype: function
 
     :raises: AssertionError
@@ -26,41 +32,46 @@ def choose_fun_cov(str_cov, is_grad=False):
     """
 
     assert isinstance(str_cov, str)
-    assert isinstance(is_grad, bool)
+    assert isinstance(choose_grad, bool)
 
-    if str_cov == 'eq' or str_cov == 'se':
-        if is_grad:
+    if str_cov in ('eq', 'se'):
+        if choose_grad:
             fun_cov = grad_cov_se
         else:
             fun_cov = cov_se
     elif str_cov == 'matern32':
-        if is_grad:
+        if choose_grad:
             fun_cov = grad_cov_matern32
         else:
             fun_cov = cov_matern32
     elif str_cov == 'matern52':
-        if is_grad:
+        if choose_grad:
             fun_cov = grad_cov_matern52
         else:
             fun_cov = cov_matern52
     else:
-        raise NotImplementedError('choose_fun_cov: allowed str_cov and is_grad conditions, but it is not implemented.')
+        raise NotImplementedError('choose_fun_cov: allowed str_cov and \
+            choose_grad conditions, but it is not implemented.')
     return fun_cov
 
-def cov_se(X, Xs, lengthscales, signal):
+@utils_common.validate_types
+def cov_se(X: np.ndarray, Xp: np.ndarray, lengthscales: constants.TYPING_UNION_ARRAY_FLOAT,
+    signal: float
+) -> np.ndarray:
     """
-    It computes squared exponential kernel over `X` and `Xs`, where `lengthscales` and `signal` are given.
+    It computes squared exponential kernel over `X` and `Xp`, where
+    `lengthscales` and `signal` are given.
 
     :param X: inputs. Shape: (n, d).
     :type X: numpy.ndarray
-    :param Xs: another inputs. Shape: (m, d).
-    :type Xs: numpy.ndarray
+    :param Xp: another inputs. Shape: (m, d).
+    :type Xp: numpy.ndarray
     :param lengthscales: length scales. Shape: (d, ) or ().
     :type lengthscales: numpy.ndarray, or float
     :param signal: coefficient for signal.
     :type signal: float
 
-    :returns: kernel values over `X` and `Xs`. Shape: (n, m).
+    :returns: kernel values over `X` and `Xp`. Shape: (n, m).
     :rtype: numpy.ndarray
 
     :raises: AssertionError
@@ -68,35 +79,39 @@ def cov_se(X, Xs, lengthscales, signal):
     """
 
     assert isinstance(X, np.ndarray)
-    assert isinstance(Xs, np.ndarray)
-    assert isinstance(lengthscales, np.ndarray) or isinstance(lengthscales, float)
+    assert isinstance(Xp, np.ndarray)
+    assert isinstance(lengthscales, (np.ndarray, float))
     assert isinstance(signal, float)
     assert len(X.shape) == 2
-    assert len(Xs.shape) == 2
+    assert len(Xp.shape) == 2
     if isinstance(lengthscales, np.ndarray):
-        assert X.shape[1] == Xs.shape[1] == lengthscales.shape[0]
+        assert X.shape[1] == Xp.shape[1] == lengthscales.shape[0]
     else:
-        assert X.shape[1] == Xs.shape[1]
-    dist = scisd.cdist(X / lengthscales, Xs / lengthscales, metric='euclidean')
-    cov_ = signal**2 * np.exp(-0.5 * dist**2)
-    return cov_
+        assert X.shape[1] == Xp.shape[1]
+    dist = scisd.cdist(X / lengthscales, Xp / lengthscales, metric='euclidean')
+    cov_X_Xp = signal**2 * np.exp(-0.5 * dist**2)
+    return cov_X_Xp
 
-def grad_cov_se(cov_, X, Xs, hyps, num_hyps, is_fixed_noise):
+@utils_common.validate_types
+def grad_cov_se(cov_X_Xp: np.ndarray, X: np.ndarray, Xp: np.ndarray, hyps: dict,
+    num_hyps: int, fix_noise: bool
+) -> np.ndarray:
     """
-    It computes gradients of squared exponential kernel over `X` and `Xs`, where `hyps` is given.
+    It computes gradients of squared exponential kernel over `X` and `Xp`,
+    where `hyps` is given.
 
-    :param cov_: covariance matrix. Shape: (n, m).
-    :type cov_: numpy.ndarray
+    :param cov_X_Xp: covariance matrix. Shape: (n, m).
+    :type cov_X_Xp: numpy.ndarray
     :param X: one inputs. Shape: (n, d).
     :type X: numpy.ndarray
-    :param Xs: another inputs. Shape: (m, d).
-    :type Xs: numpy.ndarray
+    :param Xp: another inputs. Shape: (m, d).
+    :type Xp: numpy.ndarray
     :param hyps: dictionary of hyperparameters for covariance function.
     :type hyps: dict.
     :param num_hyps: the number of hyperparameters == l.
     :type num_hyps: int.
-    :param is_fixed_noise: flag for fixing a noise.
-    :type is_fixed_noise: bool.
+    :param fix_noise: flag for fixing a noise.
+    :type fix_noise: bool.
 
     :returns: gradient matrix over hyperparameters. Shape: (n, m, l).
     :rtype: numpy.ndarray
@@ -105,51 +120,54 @@ def grad_cov_se(cov_, X, Xs, hyps, num_hyps, is_fixed_noise):
 
     """
 
-    assert isinstance(cov_, np.ndarray)
+    assert isinstance(cov_X_Xp, np.ndarray)
     assert isinstance(X, np.ndarray)
-    assert isinstance(Xs, np.ndarray)
+    assert isinstance(Xp, np.ndarray)
     assert isinstance(hyps, dict)
     assert isinstance(num_hyps, int)
-    assert isinstance(is_fixed_noise, bool)
+    assert isinstance(fix_noise, bool)
 
     num_X = X.shape[0]
-    num_Xs = Xs.shape[0]
+    num_Xp = Xp.shape[0]
 
-    grad_cov_ = np.zeros((num_X, num_Xs, num_hyps))
-    dist = scisd.cdist(X / hyps['lengthscales'], Xs / hyps['lengthscales'], metric='euclidean')
+    grad_cov_X_Xp = np.zeros((num_X, num_Xp, num_hyps))
+    dist = scisd.cdist(X / hyps['lengthscales'], Xp / hyps['lengthscales'], metric='euclidean')
 
-    if is_fixed_noise:
+    if fix_noise:
         ind_next = 0
     else:
-        grad_cov_[:, :, 0] += 2.0 * hyps['noise'] * np.eye(num_X, M=num_Xs)
+        grad_cov_X_Xp[:, :, 0] += 2.0 * hyps['noise'] * np.eye(num_X, M=num_Xp)
         ind_next = 1
 
-    grad_cov_[:, :, ind_next] += 2.0 * cov_ / hyps['signal']
+    grad_cov_X_Xp[:, :, ind_next] += 2.0 * cov_X_Xp / hyps['signal']
 
-    term_pre = cov_ * dist**2
+    term_pre = cov_X_Xp * dist**2
 
     if isinstance(hyps['lengthscales'], np.ndarray) and len(hyps['lengthscales'].shape) == 1:
         for ind_ in range(0, hyps['lengthscales'].shape[0]):
-            grad_cov_[:, :, ind_next+ind_+1] += term_pre * hyps['lengthscales'][ind_]**(-1)
+            grad_cov_X_Xp[:, :, ind_next+ind_+1] += term_pre * hyps['lengthscales'][ind_]**(-1)
     else:
-        grad_cov_[:, :, ind_next+1] += term_pre * hyps['lengthscales']**(-1)
+        grad_cov_X_Xp[:, :, ind_next+1] += term_pre * hyps['lengthscales']**(-1)
 
-    return grad_cov_
+    return grad_cov_X_Xp
 
-def cov_matern32(X, Xs, lengthscales, signal):
+@utils_common.validate_types
+def cov_matern32(X: np.ndarray, Xp: np.ndarray, lengthscales: constants.TYPING_UNION_ARRAY_FLOAT,
+    signal: float
+) -> np.ndarray:
     """
-    It computes Matern 3/2 kernel over `X` and `Xs`, where `lengthscales` and `signal` are given.
+    It computes Matern 3/2 kernel over `X` and `Xp`, where `lengthscales` and `signal` are given.
 
     :param X: inputs. Shape: (n, d).
     :type X: numpy.ndarray
-    :param Xs: another inputs. Shape: (m, d).
-    :type Xs: numpy.ndarray
+    :param Xp: another inputs. Shape: (m, d).
+    :type Xp: numpy.ndarray
     :param lengthscales: length scales. Shape: (d, ) or ().
     :type lengthscales: numpy.ndarray, or float
     :param signal: coefficient for signal.
     :type signal: float
 
-    :returns: kernel values over `X` and `Xs`. Shape: (n, m).
+    :returns: kernel values over `X` and `Xp`. Shape: (n, m).
     :rtype: numpy.ndarray
 
     :raises: AssertionError
@@ -157,36 +175,39 @@ def cov_matern32(X, Xs, lengthscales, signal):
     """
 
     assert isinstance(X, np.ndarray)
-    assert isinstance(Xs, np.ndarray)
-    assert isinstance(lengthscales, np.ndarray) or isinstance(lengthscales, float)
+    assert isinstance(Xp, np.ndarray)
+    assert isinstance(lengthscales, (np.ndarray, float))
     assert len(X.shape) == 2
-    assert len(Xs.shape) == 2
+    assert len(Xp.shape) == 2
     if isinstance(lengthscales, np.ndarray):
-        assert X.shape[1] == Xs.shape[1] == lengthscales.shape[0]
+        assert X.shape[1] == Xp.shape[1] == lengthscales.shape[0]
     else:
-        assert X.shape[1] == Xs.shape[1]
+        assert X.shape[1] == Xp.shape[1]
     assert isinstance(signal, float)
 
-    dist = scisd.cdist(X / lengthscales, Xs / lengthscales, metric='euclidean')
+    dist = scisd.cdist(X / lengthscales, Xp / lengthscales, metric='euclidean')
     cov_ = signal**2 * (1.0 + np.sqrt(3.0) * dist) * np.exp(-1.0 * np.sqrt(3.0) * dist)
     return cov_
 
-def grad_cov_matern32(cov_, X, Xs, hyps, num_hyps, is_fixed_noise):
+@utils_common.validate_types
+def grad_cov_matern32(cov_X_Xp: np.ndarray, X: np.ndarray, Xp: np.ndarray, hyps: dict,
+    num_hyps: int, fix_noise: bool
+) -> np.ndarray:
     """
-    It computes gradients of Matern 3/2 kernel over `X` and `Xs`, where `hyps` is given.
+    It computes gradients of Matern 3/2 kernel over `X` and `Xp`, where `hyps` is given.
 
-    :param cov_: covariance matrix. Shape: (n, m).
-    :type cov_: numpy.ndarray
+    :param cov_X_Xp: covariance matrix. Shape: (n, m).
+    :type cov_X_Xp: numpy.ndarray
     :param X: one inputs. Shape: (n, d).
     :type X: numpy.ndarray
-    :param Xs: another inputs. Shape: (m, d).
-    :type Xs: numpy.ndarray
+    :param Xp: another inputs. Shape: (m, d).
+    :type Xp: numpy.ndarray
     :param hyps: dictionary of hyperparameters for covariance function.
     :type hyps: dict.
     :param num_hyps: the number of hyperparameters == l.
     :type num_hyps: int.
-    :param is_fixed_noise: flag for fixing a noise.
-    :type is_fixed_noise: bool.
+    :param fix_noise: flag for fixing a noise.
+    :type fix_noise: bool.
 
     :returns: gradient matrix over hyperparameters. Shape: (n, m, l).
     :rtype: numpy.ndarray
@@ -195,51 +216,55 @@ def grad_cov_matern32(cov_, X, Xs, hyps, num_hyps, is_fixed_noise):
 
     """
 
-    assert isinstance(cov_, np.ndarray)
+    assert isinstance(cov_X_Xp, np.ndarray)
     assert isinstance(X, np.ndarray)
-    assert isinstance(Xs, np.ndarray)
+    assert isinstance(Xp, np.ndarray)
     assert isinstance(hyps, dict)
     assert isinstance(num_hyps, int)
-    assert isinstance(is_fixed_noise, bool)
+    assert isinstance(fix_noise, bool)
 
     num_X = X.shape[0]
-    num_Xs = Xs.shape[0]
+    num_Xp = Xp.shape[0]
 
-    grad_cov_ = np.zeros((num_X, num_Xs, num_hyps))
-    dist = scisd.cdist(X / hyps['lengthscales'], Xs / hyps['lengthscales'], metric='euclidean')
+    grad_cov_X_Xp = np.zeros((num_X, num_Xp, num_hyps))
+    dist = scisd.cdist(X / hyps['lengthscales'], Xp / hyps['lengthscales'], metric='euclidean')
 
-    if is_fixed_noise:
+    if fix_noise:
         ind_next = 0
     else:
-        grad_cov_[:, :, 0] += 2.0 * hyps['noise'] * np.eye(num_X, M=num_Xs)
+        grad_cov_X_Xp[:, :, 0] += 2.0 * hyps['noise'] * np.eye(num_X, M=num_Xp)
         ind_next = 1
 
-    grad_cov_[:, :, ind_next] += 2.0 * cov_ / hyps['signal']
+    grad_cov_X_Xp[:, :, ind_next] += 2.0 * cov_X_Xp / hyps['signal']
 
     term_pre = 3.0 * hyps['signal']**2 * np.exp(-np.sqrt(3) * dist) * dist**2
 
     if isinstance(hyps['lengthscales'], np.ndarray) and len(hyps['lengthscales'].shape) == 1:
         for ind_ in range(0, hyps['lengthscales'].shape[0]):
-            grad_cov_[:, :, ind_next+ind_+1] += term_pre * hyps['lengthscales'][ind_]**(-1)
+            grad_cov_X_Xp[:, :, ind_next+ind_+1] += term_pre * hyps['lengthscales'][ind_]**(-1)
     else:
-        grad_cov_[:, :, ind_next+1] += term_pre * hyps['lengthscales']**(-1)
+        grad_cov_X_Xp[:, :, ind_next+1] += term_pre * hyps['lengthscales']**(-1)
 
-    return grad_cov_
+    return grad_cov_X_Xp
 
-def cov_matern52(X, Xs, lengthscales, signal):
+@utils_common.validate_types
+def cov_matern52(X: np.ndarray, Xp:np.ndarray, lengthscales: constants.TYPING_UNION_ARRAY_FLOAT,
+    signal: float
+) -> np.ndarray:
     """
-    It computes Matern 5/2 kernel over `X` and `Xs`, where `lengthscales` and `signal` are given.
+    It computes Matern 5/2 kernel over `X` and `Xp`, where `lengthscales`
+    and `signal` are given.
 
     :param X: inputs. Shape: (n, d).
     :type X: numpy.ndarray
-    :param Xs: another inputs. Shape: (m, d).
-    :type Xs: numpy.ndarray
+    :param Xp: another inputs. Shape: (m, d).
+    :type Xp: numpy.ndarray
     :param lengthscales: length scales. Shape: (d, ) or ().
     :type lengthscales: numpy.ndarray, or float
     :param signal: coefficient for signal.
     :type signal: float
 
-    :returns: kernel values over `X` and `Xs`. Shape: (n, m).
+    :returns: kernel values over `X` and `Xp`. Shape: (n, m).
     :rtype: numpy.ndarray
 
     :raises: AssertionError
@@ -247,36 +272,40 @@ def cov_matern52(X, Xs, lengthscales, signal):
     """
 
     assert isinstance(X, np.ndarray)
-    assert isinstance(Xs, np.ndarray)
-    assert isinstance(lengthscales, np.ndarray) or isinstance(lengthscales, float)
+    assert isinstance(Xp, np.ndarray)
+    assert isinstance(lengthscales, (np.ndarray, float))
     assert len(X.shape) == 2
-    assert len(Xs.shape) == 2
+    assert len(Xp.shape) == 2
     if isinstance(lengthscales, np.ndarray):
-        assert X.shape[1] == Xs.shape[1] == lengthscales.shape[0]
+        assert X.shape[1] == Xp.shape[1] == lengthscales.shape[0]
     else:
-        assert X.shape[1] == Xs.shape[1]
+        assert X.shape[1] == Xp.shape[1]
     assert isinstance(signal, float)
 
-    dist = scisd.cdist(X / lengthscales, Xs / lengthscales, metric='euclidean')
-    cov_ = signal**2 * (1.0 + np.sqrt(5.0) * dist + 5.0 / 3.0 * dist**2) * np.exp(-1.0 * np.sqrt(5.0) * dist)
-    return cov_
+    dist = scisd.cdist(X / lengthscales, Xp / lengthscales, metric='euclidean')
+    cov_X_Xp = signal**2 * (1.0 + np.sqrt(5.0) * dist + 5.0 / 3.0 * dist**2) \
+        * np.exp(-1.0 * np.sqrt(5.0) * dist)
+    return cov_X_Xp
 
-def grad_cov_matern52(cov_, X, Xs, hyps, num_hyps, is_fixed_noise):
+@utils_common.validate_types
+def grad_cov_matern52(cov_X_Xp: np.ndarray, X: np.ndarray, Xp: np.ndarray, hyps: dict,
+    num_hyps: int, fix_noise: bool
+) -> np.ndarray:
     """
-    It computes gradients of Matern 5/2 kernel over `X` and `Xs`, where `hyps` is given.
+    It computes gradients of Matern 5/2 kernel over `X` and `Xp`, where `hyps` is given.
 
-    :param cov_: covariance matrix. Shape: (n, m).
-    :type cov_: numpy.ndarray
+    :param cov_X_Xp: covariance matrix. Shape: (n, m).
+    :type cov_X_Xp: numpy.ndarray
     :param X: one inputs. Shape: (n, d).
     :type X: numpy.ndarray
-    :param Xs: another inputs. Shape: (m, d).
-    :type Xs: numpy.ndarray
+    :param Xp: another inputs. Shape: (m, d).
+    :type Xp: numpy.ndarray
     :param hyps: dictionary of hyperparameters for covariance function.
     :type hyps: dict.
     :param num_hyps: the number of hyperparameters == l.
     :type num_hyps: int.
-    :param is_fixed_noise: flag for fixing a noise.
-    :type is_fixed_noise: bool.
+    :param fix_noise: flag for fixing a noise.
+    :type fix_noise: bool.
 
     :returns: gradient matrix over hyperparameters. Shape: (n, m, l).
     :rtype: numpy.ndarray
@@ -285,54 +314,57 @@ def grad_cov_matern52(cov_, X, Xs, hyps, num_hyps, is_fixed_noise):
 
     """
 
-    assert isinstance(cov_, np.ndarray)
+    assert isinstance(cov_X_Xp, np.ndarray)
     assert isinstance(X, np.ndarray)
-    assert isinstance(Xs, np.ndarray)
+    assert isinstance(Xp, np.ndarray)
     assert isinstance(hyps, dict)
     assert isinstance(num_hyps, int)
-    assert isinstance(is_fixed_noise, bool)
+    assert isinstance(fix_noise, bool)
 
     num_X = X.shape[0]
-    num_Xs = Xs.shape[0]
+    num_Xp = Xp.shape[0]
 
-    grad_cov_ = np.zeros((num_X, num_Xs, num_hyps))
-    dist = scisd.cdist(X / hyps['lengthscales'], Xs / hyps['lengthscales'], metric='euclidean')
+    grad_cov_X_Xp = np.zeros((num_X, num_Xp, num_hyps))
+    dist = scisd.cdist(X / hyps['lengthscales'], Xp / hyps['lengthscales'], metric='euclidean')
 
-    if is_fixed_noise:
+    if fix_noise:
         ind_next = 0
     else:
-        grad_cov_[:, :, 0] += 2.0 * hyps['noise'] * np.eye(num_X, M=num_Xs)
+        grad_cov_X_Xp[:, :, 0] += 2.0 * hyps['noise'] * np.eye(num_X, M=num_Xp)
         ind_next = 1
 
-    grad_cov_[:, :, ind_next] += 2.0 * cov_ / hyps['signal']
+    grad_cov_X_Xp[:, :, ind_next] += 2.0 * cov_X_Xp / hyps['signal']
 
-    term_pre = 5.0 / 3.0 * hyps['signal']**2 * (1.0 + np.sqrt(5) * dist) * np.exp(-np.sqrt(5) * dist) * dist**3
+    term_pre = 5.0 / 3.0 * hyps['signal']**2 * (1.0 + np.sqrt(5) * dist) \
+        * np.exp(-np.sqrt(5) * dist) * dist**3
 
     if isinstance(hyps['lengthscales'], np.ndarray) and len(hyps['lengthscales'].shape) == 1:
         for ind_ in range(0, hyps['lengthscales'].shape[0]):
-            grad_cov_[:, :, ind_next+ind_+1] += term_pre * hyps['lengthscales'][ind_]**(-1)
+            grad_cov_X_Xp[:, :, ind_next+ind_+1] += term_pre * hyps['lengthscales'][ind_]**(-1)
     else:
-        grad_cov_[:, :, ind_next+1] += term_pre * hyps['lengthscales']**(-1)
+        grad_cov_X_Xp[:, :, ind_next+1] += term_pre * hyps['lengthscales']**(-1)
 
+    return grad_cov_X_Xp
 
-    return grad_cov_
-
-def cov_set(str_cov, X, Xs, lengthscales, signal):
+@utils_common.validate_types
+def cov_set(str_cov: str, X: np.ndarray, Xp: np.ndarray,
+    lengthscales: constants.TYPING_UNION_ARRAY_FLOAT, signal: float
+) -> np.ndarray:
     """
-    It computes set kernel matrix over `X` and `Xs`, where `lengthscales` and `signal` are given.
+    It computes set kernel matrix over `X` and `Xp`, where `lengthscales` and `signal` are given.
 
     :param str_cov: the name of covariance function.
     :type str_cov: str.
     :param X: one inputs. Shape: (n, m, d).
     :type X: numpy.ndarray
-    :param Xs: another inputs. Shape: (l, m, d).
-    :type Xs: numpy.ndarray
+    :param Xp: another inputs. Shape: (l, m, d).
+    :type Xp: numpy.ndarray
     :param lengthscales: length scales. Shape: (d, ) or ().
     :type lengthscales: numpy.ndarray, or float
     :param signal: coefficient for signal.
     :type signal: float
 
-    :returns: set kernel matrix over `X` and `Xs`. Shape: (n, l).
+    :returns: set kernel matrix over `X` and `Xp`. Shape: (n, l).
     :rtype: numpy.ndarray
 
     :raises: AssertionError
@@ -341,47 +373,48 @@ def cov_set(str_cov, X, Xs, lengthscales, signal):
 
     assert isinstance(str_cov, str)
     assert isinstance(X, np.ndarray)
-    assert isinstance(Xs, np.ndarray)
-    assert isinstance(lengthscales, np.ndarray) or isinstance(lengthscales, float)
+    assert isinstance(Xp, np.ndarray)
+    assert isinstance(lengthscales, (np.ndarray, float))
     assert isinstance(signal, float)
     assert len(X.shape) == 2
-    assert len(Xs.shape) == 2
+    assert len(Xp.shape) == 2
     if isinstance(lengthscales, np.ndarray):
-        assert X.shape[1] == Xs.shape[1] == lengthscales.shape[0]
+        assert X.shape[1] == Xp.shape[1] == lengthscales.shape[0]
     else:
-        assert X.shape[1] == Xs.shape[1]
+        assert X.shape[1] == Xp.shape[1]
     assert str_cov in constants.ALLOWED_GP_COV_BASE
     num_X = X.shape[0]
-    num_Xs = Xs.shape[0]
+    num_Xp = Xp.shape[0]
 
-    fun_cov = choose_fun_cov(str_cov)
-    cov_ = fun_cov(X, Xs, lengthscales, signal)
-    cov_ = np.sum(cov_)
+    fun_cov = choose_fun_cov(str_cov, False)
+    cov_X_Xp = fun_cov(X, Xp, lengthscales, signal)
+    cov_X_Xp = np.sum(cov_X_Xp)
 
-    cov_ /= num_X * num_Xs
+    cov_X_Xp /= num_X * num_Xp
 
-    return cov_
+    return cov_X_Xp
 
-def cov_main(str_cov, X, Xs, hyps, same_X_Xs,
-    jitter=constants.JITTER_COV
-):
+@utils_common.validate_types
+def cov_main(str_cov: str, X: np.ndarray, Xp: np.ndarray, hyps: dict, same_X_Xp: bool,
+    jitter: float=constants.JITTER_COV
+) -> np.ndarray:
     """
-    It computes kernel matrix over `X` and `Xs`, where `hyps` is given.
+    It computes kernel matrix over `X` and `Xp`, where `hyps` is given.
 
     :param str_cov: the name of covariance function.
     :type str_cov: str.
     :param X: one inputs. Shape: (n, d).
     :type X: numpy.ndarray
-    :param Xs: another inputs. Shape: (m, d).
-    :type Xs: numpy.ndarray
+    :param Xp: another inputs. Shape: (m, d).
+    :type Xp: numpy.ndarray
     :param hyps: dictionary of hyperparameters for covariance function.
     :type hyps: dict.
-    :param same_X_Xs: flag for checking `X` and `Xs` are same.
-    :type same_X_Xs: bool.
+    :param same_X_Xp: flag for checking `X` and `Xp` are same.
+    :type same_X_Xp: bool.
     :param jitter: jitter for diagonal entries.
     :type jitter: float, optional
 
-    :returns: kernel matrix over `X` and `Xs`. Shape: (n, m).
+    :returns: kernel matrix over `X` and `Xp`. Shape: (n, m).
     :rtype: numpy.ndarray
 
     :raises: AssertionError, ValueError
@@ -390,66 +423,71 @@ def cov_main(str_cov, X, Xs, hyps, same_X_Xs,
 
     assert isinstance(str_cov, str)
     assert isinstance(X, np.ndarray)
-    assert isinstance(Xs, np.ndarray)
+    assert isinstance(Xp, np.ndarray)
     assert isinstance(hyps, dict)
-    assert isinstance(same_X_Xs, bool)
+    assert isinstance(same_X_Xp, bool)
     assert isinstance(jitter, float)
     assert str_cov in constants.ALLOWED_GP_COV
 
     num_X = X.shape[0]
-    num_Xs = Xs.shape[0]
+    num_Xp = Xp.shape[0]
 
-    cov_ = np.zeros((num_X, num_Xs))
-    if same_X_Xs:
-        assert num_X == num_Xs
-        cov_ += np.eye(num_X) * jitter
+    cov_X_Xp = np.zeros((num_X, num_Xp))
+    if same_X_Xp:
+        assert num_X == num_Xp
+        cov_X_Xp += np.eye(num_X) * jitter
 
-    if str_cov == 'eq' or str_cov == 'se' or str_cov == 'matern32' or str_cov == 'matern52':
+    if str_cov in ('eq', 'se', 'matern32', 'matern52'):
         assert len(X.shape) == 2
-        assert len(Xs.shape) == 2
-        num_d_X = X.shape[1]
-        num_d_Xs = Xs.shape[1]
-        assert num_d_X == num_d_Xs
+        assert len(Xp.shape) == 2
+        dim_X = X.shape[1]
+        dim_Xp = Xp.shape[1]
+        assert dim_X == dim_Xp
 
-        hyps, is_valid = utils_covariance.validate_hyps_dict(hyps, str_cov, num_d_X)
-        # TODO: ValueError is appropriate? We can just raise AssertionError in validate_hyps_dict. I am not sure.
+        hyps, is_valid = utils_covariance.validate_hyps_dict(hyps, str_cov, dim_X)
+        # TODO: ValueError is appropriate? We can just raise AssertionError in validate_hyps_dict.
         if not is_valid:
             raise ValueError('cov_main: invalid hyperparameters.')
 
-        fun_cov = choose_fun_cov(str_cov)
-        cov_ += fun_cov(X, Xs, hyps['lengthscales'], hyps['signal'])
-        assert cov_.shape == (num_X, num_Xs)
+        fun_cov = choose_fun_cov(str_cov, False)
+        cov_X_Xp += fun_cov(X, Xp, hyps['lengthscales'], hyps['signal'])
+        assert cov_X_Xp.shape == (num_X, num_Xp)
     elif str_cov in constants.ALLOWED_GP_COV_SET:
         list_str_cov = str_cov.split('_')
         str_cov = list_str_cov[1]
         assert len(X.shape) == 3
-        assert len(Xs.shape) == 3
-        num_d_X = X.shape[2]
-        num_d_Xs = Xs.shape[2]
-        assert num_d_X == num_d_Xs
+        assert len(Xp.shape) == 3
+        dim_X = X.shape[2]
+        dim_Xp = Xp.shape[2]
+        assert dim_X == dim_Xp
 
-        hyps, is_valid = utils_covariance.validate_hyps_dict(hyps, str_cov, num_d_X)
+        hyps, is_valid = utils_covariance.validate_hyps_dict(hyps, str_cov, dim_X)
+        # TODO: ValueError is appropriate? We can just raise AssertionError in validate_hyps_dict.
         if not is_valid:
             raise ValueError('cov_main: invalid hyperparameters.')
 
-        if not same_X_Xs:
+        if not same_X_Xp:
             for ind_X in range(0, num_X):
-                for ind_Xs in range(0, num_Xs):
-                    cov_[ind_X, ind_Xs] += cov_set(str_cov, X[ind_X], Xs[ind_Xs], hyps['lengthscales'], hyps['signal'])
+                for ind_Xp in range(0, num_Xp):
+                    cov_X_Xp[ind_X, ind_Xp] += cov_set(str_cov, X[ind_X], Xp[ind_Xp],
+                        hyps['lengthscales'], hyps['signal'])
         else:
             for ind_X in range(0, num_X):
-                for ind_Xs in range(ind_X, num_Xs):
-                    cov_[ind_X, ind_Xs] += cov_set(str_cov, X[ind_X], Xs[ind_Xs], hyps['lengthscales'], hyps['signal'])
-                    if ind_X < ind_Xs:
-                        cov_[ind_Xs, ind_X] = cov_[ind_X, ind_Xs]
+                for ind_Xp in range(ind_X, num_Xp):
+                    cov_X_Xp[ind_X, ind_Xp] += cov_set(str_cov, X[ind_X], Xp[ind_Xp],
+                        hyps['lengthscales'], hyps['signal'])
+                    if ind_X < ind_Xp:
+                        cov_X_Xp[ind_Xp, ind_X] = cov_X_Xp[ind_X, ind_Xp]
     else:
         raise NotImplementedError('cov_main: allowed str_cov, but it is not implemented.')
-    return cov_
 
-def grad_cov_main(str_cov, X, Xs, hyps, is_fixed_noise,
-    same_X_Xs=True,
-    jitter=constants.JITTER_COV,
-):
+    return cov_X_Xp
+
+@utils_common.validate_types
+def grad_cov_main(str_cov: str, X: np.ndarray, Xp: np.ndarray, hyps: dict, fix_noise: bool,
+    same_X_Xp: bool=True,
+    jitter: float=constants.JITTER_COV,
+) -> np.ndarray:
     """
     It computes gradients of kernel matrix over hyperparameters, where `hyps` is given.
 
@@ -457,18 +495,19 @@ def grad_cov_main(str_cov, X, Xs, hyps, is_fixed_noise,
     :type str_cov: str.
     :param X: one inputs. Shape: (n, d).
     :type X: numpy.ndarray
-    :param Xs: another inputs. Shape: (m, d).
-    :type Xs: numpy.ndarray
+    :param Xp: another inputs. Shape: (m, d).
+    :type Xp: numpy.ndarray
     :param hyps: dictionary of hyperparameters for covariance function.
     :type hyps: dict.
-    :param is_fixed_noise: flag for fixing a noise.
-    :type is_fixed_noise: bool.
-    :param same_X_Xs: flag for checking `X` and `Xs` are same.
-    :type same_X_Xs: bool., optional
+    :param fix_noise: flag for fixing a noise.
+    :type fix_noise: bool.
+    :param same_X_Xp: flag for checking `X` and `Xp` are same.
+    :type same_X_Xp: bool., optional
     :param jitter: jitter for diagonal entries.
     :type jitter: float, optional
 
-    :returns: gradient matrix over hyperparameters. Shape: (n, m, l) where l is the number of hyperparameters.
+    :returns: gradient matrix over hyperparameters. Shape: (n, m, l) where
+        l is the number of hyperparameters.
     :rtype: numpy.ndarray
 
     :raises: AssertionError
@@ -477,30 +516,28 @@ def grad_cov_main(str_cov, X, Xs, hyps, is_fixed_noise,
 
     assert isinstance(str_cov, str)
     assert isinstance(X, np.ndarray)
-    assert isinstance(Xs, np.ndarray)
+    assert isinstance(Xp, np.ndarray)
     assert isinstance(hyps, dict)
-    assert isinstance(is_fixed_noise, bool)
-    assert isinstance(same_X_Xs, bool)
+    assert isinstance(fix_noise, bool)
+    assert isinstance(same_X_Xp, bool)
     assert isinstance(jitter, float)
     assert str_cov in constants.ALLOWED_GP_COV
-    # TODO: X and Xs should be same?
-    assert same_X_Xs
+    # TODO: X and Xp should be same?
+    assert same_X_Xp
 
-    num_dim = X.shape[1]
+    dim_X = X.shape[1]
 
     if isinstance(hyps['lengthscales'], np.ndarray):
-        is_scalar_lengthscales = False
-        num_hyps = num_dim + 1
+        num_hyps = dim_X + 1
     else:
-        is_scalar_lengthscales = True
         num_hyps = 2
-    if not is_fixed_noise:
+
+    if not fix_noise:
         num_hyps += 1
 
-    cov_ = cov_main(str_cov, X, Xs, hyps, same_X_Xs, jitter=jitter)
-    fun_grad_cov = choose_fun_cov(str_cov, is_grad=True)
+    cov_X_Xp = cov_main(str_cov, X, Xp, hyps, same_X_Xp, jitter=jitter)
 
-    # TODO: I guess some gradients might be wrong.
-    grad_cov_ = fun_grad_cov(cov_, X, Xs, hyps, num_hyps, is_fixed_noise)
+    fun_grad_cov = choose_fun_cov(str_cov, True)
+    grad_cov_X_Xp = fun_grad_cov(cov_X_Xp, X, Xp, hyps, num_hyps, fix_noise)
 
-    return grad_cov_
+    return grad_cov_X_Xp
