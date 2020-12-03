@@ -3,11 +3,11 @@
 </p>
 
 # BayesO: A Bayesian optimization framework in Python
-[![Build Status](https://travis-ci.org/jungtaekkim/bayeso.svg?branch=master)](https://travis-ci.org/jungtaekkim/bayeso)
-[![Coverage Status](https://coveralls.io/repos/github/jungtaekkim/bayeso/badge.svg?branch=master)](https://coveralls.io/github/jungtaekkim/bayeso?branch=master)
+[![Build Status](https://travis-ci.org/jungtaekkim/bayeso.svg?branch=main)](https://travis-ci.org/jungtaekkim/bayeso)
+[![Coverage Status](https://coveralls.io/repos/github/jungtaekkim/bayeso/badge.svg?branch=main)](https://coveralls.io/github/jungtaekkim/bayeso?branch=main)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/bayeso)](https://pypi.org/project/bayeso/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Documentation Status](https://readthedocs.org/projects/bayeso/badge/?version=master)](https://bayeso.readthedocs.io/en/master/?badge=master)
+[![Documentation Status](https://readthedocs.org/projects/bayeso/badge/?version=main)](https://bayeso.readthedocs.io/en/main/?badge=main)
 
 Simple, but essential Bayesian optimization package.
 
@@ -69,7 +69,7 @@ We test our package in the following versions.
 * Python 3.8
 
 ## Contributor
-* [Jungtaek Kim](http://mlg.postech.ac.kr/~jtkim/) (POSTECH)
+* [Jungtaek Kim](http://jungtaek.github.io) (POSTECH)
 
 ## Citation
 ```
