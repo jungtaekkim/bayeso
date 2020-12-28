@@ -15,7 +15,7 @@ try:
     import cma
 except: # pragma: no cover
     cma = None
-import sobol_seq
+import qmcpy
 
 from bayeso.gp import gp
 from bayeso.gp import gp_common
@@ -150,29 +150,31 @@ class BO:
         assert isinstance(seed, (int, type(None)))
 
         if seed is not None:
-            np.random.seed(seed)
+            state_random = np.random.RandomState(seed)
+        else:
+            state_random = np.random.RandomState()
 
         list_initials = []
         for _ in range(0, num_samples):
             list_initial = []
             for elem in self.range_X:
-                list_initial.append(np.random.uniform(elem[0], elem[1]))
+                list_initial.append(state_random.uniform(elem[0], elem[1]))
             list_initials.append(np.array(list_initial))
         initials = np.array(list_initials)
         return initials
 
-    def _get_samples_sobol(self, num_samples: int,
+    def _get_samples_gaussian(self, num_samples: int,
         seed: constants.TYPING_UNION_INT_NONE=None
     ) -> np.ndarray:
         """
-        It returns `num_samples` examples sampled from Sobol sequence.
+        It returns `num_samples` examples sampled from Gaussian distribution.
 
         :param num_samples: the number of samples.
         :type num_samples: int.
         :param seed: None, or random seed.
         :type seed: NoneType or int., optional
 
-        :returns: examples sampled from Sobol sequence. Shape: (`num_samples`, d).
+        :returns: random examples. Shape: (`num_samples`, d).
         :rtype: numpy.ndarray
 
         :raises: AssertionError
@@ -182,31 +184,82 @@ class BO:
         assert isinstance(num_samples, int)
         assert isinstance(seed, (int, type(None)))
 
-        if seed is None:
-            seed = np.random.randint(0, 100000)
-        if self.debug:
-            logger.debug('seed: %d', seed)
+        if seed is not None:
+            state_random = np.random.RandomState(seed)
+        else:
+            state_random = np.random.RandomState()
 
-        samples = sobol_seq.i4_sobol_generate(self.num_dim, num_samples, seed)
-        samples = samples * (self.range_X[:, 1].flatten() - self.range_X[:, 0].flatten()) \
-            + self.range_X[:, 0].flatten()
-        return samples
+        list_initials = []
 
-    def _get_samples_latin(self, num_samples: int) -> np.ndarray:
+        for _ in range(0, num_samples):
+            list_initial = []
+            for elem in self.range_X:
+                new_mean = (elem[1] + elem[0]) / 2.0
+                new_std = (elem[1] - elem[0]) / 4.0
+
+                cur_sample = state_random.randn() * new_std + new_mean
+                cur_sample = np.clip(cur_sample, elem[0], elem[1])
+
+                list_initial.append(cur_sample)
+            list_initials.append(np.array(list_initial))
+        initials = np.array(list_initials)
+        return initials
+
+    def _get_samples_sobol(self, num_samples: int,
+        seed: constants.TYPING_UNION_INT_NONE=None
+    ) -> np.ndarray:
         """
-        It returns `num_samples` examples sampled from Latin hypercube.
+        It returns `num_samples` examples sampled from Sobol' sequence.
 
         :param num_samples: the number of samples.
         :type num_samples: int.
+        :param seed: None, or random seed.
+        :type seed: NoneType or int., optional
 
-        :returns: examples sampled from Latin hypercube. Shape: (`num_samples`, d).
+        :returns: examples sampled from Sobol' sequence. Shape: (`num_samples`, d).
         :rtype: numpy.ndarray
 
         :raises: AssertionError
 
         """
 
-        raise NotImplementedError('_get_samples_latin in bo.py')
+        assert isinstance(num_samples, int)
+        assert isinstance(seed, (int, type(None)))
+
+        sampler = qmcpy.Sobol(self.num_dim, seed=seed, graycode=True)
+        samples = sampler.gen_samples(num_samples)
+
+        samples = samples * (self.range_X[:, 1].flatten() - self.range_X[:, 0].flatten()) \
+            + self.range_X[:, 0].flatten()
+        return samples
+
+    def _get_samples_halton(self, num_samples: int,
+        seed: constants.TYPING_UNION_INT_NONE=None
+    ) -> np.ndarray:
+        """
+        It returns `num_samples` examples sampled by Halton algorithm.
+
+        :param num_samples: the number of samples.
+        :type num_samples: int.
+        :param seed: None, or random seed.
+        :type seed: NoneType or int., optional
+
+        :returns: examples sampled by Halton algorithm. Shape: (`num_samples`, d).
+        :rtype: numpy.ndarray
+
+        :raises: AssertionError
+
+        """
+
+        assert isinstance(num_samples, int)
+        assert isinstance(seed, (int, type(None)))
+
+        sampler = qmcpy.Halton(self.num_dim, randomize='OWEN', seed=seed)
+        samples = sampler.gen_samples(num_samples)
+
+        samples = samples * (self.range_X[:, 1].flatten() - self.range_X[:, 0].flatten()) \
+            + self.range_X[:, 0].flatten()
+        return samples
 
     # TODO: num_grids should be able to be input.
     def get_samples(self, str_sampling_method: str,
@@ -247,8 +300,12 @@ class BO:
             samples = utils_bo.get_best_acquisition_by_evaluation(samples, fun_objective)
         elif str_sampling_method == 'uniform':
             samples = self._get_samples_uniform(num_samples, seed=seed)
+        elif str_sampling_method == 'gaussian':
+            samples = self._get_samples_gaussian(num_samples, seed=seed)
         elif str_sampling_method == 'sobol':
             samples = self._get_samples_sobol(num_samples, seed=seed)
+        elif str_sampling_method == 'halton':
+            samples = self._get_samples_halton(num_samples, seed=seed)
         elif str_sampling_method == 'latin':
             raise NotImplementedError('get_samples: latin')
         else:

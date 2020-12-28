@@ -101,9 +101,13 @@ def test_get_samples():
     with pytest.raises(AssertionError) as error:
         model_bo.get_samples('uniform', seed='abc')
     with pytest.raises(AssertionError) as error:
+        model_bo.get_samples('gaussian', seed='abc')
+    with pytest.raises(AssertionError) as error:
+        model_bo.get_samples('sobol', seed='abc')
+    with pytest.raises(AssertionError) as error:
+        model_bo.get_samples('halton', seed='abc')
+    with pytest.raises(AssertionError) as error:
         model_bo.get_samples('abc')
-    with pytest.raises(NotImplementedError) as error:
-        model_bo.get_samples('latin')
 
     arr_initials = model_bo.get_samples('grid', fun_objective=fun_objective)
     truth_arr_initials = np.array([
@@ -111,20 +115,39 @@ def test_get_samples():
     ])
     assert (np.abs(arr_initials - truth_arr_initials) < TEST_EPSILON).all()
 
-    arr_initials = model_bo.get_samples('sobol', num_samples=3)
+    arr_initials_ = model_bo.get_samples('sobol', num_samples=3)
     arr_initials = model_bo.get_samples('sobol', num_samples=3, seed=42)
     truth_arr_initials = np.array([
-        [4.84375, 1.3125, 0.46875],
-        [3.59375, -0.1875, -0.78125],
-        [8.59375, 1.8125, 4.21875],
+        [6.863512583076954, -0.1525135599076748, -1.732824514620006],
+        [0.4720448818989098, 1.9830138171091676, 1.8962347391061485],
+        [3.9235182013362646, -1.8038121052086353, -3.2463264442048967],
     ])
     assert (np.abs(arr_initials - truth_arr_initials) < TEST_EPSILON).all()
 
+    arr_initials_ = model_bo.get_samples('halton', num_samples=3)
+    arr_initials = model_bo.get_samples('halton', num_samples=3, seed=42)
+    truth_arr_initials = np.array([
+        [4.325625705206888, 1.9045673771707823, 1.0981007622257621],
+        [9.325625705206889, 0.5712340438374492, -2.9018992377742396],
+        [1.825625705206888, -0.7620992894958845, 3.098100762225762],
+    ])
+    assert (np.abs(arr_initials - truth_arr_initials) < TEST_EPSILON).all()
+
+    arr_initials_ = model_bo.get_samples('uniform', num_samples=3)
     arr_initials = model_bo.get_samples('uniform', num_samples=3, seed=42)
     truth_arr_initials = np.array([
         [3.74540119, 1.80285723, 2.31993942],
         [5.98658484, -1.37592544, -3.4400548],
         [0.58083612, 1.46470458, 1.01115012],
+    ])
+    assert (np.abs(arr_initials - truth_arr_initials) < TEST_EPSILON).all()
+
+    arr_initials_ = model_bo.get_samples('gaussian', num_samples=3)
+    arr_initials = model_bo.get_samples('gaussian', num_samples=3, seed=42)
+    truth_arr_initials = np.array([
+        [6.241785382528082, -0.13826430117118466, 1.6192213452517312],
+        [8.807574641020064, -0.23415337472333597, -0.5853423923729514],
+        [8.948032038768478, 0.7674347291529088, -1.1736859648373803],
     ])
     assert (np.abs(arr_initials - truth_arr_initials) < TEST_EPSILON).all()
 
@@ -152,15 +175,13 @@ def test_get_initials():
         model_bo.get_initials('uniform', 10, seed='abc')
     with pytest.raises(AssertionError) as error:
         model_bo.get_initials('abc', 10)
-    with pytest.raises(NotImplementedError) as error:
-        model_bo.get_initials('latin', 10)
 
     arr_initials = model_bo.get_initials('sobol', 3)
     arr_initials = model_bo.get_initials('sobol', 3, seed=42)
     truth_arr_initials = np.array([
-        [4.84375, 1.3125, 0.46875],
-        [3.59375, -0.1875, -0.78125],
-        [8.59375, 1.8125, 4.21875],
+        [6.863512583076954, -0.1525135599076748, -1.732824514620006],
+        [0.4720448818989098, 1.9830138171091676, 1.8962347391061485],
+        [3.9235182013362646, -1.8038121052086353, -3.2463264442048967],
     ])
     assert (np.abs(arr_initials - truth_arr_initials) < TEST_EPSILON).all()
 

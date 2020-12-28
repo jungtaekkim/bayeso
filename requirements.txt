@@ -1,4 +1,4 @@
 numpy
 scipy
-sobol_seq
+qmcpy
 cma
