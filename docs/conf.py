@@ -24,7 +24,7 @@ copyright = '2017-2020, Jungtaek Kim and Seungjin Choi'
 author = 'Jungtaek Kim and Seungjin Choi'
 
 # The short X.Y version
-version = '0.4.3'
+version = '0.5.0'
 # The full version, including alpha/beta/rc tags
 release = '{} alpha'.format(version)
 

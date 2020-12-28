@@ -17,7 +17,7 @@ with open(path_requirements) as f:
 
 setup(
     name='bayeso',
-    version='0.4.3',
+    version='0.5.0',
     author='Jungtaek Kim',
     author_email='jtkim@postech.ac.kr',
     url='http://bayeso.org',
