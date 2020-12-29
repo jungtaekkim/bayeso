@@ -306,8 +306,6 @@ class BO:
             samples = self._get_samples_sobol(num_samples, seed=seed)
         elif str_sampling_method == 'halton':
             samples = self._get_samples_halton(num_samples, seed=seed)
-        elif str_sampling_method == 'latin':
-            raise NotImplementedError('get_samples: latin')
         else:
             raise NotImplementedError('get_samples: allowed str_sampling_method,\
                 but it is not implemented.')
