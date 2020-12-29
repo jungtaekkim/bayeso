@@ -8,14 +8,14 @@ import typing
 import pytest
 import numpy as np
 
-from bayeso import covariance
+from bayeso import covariance as package_target
 from bayeso.utils import utils_covariance
 
 
 TEST_EPSILON = 1e-7
 
 def test_choose_fun_cov_typing():
-    annos = covariance.choose_fun_cov.__annotations__
+    annos = package_target.choose_fun_cov.__annotations__
 
     assert annos['str_cov'] == str
     assert annos['choose_grad'] == bool
@@ -23,21 +23,21 @@ def test_choose_fun_cov_typing():
 
 def test_choose_fun_cov():
     with pytest.raises(AssertionError) as error:
-        covariance.choose_fun_cov(123, False)
+        package_target.choose_fun_cov(123, False)
     with pytest.raises(AssertionError) as error:
-        covariance.choose_fun_cov('se', 'abc')
+        package_target.choose_fun_cov('se', 'abc')
     with pytest.raises(NotImplementedError) as error:
-        covariance.choose_fun_cov('abc', False)
+        package_target.choose_fun_cov('abc', False)
 
-    assert covariance.choose_fun_cov('se', False) == covariance.cov_se
-    assert covariance.choose_fun_cov('matern32', False) == covariance.cov_matern32
-    assert covariance.choose_fun_cov('matern52', False) == covariance.cov_matern52
-    assert covariance.choose_fun_cov('se', True) == covariance.grad_cov_se
-    assert covariance.choose_fun_cov('matern32', True) == covariance.grad_cov_matern32
-    assert covariance.choose_fun_cov('matern52', True) == covariance.grad_cov_matern52
+    assert package_target.choose_fun_cov('se', False) == package_target.cov_se
+    assert package_target.choose_fun_cov('matern32', False) == package_target.cov_matern32
+    assert package_target.choose_fun_cov('matern52', False) == package_target.cov_matern52
+    assert package_target.choose_fun_cov('se', True) == package_target.grad_cov_se
+    assert package_target.choose_fun_cov('matern32', True) == package_target.grad_cov_matern32
+    assert package_target.choose_fun_cov('matern52', True) == package_target.grad_cov_matern52
 
 def test_get_kernel_inverse_typing():
-    annos = covariance.get_kernel_inverse.__annotations__
+    annos = package_target.get_kernel_inverse.__annotations__
 
     assert annos['X_train'] == np.ndarray
     assert annos['hyps'] == dict
@@ -53,23 +53,23 @@ def test_get_kernel_inverse():
     hyps = utils_covariance.get_hyps('se', dim_X)
 
     with pytest.raises(AssertionError) as error:
-        covariance.get_kernel_inverse(1, hyps, 'se')
+        package_target.get_kernel_inverse(1, hyps, 'se')
     with pytest.raises(AssertionError) as error:
-        covariance.get_kernel_inverse(np.arange(0, 100), hyps, 'se')
+        package_target.get_kernel_inverse(np.arange(0, 100), hyps, 'se')
     with pytest.raises(AssertionError) as error:
-        covariance.get_kernel_inverse(X, 1, 'se')
+        package_target.get_kernel_inverse(X, 1, 'se')
     with pytest.raises(AssertionError) as error:
-        covariance.get_kernel_inverse(X, hyps, 1)
+        package_target.get_kernel_inverse(X, hyps, 1)
     with pytest.raises(ValueError) as error:
-        covariance.get_kernel_inverse(X, hyps, 'abc')
+        package_target.get_kernel_inverse(X, hyps, 'abc')
     with pytest.raises(AssertionError) as error:
-        covariance.get_kernel_inverse(X, hyps, 'se', debug=1)
+        package_target.get_kernel_inverse(X, hyps, 'se', debug=1)
     with pytest.raises(AssertionError) as error:
-        covariance.get_kernel_inverse(X, hyps, 'se', use_gradient='abc')
+        package_target.get_kernel_inverse(X, hyps, 'se', use_gradient='abc')
     with pytest.raises(AssertionError) as error:
-        covariance.get_kernel_inverse(X, hyps, 'se', fix_noise='abc')
+        package_target.get_kernel_inverse(X, hyps, 'se', fix_noise='abc')
 
-    cov_X_X, inv_cov_X_X, grad_cov_X_X = covariance.get_kernel_inverse(X, hyps, 'se')
+    cov_X_X, inv_cov_X_X, grad_cov_X_X = package_target.get_kernel_inverse(X, hyps, 'se')
     print(cov_X_X)
     print(inv_cov_X_X)
     truth_cov_X_X = np.array([
@@ -86,7 +86,7 @@ def test_get_kernel_inverse():
     assert (np.abs(inv_cov_X_X - truth_inv_cov_X_X) < TEST_EPSILON).all()
     assert cov_X_X.shape == inv_cov_X_X.shape
 
-    cov_X_X, inv_cov_X_X, grad_cov_X_X = covariance.get_kernel_inverse(X, hyps, 'se', use_gradient=True, fix_noise=True)
+    cov_X_X, inv_cov_X_X, grad_cov_X_X = package_target.get_kernel_inverse(X, hyps, 'se', use_gradient=True, fix_noise=True)
     print(grad_cov_X_X)
     print(grad_cov_X_X.shape)
 
@@ -111,7 +111,7 @@ def test_get_kernel_inverse():
     assert cov_X_X.shape == inv_cov_X_X.shape == grad_cov_X_X.shape[:2]
 
 def test_get_kernel_cholesky_typing():
-    annos = covariance.get_kernel_cholesky.__annotations__
+    annos = package_target.get_kernel_cholesky.__annotations__
 
     assert annos['X_train'] == np.ndarray
     assert annos['hyps'] == dict
@@ -127,19 +127,19 @@ def test_get_kernel_cholesky():
     hyps = utils_covariance.get_hyps('se', dim_X)
 
     with pytest.raises(AssertionError) as error:
-        covariance.get_kernel_cholesky(1, hyps, 'se')
+        package_target.get_kernel_cholesky(1, hyps, 'se')
     with pytest.raises(AssertionError) as error:
-        covariance.get_kernel_cholesky(np.arange(0, 10), hyps, 'se')
+        package_target.get_kernel_cholesky(np.arange(0, 10), hyps, 'se')
     with pytest.raises(AssertionError) as error:
-        covariance.get_kernel_cholesky(X, 1, 'se')
+        package_target.get_kernel_cholesky(X, 1, 'se')
     with pytest.raises(AssertionError) as error:
-        covariance.get_kernel_cholesky(X, hyps, 1)
+        package_target.get_kernel_cholesky(X, hyps, 1)
     with pytest.raises(ValueError) as error:
-        covariance.get_kernel_cholesky(X, hyps, 'abc')
+        package_target.get_kernel_cholesky(X, hyps, 'abc')
     with pytest.raises(AssertionError) as error:
-        covariance.get_kernel_cholesky(X, hyps, 'se', debug=1)
+        package_target.get_kernel_cholesky(X, hyps, 'se', debug=1)
 
-    cov_X_X, lower, _ = covariance.get_kernel_cholesky(X, hyps, 'se')
+    cov_X_X, lower, _ = package_target.get_kernel_cholesky(X, hyps, 'se')
     print(cov_X_X)
     print(lower)
     truth_cov_X_X = [
@@ -157,7 +157,7 @@ def test_get_kernel_cholesky():
     assert cov_X_X.shape == lower.shape
 
 def test_cov_se_typing():
-    annos = covariance.cov_se.__annotations__
+    annos = package_target.cov_se.__annotations__
 
     assert annos['X'] == np.ndarray
     assert annos['Xp'] == np.ndarray
@@ -167,19 +167,19 @@ def test_cov_se_typing():
 
 def test_cov_se():
     with pytest.raises(AssertionError) as error:
-        covariance.cov_se(np.zeros((1, 2)), np.zeros((1, 2)), np.array([1.0, 1.0, 1.0]), 0.1)
+        package_target.cov_se(np.zeros((1, 2)), np.zeros((1, 2)), np.array([1.0, 1.0, 1.0]), 0.1)
     with pytest.raises(AssertionError) as error:
-        covariance.cov_se(np.zeros((1, 2)), np.zeros((1, 3)), np.array([1.0, 1.0]), 0.1)
+        package_target.cov_se(np.zeros((1, 2)), np.zeros((1, 3)), np.array([1.0, 1.0]), 0.1)
     with pytest.raises(AssertionError) as error:
-        covariance.cov_se(np.zeros((1, 3)), np.zeros((1, 2)), np.array([1.0, 1.0]), 0.1)
+        package_target.cov_se(np.zeros((1, 3)), np.zeros((1, 2)), np.array([1.0, 1.0]), 0.1)
     with pytest.raises(AssertionError) as error:
-        covariance.cov_se(np.zeros((1, 2)), np.zeros((1, 2)), np.array([1.0, 1.0]), 1)
-    assert np.abs(covariance.cov_se(np.zeros((1, 2)), np.zeros((1, 2)), 1.0, 0.1)[0] - 0.01) < TEST_EPSILON
+        package_target.cov_se(np.zeros((1, 2)), np.zeros((1, 2)), np.array([1.0, 1.0]), 1)
+    assert np.abs(package_target.cov_se(np.zeros((1, 2)), np.zeros((1, 2)), 1.0, 0.1)[0] - 0.01) < TEST_EPSILON
 
     X = np.array([[1.0, 2.0, 0.0]])
     Xp = np.array([[2.0, 1.0, 1.0]])
     cur_hyps = utils_covariance.get_hyps('se', 3)
-    cov_ = covariance.cov_se(X, Xp, cur_hyps['lengthscales'], cur_hyps['signal'])
+    cov_ = package_target.cov_se(X, Xp, cur_hyps['lengthscales'], cur_hyps['signal'])
     print(cov_)
     truth_cov_ = 0.22313016014842987
     assert np.abs(cov_[0] - truth_cov_) < TEST_EPSILON
@@ -188,13 +188,13 @@ def test_cov_se():
     Xp = np.array([[2.0, 1.0, 1.0], [0.0, 0.0, 0.0]])
     cur_hyps = utils_covariance.get_hyps('se', 3)
     cur_hyps['lengthscales'] = 1.0
-    cov_ = covariance.cov_se(X, Xp, cur_hyps['lengthscales'], cur_hyps['signal'])
+    cov_ = package_target.cov_se(X, Xp, cur_hyps['lengthscales'], cur_hyps['signal'])
     print(cov_)
     truth_cov_ = np.array([[0.22313016, 0.082085]])
     assert np.all(np.abs(cov_[0] - truth_cov_) < TEST_EPSILON)
 
 def test_grad_cov_se_typing():
-    annos = covariance.grad_cov_se.__annotations__
+    annos = package_target.grad_cov_se.__annotations__
 
     assert annos['cov_X_Xp'] == np.ndarray
     assert annos['X'] == np.ndarray
@@ -212,24 +212,24 @@ def test_grad_cov_se():
         [1.0, 1.0],
     ])
     num_hyps = X_train.shape[1] + 1
-    cov_ = covariance.cov_main(str_cov, X_train, X_train, cur_hyps, True)
+    cov_ = package_target.cov_main(str_cov, X_train, X_train, cur_hyps, True)
     print(cov_)
 
     with pytest.raises(AssertionError) as error:
-        covariance.grad_cov_se('abc', X_train, X_train, cur_hyps, num_hyps, True)
+        package_target.grad_cov_se('abc', X_train, X_train, cur_hyps, num_hyps, True)
     with pytest.raises(AssertionError) as error:
-        covariance.grad_cov_se(cov_, 'abc', X_train, cur_hyps, num_hyps, True)
+        package_target.grad_cov_se(cov_, 'abc', X_train, cur_hyps, num_hyps, True)
     with pytest.raises(AssertionError) as error:
-        covariance.grad_cov_se(cov_, X_train, 'abc', cur_hyps, num_hyps, True)
+        package_target.grad_cov_se(cov_, X_train, 'abc', cur_hyps, num_hyps, True)
     with pytest.raises(AssertionError) as error:
-        covariance.grad_cov_se(cov_, X_train, X_train, 'abc', num_hyps, True)
+        package_target.grad_cov_se(cov_, X_train, X_train, 'abc', num_hyps, True)
     with pytest.raises(AssertionError) as error:
-        covariance.grad_cov_se(cov_, X_train, X_train, cur_hyps, 'abc', True)
+        package_target.grad_cov_se(cov_, X_train, X_train, cur_hyps, 'abc', True)
     with pytest.raises(AssertionError) as error:
-        covariance.grad_cov_se(cov_, X_train, X_train, cur_hyps, num_hyps, 'abc')
+        package_target.grad_cov_se(cov_, X_train, X_train, cur_hyps, num_hyps, 'abc')
 
     num_hyps = X_train.shape[1] + 2
-    grad_cov_ = covariance.grad_cov_se(cov_, X_train, X_train, cur_hyps, num_hyps, False)
+    grad_cov_ = package_target.grad_cov_se(cov_, X_train, X_train, cur_hyps, num_hyps, False)
     print(grad_cov_)
 
     truth_grad_cov_ = np.array([
@@ -245,7 +245,7 @@ def test_grad_cov_se():
     assert np.all(np.abs(truth_grad_cov_ - grad_cov_) < TEST_EPSILON)
 
 def test_cov_matern32_typing():
-    annos = covariance.cov_matern32.__annotations__
+    annos = package_target.cov_matern32.__annotations__
 
     assert annos['X'] == np.ndarray
     assert annos['Xp'] == np.ndarray
@@ -255,19 +255,19 @@ def test_cov_matern32_typing():
 
 def test_cov_matern32():
     with pytest.raises(AssertionError) as error:
-        covariance.cov_matern32(np.zeros((1, 2)), np.zeros((1, 2)), np.array([1.0, 1.0, 1.0]), 0.1)
+        package_target.cov_matern32(np.zeros((1, 2)), np.zeros((1, 2)), np.array([1.0, 1.0, 1.0]), 0.1)
     with pytest.raises(AssertionError) as error:
-        covariance.cov_matern32(np.zeros((1, 2)), np.zeros((1, 3)), np.array([1.0, 1.0]), 0.1)
+        package_target.cov_matern32(np.zeros((1, 2)), np.zeros((1, 3)), np.array([1.0, 1.0]), 0.1)
     with pytest.raises(AssertionError) as error:
-        covariance.cov_matern32(np.zeros((1, 3)), np.zeros((1, 2)), np.array([1.0, 1.0]), 0.1)
+        package_target.cov_matern32(np.zeros((1, 3)), np.zeros((1, 2)), np.array([1.0, 1.0]), 0.1)
     with pytest.raises(AssertionError) as error:
-        covariance.cov_matern32(np.zeros((1, 2)), np.zeros((1, 2)), np.array([1.0, 1.0]), 1)
-    assert np.abs(covariance.cov_matern32(np.zeros((1, 2)), np.zeros((1, 2)), 1.0, 0.1)[0] - 0.01) < TEST_EPSILON
+        package_target.cov_matern32(np.zeros((1, 2)), np.zeros((1, 2)), np.array([1.0, 1.0]), 1)
+    assert np.abs(package_target.cov_matern32(np.zeros((1, 2)), np.zeros((1, 2)), 1.0, 0.1)[0] - 0.01) < TEST_EPSILON
 
     X = np.array([[1.0, 2.0, 0.0]])
     Xp = np.array([[2.0, 1.0, 1.0]])
     cur_hyps = utils_covariance.get_hyps('matern32', 3)
-    cov_ = covariance.cov_matern32(X, Xp, cur_hyps['lengthscales'], cur_hyps['signal'])
+    cov_ = package_target.cov_matern32(X, Xp, cur_hyps['lengthscales'], cur_hyps['signal'])
     print(cov_)
     truth_cov_ = 0.19914827347145583
     assert np.abs(cov_[0] - truth_cov_) < TEST_EPSILON
@@ -276,13 +276,13 @@ def test_cov_matern32():
     Xp = np.array([[2.0, 1.0, 1.0], [0.0, 0.0, 0.0]])
     cur_hyps = utils_covariance.get_hyps('matern32', 3)
     cur_hyps['lengthscales'] = 1.0
-    cov_ = covariance.cov_matern32(X, Xp, cur_hyps['lengthscales'], cur_hyps['signal'])
+    cov_ = package_target.cov_matern32(X, Xp, cur_hyps['lengthscales'], cur_hyps['signal'])
     print(cov_)
     truth_cov_ = np.array([[0.19914827, 0.1013397]])
     assert np.all(np.abs(cov_[0] - truth_cov_) < TEST_EPSILON)
 
 def test_grad_cov_matern32_typing():
-    annos = covariance.grad_cov_matern32.__annotations__
+    annos = package_target.grad_cov_matern32.__annotations__
 
     assert annos['cov_X_Xp'] == np.ndarray
     assert annos['X'] == np.ndarray
@@ -300,24 +300,24 @@ def test_grad_cov_matern32():
         [1.0, 1.0],
     ])
     num_hyps = X_train.shape[1] + 1
-    cov_ = covariance.cov_main(str_cov, X_train, X_train, cur_hyps, True)
+    cov_ = package_target.cov_main(str_cov, X_train, X_train, cur_hyps, True)
     print(cov_)
 
     with pytest.raises(AssertionError) as error:
-        covariance.grad_cov_matern32('abc', X_train, X_train, cur_hyps, num_hyps, True)
+        package_target.grad_cov_matern32('abc', X_train, X_train, cur_hyps, num_hyps, True)
     with pytest.raises(AssertionError) as error:
-        covariance.grad_cov_matern32(cov_, 'abc', X_train, cur_hyps, num_hyps, True)
+        package_target.grad_cov_matern32(cov_, 'abc', X_train, cur_hyps, num_hyps, True)
     with pytest.raises(AssertionError) as error:
-        covariance.grad_cov_matern32(cov_, X_train, 'abc', cur_hyps, num_hyps, True)
+        package_target.grad_cov_matern32(cov_, X_train, 'abc', cur_hyps, num_hyps, True)
     with pytest.raises(AssertionError) as error:
-        covariance.grad_cov_matern32(cov_, X_train, X_train, 'abc', num_hyps, True)
+        package_target.grad_cov_matern32(cov_, X_train, X_train, 'abc', num_hyps, True)
     with pytest.raises(AssertionError) as error:
-        covariance.grad_cov_matern32(cov_, X_train, X_train, cur_hyps, 'abc', True)
+        package_target.grad_cov_matern32(cov_, X_train, X_train, cur_hyps, 'abc', True)
     with pytest.raises(AssertionError) as error:
-        covariance.grad_cov_matern32(cov_, X_train, X_train, cur_hyps, num_hyps, 'abc')
+        package_target.grad_cov_matern32(cov_, X_train, X_train, cur_hyps, num_hyps, 'abc')
 
     num_hyps = X_train.shape[1] + 2
-    grad_cov_ = covariance.grad_cov_matern32(cov_, X_train, X_train, cur_hyps, num_hyps, False)
+    grad_cov_ = package_target.grad_cov_matern32(cov_, X_train, X_train, cur_hyps, num_hyps, False)
     print(grad_cov_)
 
     truth_grad_cov_ = np.array([
@@ -333,7 +333,7 @@ def test_grad_cov_matern32():
     assert np.all(np.abs(truth_grad_cov_ - grad_cov_) < TEST_EPSILON)
 
     num_hyps = X_train.shape[1] + 1
-    grad_cov_ = covariance.grad_cov_matern32(cov_, X_train, X_train, cur_hyps, num_hyps, True)
+    grad_cov_ = package_target.grad_cov_matern32(cov_, X_train, X_train, cur_hyps, num_hyps, True)
     print(grad_cov_)
 
     truth_grad_cov_ = np.array([
@@ -349,7 +349,7 @@ def test_grad_cov_matern32():
     assert np.all(np.abs(truth_grad_cov_ - grad_cov_) < TEST_EPSILON)
 
 def test_cov_matern52_typing():
-    annos = covariance.cov_matern52.__annotations__
+    annos = package_target.cov_matern52.__annotations__
 
     assert annos['X'] == np.ndarray
     assert annos['Xp'] == np.ndarray
@@ -359,19 +359,19 @@ def test_cov_matern52_typing():
 
 def test_cov_matern52():
     with pytest.raises(AssertionError) as error:
-        covariance.cov_matern52(np.zeros((1, 2)), np.zeros((1, 2)), np.array([1.0, 1.0, 1.0]), 0.1)
+        package_target.cov_matern52(np.zeros((1, 2)), np.zeros((1, 2)), np.array([1.0, 1.0, 1.0]), 0.1)
     with pytest.raises(AssertionError) as error:
-        covariance.cov_matern52(np.zeros((1, 2)), np.zeros((1, 3)), np.array([1.0, 1.0]), 0.1)
+        package_target.cov_matern52(np.zeros((1, 2)), np.zeros((1, 3)), np.array([1.0, 1.0]), 0.1)
     with pytest.raises(AssertionError) as error:
-        covariance.cov_matern52(np.zeros((1, 3)), np.zeros((1, 2)), np.array([1.0, 1.0]), 0.1)
+        package_target.cov_matern52(np.zeros((1, 3)), np.zeros((1, 2)), np.array([1.0, 1.0]), 0.1)
     with pytest.raises(AssertionError) as error:
-        covariance.cov_matern52(np.zeros((1, 2)), np.zeros((1, 2)), np.array([1.0, 1.0]), 1)
-    assert np.abs(covariance.cov_matern52(np.zeros((1, 2)), np.zeros((1, 2)), 1.0, 0.1)[0] - 0.01) < TEST_EPSILON
+        package_target.cov_matern52(np.zeros((1, 2)), np.zeros((1, 2)), np.array([1.0, 1.0]), 1)
+    assert np.abs(package_target.cov_matern52(np.zeros((1, 2)), np.zeros((1, 2)), 1.0, 0.1)[0] - 0.01) < TEST_EPSILON
 
     X = np.array([[1.0, 2.0, 0.0]])
     Xp = np.array([[2.0, 1.0, 1.0]])
     cur_hyps = utils_covariance.get_hyps('matern52', 3)
-    cov_ = covariance.cov_matern52(X, Xp, cur_hyps['lengthscales'], cur_hyps['signal'])
+    cov_ = package_target.cov_matern52(X, Xp, cur_hyps['lengthscales'], cur_hyps['signal'])
     print(cov_)
     truth_cov_ = 0.20532087608359792
     assert np.abs(cov_[0] - truth_cov_) < TEST_EPSILON
@@ -380,13 +380,13 @@ def test_cov_matern52():
     Xp = np.array([[2.0, 1.0, 1.0], [0.0, 0.0, 0.0]])
     cur_hyps = utils_covariance.get_hyps('matern52', 3)
     cur_hyps['lengthscales'] = 1.0
-    cov_ = covariance.cov_matern52(X, Xp, cur_hyps['lengthscales'], cur_hyps['signal'])
+    cov_ = package_target.cov_matern52(X, Xp, cur_hyps['lengthscales'], cur_hyps['signal'])
     print(cov_)
     truth_cov_ = np.array([[0.20532088, 0.09657724]])
     assert np.all(np.abs(cov_[0] - truth_cov_) < TEST_EPSILON)
 
 def test_grad_cov_matern52_typing():
-    annos = covariance.grad_cov_matern52.__annotations__
+    annos = package_target.grad_cov_matern52.__annotations__
 
     assert annos['cov_X_Xp'] == np.ndarray
     assert annos['X'] == np.ndarray
@@ -404,24 +404,24 @@ def test_grad_cov_matern52():
         [1.0, 1.0],
     ])
     num_hyps = X_train.shape[1] + 1
-    cov_ = covariance.cov_main(str_cov, X_train, X_train, cur_hyps, True)
+    cov_ = package_target.cov_main(str_cov, X_train, X_train, cur_hyps, True)
     print(cov_)
 
     with pytest.raises(AssertionError) as error:
-        covariance.grad_cov_matern52('abc', X_train, X_train, cur_hyps, num_hyps, True)
+        package_target.grad_cov_matern52('abc', X_train, X_train, cur_hyps, num_hyps, True)
     with pytest.raises(AssertionError) as error:
-        covariance.grad_cov_matern52(cov_, 'abc', X_train, cur_hyps, num_hyps, True)
+        package_target.grad_cov_matern52(cov_, 'abc', X_train, cur_hyps, num_hyps, True)
     with pytest.raises(AssertionError) as error:
-        covariance.grad_cov_matern52(cov_, X_train, 'abc', cur_hyps, num_hyps, True)
+        package_target.grad_cov_matern52(cov_, X_train, 'abc', cur_hyps, num_hyps, True)
     with pytest.raises(AssertionError) as error:
-        covariance.grad_cov_matern52(cov_, X_train, X_train, 'abc', num_hyps, True)
+        package_target.grad_cov_matern52(cov_, X_train, X_train, 'abc', num_hyps, True)
     with pytest.raises(AssertionError) as error:
-        covariance.grad_cov_matern52(cov_, X_train, X_train, cur_hyps, 'abc', True)
+        package_target.grad_cov_matern52(cov_, X_train, X_train, cur_hyps, 'abc', True)
     with pytest.raises(AssertionError) as error:
-        covariance.grad_cov_matern52(cov_, X_train, X_train, cur_hyps, num_hyps, 'abc')
+        package_target.grad_cov_matern52(cov_, X_train, X_train, cur_hyps, num_hyps, 'abc')
 
     num_hyps = X_train.shape[1] + 2
-    grad_cov_ = covariance.grad_cov_matern52(cov_, X_train, X_train, cur_hyps, num_hyps, False)
+    grad_cov_ = package_target.grad_cov_matern52(cov_, X_train, X_train, cur_hyps, num_hyps, False)
     print(grad_cov_)
 
     truth_grad_cov_ = np.array([
@@ -437,7 +437,7 @@ def test_grad_cov_matern52():
     assert np.all(np.abs(truth_grad_cov_ - grad_cov_) < TEST_EPSILON)
 
     num_hyps = X_train.shape[1] + 1
-    grad_cov_ = covariance.grad_cov_matern52(cov_, X_train, X_train, cur_hyps, num_hyps, True)
+    grad_cov_ = package_target.grad_cov_matern52(cov_, X_train, X_train, cur_hyps, num_hyps, True)
     print(grad_cov_)
 
     truth_grad_cov_ = np.array([
@@ -453,7 +453,7 @@ def test_grad_cov_matern52():
     assert np.all(np.abs(truth_grad_cov_ - grad_cov_) < TEST_EPSILON)
 
 def test_cov_set_typing():
-    annos = covariance.cov_set.__annotations__
+    annos = package_target.cov_set.__annotations__
 
     assert annos['str_cov'] == str
     assert annos['X'] == np.ndarray
@@ -467,29 +467,29 @@ def test_cov_set():
     num_dim = 3
     str_cov = 'matern52'
     with pytest.raises(AssertionError) as error:
-        covariance.cov_set(1, np.zeros((num_instances, num_dim)), np.zeros((num_instances, num_dim)), np.array([1.0, 1.0, 1.0]), 0.1)
+        package_target.cov_set(1, np.zeros((num_instances, num_dim)), np.zeros((num_instances, num_dim)), np.array([1.0, 1.0, 1.0]), 0.1)
     with pytest.raises(AssertionError) as error:
-        covariance.cov_set('abc', np.zeros((num_instances, num_dim)), np.zeros((num_instances, num_dim)), np.array([1.0, 1.0, 1.0]), 0.1)
+        package_target.cov_set('abc', np.zeros((num_instances, num_dim)), np.zeros((num_instances, num_dim)), np.array([1.0, 1.0, 1.0]), 0.1)
     with pytest.raises(AssertionError) as error:
-        covariance.cov_set(str_cov, np.zeros((num_instances, num_dim)), np.zeros((num_instances, num_dim)), np.array([1.0, 1.0, 1.0, 1.0]), 0.1)
+        package_target.cov_set(str_cov, np.zeros((num_instances, num_dim)), np.zeros((num_instances, num_dim)), np.array([1.0, 1.0, 1.0, 1.0]), 0.1)
     with pytest.raises(AssertionError) as error:
-        covariance.cov_set(str_cov, np.zeros((num_instances, num_dim+1)), np.zeros((num_instances, num_dim)), np.array([1.0, 1.0, 1.0]), 0.1)
+        package_target.cov_set(str_cov, np.zeros((num_instances, num_dim+1)), np.zeros((num_instances, num_dim)), np.array([1.0, 1.0, 1.0]), 0.1)
     with pytest.raises(AssertionError) as error:
-        covariance.cov_set(str_cov, np.zeros((num_instances, num_dim)), np.zeros((num_instances, num_dim+1)), np.array([1.0, 1.0, 1.0]), 0.1)
+        package_target.cov_set(str_cov, np.zeros((num_instances, num_dim)), np.zeros((num_instances, num_dim+1)), np.array([1.0, 1.0, 1.0]), 0.1)
     with pytest.raises(AssertionError) as error:
-        covariance.cov_set(str_cov, np.zeros((num_instances, num_dim)), np.zeros((num_instances, num_dim)), np.array([1.0, 1.0, 1.0]), 1)
-    assert np.abs(covariance.cov_set(str_cov, np.zeros((num_instances, num_dim)), np.zeros((num_instances, num_dim)), 1.0, 0.1) - 0.01) < TEST_EPSILON
+        package_target.cov_set(str_cov, np.zeros((num_instances, num_dim)), np.zeros((num_instances, num_dim)), np.array([1.0, 1.0, 1.0]), 1)
+    assert np.abs(package_target.cov_set(str_cov, np.zeros((num_instances, num_dim)), np.zeros((num_instances, num_dim)), 1.0, 0.1) - 0.01) < TEST_EPSILON
 
     bx = np.array([[1.0, 2.0, 0.0], [2.0, 1.0, 0.0]])
     bxp = np.array([[2.0, 1.0, 1.0], [2.0, 2.0, 2.0]])
     cur_hyps = utils_covariance.get_hyps('matern52', 3)
-    cov_ = covariance.cov_set(str_cov, bx, bxp, cur_hyps['lengthscales'], cur_hyps['signal'])
+    cov_ = package_target.cov_set(str_cov, bx, bxp, cur_hyps['lengthscales'], cur_hyps['signal'])
     print(cov_)
     truth_cov_ = 0.23061736638896702
     assert np.abs(cov_ - truth_cov_) < TEST_EPSILON
 
 def test_cov_main_typing():
-    annos = covariance.cov_main.__annotations__
+    annos = package_target.cov_main.__annotations__
 
     assert annos['str_cov'] == str
     assert annos['X'] == np.ndarray
@@ -502,69 +502,69 @@ def test_cov_main_typing():
 def test_cov_main():
     cur_hyps = utils_covariance.get_hyps('se', 3)
     with pytest.raises(AssertionError) as error:
-        covariance.cov_main('se', np.zeros((10, 2)), np.zeros((20, 3)), cur_hyps, False, jitter=0.001)
+        package_target.cov_main('se', np.zeros((10, 2)), np.zeros((20, 3)), cur_hyps, False, jitter=0.001)
     with pytest.raises(AssertionError) as error:
-        covariance.cov_main('se', np.zeros((10, 3)), np.zeros((20, 2)), cur_hyps, False, jitter=0.001)
+        package_target.cov_main('se', np.zeros((10, 3)), np.zeros((20, 2)), cur_hyps, False, jitter=0.001)
     with pytest.raises(ValueError) as error:
-        covariance.cov_main('se', np.zeros((10, 2)), np.zeros((20, 2)), cur_hyps, False, jitter=0.001)
+        package_target.cov_main('se', np.zeros((10, 2)), np.zeros((20, 2)), cur_hyps, False, jitter=0.001)
     with pytest.raises(AssertionError) as error:
-        covariance.cov_main('se', 1.0, np.zeros((20, 3)), cur_hyps, False, jitter=0.001)
+        package_target.cov_main('se', 1.0, np.zeros((20, 3)), cur_hyps, False, jitter=0.001)
     with pytest.raises(AssertionError) as error:
-        covariance.cov_main('se', np.zeros((10, 2)), 1.0, cur_hyps, False, jitter=0.001)
+        package_target.cov_main('se', np.zeros((10, 2)), 1.0, cur_hyps, False, jitter=0.001)
     with pytest.raises(AssertionError) as error:
-        covariance.cov_main(1.0, np.zeros((10, 3)), np.zeros((20, 3)), cur_hyps, False, jitter=0.001)
+        package_target.cov_main(1.0, np.zeros((10, 3)), np.zeros((20, 3)), cur_hyps, False, jitter=0.001)
     with pytest.raises(AssertionError) as error:
-        covariance.cov_main('se', np.zeros((10, 3)), np.zeros((20, 3)), 2.1, False, jitter=0.001)
+        package_target.cov_main('se', np.zeros((10, 3)), np.zeros((20, 3)), 2.1, False, jitter=0.001)
     with pytest.raises(AssertionError) as error:
-        covariance.cov_main('se', np.zeros((10, 3)), np.zeros((20, 3)), cur_hyps, 'abc', jitter=0.001)
+        package_target.cov_main('se', np.zeros((10, 3)), np.zeros((20, 3)), cur_hyps, 'abc', jitter=0.001)
     with pytest.raises(AssertionError) as error:
-        covariance.cov_main('se', np.zeros((10, 3)), np.zeros((12, 3)), cur_hyps, True, jitter=0.001)
+        package_target.cov_main('se', np.zeros((10, 3)), np.zeros((12, 3)), cur_hyps, True, jitter=0.001)
     with pytest.raises(AssertionError) as error:
-        covariance.cov_main('se', np.zeros((10, 3)), np.zeros((20, 3)), cur_hyps, False, jitter=1)
+        package_target.cov_main('se', np.zeros((10, 3)), np.zeros((20, 3)), cur_hyps, False, jitter=1)
     with pytest.raises(AssertionError) as error:
-        covariance.cov_main('abc', np.zeros((10, 3)), np.zeros((20, 3)), cur_hyps, False, jitter=0.001)
+        package_target.cov_main('abc', np.zeros((10, 3)), np.zeros((20, 3)), cur_hyps, False, jitter=0.001)
 
     cur_hyps.pop('signal', None)
     with pytest.raises(ValueError) as error:
-        covariance.cov_main('se', np.zeros((10, 3)), np.zeros((20, 3)), cur_hyps, False)
+        package_target.cov_main('se', np.zeros((10, 3)), np.zeros((20, 3)), cur_hyps, False)
     with pytest.raises(ValueError) as error:
-        covariance.cov_main('set_se', np.zeros((10, 5, 3)), np.zeros((20, 5, 3)), cur_hyps, False)
+        package_target.cov_main('set_se', np.zeros((10, 5, 3)), np.zeros((20, 5, 3)), cur_hyps, False)
 
     cur_hyps = utils_covariance.get_hyps('se', 3)
-    cov_ = covariance.cov_main('se', np.zeros((10, 3)), np.zeros((20, 3)), cur_hyps, False, jitter=0.001)
+    cov_ = package_target.cov_main('se', np.zeros((10, 3)), np.zeros((20, 3)), cur_hyps, False, jitter=0.001)
     assert np.all(cov_ == np.ones((10, 20)))
 
-    cov_ = covariance.cov_main('set_se', np.zeros((10, 5, 3)), np.zeros((20, 5, 3)), cur_hyps, False, jitter=0.001)
+    cov_ = package_target.cov_main('set_se', np.zeros((10, 5, 3)), np.zeros((20, 5, 3)), cur_hyps, False, jitter=0.001)
     assert np.all(cov_ == np.ones((10, 20)))
 
     cur_hyps = utils_covariance.get_hyps('matern32', 3)
-    cov_ = covariance.cov_main('matern32', np.zeros((10, 3)), np.zeros((20, 3)), cur_hyps, False, jitter=0.001)
+    cov_ = package_target.cov_main('matern32', np.zeros((10, 3)), np.zeros((20, 3)), cur_hyps, False, jitter=0.001)
     assert np.all(cov_ == np.ones((10, 20)))
 
-    cov_ = covariance.cov_main('set_matern32', np.zeros((10, 5, 3)), np.zeros((20, 5, 3)), cur_hyps, False, jitter=0.001)
+    cov_ = package_target.cov_main('set_matern32', np.zeros((10, 5, 3)), np.zeros((20, 5, 3)), cur_hyps, False, jitter=0.001)
     assert np.all(cov_ == np.ones((10, 20)))
 
-    cov_ = covariance.cov_main('set_matern32', np.zeros((10, 5, 3)), np.zeros((10, 5, 3)), cur_hyps, False, jitter=0.001)
+    cov_ = package_target.cov_main('set_matern32', np.zeros((10, 5, 3)), np.zeros((10, 5, 3)), cur_hyps, False, jitter=0.001)
     assert np.all(cov_ == np.ones((10, 10)))
 
-    cov_ = covariance.cov_main('set_matern32', np.zeros((10, 5, 3)), np.zeros((10, 5, 3)), cur_hyps, True, jitter=0.001)
+    cov_ = package_target.cov_main('set_matern32', np.zeros((10, 5, 3)), np.zeros((10, 5, 3)), cur_hyps, True, jitter=0.001)
     assert np.all(cov_ == np.ones((10, 10)) + np.eye(10) * 1e-3)
 
     cur_hyps = utils_covariance.get_hyps('matern52', 3)
-    cov_ = covariance.cov_main('matern52', np.zeros((10, 3)), np.zeros((20, 3)), cur_hyps, False, jitter=0.001)
+    cov_ = package_target.cov_main('matern52', np.zeros((10, 3)), np.zeros((20, 3)), cur_hyps, False, jitter=0.001)
     assert np.all(cov_ == np.ones((10, 20)))
 
-    cov_ = covariance.cov_main('set_matern52', np.zeros((10, 5, 3)), np.zeros((20, 5, 3)), cur_hyps, False, jitter=0.001)
+    cov_ = package_target.cov_main('set_matern52', np.zeros((10, 5, 3)), np.zeros((20, 5, 3)), cur_hyps, False, jitter=0.001)
     assert np.all(cov_ == np.ones((10, 20)))
 
-    cov_ = covariance.cov_main('set_matern52', np.zeros((10, 5, 3)), np.zeros((10, 5, 3)), cur_hyps, False, jitter=0.001)
+    cov_ = package_target.cov_main('set_matern52', np.zeros((10, 5, 3)), np.zeros((10, 5, 3)), cur_hyps, False, jitter=0.001)
     assert np.all(cov_ == np.ones((10, 10)))
 
-    cov_ = covariance.cov_main('set_matern52', np.zeros((10, 5, 3)), np.zeros((10, 5, 3)), cur_hyps, True, jitter=0.001)
+    cov_ = package_target.cov_main('set_matern52', np.zeros((10, 5, 3)), np.zeros((10, 5, 3)), cur_hyps, True, jitter=0.001)
     assert np.all(cov_ == np.ones((10, 10)) + np.eye(10) * 1e-3)
 
 def test_grad_cov_main_typing():
-    annos = covariance.grad_cov_main.__annotations__
+    annos = package_target.grad_cov_main.__annotations__
 
     assert annos['str_cov'] == str
     assert annos['X'] == np.ndarray
@@ -579,56 +579,56 @@ def test_grad_cov_main():
     cur_hyps = utils_covariance.get_hyps('se', 2)
 
     with pytest.raises(AssertionError) as error:
-        covariance.grad_cov_main(123, np.zeros((10, 2)), np.zeros((10, 2)), cur_hyps, True)
+        package_target.grad_cov_main(123, np.zeros((10, 2)), np.zeros((10, 2)), cur_hyps, True)
     with pytest.raises(AssertionError) as error:
-        covariance.grad_cov_main('se', 123, np.zeros((10, 2)), cur_hyps, True)
+        package_target.grad_cov_main('se', 123, np.zeros((10, 2)), cur_hyps, True)
     with pytest.raises(AssertionError) as error:
-        covariance.grad_cov_main('se', np.zeros((10, 2)), 123, cur_hyps, True)
+        package_target.grad_cov_main('se', np.zeros((10, 2)), 123, cur_hyps, True)
     with pytest.raises(AssertionError) as error:
-        covariance.grad_cov_main('se', np.zeros((10, 2)), np.zeros((10, 2)), 123, True)
+        package_target.grad_cov_main('se', np.zeros((10, 2)), np.zeros((10, 2)), 123, True)
     with pytest.raises(AssertionError) as error:
-        covariance.grad_cov_main('se', np.zeros((10, 2)), np.zeros((10, 2)), cur_hyps, 'abc')
+        package_target.grad_cov_main('se', np.zeros((10, 2)), np.zeros((10, 2)), cur_hyps, 'abc')
     with pytest.raises(AssertionError) as error:
-        covariance.grad_cov_main('abc', np.zeros((10, 2)), np.zeros((10, 2)), cur_hyps, True)
+        package_target.grad_cov_main('abc', np.zeros((10, 2)), np.zeros((10, 2)), cur_hyps, True)
     with pytest.raises(AssertionError) as error:
-        covariance.grad_cov_main('se', np.zeros((10, 2)), np.zeros((10, 2)), cur_hyps, True, same_X_Xp='abc')
+        package_target.grad_cov_main('se', np.zeros((10, 2)), np.zeros((10, 2)), cur_hyps, True, same_X_Xp='abc')
     with pytest.raises(AssertionError) as error:
-        covariance.grad_cov_main('se', np.zeros((10, 2)), np.zeros((10, 2)), cur_hyps, True, same_X_Xp=False)
+        package_target.grad_cov_main('se', np.zeros((10, 2)), np.zeros((10, 2)), cur_hyps, True, same_X_Xp=False)
     with pytest.raises(AssertionError) as error:
-        covariance.grad_cov_main('se', np.zeros((10, 2)), np.zeros((10, 2)), cur_hyps, True, jitter='abc')
+        package_target.grad_cov_main('se', np.zeros((10, 2)), np.zeros((10, 2)), cur_hyps, True, jitter='abc')
 
-    grad_cov_ = covariance.grad_cov_main('se', np.ones((1, 2)), np.ones((1, 2)), cur_hyps, True)
+    grad_cov_ = package_target.grad_cov_main('se', np.ones((1, 2)), np.ones((1, 2)), cur_hyps, True)
 
     print(grad_cov_)
     truth_grad_cov_ = np.array([[[2.00002, 0.0, 0.0]]])
     assert np.all(np.abs(grad_cov_ - truth_grad_cov_) < TEST_EPSILON)
 
-    grad_cov_ = covariance.grad_cov_main('se', np.ones((1, 2)), np.ones((1, 2)), cur_hyps, False)
+    grad_cov_ = package_target.grad_cov_main('se', np.ones((1, 2)), np.ones((1, 2)), cur_hyps, False)
 
     print(grad_cov_)
     truth_grad_cov_ = np.array([[[0.02, 2.00002, 0.0, 0.0]]])
     assert np.all(np.abs(grad_cov_ - truth_grad_cov_) < TEST_EPSILON)
 
     cur_hyps['lengthscales'] = 1.0
-    grad_cov_ = covariance.grad_cov_main('se', np.ones((1, 2)), np.zeros((1, 2)), cur_hyps, False)
+    grad_cov_ = package_target.grad_cov_main('se', np.ones((1, 2)), np.zeros((1, 2)), cur_hyps, False)
 
     print(grad_cov_)
     truth_grad_cov_ = np.array([[[0.02, 0.73577888, 0.73577888]]])
     assert np.all(np.abs(grad_cov_ - truth_grad_cov_) < TEST_EPSILON)
 
-    grad_cov_ = covariance.grad_cov_main('matern32', np.ones((1, 2)), np.zeros((1, 2)), cur_hyps, False)
+    grad_cov_ = package_target.grad_cov_main('matern32', np.ones((1, 2)), np.zeros((1, 2)), cur_hyps, False)
 
     print(grad_cov_)
     truth_grad_cov_ = np.array([[[0.02, 0.59566154, 0.51802578]]])
     assert np.all(np.abs(grad_cov_ - truth_grad_cov_) < TEST_EPSILON)
 
-    grad_cov_ = covariance.grad_cov_main('matern32', np.ones((1, 2)), np.zeros((1, 2)), cur_hyps, True)
+    grad_cov_ = package_target.grad_cov_main('matern32', np.ones((1, 2)), np.zeros((1, 2)), cur_hyps, True)
 
     print(grad_cov_)
     truth_grad_cov_ = np.array([[[0.59566154, 0.51802578]]])
     assert np.all(np.abs(grad_cov_ - truth_grad_cov_) < TEST_EPSILON)
 
-    grad_cov_ = covariance.grad_cov_main('matern52', np.ones((1, 2)), np.zeros((1, 2)), cur_hyps, False)
+    grad_cov_ = package_target.grad_cov_main('matern52', np.ones((1, 2)), np.zeros((1, 2)), cur_hyps, False)
 
     print(grad_cov_)
     truth_grad_cov_ = np.array([[[0.02, 0.63458673, 0.8305486]]])

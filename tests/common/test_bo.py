@@ -7,7 +7,7 @@
 import pytest
 import numpy as np
 
-from bayeso import bo
+from bayeso import bo as package_target
 
 
 TEST_EPSILON = 1e-5
@@ -37,44 +37,44 @@ def test_load_bo():
     ])
 
     with pytest.raises(AssertionError) as error:
-        model_bo = bo.BO(1)
+        model_bo = package_target.BO(1)
     with pytest.raises(AssertionError) as error:
-        model_bo = bo.BO(np.arange(0, 10))
+        model_bo = package_target.BO(np.arange(0, 10))
     with pytest.raises(AssertionError) as error:
-        model_bo = bo.BO(arr_range_3)
+        model_bo = package_target.BO(arr_range_3)
     with pytest.raises(AssertionError) as error:
-        model_bo = bo.BO(arr_range_4)
+        model_bo = package_target.BO(arr_range_4)
     with pytest.raises(AssertionError) as error:
-        model_bo = bo.BO(arr_range_1, str_cov=1)
+        model_bo = package_target.BO(arr_range_1, str_cov=1)
     with pytest.raises(AssertionError) as error:
-        model_bo = bo.BO(arr_range_1, str_cov='abc')
+        model_bo = package_target.BO(arr_range_1, str_cov='abc')
     with pytest.raises(AssertionError) as error:
-        model_bo = bo.BO(arr_range_1, str_acq=1)
+        model_bo = package_target.BO(arr_range_1, str_acq=1)
     with pytest.raises(AssertionError) as error:
-        model_bo = bo.BO(arr_range_1, str_acq='abc')
+        model_bo = package_target.BO(arr_range_1, str_acq='abc')
     with pytest.raises(AssertionError) as error:
-        model_bo = bo.BO(arr_range_1, use_ard='abc')
+        model_bo = package_target.BO(arr_range_1, use_ard='abc')
     with pytest.raises(AssertionError) as error:
-        model_bo = bo.BO(arr_range_1, use_ard=1)
+        model_bo = package_target.BO(arr_range_1, use_ard=1)
     with pytest.raises(AssertionError) as error:
-        model_bo = bo.BO(arr_range_1, prior_mu=1)
+        model_bo = package_target.BO(arr_range_1, prior_mu=1)
     with pytest.raises(AssertionError) as error:
-        model_bo = bo.BO(arr_range_1, str_optimizer_method_gp=1)
+        model_bo = package_target.BO(arr_range_1, str_optimizer_method_gp=1)
     with pytest.raises(AssertionError) as error:
-        model_bo = bo.BO(arr_range_1, str_optimizer_method_gp='abc')
+        model_bo = package_target.BO(arr_range_1, str_optimizer_method_gp='abc')
     with pytest.raises(AssertionError) as error:
-        model_bo = bo.BO(arr_range_1, str_optimizer_method_bo=1)
+        model_bo = package_target.BO(arr_range_1, str_optimizer_method_bo=1)
     with pytest.raises(AssertionError) as error:
-        model_bo = bo.BO(arr_range_1, str_optimizer_method_bo='abc')
+        model_bo = package_target.BO(arr_range_1, str_optimizer_method_bo='abc')
     with pytest.raises(AssertionError) as error:
-        model_bo = bo.BO(arr_range_1, str_modelselection_method=1)
+        model_bo = package_target.BO(arr_range_1, str_modelselection_method=1)
     with pytest.raises(AssertionError) as error:
-        model_bo = bo.BO(arr_range_1, str_modelselection_method='abc')
+        model_bo = package_target.BO(arr_range_1, str_modelselection_method='abc')
     with pytest.raises(AssertionError) as error:
-        model_bo = bo.BO(arr_range_1, debug=1)
+        model_bo = package_target.BO(arr_range_1, debug=1)
 
-    model_bo = bo.BO(arr_range_1)
-    model_bo = bo.BO(arr_range_2)
+    model_bo = package_target.BO(arr_range_1)
+    model_bo = package_target.BO(arr_range_2)
 
 def test_get_samples():
     np.random.seed(42)
@@ -88,7 +88,7 @@ def test_get_samples():
     X = np.random.randn(num_X, dim_X)
     Y = np.random.randn(num_X, 1)
     fun_objective = lambda X: np.sum(X)
-    model_bo = bo.BO(arr_range, debug=True)
+    model_bo = package_target.BO(arr_range, debug=True)
 
     with pytest.raises(AssertionError) as error:
         model_bo.get_samples(1)
@@ -163,7 +163,7 @@ def test_get_initials():
     X = np.random.randn(num_X, dim_X)
     Y = np.random.randn(num_X, 1)
     fun_objective = lambda X: np.sum(X)
-    model_bo = bo.BO(arr_range)
+    model_bo = package_target.BO(arr_range)
 
     with pytest.raises(AssertionError) as error:
         model_bo.get_initials(1, 10)
@@ -204,7 +204,7 @@ def test_optimize():
     num_X = 5
     X = np.random.randn(num_X, dim_X)
     Y = np.random.randn(num_X, 1)
-    model_bo = bo.BO(arr_range_1)
+    model_bo = package_target.BO(arr_range_1)
 
     with pytest.raises(AssertionError) as error:
         model_bo.optimize(1, Y)
@@ -269,7 +269,7 @@ def test_optimize_str_acq():
     X = np.random.randn(num_X, dim_X)
     Y = np.random.randn(num_X, 1)
 
-    model_bo = bo.BO(arr_range_1, str_acq='pi')
+    model_bo = package_target.BO(arr_range_1, str_acq='pi')
     next_point, dict_info = model_bo.optimize(X, Y)
     next_points = dict_info['next_points']
     acquisitions = dict_info['acquisitions']
@@ -296,7 +296,7 @@ def test_optimize_str_acq():
     assert next_points.shape[1] == dim_X
     assert next_points.shape[0] == acquisitions.shape[0]
 
-    model_bo = bo.BO(arr_range_1, str_acq='ucb')
+    model_bo = package_target.BO(arr_range_1, str_acq='ucb')
     next_point, dict_info = model_bo.optimize(X, Y)
     next_points = dict_info['next_points']
     acquisitions = dict_info['acquisitions']
@@ -323,7 +323,7 @@ def test_optimize_str_acq():
     assert next_points.shape[1] == dim_X
     assert next_points.shape[0] == acquisitions.shape[0]
 
-    model_bo = bo.BO(arr_range_1, str_acq='aei')
+    model_bo = package_target.BO(arr_range_1, str_acq='aei')
     next_point, dict_info = model_bo.optimize(X, Y)
     next_points = dict_info['next_points']
     acquisitions = dict_info['acquisitions']
@@ -350,7 +350,7 @@ def test_optimize_str_acq():
     assert next_points.shape[1] == dim_X
     assert next_points.shape[0] == acquisitions.shape[0]
 
-    model_bo = bo.BO(arr_range_1, str_acq='pure_exploit')
+    model_bo = package_target.BO(arr_range_1, str_acq='pure_exploit')
     next_point, dict_info = model_bo.optimize(X, Y)
     next_points = dict_info['next_points']
     acquisitions = dict_info['acquisitions']
@@ -377,7 +377,7 @@ def test_optimize_str_acq():
     assert next_points.shape[1] == dim_X
     assert next_points.shape[0] == acquisitions.shape[0]
 
-    model_bo = bo.BO(arr_range_1, str_acq='pure_explore')
+    model_bo = package_target.BO(arr_range_1, str_acq='pure_explore')
     next_point, dict_info = model_bo.optimize(X, Y)
     next_points = dict_info['next_points']
     acquisitions = dict_info['acquisitions']
@@ -416,7 +416,7 @@ def test_optimize_str_optimize_method_bo():
     X = np.random.randn(num_X, dim_X)
     Y = np.random.randn(num_X, 1)
 
-    model_bo = bo.BO(arr_range_1, str_optimizer_method_bo='L-BFGS-B')
+    model_bo = package_target.BO(arr_range_1, str_optimizer_method_bo='L-BFGS-B')
     next_point, dict_info = model_bo.optimize(X, Y)
     next_points = dict_info['next_points']
     acquisitions = dict_info['acquisitions']
@@ -445,7 +445,7 @@ def test_optimize_str_optimize_method_bo():
 
     # TODO: add DIRECT test, now it causes an error.
 
-    model_bo = bo.BO(arr_range_1, str_optimizer_method_bo='CMA-ES')
+    model_bo = package_target.BO(arr_range_1, str_optimizer_method_bo='CMA-ES')
     next_point, dict_info = model_bo.optimize(X, Y)
     next_points = dict_info['next_points']
     acquisitions = dict_info['acquisitions']
@@ -484,7 +484,7 @@ def test_optimize_str_mlm_method():
     X = np.random.randn(num_X, dim_X)
     Y = np.random.randn(num_X, 1)
 
-    model_bo = bo.BO(arr_range_1)
+    model_bo = package_target.BO(arr_range_1)
     next_point, dict_info = model_bo.optimize(X, Y, str_mlm_method='converged')
     next_points = dict_info['next_points']
     acquisitions = dict_info['acquisitions']
@@ -523,7 +523,7 @@ def test_optimize_str_modelselection_method():
     X = np.random.randn(num_X, dim_X)
     Y = np.random.randn(num_X, 1)
 
-    model_bo = bo.BO(arr_range_1, str_modelselection_method='loocv')
+    model_bo = package_target.BO(arr_range_1, str_modelselection_method='loocv')
     next_point, dict_info = model_bo.optimize(X, Y)
     next_points = dict_info['next_points']
     acquisitions = dict_info['acquisitions']
@@ -562,7 +562,7 @@ def test_optimize_normalize_Y():
     X = np.random.randn(num_X, dim_X)
     Y = np.random.randn(num_X, 1)
 
-    model_bo = bo.BO(arr_range, str_acq='ei', normalize_Y=True)
+    model_bo = package_target.BO(arr_range, str_acq='ei', normalize_Y=True)
     next_point, dict_info = model_bo.optimize(X, Y)
     next_points = dict_info['next_points']
     acquisitions = dict_info['acquisitions']
@@ -600,7 +600,7 @@ def test_optimize_normalize_Y():
         [100.0],
     ])
 
-    model_bo = bo.BO(arr_range, str_acq='ei', normalize_Y=True)
+    model_bo = package_target.BO(arr_range, str_acq='ei', normalize_Y=True)
     next_point, dict_info = model_bo.optimize(X, Y)
     next_points = dict_info['next_points']
     acquisitions = dict_info['acquisitions']

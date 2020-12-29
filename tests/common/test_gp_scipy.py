@@ -9,14 +9,14 @@ import pytest
 import numpy as np
 
 from bayeso import constants
-from bayeso.gp import gp_scipy
+from bayeso.gp import gp_scipy as package_target
 from bayeso.utils import utils_covariance
 
 TEST_EPSILON = 1e-7
 
 
 def test_neg_log_ml_typing():
-    annos = gp_scipy.neg_log_ml.__annotations__
+    annos = package_target.neg_log_ml.__annotations__
 
     assert annos['X_train'] == np.ndarray
     assert annos['Y_train'] == np.ndarray
@@ -41,46 +41,46 @@ def test_neg_log_ml():
     prior_mu_X = np.zeros((3, 1))
 
     with pytest.raises(AssertionError) as error:
-        gp_scipy.neg_log_ml(np.arange(0, 3), Y, arr_hyps, str_cov, prior_mu_X)
+        package_target.neg_log_ml(np.arange(0, 3), Y, arr_hyps, str_cov, prior_mu_X)
     with pytest.raises(AssertionError) as error:
-        gp_scipy.neg_log_ml(X, np.arange(0, 3), arr_hyps, str_cov, prior_mu_X)
+        package_target.neg_log_ml(X, np.arange(0, 3), arr_hyps, str_cov, prior_mu_X)
     with pytest.raises(AssertionError) as error:
-        gp_scipy.neg_log_ml(X, Y, dict_hyps, str_cov, prior_mu_X)
+        package_target.neg_log_ml(X, Y, dict_hyps, str_cov, prior_mu_X)
     with pytest.raises(AssertionError) as error:
-        gp_scipy.neg_log_ml(X, Y, arr_hyps, 1, prior_mu_X)
+        package_target.neg_log_ml(X, Y, arr_hyps, 1, prior_mu_X)
     with pytest.raises(ValueError) as error:
-        gp_scipy.neg_log_ml(X, Y, arr_hyps, 'abc', prior_mu_X)
+        package_target.neg_log_ml(X, Y, arr_hyps, 'abc', prior_mu_X)
     with pytest.raises(AssertionError) as error:
-        gp_scipy.neg_log_ml(X, Y, arr_hyps, str_cov, np.arange(0, 3))
+        package_target.neg_log_ml(X, Y, arr_hyps, str_cov, np.arange(0, 3))
     with pytest.raises(AssertionError) as error:
-        gp_scipy.neg_log_ml(np.reshape(np.arange(0, 12), (4, dim_X)), Y, arr_hyps, str_cov, prior_mu_X)
+        package_target.neg_log_ml(np.reshape(np.arange(0, 12), (4, dim_X)), Y, arr_hyps, str_cov, prior_mu_X)
     with pytest.raises(AssertionError) as error:
-        gp_scipy.neg_log_ml(X, np.expand_dims(np.arange(0, 4), axis=1), arr_hyps, str_cov, prior_mu_X)
+        package_target.neg_log_ml(X, np.expand_dims(np.arange(0, 4), axis=1), arr_hyps, str_cov, prior_mu_X)
     with pytest.raises(AssertionError) as error:
-        gp_scipy.neg_log_ml(X, Y, arr_hyps, str_cov, np.expand_dims(np.arange(0, 4), axis=1))
+        package_target.neg_log_ml(X, Y, arr_hyps, str_cov, np.expand_dims(np.arange(0, 4), axis=1))
     with pytest.raises(AssertionError) as error:
-        gp_scipy.neg_log_ml(X, Y, arr_hyps, str_cov, prior_mu_X, use_cholesky=1)
+        package_target.neg_log_ml(X, Y, arr_hyps, str_cov, prior_mu_X, use_cholesky=1)
     with pytest.raises(AssertionError) as error:
-        gp_scipy.neg_log_ml(X, Y, arr_hyps, str_cov, prior_mu_X, fix_noise=1)
+        package_target.neg_log_ml(X, Y, arr_hyps, str_cov, prior_mu_X, fix_noise=1)
     with pytest.raises(AssertionError) as error:
-        gp_scipy.neg_log_ml(X, Y, arr_hyps, str_cov, prior_mu_X, debug=1)
+        package_target.neg_log_ml(X, Y, arr_hyps, str_cov, prior_mu_X, debug=1)
 
-    neg_log_ml_ = gp_scipy.neg_log_ml(X, Y, arr_hyps, str_cov, prior_mu_X, fix_noise=fix_noise, use_gradient=False, use_cholesky=True)
+    neg_log_ml_ = package_target.neg_log_ml(X, Y, arr_hyps, str_cov, prior_mu_X, fix_noise=fix_noise, use_gradient=False, use_cholesky=True)
     print(neg_log_ml_)
     truth_log_ml_ = 21.916650988532854
     assert np.abs(neg_log_ml_ - truth_log_ml_) < TEST_EPSILON
 
-    neg_log_ml_ = gp_scipy.neg_log_ml(X, Y, arr_hyps, str_cov, prior_mu_X, fix_noise=fix_noise, use_gradient=False, use_cholesky=False)
+    neg_log_ml_ = package_target.neg_log_ml(X, Y, arr_hyps, str_cov, prior_mu_X, fix_noise=fix_noise, use_gradient=False, use_cholesky=False)
     print(neg_log_ml_)
     truth_log_ml_ = 21.91665090519953
     assert np.abs(neg_log_ml_ - truth_log_ml_) < TEST_EPSILON
 
-    neg_log_ml_ = gp_scipy.neg_log_ml(X, Y, arr_hyps, str_cov, prior_mu_X, fix_noise=fix_noise, use_gradient=True, use_cholesky=False)
+    neg_log_ml_ = package_target.neg_log_ml(X, Y, arr_hyps, str_cov, prior_mu_X, fix_noise=fix_noise, use_gradient=True, use_cholesky=False)
     print(neg_log_ml_)
     truth_log_ml_ = 21.91665090519953
     assert np.abs(neg_log_ml_ - truth_log_ml_) < TEST_EPSILON
 
-    neg_log_ml_, neg_grad_log_ml_ = gp_scipy.neg_log_ml(X, Y, arr_hyps, str_cov, prior_mu_X, fix_noise=fix_noise, use_gradient=True, use_cholesky=True)
+    neg_log_ml_, neg_grad_log_ml_ = package_target.neg_log_ml(X, Y, arr_hyps, str_cov, prior_mu_X, fix_noise=fix_noise, use_gradient=True, use_cholesky=True)
     print(neg_log_ml_)
     print(neg_grad_log_ml_)
 
@@ -96,7 +96,7 @@ def test_neg_log_ml():
     assert np.all(np.abs(neg_grad_log_ml_ - truth_grad_log_ml_) < TEST_EPSILON)
 
 def test_neg_log_pseudo_l_loocv_typing():
-    annos = gp_scipy.neg_log_pseudo_l_loocv.__annotations__
+    annos = package_target.neg_log_pseudo_l_loocv.__annotations__
 
     assert annos['X_train'] == np.ndarray
     assert annos['Y_train'] == np.ndarray
@@ -117,35 +117,35 @@ def test_neg_log_pseudo_l_loocv():
     prior_mu_X = np.zeros((3, 1))
 
     with pytest.raises(AssertionError) as error:
-        gp_scipy.neg_log_pseudo_l_loocv(np.arange(0, 3), Y, arr_hyps, str_cov, prior_mu_X)
+        package_target.neg_log_pseudo_l_loocv(np.arange(0, 3), Y, arr_hyps, str_cov, prior_mu_X)
     with pytest.raises(AssertionError) as error:
-        gp_scipy.neg_log_pseudo_l_loocv(X, np.arange(0, 3), arr_hyps, str_cov, prior_mu_X)
+        package_target.neg_log_pseudo_l_loocv(X, np.arange(0, 3), arr_hyps, str_cov, prior_mu_X)
     with pytest.raises(AssertionError) as error:
-        gp_scipy.neg_log_pseudo_l_loocv(X, Y, dict_hyps, str_cov, prior_mu_X)
+        package_target.neg_log_pseudo_l_loocv(X, Y, dict_hyps, str_cov, prior_mu_X)
     with pytest.raises(AssertionError) as error:
-        gp_scipy.neg_log_pseudo_l_loocv(X, Y, arr_hyps, 1, prior_mu_X)
+        package_target.neg_log_pseudo_l_loocv(X, Y, arr_hyps, 1, prior_mu_X)
     with pytest.raises(ValueError) as error:
-        gp_scipy.neg_log_pseudo_l_loocv(X, Y, arr_hyps, 'abc', prior_mu_X)
+        package_target.neg_log_pseudo_l_loocv(X, Y, arr_hyps, 'abc', prior_mu_X)
     with pytest.raises(AssertionError) as error:
-        gp_scipy.neg_log_pseudo_l_loocv(X, Y, arr_hyps, str_cov, np.arange(0, 3))
+        package_target.neg_log_pseudo_l_loocv(X, Y, arr_hyps, str_cov, np.arange(0, 3))
     with pytest.raises(AssertionError) as error:
-        gp_scipy.neg_log_pseudo_l_loocv(np.reshape(np.arange(0, 12), (4, dim_X)), Y, arr_hyps, str_cov, prior_mu_X)
+        package_target.neg_log_pseudo_l_loocv(np.reshape(np.arange(0, 12), (4, dim_X)), Y, arr_hyps, str_cov, prior_mu_X)
     with pytest.raises(AssertionError) as error:
-        gp_scipy.neg_log_pseudo_l_loocv(X, np.expand_dims(np.arange(0, 4), axis=1), arr_hyps, str_cov, prior_mu_X)
+        package_target.neg_log_pseudo_l_loocv(X, np.expand_dims(np.arange(0, 4), axis=1), arr_hyps, str_cov, prior_mu_X)
     with pytest.raises(AssertionError) as error:
-        gp_scipy.neg_log_pseudo_l_loocv(X, Y, arr_hyps, str_cov, np.expand_dims(np.arange(0, 4), axis=1))
+        package_target.neg_log_pseudo_l_loocv(X, Y, arr_hyps, str_cov, np.expand_dims(np.arange(0, 4), axis=1))
     with pytest.raises(AssertionError) as error:
-        gp_scipy.neg_log_pseudo_l_loocv(X, Y, arr_hyps, str_cov, prior_mu_X, fix_noise=1)
+        package_target.neg_log_pseudo_l_loocv(X, Y, arr_hyps, str_cov, prior_mu_X, fix_noise=1)
     with pytest.raises(AssertionError) as error:
-        gp_scipy.neg_log_pseudo_l_loocv(X, Y, arr_hyps, str_cov, prior_mu_X, debug=1)
+        package_target.neg_log_pseudo_l_loocv(X, Y, arr_hyps, str_cov, prior_mu_X, debug=1)
 
-    neg_log_pseudo_l_ = gp_scipy.neg_log_pseudo_l_loocv(X, Y, arr_hyps, str_cov, prior_mu_X)
+    neg_log_pseudo_l_ = package_target.neg_log_pseudo_l_loocv(X, Y, arr_hyps, str_cov, prior_mu_X)
     print(neg_log_pseudo_l_)
     truth_log_pseudo_l_ = 21.916822991658695
     assert np.abs(neg_log_pseudo_l_ - truth_log_pseudo_l_) < TEST_EPSILON
 
 def test_get_optimized_kernel_typing():
-    annos = gp_scipy.get_optimized_kernel.__annotations__
+    annos = package_target.get_optimized_kernel.__annotations__
 
     assert annos['X_train'] == np.ndarray
     assert annos['Y_train'] == np.ndarray
@@ -168,55 +168,55 @@ def test_get_optimized_kernel():
     prior_mu = None
 
     with pytest.raises(AssertionError) as error:
-        gp_scipy.get_optimized_kernel(X, Y, prior_mu, 1)
+        package_target.get_optimized_kernel(X, Y, prior_mu, 1)
     with pytest.raises(AssertionError) as error:
-        gp_scipy.get_optimized_kernel(X, Y, 1, 'se')
+        package_target.get_optimized_kernel(X, Y, 1, 'se')
     with pytest.raises(AssertionError) as error:
-        gp_scipy.get_optimized_kernel(X, 1, prior_mu, 'se')
+        package_target.get_optimized_kernel(X, 1, prior_mu, 'se')
     with pytest.raises(AssertionError) as error:
-        gp_scipy.get_optimized_kernel(1, Y, prior_mu, 'se')
+        package_target.get_optimized_kernel(1, Y, prior_mu, 'se')
     with pytest.raises(AssertionError) as error:
-        gp_scipy.get_optimized_kernel(np.ones(num_X), Y, prior_mu, 'se')
+        package_target.get_optimized_kernel(np.ones(num_X), Y, prior_mu, 'se')
 
     with pytest.raises(AssertionError) as error:
-        gp_scipy.get_optimized_kernel(X, np.ones(num_X), prior_mu, 'se')
+        package_target.get_optimized_kernel(X, np.ones(num_X), prior_mu, 'se')
     with pytest.raises(AssertionError) as error:
-        gp_scipy.get_optimized_kernel(np.ones((50, 3)), Y, prior_mu, 'se')
+        package_target.get_optimized_kernel(np.ones((50, 3)), Y, prior_mu, 'se')
     with pytest.raises(AssertionError) as error:
-        gp_scipy.get_optimized_kernel(X, np.ones((50, 1)), prior_mu, 'se')
+        package_target.get_optimized_kernel(X, np.ones((50, 1)), prior_mu, 'se')
     with pytest.raises(ValueError) as error:
-        gp_scipy.get_optimized_kernel(X, Y, prior_mu, 'abc')
+        package_target.get_optimized_kernel(X, Y, prior_mu, 'abc')
     with pytest.raises(AssertionError) as error:
-        gp_scipy.get_optimized_kernel(X, Y, prior_mu, 'se', str_optimizer_method=1)
+        package_target.get_optimized_kernel(X, Y, prior_mu, 'se', str_optimizer_method=1)
 
     with pytest.raises(AssertionError) as error:
-        gp_scipy.get_optimized_kernel(X, Y, prior_mu, 'se', str_modelselection_method=1)
+        package_target.get_optimized_kernel(X, Y, prior_mu, 'se', str_modelselection_method=1)
     with pytest.raises(AssertionError) as error:
-        gp_scipy.get_optimized_kernel(X, Y, prior_mu, 'se', fix_noise=1)
+        package_target.get_optimized_kernel(X, Y, prior_mu, 'se', fix_noise=1)
     with pytest.raises(AssertionError) as error:
-        gp_scipy.get_optimized_kernel(X, Y, prior_mu, 'se', debug=1)
+        package_target.get_optimized_kernel(X, Y, prior_mu, 'se', debug=1)
 
     # INFO: tests for set inputs
     with pytest.raises(AssertionError) as error:
-        gp_scipy.get_optimized_kernel(X_set, Y, prior_mu, 'se')
+        package_target.get_optimized_kernel(X_set, Y, prior_mu, 'se')
     with pytest.raises(AssertionError) as error:
-        gp_scipy.get_optimized_kernel(X, Y, prior_mu, 'set_se')
+        package_target.get_optimized_kernel(X, Y, prior_mu, 'set_se')
     with pytest.raises(AssertionError) as error:
-        gp_scipy.get_optimized_kernel(X_set, Y, prior_mu, 'set_se', debug=1)
+        package_target.get_optimized_kernel(X_set, Y, prior_mu, 'set_se', debug=1)
 
-    cov_X_X, inv_cov_X_X, hyps = gp_scipy.get_optimized_kernel(X, Y, prior_mu, 'se')
+    cov_X_X, inv_cov_X_X, hyps = package_target.get_optimized_kernel(X, Y, prior_mu, 'se')
     print(hyps)
-    cov_X_X, inv_cov_X_X, hyps = gp_scipy.get_optimized_kernel(X, Y, prior_mu, 'se', str_optimizer_method='BFGS', debug=True)
+    cov_X_X, inv_cov_X_X, hyps = package_target.get_optimized_kernel(X, Y, prior_mu, 'se', str_optimizer_method='BFGS', debug=True)
     print(hyps)
-    cov_X_X, inv_cov_X_X, hyps = gp_scipy.get_optimized_kernel(X, Y, prior_mu, 'se', str_optimizer_method='L-BFGS-B', debug=True)
+    cov_X_X, inv_cov_X_X, hyps = package_target.get_optimized_kernel(X, Y, prior_mu, 'se', str_optimizer_method='L-BFGS-B', debug=True)
     print(hyps)
-    cov_X_X, inv_cov_X_X, hyps = gp_scipy.get_optimized_kernel(X, Y, prior_mu, 'se', str_optimizer_method='Nelder-Mead', debug=True)
+    cov_X_X, inv_cov_X_X, hyps = package_target.get_optimized_kernel(X, Y, prior_mu, 'se', str_optimizer_method='Nelder-Mead', debug=True)
     print(hyps)
-    cov_X_X, inv_cov_X_X, hyps = gp_scipy.get_optimized_kernel(X, Y, prior_mu, 'se', str_modelselection_method='loocv')
+    cov_X_X, inv_cov_X_X, hyps = package_target.get_optimized_kernel(X, Y, prior_mu, 'se', str_modelselection_method='loocv')
     print(hyps)
-    cov_X_X, inv_cov_X_X, hyps = gp_scipy.get_optimized_kernel(X_set, Y, prior_mu, 'set_se')
+    cov_X_X, inv_cov_X_X, hyps = package_target.get_optimized_kernel(X_set, Y, prior_mu, 'set_se')
     print(hyps)
-    cov_X_X, inv_cov_X_X, hyps = gp_scipy.get_optimized_kernel(X_set, Y, prior_mu, 'set_se', str_optimizer_method='L-BFGS-B')
+    cov_X_X, inv_cov_X_X, hyps = package_target.get_optimized_kernel(X_set, Y, prior_mu, 'set_se', str_optimizer_method='L-BFGS-B')
     print(hyps)
-    cov_X_X, inv_cov_X_X, hyps = gp_scipy.get_optimized_kernel(X_set, Y, prior_mu, 'set_se', str_modelselection_method='loocv', debug=True)
+    cov_X_X, inv_cov_X_X, hyps = package_target.get_optimized_kernel(X_set, Y, prior_mu, 'set_se', str_modelselection_method='loocv', debug=True)
     print(hyps)
