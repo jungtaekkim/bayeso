@@ -1,6 +1,6 @@
 #
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: September 24, 2020
+# last updated: December 29, 2020
 #
 """test_import"""
 
@@ -16,14 +16,14 @@ def test_import_covariance():
 def test_import_acquisition():
     import bayeso.acquisition
 
+def test_import_constants():
+    import bayeso.constants
+
 def test_import_gp():
     import bayeso.gp
 
 def test_import_gp_gp():
     import bayeso.gp.gp
-
-def test_import_gp_gp_common():
-    import bayeso.gp.gp_common
 
 def test_import_gp_gp_scipy():
     import bayeso.gp.gp_scipy
@@ -57,6 +57,3 @@ def test_import_utils_utils_logger():
 
 def test_import_wrappers_wrappers_bo():
     import bayeso.wrappers.wrappers_bo
-
-def test_import_constants():
-    import bayeso.constants

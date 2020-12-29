@@ -1,6 +1,6 @@
 #
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: September 24, 2020
+# last updated: December 29, 2020
 #
 """test_utils_gp"""
 
@@ -12,36 +12,6 @@ from bayeso.utils import utils_gp
 
 TEST_EPSILON = 1e-7
 
-
-def test_check_str_cov_typing():
-    annos = utils_gp.check_str_cov.__annotations__
-
-    assert annos['str_fun'] == str
-    assert annos['str_cov'] == str
-    assert annos['shape_X1'] == tuple
-    assert annos['shape_X2'] == tuple
-    assert annos['return'] == type(None)
-
-def test_check_str_cov():
-    with pytest.raises(AssertionError) as error:
-        utils_gp.check_str_cov(1, 'se', (2, 1))
-    with pytest.raises(AssertionError) as error:
-        utils_gp.check_str_cov('test', 1, (2, 1))
-    with pytest.raises(AssertionError) as error:
-        utils_gp.check_str_cov('test', 'se', 1)
-    with pytest.raises(AssertionError) as error:
-        utils_gp.check_str_cov('test', 'se', (2, 100, 100))
-    with pytest.raises(AssertionError) as error:
-        utils_gp.check_str_cov('test', 'se', (2, 100), shape_X2=(2, 100, 100))
-    with pytest.raises(AssertionError) as error:
-        utils_gp.check_str_cov('test', 'set_se', (2, 100), shape_X2=(2, 100, 100))
-    with pytest.raises(AssertionError) as error:
-        utils_gp.check_str_cov('test', 'set_se', (2, 100, 100), shape_X2=(2, 100))
-    with pytest.raises(AssertionError) as error:
-        utils_gp.check_str_cov('test', 'se', (2, 1), shape_X2=1)
-
-    with pytest.raises(ValueError) as error:
-        utils_gp.check_str_cov('test', 'abc', (2, 1))
 
 def test_get_prior_mu_typing():
     annos = utils_gp.get_prior_mu.__annotations__

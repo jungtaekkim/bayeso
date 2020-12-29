@@ -1,6 +1,6 @@
 #
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: December 28, 2020
+# last updated: December 29, 2020
 #
 """It defines a class for Bayesian optimization."""
 
@@ -17,12 +17,12 @@ except: # pragma: no cover
     cma = None
 import qmcpy
 
+from bayeso import covariance
+from bayeso import constants
 from bayeso.gp import gp
-from bayeso.gp import gp_common
 from bayeso.utils import utils_bo
 from bayeso.utils import utils_common
 from bayeso.utils import utils_logger
-from bayeso import constants
 
 logger = utils_logger.get_logger('bo')
 
@@ -465,7 +465,8 @@ class BO:
             list_next_point.append(next_point_x)
 
         next_points = np.array(list_next_point)
-        next_point = utils_bo.get_best_acquisition_by_evaluation(next_points, fun_negative_acquisition)[0]
+        next_point = utils_bo.get_best_acquisition_by_evaluation(
+            next_points, fun_negative_acquisition)[0]
         return next_point, next_points
 
     def optimize(self, X_train: np.ndarray, Y_train: np.ndarray,
@@ -542,7 +543,7 @@ class BO:
                 if self.debug:
                     logger.debug('hyps converged.')
                 hyps = self.historical_hyps[-1]
-                cov_X_X, inv_cov_X_X, _ = gp_common.get_kernel_inverse(X_train, hyps,
+                cov_X_X, inv_cov_X_X, _ = covariance.get_kernel_inverse(X_train, hyps,
                     self.str_cov, fix_noise=fix_noise, debug=self.debug)
         else: # pragma: no cover
             raise ValueError('optimize: missing condition for str_mlm_method.')

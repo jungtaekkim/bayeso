@@ -1,6 +1,6 @@
 #
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: September 24, 2020
+# last updated: December 29, 2020
 #
 """It is Gaussian process regression implementations with SciPy."""
 
@@ -9,8 +9,8 @@ import numpy as np
 import scipy.linalg
 import scipy.optimize
 
+from bayeso import covariance
 from bayeso import constants
-from bayeso.gp import gp_common
 from bayeso.utils import utils_gp
 from bayeso.utils import utils_covariance
 from bayeso.utils import utils_common
@@ -70,12 +70,12 @@ def neg_log_ml(X_train: np.ndarray, Y_train: np.ndarray, hyps: np.ndarray,
     assert len(Y_train.shape) == 2
     assert len(prior_mu_train.shape) == 2
     assert X_train.shape[0] == Y_train.shape[0] == prior_mu_train.shape[0]
-    utils_gp.check_str_cov('neg_log_ml', str_cov, X_train.shape)
+    utils_covariance.check_str_cov('neg_log_ml', str_cov, X_train.shape)
 
     hyps = utils_covariance.restore_hyps(str_cov, hyps, fix_noise=fix_noise)
     new_Y_train = Y_train - prior_mu_train
     if use_cholesky:
-        cov_X_X, lower, grad_cov_X_X = gp_common.get_kernel_cholesky(X_train,
+        cov_X_X, lower, grad_cov_X_X = covariance.get_kernel_cholesky(X_train,
             hyps, str_cov, fix_noise=fix_noise, use_gradient=use_gradient,
             debug=debug)
 
@@ -95,7 +95,7 @@ def neg_log_ml(X_train: np.ndarray, Y_train: np.ndarray, hyps: np.ndarray,
     else:
         # TODO: use_gradient is fixed.
         use_gradient = False
-        cov_X_X, inv_cov_X_X, grad_cov_X_X = gp_common.get_kernel_inverse(X_train,
+        cov_X_X, inv_cov_X_X, grad_cov_X_X = covariance.get_kernel_inverse(X_train,
             hyps, str_cov, fix_noise=fix_noise, use_gradient=use_gradient,
             debug=debug)
 
@@ -152,12 +152,12 @@ def neg_log_pseudo_l_loocv(X_train: np.ndarray, Y_train: np.ndarray, hyps: np.nd
     assert len(Y_train.shape) == 2
     assert len(prior_mu_train.shape) == 2
     assert X_train.shape[0] == Y_train.shape[0] == prior_mu_train.shape[0]
-    utils_gp.check_str_cov('neg_log_pseudo_l_loocv', str_cov, X_train.shape)
+    utils_covariance.check_str_cov('neg_log_pseudo_l_loocv', str_cov, X_train.shape)
 
     num_data = X_train.shape[0]
     hyps = utils_covariance.restore_hyps(str_cov, hyps, fix_noise=fix_noise)
 
-    _, inv_cov_X_X, _ = gp_common.get_kernel_inverse(X_train, hyps,
+    _, inv_cov_X_X, _ = covariance.get_kernel_inverse(X_train, hyps,
         str_cov, fix_noise=fix_noise, debug=debug)
 
     log_pseudo_l_ = 0.0
@@ -232,7 +232,7 @@ def get_optimized_kernel(X_train: np.ndarray, Y_train: np.ndarray,
     assert isinstance(debug, bool)
     assert len(Y_train.shape) == 2
     assert X_train.shape[0] == Y_train.shape[0]
-    utils_gp.check_str_cov('get_optimized_kernel', str_cov, X_train.shape)
+    utils_covariance.check_str_cov('get_optimized_kernel', str_cov, X_train.shape)
     assert str_optimizer_method in constants.ALLOWED_OPTIMIZER_METHOD_GP
     assert str_modelselection_method in constants.ALLOWED_MODELSELECTION_METHOD
     # TODO: fix this.
@@ -301,7 +301,7 @@ def get_optimized_kernel(X_train: np.ndarray, Y_train: np.ndarray,
     hyps = utils_covariance.restore_hyps(str_cov, result_optimized, fix_noise=fix_noise)
 
     hyps, _ = utils_covariance.validate_hyps_dict(hyps, str_cov, num_dim)
-    cov_X_X, inv_cov_X_X, _ = gp_common.get_kernel_inverse(X_train,
+    cov_X_X, inv_cov_X_X, _ = covariance.get_kernel_inverse(X_train,
         hyps, str_cov, fix_noise=fix_noise, debug=debug)
 
     time_end = time.time()

@@ -1,6 +1,6 @@
 #
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: September 24, 2020
+# last updated: December 29, 2020
 #
 """It defines Gaussian process regression."""
 
@@ -10,9 +10,9 @@ import scipy.stats
 
 from bayeso import covariance
 from bayeso import constants
-from bayeso.gp import gp_common
 from bayeso.gp import gp_scipy
 from bayeso.utils import utils_gp
+from bayeso.utils import utils_covariance
 from bayeso.utils import utils_common
 from bayeso.utils import utils_logger
 
@@ -102,7 +102,7 @@ def get_optimized_kernel(X_train: np.ndarray, Y_train: np.ndarray,
     assert isinstance(debug, bool)
     assert len(Y_train.shape) == 2
     assert X_train.shape[0] == Y_train.shape[0]
-    utils_gp.check_str_cov('get_optimized_kernel', str_cov, X_train.shape)
+    utils_covariance.check_str_cov('get_optimized_kernel', str_cov, X_train.shape)
     assert str_optimizer_method in constants.ALLOWED_OPTIMIZER_METHOD_GP
     assert str_modelselection_method in constants.ALLOWED_MODELSELECTION_METHOD
     assert str_framework in constants.ALLOWED_FRAMEWORK_GP
@@ -193,7 +193,8 @@ def predict_with_cov(X_train: np.ndarray, Y_train: np.ndarray, X_test: np.ndarra
     assert len(cov_X_X.shape) == 2
     assert len(inv_cov_X_X.shape) == 2
     assert (np.array(cov_X_X.shape) == np.array(inv_cov_X_X.shape)).all()
-    utils_gp.check_str_cov('predict_with_cov', str_cov, X_train.shape, shape_X2=X_test.shape)
+    utils_covariance.check_str_cov('predict_with_cov', str_cov,
+        X_train.shape, shape_X2=X_test.shape)
     assert X_train.shape[0] == Y_train.shape[0]
     assert X_train.shape[1] == X_test.shape[1]
 
@@ -250,11 +251,12 @@ def predict_with_hyps(X_train: np.ndarray, Y_train: np.ndarray, X_test: np.ndarr
     assert isinstance(debug, bool)
     assert callable(prior_mu) or prior_mu is None
     assert len(Y_train.shape) == 2
-    utils_gp.check_str_cov('predict_with_hyps', str_cov, X_train.shape, shape_X2=X_test.shape)
+    utils_covariance.check_str_cov('predict_with_hyps', str_cov,
+        X_train.shape, shape_X2=X_test.shape)
     assert X_train.shape[0] == Y_train.shape[0]
     assert X_train.shape[1] == X_test.shape[1]
 
-    cov_X_X, inv_cov_X_X, _ = gp_common.get_kernel_inverse(X_train,
+    cov_X_X, inv_cov_X_X, _ = covariance.get_kernel_inverse(X_train,
         hyps, str_cov, debug=debug)
     mu_Xs, sigma_Xs, Sigma_Xs = predict_with_cov(X_train, Y_train, X_test,
         cov_X_X, inv_cov_X_X, hyps, str_cov=str_cov,
@@ -310,7 +312,7 @@ def predict_with_optimized_hyps(X_train: np.ndarray, Y_train: np.ndarray, X_test
     assert isinstance(debug, bool)
     assert callable(prior_mu) or prior_mu is None
     assert len(Y_train.shape) == 2
-    utils_gp.check_str_cov('predict_with_optimized_kernel', str_cov,
+    utils_covariance.check_str_cov('predict_with_optimized_kernel', str_cov,
         X_train.shape, shape_X2=X_test.shape)
     assert X_train.shape[0] == Y_train.shape[0]
     assert X_train.shape[1] == X_test.shape[1]

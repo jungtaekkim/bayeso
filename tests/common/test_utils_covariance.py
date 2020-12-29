@@ -1,6 +1,6 @@
 #
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: September 24, 2020
+# last updated: December 29, 2020
 #
 """test_utils_covariance"""
 
@@ -248,3 +248,33 @@ def test_validate_hyps_arr():
         _, is_valid = utils_covariance.validate_hyps_arr(cur_hyps, 'abc', num_dim)
     with pytest.raises(AssertionError) as error:
         _, is_valid = utils_covariance.validate_hyps_arr(cur_hyps, str_cov, 'abc')
+
+def test_check_str_cov_typing():
+    annos = utils_covariance.check_str_cov.__annotations__
+
+    assert annos['str_fun'] == str
+    assert annos['str_cov'] == str
+    assert annos['shape_X1'] == tuple
+    assert annos['shape_X2'] == tuple
+    assert annos['return'] == type(None)
+
+def test_check_str_cov():
+    with pytest.raises(AssertionError) as error:
+        utils_covariance.check_str_cov(1, 'se', (2, 1))
+    with pytest.raises(AssertionError) as error:
+        utils_covariance.check_str_cov('test', 1, (2, 1))
+    with pytest.raises(AssertionError) as error:
+        utils_covariance.check_str_cov('test', 'se', 1)
+    with pytest.raises(AssertionError) as error:
+        utils_covariance.check_str_cov('test', 'se', (2, 100, 100))
+    with pytest.raises(AssertionError) as error:
+        utils_covariance.check_str_cov('test', 'se', (2, 100), shape_X2=(2, 100, 100))
+    with pytest.raises(AssertionError) as error:
+        utils_covariance.check_str_cov('test', 'set_se', (2, 100), shape_X2=(2, 100, 100))
+    with pytest.raises(AssertionError) as error:
+        utils_covariance.check_str_cov('test', 'set_se', (2, 100, 100), shape_X2=(2, 100))
+    with pytest.raises(AssertionError) as error:
+        utils_covariance.check_str_cov('test', 'se', (2, 1), shape_X2=1)
+
+    with pytest.raises(ValueError) as error:
+        utils_covariance.check_str_cov('test', 'abc', (2, 1))

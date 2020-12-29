@@ -1,6 +1,6 @@
 #
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: September 24, 2020
+# last updated: December 29, 2020
 #
 """It is Gaussian process regression implementations with GPyTorch."""
 
@@ -9,9 +9,9 @@ import numpy as np
 import torch
 import gpytorch
 
+from bayeso import covariance
 from bayeso import constants
-from bayeso.gp import gp_common
-from bayeso.utils import utils_gp
+from bayeso.utils import utils_covariance
 from bayeso.utils import utils_common
 from bayeso.utils import utils_logger
 
@@ -93,7 +93,7 @@ def get_optimized_kernel(X_train: np.ndarray, Y_train: np.ndarray,
     assert isinstance(debug, bool)
     assert len(Y_train.shape) == 2
     assert X_train.shape[0] == Y_train.shape[0]
-    utils_gp.check_str_cov('get_optimized_kernel', str_cov, X_train.shape)
+    utils_covariance.check_str_cov('get_optimized_kernel', str_cov, X_train.shape)
     assert num_iters >= 10 or num_iters == 0
 
     # TODO: prior_mu and fix_noise are not working now.
@@ -153,7 +153,7 @@ def get_optimized_kernel(X_train: np.ndarray, Y_train: np.ndarray,
         'noise': np.sqrt(model.likelihood.noise.item())
     }
 
-    cov_X_X, inv_cov_X_X, _ = gp_common.get_kernel_inverse(X_train, hyps,
+    cov_X_X, inv_cov_X_X, _ = covariance.get_kernel_inverse(X_train, hyps,
         str_cov, fix_noise=fix_noise, debug=debug)
 
     time_end = time.time()

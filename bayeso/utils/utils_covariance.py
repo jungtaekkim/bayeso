@@ -1,6 +1,6 @@
 #
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: September 24, 2020
+# last updated: December 29, 2020
 #
 """It is utilities for covariance functions."""
 
@@ -64,7 +64,7 @@ def get_hyps(str_cov: str, dim: int,
         if use_ard:
             hyps['lengthscales'] = np.ones(dim)
         else:
-            # TODO: It makes bunch of erros. I should fix it.
+            # TODO: It makes bunch of errors. I should fix it.
             hyps['lengthscales'] = 1.0
     else:
         raise NotImplementedError('get_hyps: allowed str_cov, but it is not implemented.')
@@ -293,3 +293,44 @@ def validate_hyps_arr(hyps: np.ndarray, str_cov: str, dim: int
 #    is_valid = True
 
     raise NotImplementedError('validate_hyps_arr in utils_covariance.py')
+
+@utils_common.validate_types
+def check_str_cov(str_fun: str, str_cov: str, shape_X1: tuple,
+    shape_X2: tuple=None
+) -> constants.TYPE_NONE:
+    """
+    It is for validating the shape of X1 (and optionally the shape of X2).
+
+    :param str_fun: the name of function.
+    :type str_fun: str.
+    :param str_cov: the name of covariance function.
+    :type str_cov: str.
+    :param shape_X1: the shape of X1.
+    :type shape_X1: tuple
+    :param shape_X2: None, or the shape of X2.
+    :type shape_X2: NoneType or tuple, optional
+
+    :returns: None, if it is valid. Raise an error, otherwise.
+    :rtype: NoneType
+
+    :raises: AssertionError, ValueError
+
+    """
+
+    assert isinstance(str_fun, str)
+    assert isinstance(str_cov, str)
+    assert isinstance(shape_X1, tuple)
+    assert shape_X2 is None or isinstance(shape_X2, tuple)
+
+    if str_cov in constants.ALLOWED_GP_COV_BASE:
+        assert len(shape_X1) == 2
+        if shape_X2 is not None:
+            assert len(shape_X2) == 2
+    elif str_cov in constants.ALLOWED_GP_COV_SET:
+        assert len(shape_X1) == 3
+        if shape_X2 is not None:
+            assert len(shape_X2) == 3
+    elif str_cov in constants.ALLOWED_GP_COV: # pragma: no cover
+        raise ValueError('{}: missing conditions for str_cov.'.format(str_fun))
+    else:
+        raise ValueError('{}: invalid str_cov.'.format(str_fun))
