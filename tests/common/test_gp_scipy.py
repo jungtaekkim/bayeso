@@ -27,7 +27,7 @@ def test_neg_log_ml_typing():
     assert annos['use_cholesky'] == bool
     assert annos['use_gradient'] == bool
     assert annos['debug'] == bool
-    assert annos['return'] == typing.Union[float, typing.Tuple[float, float]]
+    assert annos['return'] == typing.Union[float, typing.Tuple[float, np.ndarray]]
 
 def test_neg_log_ml():
     dim_X = 3

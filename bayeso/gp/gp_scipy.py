@@ -8,7 +8,6 @@ import time
 import numpy as np
 import scipy.linalg
 import scipy.optimize
-import typing
 
 from bayeso import covariance
 from bayeso import constants
@@ -27,7 +26,7 @@ def neg_log_ml(X_train: np.ndarray, Y_train: np.ndarray, hyps: np.ndarray,
     use_cholesky: bool=True,
     use_gradient: bool=True,
     debug: bool=False
-) -> typing.Union[float, constants.TYPING_TUPLE_FLOAT_ARRAY]:
+) -> constants.TYPING_UNION_FLOAT_FA:
     """
     This function computes a negative log marginal likelihood.
 
@@ -101,7 +100,11 @@ def neg_log_ml(X_train: np.ndarray, Y_train: np.ndarray, hyps: np.ndarray,
             debug=debug)
 
         first_term = -0.5 * np.dot(np.dot(new_Y_train.T, inv_cov_X_X), new_Y_train)
-        second_term = -0.5 * np.log(np.linalg.det(cov_X_X) + constants.JITTER_LOG)
+        sign_second_term, second_term = np.linalg.slogdet(cov_X_X)
+        # TODO: let me think.
+        if sign_second_term <= 0:
+            second_term = 0.0
+        second_term = -0.5 * second_term
 
     third_term = -float(X_train.shape[0]) / 2.0 * np.log(2.0 * np.pi)
     log_ml_ = np.squeeze(first_term + second_term + third_term)

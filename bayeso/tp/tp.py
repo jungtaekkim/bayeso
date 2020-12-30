@@ -10,7 +10,6 @@ import scipy.stats
 import scipy.linalg
 import scipy.optimize
 import scipy.special
-import typing
 
 from bayeso import covariance
 from bayeso import constants
@@ -28,7 +27,7 @@ def neg_log_ml(X_train: np.ndarray, Y_train: np.ndarray, hyps: np.ndarray,
     fix_noise: bool=constants.FIX_GP_NOISE,
     use_gradient: bool=True,
     debug: bool=False
-) -> typing.Union[float, constants.TYPING_TUPLE_FLOAT_ARRAY]:
+) -> constants.TYPING_UNION_FLOAT_FA:
     """
     This function computes a negative log marginal likelihood.
 
@@ -85,7 +84,12 @@ def neg_log_ml(X_train: np.ndarray, Y_train: np.ndarray, hyps: np.ndarray,
     beta = np.squeeze(np.dot(np.dot(new_Y_train.T, inv_cov_X_X), new_Y_train))
 
     first_term = -0.5 * num_X * np.log((nu - 2.0) * np.pi)
-    second_term = -0.5 * np.log(np.linalg.det(cov_X_X) + constants.JITTER_LOG)
+    sign_second_term, second_term = np.linalg.slogdet(cov_X_X)
+    # TODO: let me think.
+    if sign_second_term <= 0:
+        second_term = 0.0
+    second_term = -0.5 * second_term
+
     third_term = np.log(scipy.special.gamma((nu + num_X) / 2.0) / scipy.special.gamma(nu / 2.0))
     fourth_term = -0.5 * (nu + num_X) * np.log(1.0 + beta / (nu - 2.0))
 
@@ -397,7 +401,7 @@ def predict_with_hyps(X_train: np.ndarray, Y_train: np.ndarray, X_test: np.ndarr
 
     cov_X_X, inv_cov_X_X, _ = covariance.get_kernel_inverse(X_train,
         hyps, str_cov, debug=debug)
-    nu_Xs, mu_Xs, sigma_Xs,  Sigma_Xs = predict_with_cov(X_train, Y_train, X_test,
+    nu_Xs, mu_Xs, sigma_Xs, Sigma_Xs = predict_with_cov(X_train, Y_train, X_test,
         cov_X_X, inv_cov_X_X, hyps, str_cov=str_cov,
         prior_mu=prior_mu, debug=debug)
 
