@@ -42,6 +42,7 @@ TIME_PAUSE = 2.0
 RANGE_SHADE = 1.96
 
 ALLOWED_OPTIMIZER_METHOD_GP = ['BFGS', 'L-BFGS-B', 'Nelder-Mead', 'DIRECT']
+ALLOWED_OPTIMIZER_METHOD_TP = ['L-BFGS-B']
 ALLOWED_OPTIMIZER_METHOD_BO = ['L-BFGS-B', 'DIRECT', 'CMA-ES']
 # INFO: Do not use _ (underscore) in base str_cov.
 ALLOWED_GP_COV_BASE = ['eq', 'se', 'matern32', 'matern52']
@@ -101,6 +102,8 @@ TYPING_TUPLE_TWO_ARRAYS = typing.Tuple[np.ndarray, np.ndarray]
 TYPING_TUPLE_TWO_ARRAYS_DICT = typing.Tuple[np.ndarray, np.ndarray, dict]
 TYPING_TUPLE_THREE_ARRAYS = typing.Tuple[np.ndarray, np.ndarray, np.ndarray]
 TYPING_TUPLE_FIVE_ARRAYS = typing.Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]
+TYPING_TUPLE_FLOAT_THREE_ARRAYS = typing.Tuple[float, np.ndarray, np.ndarray, np.ndarray]
+TYPING_TUPLE_FLOAT_ARRAY = typing.Tuple[float, np.ndarray]
 
 TYPING_UNION_INT_NONE = typing.Union[int, TYPE_NONE]
 TYPING_UNION_INT_FLOAT = typing.Union[int, float]

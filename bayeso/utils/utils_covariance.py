@@ -28,7 +28,8 @@ def _get_list_first() -> list:
 
 @utils_common.validate_types
 def get_hyps(str_cov: str, dim: int,
-    use_ard: bool=True
+    use_gp: bool=True,
+    use_ard: bool=True,
 ) -> dict:
     """
     It returns a dictionary of default hyperparameters for covariance
@@ -39,6 +40,8 @@ def get_hyps(str_cov: str, dim: int,
     :type str_cov: str.
     :param dim: dimensionality of the problem we are solving.
     :type dim: int.
+    :param use_gp: flag for Gaussian process or Student-$t$ process.
+    :type use_gp: bool., optional
     :param use_ard: flag for automatic relevance determination.
     :type use_ard: bool., optional
 
@@ -51,11 +54,15 @@ def get_hyps(str_cov: str, dim: int,
 
     assert isinstance(str_cov, str)
     assert isinstance(dim, int)
+    assert isinstance(use_gp, bool)
     assert isinstance(use_ard, bool)
     assert str_cov in constants.ALLOWED_GP_COV
 
     hyps = dict()
     hyps['noise'] = constants.GP_NOISE
+
+    if not use_gp:
+        hyps['dof'] = 5.0
 
     list_first = _get_list_first()
 
@@ -72,6 +79,7 @@ def get_hyps(str_cov: str, dim: int,
 
 @utils_common.validate_types
 def get_range_hyps(str_cov: str, dim: int,
+    use_gp: bool=True,
     use_ard: bool=True,
     fix_noise: bool=False
 ) -> list:
@@ -82,6 +90,8 @@ def get_range_hyps(str_cov: str, dim: int,
     :type str_cov: str.
     :param dim: dimensionality of the problem we are solving.
     :type dim: int.
+    :param use_gp: flag for Gaussian process or Student-$t$ process.
+    :type use_gp: bool., optional
     :param use_ard: flag for automatic relevance determination.
     :type use_ard: bool., optional
     :param fix_noise: flag for fixing a noise.
@@ -96,6 +106,7 @@ def get_range_hyps(str_cov: str, dim: int,
 
     assert isinstance(str_cov, str)
     assert isinstance(dim, int)
+    assert isinstance(use_gp, bool)
     assert isinstance(use_ard, bool)
     assert isinstance(fix_noise, bool)
     assert str_cov in constants.ALLOWED_GP_COV
@@ -106,6 +117,9 @@ def get_range_hyps(str_cov: str, dim: int,
 
     if not fix_noise:
         range_hyps += constants.RANGE_NOISE
+
+    if not use_gp:
+        range_hyps += [[2.00001, 200.0]]
 
     if str_cov in list_first:
         range_hyps += constants.RANGE_SIGNAL # for signal scale
@@ -121,6 +135,7 @@ def get_range_hyps(str_cov: str, dim: int,
 
 @utils_common.validate_types
 def convert_hyps(str_cov: str, hyps: dict,
+    use_gp: bool=True,
     fix_noise: bool=False
 ) -> np.ndarray:
     """
@@ -130,6 +145,8 @@ def convert_hyps(str_cov: str, hyps: dict,
     :type str_cov: str.
     :param hyps: dictionary of hyperparameters for covariance function.
     :type hyps: dict.
+    :param use_gp: flag for Gaussian process or Student-$t$ process.
+    :type use_gp: bool., optional
     :param fix_noise: flag for fixing a noise.
     :type fix_noise: bool., optional
 
@@ -142,12 +159,16 @@ def convert_hyps(str_cov: str, hyps: dict,
 
     assert isinstance(str_cov, str)
     assert isinstance(hyps, dict)
+    assert isinstance(use_gp, bool)
     assert isinstance(fix_noise, bool)
     assert str_cov in constants.ALLOWED_GP_COV
 
     list_hyps = []
     if not fix_noise:
         list_hyps.append(hyps['noise'])
+
+    if not use_gp:
+        list_hyps.append(hyps['dof'])
 
     list_first = _get_list_first()
 
@@ -161,6 +182,7 @@ def convert_hyps(str_cov: str, hyps: dict,
 
 @utils_common.validate_types
 def restore_hyps(str_cov: str, hyps: np.ndarray,
+    use_gp: bool=True,
     fix_noise: bool=False,
     noise: float=constants.GP_NOISE
 ) -> dict:
@@ -171,6 +193,8 @@ def restore_hyps(str_cov: str, hyps: np.ndarray,
     :type str_cov: str.
     :param hyps: array of hyperparameters for covariance function.
     :type hyps: numpy.ndarray
+    :param use_gp: flag for Gaussian process or Student-$t$ process.
+    :type use_gp: bool., optional
     :param fix_noise: flag for fixing a noise.
     :type fix_noise: bool., optional
     :param noise: fixed noise value.
@@ -185,6 +209,7 @@ def restore_hyps(str_cov: str, hyps: np.ndarray,
 
     assert isinstance(str_cov, str)
     assert isinstance(hyps, np.ndarray)
+    assert isinstance(use_gp, bool)
     assert isinstance(fix_noise, bool)
     assert isinstance(noise, float)
     assert len(hyps.shape) == 1
@@ -198,12 +223,16 @@ def restore_hyps(str_cov: str, hyps: np.ndarray,
         dict_hyps['noise'] = noise
         ind_start = 0
 
+    if not use_gp:
+        dict_hyps['dof'] = hyps[ind_start]
+        ind_start += 1
+
     list_first = _get_list_first()
 
     if str_cov in list_first:
         dict_hyps['signal'] = hyps[ind_start]
         list_lengthscales = []
-        for ind_elem in range(ind_start+1, len(hyps)):
+        for ind_elem in range(ind_start + 1, len(hyps)):
             list_lengthscales.append(hyps[ind_elem])
         dict_hyps['lengthscales'] = np.array(list_lengthscales)
     else:
@@ -211,7 +240,9 @@ def restore_hyps(str_cov: str, hyps: np.ndarray,
     return dict_hyps
 
 @utils_common.validate_types
-def validate_hyps_dict(hyps: dict, str_cov: str, dim: int) -> constants.TYPING_TUPLE_DICT_BOOL:
+def validate_hyps_dict(hyps: dict, str_cov: str, dim: int,
+    use_gp: bool=True
+) -> constants.TYPING_TUPLE_DICT_BOOL:
     """
     It validates hyperparameters dictionary, `hyps`.
 
@@ -221,6 +252,8 @@ def validate_hyps_dict(hyps: dict, str_cov: str, dim: int) -> constants.TYPING_T
     :type str_cov: str.
     :param dim: dimensionality of the problem we are solving.
     :type dim: int.
+    :param use_gp: flag for Gaussian process or Student-$t$ process.
+    :type use_gp: bool., optional
 
     :returns: a tuple of valid hyperparameters and validity flag.
     :rtype: (dict., bool.)
@@ -232,6 +265,7 @@ def validate_hyps_dict(hyps: dict, str_cov: str, dim: int) -> constants.TYPING_T
     assert isinstance(hyps, dict)
     assert isinstance(str_cov, str)
     assert isinstance(dim, int)
+    assert isinstance(use_gp, bool)
     assert str_cov in constants.ALLOWED_GP_COV
 
     is_valid = True
@@ -244,6 +278,13 @@ def validate_hyps_dict(hyps: dict, str_cov: str, dim: int) -> constants.TYPING_T
         else:
             if np.abs(hyps['noise']) >= constants.BOUND_UPPER_GP_NOISE:
                 hyps['noise'] = constants.BOUND_UPPER_GP_NOISE
+
+    if not use_gp:
+        if 'dof' not in hyps:
+            is_valid = False
+        else:
+            if hyps['dof'] <= 2.0:
+                hyps['dof'] = 2.00001
 
     if str_cov in ('eq', 'se', 'matern32', 'matern52'):
         if 'lengthscales' not in hyps:

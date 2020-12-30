@@ -8,6 +8,7 @@ import time
 import numpy as np
 import scipy.linalg
 import scipy.optimize
+import typing
 
 from bayeso import covariance
 from bayeso import constants
@@ -26,7 +27,7 @@ def neg_log_ml(X_train: np.ndarray, Y_train: np.ndarray, hyps: np.ndarray,
     use_cholesky: bool=True,
     use_gradient: bool=True,
     debug: bool=False
-) -> constants.TYPING_UNION_FLOAT_TWO_FLOATS:
+) -> typing.Union[float, constants.TYPING_TUPLE_FLOAT_ARRAY]:
     """
     This function computes a negative log marginal likelihood.
 
@@ -52,7 +53,7 @@ def neg_log_ml(X_train: np.ndarray, Y_train: np.ndarray, hyps: np.ndarray,
 
     :returns: negative log marginal likelihood, or (negative log marginal
         likelihood, gradients of the likelihood).
-    :rtype: float, or tuple of (float, float)
+    :rtype: float, or tuple of (float, np.ndarray)
 
     :raises: AssertionError
 
