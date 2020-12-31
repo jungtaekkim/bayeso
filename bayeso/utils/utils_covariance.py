@@ -119,7 +119,7 @@ def get_range_hyps(str_cov: str, dim: int,
         range_hyps += constants.RANGE_NOISE
 
     if not use_gp:
-        range_hyps += [[2.00001, 200.0]]
+        range_hyps += constants.RANGE_DOF
 
     if str_cov in list_first:
         range_hyps += constants.RANGE_SIGNAL # for signal scale

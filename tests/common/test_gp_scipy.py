@@ -188,6 +188,8 @@ def test_get_optimized_kernel():
         package_target.get_optimized_kernel(X, Y, prior_mu, 'abc')
     with pytest.raises(AssertionError) as error:
         package_target.get_optimized_kernel(X, Y, prior_mu, 'se', str_optimizer_method=1)
+    with pytest.raises(AssertionError) as error:
+        package_target.get_optimized_kernel(X, Y, prior_mu, 'se', str_optimizer_method='abc')
 
     with pytest.raises(AssertionError) as error:
         package_target.get_optimized_kernel(X, Y, prior_mu, 'se', str_modelselection_method=1)
@@ -212,11 +214,17 @@ def test_get_optimized_kernel():
     print(hyps)
     cov_X_X, inv_cov_X_X, hyps = package_target.get_optimized_kernel(X, Y, prior_mu, 'se', str_optimizer_method='Nelder-Mead', debug=True)
     print(hyps)
+    cov_X_X, inv_cov_X_X, hyps = package_target.get_optimized_kernel(X, Y, prior_mu, 'se', str_optimizer_method='SLSQP', debug=True)
+    print(hyps)
+    cov_X_X, inv_cov_X_X, hyps = package_target.get_optimized_kernel(X, Y, prior_mu, 'se', str_optimizer_method='SLSQP-Bounded', debug=True)
+    print(hyps)
+
     cov_X_X, inv_cov_X_X, hyps = package_target.get_optimized_kernel(X, Y, prior_mu, 'se', str_modelselection_method='loocv')
     print(hyps)
     cov_X_X, inv_cov_X_X, hyps = package_target.get_optimized_kernel(X_set, Y, prior_mu, 'set_se')
     print(hyps)
     cov_X_X, inv_cov_X_X, hyps = package_target.get_optimized_kernel(X_set, Y, prior_mu, 'set_se', str_optimizer_method='L-BFGS-B')
     print(hyps)
+
     cov_X_X, inv_cov_X_X, hyps = package_target.get_optimized_kernel(X_set, Y, prior_mu, 'set_se', str_modelselection_method='loocv', debug=True)
     print(hyps)

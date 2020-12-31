@@ -102,7 +102,7 @@ def neg_log_ml(X_train: np.ndarray, Y_train: np.ndarray, hyps: np.ndarray,
         first_term = -0.5 * np.dot(np.dot(new_Y_train.T, inv_cov_X_X), new_Y_train)
         sign_second_term, second_term = np.linalg.slogdet(cov_X_X)
         # TODO: let me think.
-        if sign_second_term <= 0:
+        if sign_second_term <= 0: # pragma: no cover
             second_term = 0.0
         second_term = -0.5 * second_term
 
@@ -272,25 +272,31 @@ def get_optimized_kernel(X_train: np.ndarray, Y_train: np.ndarray,
         fix_noise=fix_noise,
     )
 
-    if str_optimizer_method == 'BFGS':
+    if str_optimizer_method in ['BFGS', 'SLSQP']:
         result_optimized = scipy.optimize.minimize(neg_log_ml_, hyps_converted,
             method=str_optimizer_method, jac=use_gradient, options={'disp': False})
+
         if debug:
             logger.debug('scipy message: %s', result_optimized.message)
 
         result_optimized = result_optimized.x
-    elif str_optimizer_method == 'L-BFGS-B':
+    elif str_optimizer_method in ['L-BFGS-B', 'SLSQP-Bounded']:
+        if str_optimizer_method == 'SLSQP-Bounded':
+            str_optimizer_method = 'SLSQP'
+
         bounds = utils_covariance.get_range_hyps(str_cov, num_dim, fix_noise=fix_noise)
         result_optimized = scipy.optimize.minimize(neg_log_ml_, hyps_converted,
             method=str_optimizer_method, bounds=bounds, jac=use_gradient,
             options={'disp': False})
+
         if debug:
             logger.debug('scipy message: %s', result_optimized.message)
 
         result_optimized = result_optimized.x
-    elif str_optimizer_method == 'Nelder-Mead':
+    elif str_optimizer_method in ['Nelder-Mead']:
         result_optimized = scipy.optimize.minimize(neg_log_ml_, hyps_converted,
             method=str_optimizer_method, options={'disp': False})
+
         if debug:
             logger.debug('scipy message: %s', result_optimized.message)
 

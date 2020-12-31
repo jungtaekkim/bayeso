@@ -86,7 +86,7 @@ def neg_log_ml(X_train: np.ndarray, Y_train: np.ndarray, hyps: np.ndarray,
     first_term = -0.5 * num_X * np.log((nu - 2.0) * np.pi)
     sign_second_term, second_term = np.linalg.slogdet(cov_X_X)
     # TODO: let me think.
-    if sign_second_term <= 0:
+    if sign_second_term <= 0: # pragma: no cover
         second_term = 0.0
     second_term = -0.5 * second_term
 
@@ -171,7 +171,7 @@ def sample_functions(nu: float, mu: np.ndarray, Sigma: np.ndarray,
 @utils_common.validate_types
 def get_optimized_kernel(X_train: np.ndarray, Y_train: np.ndarray,
     prior_mu: constants.TYPING_UNION_CALLABLE_NONE, str_cov: str,
-    str_optimizer_method: str='L-BFGS-B',
+    str_optimizer_method: str=constants.STR_OPTIMIZER_METHOD_TP,
     fix_noise: bool=constants.FIX_GP_NOISE,
     debug: bool=False
 ) -> constants.TYPING_TUPLE_TWO_ARRAYS_DICT:
@@ -240,12 +240,13 @@ def get_optimized_kernel(X_train: np.ndarray, Y_train: np.ndarray,
         use_gp=False
     )
 
-    if str_optimizer_method == 'L-BFGS-B':
+    if str_optimizer_method in ['L-BFGS-B', 'SLSQP']:
         bounds = utils_covariance.get_range_hyps(str_cov, num_dim,
             fix_noise=fix_noise, use_gp=False)
         result_optimized = scipy.optimize.minimize(neg_log_ml_, hyps_converted,
             method=str_optimizer_method, bounds=bounds, jac=use_gradient,
             options={'disp': False})
+
         if debug:
             logger.debug('scipy message: %s', result_optimized.message)
 
@@ -410,7 +411,7 @@ def predict_with_hyps(X_train: np.ndarray, Y_train: np.ndarray, X_test: np.ndarr
 @utils_common.validate_types
 def predict_with_optimized_hyps(X_train: np.ndarray, Y_train: np.ndarray, X_test: np.ndarray,
     str_cov: str=constants.STR_GP_COV,
-    str_optimizer_method: str='L-BFGS-B',
+    str_optimizer_method: str=constants.STR_OPTIMIZER_METHOD_TP,
     prior_mu: constants.TYPING_UNION_CALLABLE_NONE=None,
     fix_noise: float=constants.FIX_GP_NOISE,
     debug: bool=False
