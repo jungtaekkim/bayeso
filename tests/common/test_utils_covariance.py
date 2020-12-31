@@ -312,6 +312,20 @@ def test_validate_hyps_dict():
         _, is_valid = package_target.validate_hyps_dict(cur_hyps, str_cov, num_dim, use_gp=False)
         assert is_valid == True
 
+    cur_hyps = package_target.get_hyps(str_cov, num_dim, use_gp=False)
+    cur_hyps.pop('dof')
+    with pytest.raises(AssertionError) as error:
+        _, is_valid = package_target.validate_hyps_dict(cur_hyps, str_cov, num_dim, use_gp=False)
+        assert is_valid == True
+
+    cur_hyps = package_target.get_hyps(str_cov, num_dim, use_gp=False)
+    cur_hyps['dof'] = 1.5
+    with pytest.raises(AssertionError) as error:
+        _, is_valid = package_target.validate_hyps_dict(cur_hyps, str_cov, num_dim, use_gp=False)
+        if cur_hyps['dof'] == 2.00001:
+            assert False
+        assert cur_hyps['dof'] == 1.5
+
     cur_hyps = package_target.get_hyps(str_cov, num_dim, use_ard=False, use_gp=False)
     cur_hyps['lengthscales'] = 'abc'
     with pytest.raises(AssertionError) as error:
