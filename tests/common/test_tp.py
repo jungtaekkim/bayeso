@@ -126,6 +126,10 @@ def test_sample_functions():
     assert functions.shape[1] == num_points
     assert functions.shape[0] == num_samples
 
+    functions = package_target.sample_functions(np.inf, mu, Sigma, num_samples=num_samples)
+    assert functions.shape[1] == num_points
+    assert functions.shape[0] == num_samples
+
 def test_get_optimized_kernel_typing():
     annos = package_target.get_optimized_kernel.__annotations__
 

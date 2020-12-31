@@ -283,7 +283,9 @@ def validate_hyps_dict(hyps: dict, str_cov: str, dim: int,
         if 'dof' not in hyps:
             is_valid = False
         else:
-            if hyps['dof'] <= 2.0:
+            if not isinstance(hyps['dof'], float):
+                is_valid = False
+            if isinstance(hyps['dof'], float) and hyps['dof'] <= 2.0:
                 hyps['dof'] = 2.00001
 
     if str_cov in ('eq', 'se', 'matern32', 'matern52'):
@@ -307,7 +309,8 @@ def validate_hyps_dict(hyps: dict, str_cov: str, dim: int,
     return hyps, is_valid
 
 @utils_common.validate_types
-def validate_hyps_arr(hyps: np.ndarray, str_cov: str, dim: int
+def validate_hyps_arr(hyps: np.ndarray, str_cov: str, dim: int,
+    use_gp: bool=True
 ) -> constants.TYPING_TUPLE_ARRAY_BOOL:
     """
     It validates hyperparameters array, `hyps`.
@@ -318,6 +321,8 @@ def validate_hyps_arr(hyps: np.ndarray, str_cov: str, dim: int
     :type str_cov: str.
     :param dim: dimensionality of the problem we are solving.
     :type dim: int.
+    :param use_gp: flag for Gaussian process or Student-$t$ process.
+    :type use_gp: bool., optional
 
     :returns: a tuple of valid hyperparameters and validity flag.
     :rtype: (numpy.ndarray, bool.)
@@ -329,6 +334,7 @@ def validate_hyps_arr(hyps: np.ndarray, str_cov: str, dim: int
     assert isinstance(hyps, np.ndarray)
     assert isinstance(str_cov, str)
     assert isinstance(dim, int)
+    assert isinstance(use_gp, bool)
     assert str_cov in constants.ALLOWED_GP_COV
 
 #    is_valid = True
