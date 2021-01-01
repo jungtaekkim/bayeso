@@ -10,7 +10,13 @@ else:
     sys.exit('[ERROR] bayeso does not support Python {}.{} version in this system.'.format(sys.version_info.major, sys.version_info.minor))
 
 path_requirements = 'requirements.txt'
-list_packages = ['bayeso', 'bayeso.gp', 'bayeso.wrappers', 'bayeso.utils']
+list_packages = [
+    'bayeso',
+    'bayeso.gp',
+    'bayeso.tp',
+    'bayeso.wrappers',
+    'bayeso.utils'
+]
 
 with open(path_requirements) as f:
     required = f.read().splitlines()
