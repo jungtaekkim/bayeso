@@ -34,6 +34,12 @@ def test_import_gp_gp_tensorflow():
 def test_import_gp_gp_gpytorch():
     import bayeso.gp.gp_gpytorch
 
+def test_import_tp():
+    import bayeso.tp
+
+def test_import_tp_tp():
+    import bayeso.tp.tp
+
 def test_import_utils():
     import bayeso.utils
 

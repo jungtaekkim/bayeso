@@ -13,6 +13,7 @@ JITTER_ACQ = 1e-5
 JITTER_COV = 1e-5
 JITTER_LOG = 1e-7
 
+STR_SURROGATE = 'gp'
 STR_OPTIMIZER_METHOD_GP = 'BFGS'
 STR_OPTIMIZER_METHOD_TP = 'SLSQP'
 STR_GP_COV = 'matern52'
@@ -56,6 +57,7 @@ ALLOWED_SAMPLING_METHOD = ALLOWED_INITIALIZING_METHOD_BO + ['grid']
 ALLOWED_MLM_METHOD = ['regular', 'converged']
 ALLOWED_MODELSELECTION_METHOD = ['ml', 'loocv']
 ALLOWED_FRAMEWORK_GP = ['scipy', 'tensorflow', 'gpytorch']
+ALLOWED_SURROGATE = ['gp', 'tp']
 
 KEYS_INFO_BENCHMARK = ['dim_fun', 'bounds', 'global_minimum_X', 'global_minimum_y']
 

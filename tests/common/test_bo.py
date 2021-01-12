@@ -71,6 +71,10 @@ def test_load_bo():
     with pytest.raises(AssertionError) as error:
         model_bo = package_target.BO(arr_range_1, str_modelselection_method='abc')
     with pytest.raises(AssertionError) as error:
+        model_bo = package_target.BO(arr_range_1, str_surrogate='abc')
+    with pytest.raises(AssertionError) as error:
+        model_bo = package_target.BO(arr_range_1, str_surrogate=1)
+    with pytest.raises(AssertionError) as error:
         model_bo = package_target.BO(arr_range_1, debug=1)
 
     model_bo = package_target.BO(arr_range_1)

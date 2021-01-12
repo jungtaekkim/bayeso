@@ -63,6 +63,7 @@ class BO:
         normalize_Y: bool=constants.NORMALIZE_RESPONSE,
         use_ard: bool=True,
         prior_mu: constants.TYPING_UNION_CALLABLE_NONE=None,
+        str_surrogate: str=constants.STR_SURROGATE,
         str_optimizer_method_gp: str=constants.STR_OPTIMIZER_METHOD_GP,
         str_optimizer_method_bo: str=constants.STR_OPTIMIZER_METHOD_AO,
         str_modelselection_method: str=constants.STR_MODELSELECTION_METHOD,
@@ -92,6 +93,7 @@ class BO:
         assert str_optimizer_method_gp in constants.ALLOWED_OPTIMIZER_METHOD_GP
         assert str_optimizer_method_bo in constants.ALLOWED_OPTIMIZER_METHOD_BO
         assert str_modelselection_method in constants.ALLOWED_MODELSELECTION_METHOD
+        assert str_surrogate in constants.ALLOWED_SURROGATE
 
         self.range_X = range_X
         self.num_dim = range_X.shape[0]
