@@ -15,7 +15,7 @@ Simple, but essential Bayesian optimization package.
 * [Online documentation](http://bayeso.readthedocs.io)
 
 ## Installation
-We recommend it should be installed in `virtualenv`.
+We recommend installing it with `virtualenv`.
 You can choose one of three installation options.
 
 * Using PyPI repository (for user installation)
