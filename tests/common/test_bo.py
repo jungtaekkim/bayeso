@@ -122,10 +122,11 @@ def test_get_samples():
     arr_initials_ = model_bo.get_samples('sobol', num_samples=3)
     arr_initials = model_bo.get_samples('sobol', num_samples=3, seed=42)
     truth_arr_initials = np.array([
-        [6.863512583076954, -0.1525135599076748, -1.732824514620006],
-        [0.4720448818989098, 1.9830138171091676, 1.8962347391061485],
-        [3.9235182013362646, -1.8038121052086353, -3.2463264442048967],
+        [5.051551531068981, 0.8090446023270488, -1.0847891168668866],
+        [1.4649059670045972, -1.925125477835536, 1.4882571692578495],
+        [3.202530408743769, 1.6943757990375161, -3.383688726462424],
     ])
+
     assert (np.abs(arr_initials - truth_arr_initials) < TEST_EPSILON).all()
 
     arr_initials_ = model_bo.get_samples('halton', num_samples=3)
@@ -183,9 +184,9 @@ def test_get_initials():
     arr_initials = model_bo.get_initials('sobol', 3)
     arr_initials = model_bo.get_initials('sobol', 3, seed=42)
     truth_arr_initials = np.array([
-        [6.863512583076954, -0.1525135599076748, -1.732824514620006],
-        [0.4720448818989098, 1.9830138171091676, 1.8962347391061485],
-        [3.9235182013362646, -1.8038121052086353, -3.2463264442048967],
+        [5.051551531068981, 0.8090446023270488, -1.0847891168668866],
+        [1.4649059670045972, -1.925125477835536, 1.4882571692578495],
+        [3.202530408743769, 1.6943757990375161, -3.383688726462424],
     ])
     assert (np.abs(arr_initials - truth_arr_initials) < TEST_EPSILON).all()
 
