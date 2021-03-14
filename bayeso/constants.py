@@ -2,8 +2,9 @@
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
 # last updated: December 28, 2020
 #
-"""This file is for declaring various default constants.
-If you would like to see the details, check out the repository."""
+"""This file declares various default constants.
+If you would like to see the details, check out 
+the Python script in the repository directly."""
 
 import typing
 import numpy as np
