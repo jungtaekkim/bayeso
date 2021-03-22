@@ -54,7 +54,6 @@ def sample_functions(mu: np.ndarray, Sigma: np.ndarray,
 @utils_common.validate_types
 def get_optimized_kernel(X_train: np.ndarray, Y_train: np.ndarray,
     prior_mu: constants.TYPING_UNION_CALLABLE_NONE, str_cov: str,
-    str_framework: str=constants.STR_FRAMEWORK_GP,
     str_optimizer_method: str=constants.STR_OPTIMIZER_METHOD_GP,
     str_modelselection_method: str=constants.STR_MODELSELECTION_METHOD,
     fix_noise: bool=constants.FIX_GP_NOISE,
@@ -72,8 +71,6 @@ def get_optimized_kernel(X_train: np.ndarray, Y_train: np.ndarray,
     :type prior_mu: function or NoneType
     :param str_cov: the name of covariance function.
     :type str_cov: str.
-    :param str_framework: the name of framework for optimizing kernel hyperparameters.
-    :type str_framework: str.
     :param str_optimizer_method: the name of optimization method.
     :type str_optimizer_method: str., optional
     :param str_modelselection_method: the name of model selection method.
@@ -95,7 +92,6 @@ def get_optimized_kernel(X_train: np.ndarray, Y_train: np.ndarray,
     assert isinstance(Y_train, np.ndarray)
     assert callable(prior_mu) or prior_mu is None
     assert isinstance(str_cov, str)
-    assert isinstance(str_framework, str)
     assert isinstance(str_optimizer_method, str)
     assert isinstance(str_modelselection_method, str)
     assert isinstance(fix_noise, bool)
@@ -105,38 +101,14 @@ def get_optimized_kernel(X_train: np.ndarray, Y_train: np.ndarray,
     utils_covariance.check_str_cov('get_optimized_kernel', str_cov, X_train.shape)
     assert str_optimizer_method in constants.ALLOWED_OPTIMIZER_METHOD_GP
     assert str_modelselection_method in constants.ALLOWED_MODELSELECTION_METHOD
-    assert str_framework in constants.ALLOWED_FRAMEWORK_GP
 
-    try:
-        if str_framework == 'tensorflow':
-            from bayeso.gp import gp_tensorflow
-        elif str_framework == 'gpytorch':
-            from bayeso.gp import gp_gpytorch
-    except: # pragma: no cover
-        str_framework = 'scipy'
-
-    if str_framework == 'scipy':
-        cov_X_X, inv_cov_X_X, hyps = gp_scipy.get_optimized_kernel(
-            X_train, Y_train, prior_mu, str_cov,
-            str_optimizer_method=str_optimizer_method,
-            str_modelselection_method=str_modelselection_method,
-            fix_noise=fix_noise,
-            debug=debug
-        )
-    elif str_framework == 'tensorflow':
-        cov_X_X, inv_cov_X_X, hyps = gp_tensorflow.get_optimized_kernel(
-            X_train, Y_train, prior_mu, str_cov,
-            fix_noise=fix_noise,
-            debug=debug
-        )
-    elif str_framework == 'gpytorch':
-        cov_X_X, inv_cov_X_X, hyps = gp_gpytorch.get_optimized_kernel(
-            X_train, Y_train, prior_mu, str_cov,
-            fix_noise=fix_noise,
-            debug=debug
-        )
-    else: # pragma: no cover
-        raise ValueError('{}: invalid str_framework.'.format(str_framework))
+    cov_X_X, inv_cov_X_X, hyps = gp_scipy.get_optimized_kernel(
+        X_train, Y_train, prior_mu, str_cov,
+        str_optimizer_method=str_optimizer_method,
+        str_modelselection_method=str_modelselection_method,
+        fix_noise=fix_noise,
+        debug=debug
+    )
 
     return cov_X_X, inv_cov_X_X, hyps
 

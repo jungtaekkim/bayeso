@@ -43,6 +43,8 @@ class BO:
     :type use_ard: bool., optional
     :param prior_mu: None, or prior mean function.
     :type prior_mu: NoneType, or function, optional
+    :param str_surrogate: the name of surrogate model.
+    :type str_surrogate: str., optional
     :param str_optimizer_method_gp: the name of optimization method for
         Gaussian process regression.
     :type str_optimizer_method_gp: str., optional
@@ -326,7 +328,7 @@ class BO:
         :param str_initial_method: the name of sampling method.
         :type str_initial_method: str.
         :param num_initials: the number of samples.
-        :type num_initials: int., optional
+        :type num_initials: int.
         :param seed: None, or random seed.
         :type seed: NoneType or int., optional
 

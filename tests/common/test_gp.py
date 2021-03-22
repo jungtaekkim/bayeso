@@ -10,14 +10,6 @@ import numpy as np
 
 from bayeso import constants
 from bayeso.gp import gp as package_target
-try:
-    from bayeso.gp import gp_tensorflow
-except: # pragma: no cover
-    gp_tensorflow = None
-try:
-    from bayeso.gp import gp_gpytorch
-except: # pragma: no cover
-    gp_gpytorch = None
 from bayeso.utils import utils_covariance
 
 
@@ -66,7 +58,6 @@ def test_get_optimized_kernel_typing():
     assert annos['Y_train'] == np.ndarray
     assert annos['prior_mu'] == typing.Union[callable, type(None)]
     assert annos['str_cov'] == str
-    assert annos['str_framework'] == str
     assert annos['str_optimizer_method'] == str
     assert annos['str_modelselection_method'] == str
     assert annos['fix_noise'] == bool
@@ -101,8 +92,6 @@ def test_get_optimized_kernel():
         package_target.get_optimized_kernel(X, np.ones((50, 1)), prior_mu, 'se')
     with pytest.raises(ValueError) as error:
         package_target.get_optimized_kernel(X, Y, prior_mu, 'abc')
-    with pytest.raises(AssertionError) as error:
-        package_target.get_optimized_kernel(X, Y, prior_mu, 'se', str_framework=1)
     with pytest.raises(AssertionError) as error:
         package_target.get_optimized_kernel(X, Y, prior_mu, 'se', str_optimizer_method=1)
     with pytest.raises(AssertionError) as error:
@@ -139,16 +128,8 @@ def test_get_optimized_kernel():
     cov_X_X, inv_cov_X_X, hyps = package_target.get_optimized_kernel(X, Y, prior_mu, 'se', str_modelselection_method='loocv')
     print(hyps)
 
-    cov_X_X, inv_cov_X_X, hyps = package_target.get_optimized_kernel(X, Y, prior_mu, 'se', str_framework='scipy')
+    cov_X_X, inv_cov_X_X, hyps = package_target.get_optimized_kernel(X, Y, prior_mu, 'se')
     print(hyps)
-
-    if gp_tensorflow is not None:
-        cov_X_X, inv_cov_X_X, hyps = package_target.get_optimized_kernel(X, Y, prior_mu, 'se', str_framework='tensorflow')
-        print(hyps)
-
-    if gp_gpytorch is not None:
-        cov_X_X, inv_cov_X_X, hyps = package_target.get_optimized_kernel(X, Y, prior_mu, 'se', str_framework='gpytorch')
-        print(hyps)
 
     cov_X_X, inv_cov_X_X, hyps = package_target.get_optimized_kernel(X_set, Y, prior_mu, 'set_se')
     print(hyps)

@@ -1,6 +1,6 @@
 #
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: December 29, 2020
+# last updated: March 22, 2021
 #
 """test_import"""
 
@@ -27,12 +27,6 @@ def test_import_gp_gp():
 
 def test_import_gp_gp_scipy():
     import bayeso.gp.gp_scipy
-
-def test_import_gp_gp_tensorflow():
-    import bayeso.gp.gp_tensorflow
-
-def test_import_gp_gp_gpytorch():
-    import bayeso.gp.gp_gpytorch
 
 def test_import_tp():
     import bayeso.tp

@@ -1,6 +1,6 @@
 #
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: December 28, 2020
+# last updated: March 22, 2021
 #
 """This file declares various default constants.
 If you would like to see the details, check out 
@@ -24,7 +24,6 @@ STR_OPTIMIZER_METHOD_AO = 'L-BFGS-B'
 STR_SAMPLING_METHOD_AO = 'sobol'
 STR_MLM_METHOD = 'regular'
 STR_MODELSELECTION_METHOD = 'ml'
-STR_FRAMEWORK_GP = 'scipy'
 
 NUM_GRIDS_AO = 50
 NUM_SAMPLES_AO = 100
@@ -57,7 +56,6 @@ ALLOWED_INITIALIZING_METHOD_BO = ['uniform', 'gaussian', 'sobol', 'halton']
 ALLOWED_SAMPLING_METHOD = ALLOWED_INITIALIZING_METHOD_BO + ['grid']
 ALLOWED_MLM_METHOD = ['regular', 'converged']
 ALLOWED_MODELSELECTION_METHOD = ['ml', 'loocv']
-ALLOWED_FRAMEWORK_GP = ['scipy', 'tensorflow', 'gpytorch']
 ALLOWED_SURROGATE = ['gp', 'tp']
 
 KEYS_INFO_BENCHMARK = ['dim_fun', 'bounds', 'global_minimum_X', 'global_minimum_y']
