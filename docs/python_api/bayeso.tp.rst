@@ -10,3 +10,5 @@ bayeso.tp
 .. toctree::
 
    bayeso.tp.tp
+   bayeso.tp.tp_likelihood
+   bayeso.tp.tp_kernel

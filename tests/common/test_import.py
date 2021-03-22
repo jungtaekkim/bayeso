@@ -25,11 +25,23 @@ def test_import_gp():
 def test_import_gp_gp():
     import bayeso.gp.gp
 
+def test_import_gp_gp_kernel():
+    import bayeso.gp.gp_kernel
+
+def test_import_gp_gp_likelihood():
+    import bayeso.gp.gp_likelihood
+
 def test_import_tp():
     import bayeso.tp
 
 def test_import_tp_tp():
     import bayeso.tp.tp
+
+def test_import_tp_tp_kernel():
+    import bayeso.tp.tp_kernel
+
+def test_import_tp_tp_likelihood():
+    import bayeso.tp.tp_likelihood
 
 def test_import_utils():
     import bayeso.utils
