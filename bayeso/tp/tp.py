@@ -2,7 +2,7 @@
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
 # last updated: December 30, 2020
 #
-"""It defines Student-$t$ process regression."""
+"""It defines Student-:math:`t` process regression."""
 
 import time
 import numpy as np
