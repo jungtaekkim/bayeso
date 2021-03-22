@@ -20,6 +20,7 @@ import qmcpy
 from bayeso import covariance
 from bayeso import constants
 from bayeso.gp import gp
+from bayeso.gp import gp_kernel
 from bayeso.utils import utils_bo
 from bayeso.utils import utils_common
 from bayeso.utils import utils_logger
@@ -526,7 +527,7 @@ class BO:
 
         time_start_gp = time.time()
         if str_mlm_method == 'regular':
-            cov_X_X, inv_cov_X_X, hyps = gp.get_optimized_kernel(X_train, Y_train,
+            cov_X_X, inv_cov_X_X, hyps = gp_kernel.get_optimized_kernel(X_train, Y_train,
                 self.prior_mu, self.str_cov,
                 str_optimizer_method=self.str_optimizer_method_gp,
                 str_modelselection_method=self.str_modelselection_method,
@@ -535,7 +536,7 @@ class BO:
             fix_noise = constants.FIX_GP_NOISE
 
             if self.is_optimize_hyps:
-                cov_X_X, inv_cov_X_X, hyps = gp.get_optimized_kernel(X_train, Y_train,
+                cov_X_X, inv_cov_X_X, hyps = gp_kernel.get_optimized_kernel(X_train, Y_train,
                     self.prior_mu, self.str_cov,
                     str_optimizer_method=self.str_optimizer_method_gp,
                     str_modelselection_method=self.str_modelselection_method,

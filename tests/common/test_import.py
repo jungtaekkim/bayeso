@@ -25,9 +25,6 @@ def test_import_gp():
 def test_import_gp_gp():
     import bayeso.gp.gp
 
-def test_import_gp_gp_scipy():
-    import bayeso.gp.gp_scipy
-
 def test_import_tp():
     import bayeso.tp
 
