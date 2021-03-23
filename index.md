@@ -14,7 +14,7 @@ Simple, but essential Bayesian optimization package.
 * [Online documentation](http://bayeso.readthedocs.io)
 
 ## Installation
-We recommend it should be installed in virtualenv.
+We recommend installing it with virtualenv.
 You can choose one of three installation options.
 
 * Using PyPI repository (for user installation)
@@ -69,6 +69,7 @@ We test our package in the following versions.
 * Python 3.6
 * Python 3.7
 * Python 3.8
+* Python 3.9
 
 ## Contributor
 * [Jungtaek Kim](http://jungtaek.github.io) (POSTECH)
@@ -78,7 +79,7 @@ We test our package in the following versions.
 @misc{KimJ2017bayeso,
     author="Kim, Jungtaek and Choi, Seungjin",
     title="{BayesO}: A {Bayesian} optimization framework in {Python}",
-    howpublished="\url{http://bayeso.org}",
+    howpublished="\url{https://bayeso.org}",
     year="2017"
 }
 ```
