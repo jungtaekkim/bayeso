@@ -102,9 +102,9 @@ ENV/
 
 # Jungtaek
 *.swp
+*.dat
 .DS_Store
+.pytest_cache/
 __MACOSX/
 results/
 figures/
-.pytest_cache/
-*.dat
