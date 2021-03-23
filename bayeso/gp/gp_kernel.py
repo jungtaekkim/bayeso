@@ -2,7 +2,8 @@
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
 # last updated: March 22, 2021
 #
-"""It defines Gaussian process regression."""
+"""It defines the functions related to kernels for
+Gaussian process regression."""
 
 import time
 import numpy as np

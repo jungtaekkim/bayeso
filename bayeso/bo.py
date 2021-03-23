@@ -2,7 +2,7 @@
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
 # last updated: December 29, 2020
 #
-"""It defines a class for Bayesian optimization."""
+"""It defines a class of Bayesian optimization."""
 
 import time
 import numpy as np

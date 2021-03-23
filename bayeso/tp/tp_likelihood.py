@@ -2,7 +2,8 @@
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
 # last updated: March 22, 2021
 #
-"""It defines Student-:math:`t` process regression."""
+"""It defines the functions related to likelihood for
+Student-:math:`t` process regression."""
 
 import numpy as np
 import scipy.special

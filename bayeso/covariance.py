@@ -16,7 +16,7 @@ from bayeso.utils import utils_common
 @utils_common.validate_types
 def choose_fun_cov(str_cov: str) -> callable:
     """
-    It is for choosing a covariance function.
+    It chooses a covariance function.
 
     :param str_cov: the name of covariance function.
     :type str_cov: str.
@@ -44,7 +44,7 @@ def choose_fun_cov(str_cov: str) -> callable:
 @utils_common.validate_types
 def choose_fun_grad_cov(str_cov: str) -> callable:
     """
-    It is for choosing a function for computing gradients of covariance function.
+    It chooses a function for computing gradients of covariance function.
 
     :param str_cov: the name of covariance function.
     :type str_cov: str.
@@ -59,15 +59,15 @@ def choose_fun_grad_cov(str_cov: str) -> callable:
     assert isinstance(str_cov, str)
 
     if str_cov in ('eq', 'se'):
-        fun_cov = grad_cov_se
+        fun_grad_cov = grad_cov_se
     elif str_cov == 'matern32':
-        fun_cov = grad_cov_matern32
+        fun_grad_cov = grad_cov_matern32
     elif str_cov == 'matern52':
-        fun_cov = grad_cov_matern52
+        fun_grad_cov = grad_cov_matern52
     else:
         raise NotImplementedError('choose_fun_grad_cov: allowed str_cov condition,\
             but it is not implemented.')
-    return fun_cov
+    return fun_grad_cov
 
 @utils_common.validate_types
 def get_kernel_inverse(X_train: np.ndarray, hyps: dict, str_cov: str,
