@@ -56,7 +56,8 @@ def get_best_acquisition_by_evaluation(initials: np.ndarray, fun_objective: call
     return initial_best
 
 @utils_common.validate_types
-def get_best_acquisition_by_history(X: np.ndarray, Y: np.ndarray) -> constants.TYPING_TUPLE_ARRAY_FLOAT:
+def get_best_acquisition_by_history(X: np.ndarray, Y: np.ndarray
+) -> constants.TYPING_TUPLE_ARRAY_FLOAT:
     """
     It returns the best acquisition that has shown minimum result, and its minimum result.
 

@@ -18,23 +18,33 @@ def test_choose_fun_cov_typing():
     annos = package_target.choose_fun_cov.__annotations__
 
     assert annos['str_cov'] == str
-    assert annos['choose_grad'] == bool
     assert annos['return'] == callable
 
 def test_choose_fun_cov():
     with pytest.raises(AssertionError) as error:
-        package_target.choose_fun_cov(123, False)
-    with pytest.raises(AssertionError) as error:
-        package_target.choose_fun_cov('se', 'abc')
+        package_target.choose_fun_cov(123)
     with pytest.raises(NotImplementedError) as error:
-        package_target.choose_fun_cov('abc', False)
+        package_target.choose_fun_cov('abc')
 
-    assert package_target.choose_fun_cov('se', False) == package_target.cov_se
-    assert package_target.choose_fun_cov('matern32', False) == package_target.cov_matern32
-    assert package_target.choose_fun_cov('matern52', False) == package_target.cov_matern52
-    assert package_target.choose_fun_cov('se', True) == package_target.grad_cov_se
-    assert package_target.choose_fun_cov('matern32', True) == package_target.grad_cov_matern32
-    assert package_target.choose_fun_cov('matern52', True) == package_target.grad_cov_matern52
+    assert package_target.choose_fun_cov('se') == package_target.cov_se
+    assert package_target.choose_fun_cov('matern32') == package_target.cov_matern32
+    assert package_target.choose_fun_cov('matern52') == package_target.cov_matern52
+
+def test_choose_fun_grad_cov_typing():
+    annos = package_target.choose_fun_grad_cov.__annotations__
+
+    assert annos['str_cov'] == str
+    assert annos['return'] == callable
+
+def test_choose_fun_grad_cov():
+    with pytest.raises(AssertionError) as error:
+        package_target.choose_fun_grad_cov(123)
+    with pytest.raises(NotImplementedError) as error:
+        package_target.choose_fun_grad_cov('abc')
+
+    assert package_target.choose_fun_grad_cov('se') == package_target.grad_cov_se
+    assert package_target.choose_fun_grad_cov('matern32') == package_target.grad_cov_matern32
+    assert package_target.choose_fun_grad_cov('matern52') == package_target.grad_cov_matern52
 
 def test_get_kernel_inverse_typing():
     annos = package_target.get_kernel_inverse.__annotations__

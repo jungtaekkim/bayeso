@@ -3,7 +3,7 @@
 # last updated: March 22, 2021
 #
 """This file declares various default constants.
-If you would like to see the details, check out 
+If you would like to see the details, check out
 the Python script in the repository directly."""
 
 import typing
@@ -44,7 +44,14 @@ RANGE_DOF = [[2.00001, 200.0]]
 TIME_PAUSE = 2.0
 RANGE_SHADE = 1.96
 
-ALLOWED_OPTIMIZER_METHOD_GP = ['BFGS', 'L-BFGS-B', 'Nelder-Mead', 'DIRECT', 'SLSQP', 'SLSQP-Bounded']
+ALLOWED_OPTIMIZER_METHOD_GP = [
+    'BFGS',
+    'L-BFGS-B',
+    'Nelder-Mead',
+    'DIRECT',
+    'SLSQP',
+    'SLSQP-Bounded',
+]
 ALLOWED_OPTIMIZER_METHOD_TP = ['L-BFGS-B', 'SLSQP']
 ALLOWED_OPTIMIZER_METHOD_BO = ['L-BFGS-B', 'DIRECT', 'CMA-ES']
 # INFO: Do not use _ (underscore) in base str_cov.
@@ -60,7 +67,7 @@ ALLOWED_SURROGATE = ['gp', 'tp']
 
 KEYS_INFO_BENCHMARK = ['dim_fun', 'bounds', 'global_minimum_X', 'global_minimum_y']
 
-COLORS = [
+COLORS = np.array([
     'red',
     'green',
     'blue',
@@ -76,9 +83,9 @@ COLORS = [
     'rosybrown',
     'darkkhaki',
     'darkslategray',
-]
+])
 
-MARKERS = [
+MARKERS = np.array([
     '.',
     'x',
     '*',
@@ -94,7 +101,7 @@ MARKERS = [
     '1',
     '2',
     '3',
-]
+])
 
 TYPE_NONE = type(None)
 TYPING_TUPLE_DICT_BOOL = typing.Tuple[dict, bool]

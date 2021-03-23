@@ -14,18 +14,14 @@ from bayeso.utils import utils_common
 
 
 @utils_common.validate_types
-def choose_fun_cov(str_cov: str, choose_grad: bool) -> callable:
+def choose_fun_cov(str_cov: str) -> callable:
     """
-    It is for choosing a covariance function or a function for computing
-    gradients of covariance function.
+    It is for choosing a covariance function.
 
     :param str_cov: the name of covariance function.
     :type str_cov: str.
-    :param choose_grad: flag for returning a function for the gradients
-    :type choose_grad: bool.
 
-    :returns: covariance function, or function for computing gradients of
-        covariance function.
+    :returns: covariance function.
     :rtype: function
 
     :raises: AssertionError
@@ -33,26 +29,44 @@ def choose_fun_cov(str_cov: str, choose_grad: bool) -> callable:
     """
 
     assert isinstance(str_cov, str)
-    assert isinstance(choose_grad, bool)
 
     if str_cov in ('eq', 'se'):
-        if choose_grad:
-            fun_cov = grad_cov_se
-        else:
-            fun_cov = cov_se
+        fun_cov = cov_se
     elif str_cov == 'matern32':
-        if choose_grad:
-            fun_cov = grad_cov_matern32
-        else:
-            fun_cov = cov_matern32
+        fun_cov = cov_matern32
     elif str_cov == 'matern52':
-        if choose_grad:
-            fun_cov = grad_cov_matern52
-        else:
-            fun_cov = cov_matern52
+        fun_cov = cov_matern52
     else:
-        raise NotImplementedError('choose_fun_cov: allowed str_cov and \
-            choose_grad conditions, but it is not implemented.')
+        raise NotImplementedError('choose_fun_cov: allowed str_cov condition,\
+            but it is not implemented.')
+    return fun_cov
+
+@utils_common.validate_types
+def choose_fun_grad_cov(str_cov: str) -> callable:
+    """
+    It is for choosing a function for computing gradients of covariance function.
+
+    :param str_cov: the name of covariance function.
+    :type str_cov: str.
+
+    :returns: function for computing gradients of covariance function.
+    :rtype: function
+
+    :raises: AssertionError
+
+    """
+
+    assert isinstance(str_cov, str)
+
+    if str_cov in ('eq', 'se'):
+        fun_cov = grad_cov_se
+    elif str_cov == 'matern32':
+        fun_cov = grad_cov_matern32
+    elif str_cov == 'matern52':
+        fun_cov = grad_cov_matern52
+    else:
+        raise NotImplementedError('choose_fun_grad_cov: allowed str_cov condition,\
+            but it is not implemented.')
     return fun_cov
 
 @utils_common.validate_types
@@ -496,7 +510,7 @@ def cov_set(str_cov: str, X: np.ndarray, Xp: np.ndarray,
     num_X = X.shape[0]
     num_Xp = Xp.shape[0]
 
-    fun_cov = choose_fun_cov(str_cov, False)
+    fun_cov = choose_fun_cov(str_cov)
     cov_X_Xp = fun_cov(X, Xp, lengthscales, signal)
     cov_X_Xp = np.sum(cov_X_Xp)
 
@@ -559,16 +573,20 @@ def cov_main(str_cov: str, X: np.ndarray, Xp: np.ndarray, hyps: dict, same_X_Xp:
         if not is_valid:
             raise ValueError('cov_main: invalid hyperparameters.')
 
-        fun_cov = choose_fun_cov(str_cov, False)
+        fun_cov = choose_fun_cov(str_cov)
         cov_X_Xp += fun_cov(X, Xp, hyps['lengthscales'], hyps['signal'])
+
         assert cov_X_Xp.shape == (num_X, num_Xp)
     elif str_cov in constants.ALLOWED_GP_COV_SET:
         list_str_cov = str_cov.split('_')
         str_cov = list_str_cov[1]
+
         assert len(X.shape) == 3
         assert len(Xp.shape) == 3
+
         dim_X = X.shape[2]
         dim_Xp = Xp.shape[2]
+
         assert dim_X == dim_Xp
 
         hyps, is_valid = utils_covariance.validate_hyps_dict(hyps, str_cov, dim_X)
@@ -647,7 +665,7 @@ def grad_cov_main(str_cov: str, X: np.ndarray, Xp: np.ndarray, hyps: dict, fix_n
 
     cov_X_Xp = cov_main(str_cov, X, Xp, hyps, same_X_Xp, jitter=jitter)
 
-    fun_grad_cov = choose_fun_cov(str_cov, True)
+    fun_grad_cov = choose_fun_grad_cov(str_cov)
     grad_cov_X_Xp = fun_grad_cov(cov_X_Xp, X, Xp, hyps, num_hyps, fix_noise)
 
     return grad_cov_X_Xp

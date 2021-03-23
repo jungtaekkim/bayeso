@@ -105,7 +105,8 @@ def get_optimized_kernel(X_train: np.ndarray, Y_train: np.ndarray,
     else: # pragma: no cover
         raise ValueError('get_optimized_kernel: missing conditions for str_optimizer_method')
 
-    hyps = utils_covariance.restore_hyps(str_cov, result_optimized, fix_noise=fix_noise, use_gp=False)
+    hyps = utils_covariance.restore_hyps(str_cov, result_optimized,
+        fix_noise=fix_noise, use_gp=False)
 
     hyps, _ = utils_covariance.validate_hyps_dict(hyps, str_cov, num_dim, use_gp=False)
     cov_X_X, inv_cov_X_X, _ = covariance.get_kernel_inverse(X_train,

@@ -4,7 +4,6 @@
 #
 """It defines Gaussian process regression."""
 
-import time
 import numpy as np
 import scipy.linalg
 

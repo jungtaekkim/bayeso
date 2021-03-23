@@ -191,7 +191,8 @@ def predict_with_hyps(X_train: np.ndarray, Y_train: np.ndarray, X_test: np.ndarr
     assert isinstance(debug, bool)
     assert callable(prior_mu) or prior_mu is None
     assert len(Y_train.shape) == 2
-    utils_covariance.check_str_cov('predict_with_hyps', str_cov, X_train.shape, shape_X2=X_test.shape)
+    utils_covariance.check_str_cov('predict_with_hyps', str_cov, X_train.shape,
+        shape_X2=X_test.shape)
     assert X_train.shape[0] == Y_train.shape[0]
     assert X_train.shape[1] == X_test.shape[1]
 

@@ -96,7 +96,11 @@ def neg_log_ml(X_train: np.ndarray, Y_train: np.ndarray, hyps: np.ndarray,
         grad_log_ml_ = np.zeros(grad_cov_X_X.shape[2] + 1)
 
         first_term_grad = ((nu + num_X) / (nu + beta - 2.0) * np.dot(alpha, alpha.T) - inv_cov_X_X)
-        nu_grad = -num_X / (2.0 * (nu - 2.0)) + scipy.special.digamma((nu + num_X) / 2.0) - scipy.special.digamma(nu / 2.0) - 0.5 * np.log(1.0 + beta / (nu - 2.0)) + (nu + num_X) * beta / (2.0 * (nu - 2.0)**2 + 2.0 * beta * (nu - 2.0))
+        nu_grad = -num_X / (2.0 * (nu - 2.0))\
+            + scipy.special.digamma((nu + num_X) / 2.0)\
+            - scipy.special.digamma(nu / 2.0)\
+            - 0.5 * np.log(1.0 + beta / (nu - 2.0))\
+            + (nu + num_X) * beta / (2.0 * (nu - 2.0)**2 + 2.0 * beta * (nu - 2.0))
 
         if fix_noise:
             grad_log_ml_[0] = nu_grad
@@ -112,7 +116,7 @@ def neg_log_ml(X_train: np.ndarray, Y_train: np.ndarray, hyps: np.ndarray,
                     cur_ind = 0
                 else:
                     cur_ind = ind + 1
-                
+
                 grad_log_ml_[cur_ind] = cur_grad
 
     if use_gradient:
