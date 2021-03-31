@@ -15,7 +15,7 @@ from bayeso.utils import utils_covariance as package_target
 def test_get_list_first_typing():
     annos = package_target._get_list_first.__annotations__
 
-    assert annos['return'] == list
+    assert annos['return'] == typing.List[str]
 
 def test_get_hyps_typing():
     annos = package_target.get_hyps.__annotations__
@@ -81,7 +81,7 @@ def test_get_range_hyps_typing():
     assert annos['use_ard'] == bool
     assert annos['use_gp'] == bool
     assert annos['fix_noise'] == bool
-    assert annos['return'] == list
+    assert annos['return'] == typing.List[list]
 
 def test_get_range_hyps():
     with pytest.raises(AssertionError) as error:
@@ -196,6 +196,10 @@ def test_restore_hyps():
     with pytest.raises(AssertionError) as error:
         package_target.restore_hyps('se', np.array([[1.0, 1.0], [1.0, 1.0]]))
     with pytest.raises(AssertionError) as error:
+        package_target.restore_hyps('se', np.array([1.0, 1.0, 1.0]), use_ard=1)
+    with pytest.raises(AssertionError) as error:
+        package_target.restore_hyps('se', np.array([1.0, 1.0, 1.0]), use_ard='abc')
+    with pytest.raises(AssertionError) as error:
         package_target.restore_hyps('se', np.array([1.0, 1.0, 1.0]), fix_noise=1)
     with pytest.raises(AssertionError) as error:
         package_target.restore_hyps('se', np.array([1.0, 1.0, 1.0]), noise='abc')
@@ -203,6 +207,8 @@ def test_restore_hyps():
         package_target.restore_hyps('se', np.array([1.0, 1.0, 1.0]), use_gp=1)
     with pytest.raises(AssertionError) as error:
         package_target.restore_hyps('se', np.array([1.0, 1.0, 1.0]), use_gp='abc')
+    with pytest.raises(AssertionError) as error:
+        package_target.restore_hyps('se', np.array([0.1, 1.0, 1.0, 1.0]), use_ard=False)
 
     cur_hyps = np.array([0.1, 1.0, 1.0, 1.0, 1.0])
     restored_hyps = package_target.restore_hyps('se', cur_hyps, fix_noise=False)

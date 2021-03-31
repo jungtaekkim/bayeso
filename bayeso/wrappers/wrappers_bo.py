@@ -18,7 +18,8 @@ logger = utils_logger.get_logger('wrappers_bo')
 
 @utils_common.validate_types
 def run_single_round_with_all_initial_information(model_bo: bo.BO,
-    fun_target: callable, X_train: np.ndarray, Y_train: np.ndarray,
+    fun_target: constants.TYPING_CALLABLE,
+    X_train: np.ndarray, Y_train: np.ndarray,
     num_iter: int,
     str_sampling_method_ao: str=constants.STR_SAMPLING_METHOD_AO,
     num_samples_ao: int=constants.NUM_SAMPLES_AO,
@@ -131,7 +132,8 @@ def run_single_round_with_all_initial_information(model_bo: bo.BO,
 
 @utils_common.validate_types
 def run_single_round_with_initial_inputs(model_bo: bo.BO,
-    fun_target: callable, X_train: np.ndarray, num_iter: int,
+    fun_target: constants.TYPING_CALLABLE,
+    X_train: np.ndarray, num_iter: int,
     str_sampling_method_ao: str=constants.STR_SAMPLING_METHOD_AO,
     num_samples_ao: int=constants.NUM_SAMPLES_AO,
     str_mlm_method: str=constants.STR_MLM_METHOD,
@@ -209,7 +211,8 @@ def run_single_round_with_initial_inputs(model_bo: bo.BO,
         time_gp_final, time_acq_final
 
 @utils_common.validate_types
-def run_single_round(model_bo: bo.BO, fun_target: callable, num_init: int, num_iter: int,
+def run_single_round(model_bo: bo.BO, fun_target: constants.TYPING_CALLABLE,
+    num_init: int, num_iter: int,
     str_initial_method_bo: str=constants.STR_INITIALIZING_METHOD_BO,
     str_sampling_method_ao: str=constants.STR_SAMPLING_METHOD_AO,
     num_samples_ao: int=constants.NUM_SAMPLES_AO,

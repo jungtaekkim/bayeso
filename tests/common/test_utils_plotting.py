@@ -26,7 +26,7 @@ def test_plot_gp_via_sample_typing():
     assert annos['draw_zero_axis'] == bool
     assert annos['pause_figure'] == bool
     assert annos['time_pause'] == typing.Union[int, float]
-    assert annos['colors'] == list
+    assert annos['colors'] == np.ndarray
     assert annos['return'] == type(None)
 
 def test_plot_gp_via_sample():
@@ -86,7 +86,7 @@ def test_plot_gp_via_distribution_typing():
     assert annos['pause_figure'] == bool
     assert annos['time_pause'] == typing.Union[int, float]
     assert annos['range_shade'] == float
-    assert annos['colors'] == list
+    assert annos['colors'] == np.ndarray
     assert annos['return'] == type(None)
 
 def test_plot_gp_via_distribution():
@@ -175,7 +175,7 @@ def test_plot_minimum_vs_iter_typing():
     annos = package_target.plot_minimum_vs_iter.__annotations__
 
     assert annos['minima'] == np.ndarray
-    assert annos['list_str_label'] == list
+    assert annos['list_str_label'] == typing.List[str]
     assert annos['num_init'] == int
     assert annos['draw_std'] == bool
     assert annos['include_marker'] == bool
@@ -188,8 +188,8 @@ def test_plot_minimum_vs_iter_typing():
     assert annos['pause_figure'] == bool
     assert annos['time_pause'] == typing.Union[int, float]
     assert annos['range_shade'] == float
-    assert annos['markers'] == list
-    assert annos['colors'] == list
+    assert annos['markers'] == np.ndarray
+    assert annos['colors'] == np.ndarray
     assert annos['return'] == type(None)
 
 def test_plot_minimum_vs_iter():
@@ -250,7 +250,7 @@ def test_plot_minimum_vs_time_typing():
 
     assert annos['times'] == np.ndarray
     assert annos['minima'] == np.ndarray
-    assert annos['list_str_label'] == list
+    assert annos['list_str_label'] == typing.List[str]
     assert annos['num_init'] == int
     assert annos['draw_std'] == bool
     assert annos['include_marker'] == bool
@@ -263,8 +263,8 @@ def test_plot_minimum_vs_time_typing():
     assert annos['pause_figure'] == bool
     assert annos['time_pause'] == typing.Union[int, float]
     assert annos['range_shade'] == float
-    assert annos['markers'] == list
-    assert annos['colors'] == list
+    assert annos['markers'] == np.ndarray
+    assert annos['colors'] == np.ndarray
     assert annos['return'] == type(None)
 
 def test_plot_minimum_vs_time():

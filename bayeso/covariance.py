@@ -14,7 +14,7 @@ from bayeso.utils import utils_common
 
 
 @utils_common.validate_types
-def choose_fun_cov(str_cov: str) -> callable:
+def choose_fun_cov(str_cov: str) -> constants.TYPING_CALLABLE:
     """
     It chooses a covariance function.
 
@@ -42,7 +42,7 @@ def choose_fun_cov(str_cov: str) -> callable:
     return fun_cov
 
 @utils_common.validate_types
-def choose_fun_grad_cov(str_cov: str) -> callable:
+def choose_fun_grad_cov(str_cov: str) -> constants.TYPING_CALLABLE:
     """
     It chooses a function for computing gradients of covariance function.
 
@@ -506,7 +506,7 @@ def cov_set(str_cov: str, X: np.ndarray, Xp: np.ndarray,
         assert X.shape[1] == Xp.shape[1] == lengthscales.shape[0]
     else:
         assert X.shape[1] == Xp.shape[1]
-    assert str_cov in constants.ALLOWED_GP_COV_BASE
+    assert str_cov in constants.ALLOWED_COV_BASE
     num_X = X.shape[0]
     num_Xp = Xp.shape[0]
 
@@ -551,7 +551,7 @@ def cov_main(str_cov: str, X: np.ndarray, Xp: np.ndarray, hyps: dict, same_X_Xp:
     assert isinstance(hyps, dict)
     assert isinstance(same_X_Xp, bool)
     assert isinstance(jitter, float)
-    assert str_cov in constants.ALLOWED_GP_COV
+    assert str_cov in constants.ALLOWED_COV
 
     num_X = X.shape[0]
     num_Xp = Xp.shape[0]
@@ -561,7 +561,7 @@ def cov_main(str_cov: str, X: np.ndarray, Xp: np.ndarray, hyps: dict, same_X_Xp:
         assert num_X == num_Xp
         cov_X_Xp += np.eye(num_X) * jitter
 
-    if str_cov in ('eq', 'se', 'matern32', 'matern52'):
+    if str_cov in constants.ALLOWED_COV_BASE:
         assert len(X.shape) == 2
         assert len(Xp.shape) == 2
         dim_X = X.shape[1]
@@ -577,7 +577,7 @@ def cov_main(str_cov: str, X: np.ndarray, Xp: np.ndarray, hyps: dict, same_X_Xp:
         cov_X_Xp += fun_cov(X, Xp, hyps['lengthscales'], hyps['signal'])
 
         assert cov_X_Xp.shape == (num_X, num_Xp)
-    elif str_cov in constants.ALLOWED_GP_COV_SET:
+    elif str_cov in constants.ALLOWED_COV_SET:
         list_str_cov = str_cov.split('_')
         str_cov = list_str_cov[1]
 
@@ -649,7 +649,7 @@ def grad_cov_main(str_cov: str, X: np.ndarray, Xp: np.ndarray, hyps: dict, fix_n
     assert isinstance(fix_noise, bool)
     assert isinstance(same_X_Xp, bool)
     assert isinstance(jitter, float)
-    assert str_cov in constants.ALLOWED_GP_COV
+    assert str_cov in constants.ALLOWED_COV
     # TODO: X and Xp should be same?
     assert same_X_Xp
 

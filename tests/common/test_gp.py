@@ -62,7 +62,7 @@ def test_predict_with_cov_typing():
     assert annos['inv_cov_X_X'] == np.ndarray
     assert annos['hyps'] == dict
     assert annos['str_cov'] == str
-    assert annos['prior_mu'] == typing.Union[callable, type(None)]
+    assert annos['prior_mu'] == typing.Union[typing.Callable, type(None)]
     assert annos['debug'] == bool
     assert annos['return'] == typing.Tuple[np.ndarray, np.ndarray, np.ndarray]
 
@@ -118,7 +118,7 @@ def test_predict_with_hyps_typing():
     assert annos['X_test'] == np.ndarray
     assert annos['hyps'] == dict
     assert annos['str_cov'] == str
-    assert annos['prior_mu'] == typing.Union[callable, type(None)]
+    assert annos['prior_mu'] == typing.Union[typing.Callable, type(None)]
     assert annos['debug'] == bool
     assert annos['return'] == typing.Tuple[np.ndarray, np.ndarray, np.ndarray]
 
@@ -165,7 +165,7 @@ def test_predict_with_optimized_hyps_typing():
     assert annos['X_test'] == np.ndarray
     assert annos['str_cov'] == str
     assert annos['str_optimizer_method'] == str
-    assert annos['prior_mu'] == typing.Union[callable, type(None)]
+    assert annos['prior_mu'] == typing.Union[typing.Callable, type(None)]
     assert annos['fix_noise'] == float
     assert annos['debug'] == bool
     assert annos['return'] == typing.Tuple[np.ndarray, np.ndarray, np.ndarray]

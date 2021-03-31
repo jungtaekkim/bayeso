@@ -24,6 +24,7 @@ logger = utils_logger.get_logger('tp_kernel')
 def get_optimized_kernel(X_train: np.ndarray, Y_train: np.ndarray,
     prior_mu: constants.TYPING_UNION_CALLABLE_NONE, str_cov: str,
     str_optimizer_method: str=constants.STR_OPTIMIZER_METHOD_TP,
+    use_ard: bool=constants.USE_ARD,
     fix_noise: bool=constants.FIX_GP_NOISE,
     debug: bool=False
 ) -> constants.TYPING_TUPLE_TWO_ARRAYS_DICT:
@@ -41,6 +42,8 @@ def get_optimized_kernel(X_train: np.ndarray, Y_train: np.ndarray,
     :type str_cov: str.
     :param str_optimizer_method: the name of optimization method.
     :type str_optimizer_method: str., optional
+    :param use_ard: flag for using automatic relevance determination.
+    :type use_ard: bool., optional
     :param fix_noise: flag for fixing a noise.
     :type fix_noise: bool., optional
     :param debug: flag for printing log messages.
@@ -59,6 +62,7 @@ def get_optimized_kernel(X_train: np.ndarray, Y_train: np.ndarray,
     assert callable(prior_mu) or prior_mu is None
     assert isinstance(str_cov, str)
     assert isinstance(str_optimizer_method, str)
+    assert isinstance(use_ard, bool)
     assert isinstance(fix_noise, bool)
     assert isinstance(debug, bool)
     assert len(Y_train.shape) == 2
@@ -75,9 +79,9 @@ def get_optimized_kernel(X_train: np.ndarray, Y_train: np.ndarray,
         logger.debug('str_optimizer_method: %s', str_optimizer_method)
 
     prior_mu_train = utils_gp.get_prior_mu(prior_mu, X_train)
-    if str_cov in constants.ALLOWED_GP_COV_BASE:
+    if str_cov in constants.ALLOWED_COV_BASE:
         num_dim = X_train.shape[1]
-    elif str_cov in constants.ALLOWED_GP_COV_SET:
+    elif str_cov in constants.ALLOWED_COV_SET:
         num_dim = X_train.shape[2]
         use_gradient = False
 
@@ -87,14 +91,14 @@ def get_optimized_kernel(X_train: np.ndarray, Y_train: np.ndarray,
 
     hyps_converted = utils_covariance.convert_hyps(
         str_cov,
-        utils_covariance.get_hyps(str_cov, num_dim, use_gp=False),
+        utils_covariance.get_hyps(str_cov, num_dim, use_gp=False, use_ard=use_ard),
         fix_noise=fix_noise,
         use_gp=False
     )
 
     if str_optimizer_method in ['L-BFGS-B', 'SLSQP']:
         bounds = utils_covariance.get_range_hyps(str_cov, num_dim,
-            fix_noise=fix_noise, use_gp=False)
+            use_ard=use_ard, fix_noise=fix_noise, use_gp=False)
         result_optimized = scipy.optimize.minimize(neg_log_ml_, hyps_converted,
             method=str_optimizer_method, bounds=bounds, jac=use_gradient,
             options={'disp': False})
@@ -107,7 +111,7 @@ def get_optimized_kernel(X_train: np.ndarray, Y_train: np.ndarray,
         raise ValueError('get_optimized_kernel: missing conditions for str_optimizer_method')
 
     hyps = utils_covariance.restore_hyps(str_cov, result_optimized,
-        fix_noise=fix_noise, use_gp=False)
+        use_ard=use_ard, fix_noise=fix_noise, use_gp=False)
 
     hyps, _ = utils_covariance.validate_hyps_dict(hyps, str_cov, num_dim, use_gp=False)
     cov_X_X, inv_cov_X_X, _ = covariance.get_kernel_inverse(X_train,

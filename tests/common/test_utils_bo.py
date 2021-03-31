@@ -4,6 +4,7 @@
 #
 """test_utils_bo"""
 
+import typing
 import pytest
 import numpy as np
 
@@ -15,7 +16,7 @@ def test_get_best_acquisition_by_evaluation_typing():
     annos = package_target.get_best_acquisition_by_evaluation.__annotations__
 
     assert annos['initials'] == np.ndarray
-    assert annos['fun_objective'] == callable
+    assert annos['fun_objective'] == typing.Callable
     assert annos['return'] == np.ndarray
 
 def test_get_best_acquisition_by_evaluation():
@@ -81,7 +82,7 @@ def test_choose_fun_acquisition_typing():
 
     assert annos['str_acq'] == str
     assert annos['hyps'] == dict
-    assert annos['return'] == callable
+    assert annos['return'] == typing.Callable
 
 def test_choose_fun_acquisition():
     dict_hyps = {'lengthscales': np.array([1.0, 1.0]), 'signal': 1.0, 'noise': 0.01}
@@ -95,7 +96,7 @@ def test_choose_fun_acquisition():
 def test_check_hyps_convergence_typing():
     annos = package_target.check_hyps_convergence.__annotations__
 
-    assert annos['list_hyps'] == list
+    assert annos['list_hyps'] == typing.List[dict]
     assert annos['hyps'] == dict
     assert annos['str_cov'] == str
     assert annos['fix_noise'] == bool

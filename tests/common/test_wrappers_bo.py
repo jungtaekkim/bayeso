@@ -16,7 +16,7 @@ def test_run_single_round_with_all_initial_information_typing():
     annos = package_target.run_single_round_with_all_initial_information.__annotations__
 
     assert annos['model_bo'] == bo.BO
-    assert annos['fun_target'] == callable
+    assert annos['fun_target'] == typing.Callable
     assert annos['X_train'] == np.ndarray
     assert annos['Y_train'] == np.ndarray
     assert annos['num_iter'] == int
@@ -79,7 +79,7 @@ def test_run_single_round_with_initial_inputs_typing():
     annos = package_target.run_single_round_with_initial_inputs.__annotations__
 
     assert annos['model_bo'] == bo.BO
-    assert annos['fun_target'] == callable
+    assert annos['fun_target'] == typing.Callable
     assert annos['X_train'] == np.ndarray
     assert annos['num_iter'] == int
     assert annos['str_sampling_method_ao'] == str
@@ -131,7 +131,7 @@ def test_run_single_round_typing():
     annos = package_target.run_single_round.__annotations__
 
     assert annos['model_bo'] == bo.BO
-    assert annos['fun_target'] == callable
+    assert annos['fun_target'] == typing.Callable
     assert annos['num_init'] == int
     assert annos['num_iter'] == int
     assert annos['str_sampling_method_ao'] == str

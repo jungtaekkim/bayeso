@@ -10,7 +10,7 @@ import numpy as np
 from bayeso import constants
 
 
-def validate_types(func: callable) -> callable:
+def validate_types(func: constants.TYPING_CALLABLE) -> constants.TYPING_CALLABLE:
     """
     It is a decorator for validating the number of types, which are declared for typing.
 

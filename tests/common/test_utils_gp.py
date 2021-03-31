@@ -16,7 +16,7 @@ TEST_EPSILON = 1e-7
 def test_get_prior_mu_typing():
     annos = package_target.get_prior_mu.__annotations__
 
-    assert annos['prior_mu'] == typing.Union[callable, type(None)]
+    assert annos['prior_mu'] == typing.Union[typing.Callable, type(None)]
     assert annos['X'] == np.ndarray
     assert annos['return'] == np.ndarray
 

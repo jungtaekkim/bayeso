@@ -17,7 +17,7 @@ JITTER_LOG = 1e-7
 STR_SURROGATE = 'gp'
 STR_OPTIMIZER_METHOD_GP = 'BFGS'
 STR_OPTIMIZER_METHOD_TP = 'SLSQP'
-STR_GP_COV = 'matern52'
+STR_COV = 'matern52'
 STR_BO_ACQ = 'ei'
 STR_INITIALIZING_METHOD_BO = 'sobol'
 STR_OPTIMIZER_METHOD_AO = 'L-BFGS-B'
@@ -33,6 +33,7 @@ MULTIPLIER_RESPONSE = 10.0
 
 NORMALIZE_RESPONSE = True
 
+USE_ARD = True
 GP_NOISE = 1e-2
 FIX_GP_NOISE = True
 BOUND_UPPER_GP_NOISE = np.inf
@@ -55,9 +56,9 @@ ALLOWED_OPTIMIZER_METHOD_GP = [
 ALLOWED_OPTIMIZER_METHOD_TP = ['L-BFGS-B', 'SLSQP']
 ALLOWED_OPTIMIZER_METHOD_BO = ['L-BFGS-B', 'DIRECT', 'CMA-ES']
 # INFO: Do not use _ (underscore) in base str_cov.
-ALLOWED_GP_COV_BASE = ['eq', 'se', 'matern32', 'matern52']
-ALLOWED_GP_COV_SET = ['set_' + str_cov for str_cov in ALLOWED_GP_COV_BASE]
-ALLOWED_GP_COV = ALLOWED_GP_COV_BASE + ALLOWED_GP_COV_SET
+ALLOWED_COV_BASE = ['eq', 'se', 'matern32', 'matern52']
+ALLOWED_COV_SET = ['set_' + str_cov for str_cov in ALLOWED_COV_BASE]
+ALLOWED_COV = ALLOWED_COV_BASE + ALLOWED_COV_SET
 ALLOWED_BO_ACQ = ['pi', 'ei', 'ucb', 'aei', 'pure_exploit', 'pure_explore']
 ALLOWED_INITIALIZING_METHOD_BO = ['uniform', 'gaussian', 'sobol', 'halton']
 ALLOWED_SAMPLING_METHOD = ALLOWED_INITIALIZING_METHOD_BO + ['grid']
@@ -104,23 +105,27 @@ MARKERS = np.array([
 ])
 
 TYPE_NONE = type(None)
+TYPE_ARR = np.ndarray
+
+TYPING_CALLABLE = typing.Callable
+TYPING_LIST = typing.List
 TYPING_TUPLE_DICT_BOOL = typing.Tuple[dict, bool]
-TYPING_TUPLE_ARRAY_BOOL = typing.Tuple[np.ndarray, bool]
-TYPING_TUPLE_ARRAY_DICT = typing.Tuple[np.ndarray, dict]
-TYPING_TUPLE_ARRAY_FLOAT = typing.Tuple[np.ndarray, float]
-TYPING_TUPLE_TWO_ARRAYS = typing.Tuple[np.ndarray, np.ndarray]
-TYPING_TUPLE_TWO_ARRAYS_DICT = typing.Tuple[np.ndarray, np.ndarray, dict]
-TYPING_TUPLE_THREE_ARRAYS = typing.Tuple[np.ndarray, np.ndarray, np.ndarray]
-TYPING_TUPLE_FIVE_ARRAYS = typing.Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]
-TYPING_TUPLE_FLOAT_THREE_ARRAYS = typing.Tuple[float, np.ndarray, np.ndarray, np.ndarray]
-TYPING_TUPLE_FLOAT_ARRAY = typing.Tuple[float, np.ndarray]
+TYPING_TUPLE_ARRAY_BOOL = typing.Tuple[TYPE_ARR, bool]
+TYPING_TUPLE_ARRAY_DICT = typing.Tuple[TYPE_ARR, dict]
+TYPING_TUPLE_ARRAY_FLOAT = typing.Tuple[TYPE_ARR, float]
+TYPING_TUPLE_TWO_ARRAYS = typing.Tuple[TYPE_ARR, TYPE_ARR]
+TYPING_TUPLE_TWO_ARRAYS_DICT = typing.Tuple[TYPE_ARR, TYPE_ARR, dict]
+TYPING_TUPLE_THREE_ARRAYS = typing.Tuple[TYPE_ARR, TYPE_ARR, TYPE_ARR]
+TYPING_TUPLE_FIVE_ARRAYS = typing.Tuple[TYPE_ARR, TYPE_ARR, TYPE_ARR, TYPE_ARR, TYPE_ARR]
+TYPING_TUPLE_FLOAT_THREE_ARRAYS = typing.Tuple[float, TYPE_ARR, TYPE_ARR, TYPE_ARR]
+TYPING_TUPLE_FLOAT_ARRAY = typing.Tuple[float, TYPE_ARR]
 
 TYPING_UNION_INT_NONE = typing.Union[int, TYPE_NONE]
 TYPING_UNION_INT_FLOAT = typing.Union[int, float]
 TYPING_UNION_FLOAT_NONE = typing.Union[float, TYPE_NONE]
-TYPING_UNION_FLOAT_TWO_FLOATS = typing.Union[float, typing.Tuple[float, float]]
+TYPING_UNION_FLOAT_TWO_FLOATS = typing.Union[float, TYPING_TUPLE_TWO_ARRAYS]
 TYPING_UNION_FLOAT_FA = typing.Union[float, TYPING_TUPLE_FLOAT_ARRAY]
-TYPING_UNION_ARRAY_NONE = typing.Union[np.ndarray, TYPE_NONE]
-TYPING_UNION_ARRAY_FLOAT = typing.Union[np.ndarray, float]
-TYPING_UNION_CALLABLE_NONE = typing.Union[callable, TYPE_NONE]
+TYPING_UNION_ARRAY_NONE = typing.Union[TYPE_ARR, TYPE_NONE]
+TYPING_UNION_ARRAY_FLOAT = typing.Union[TYPE_ARR, float]
+TYPING_UNION_CALLABLE_NONE = typing.Union[TYPING_CALLABLE, TYPE_NONE]
 TYPING_UNION_STR_NONE = typing.Union[str, TYPE_NONE]

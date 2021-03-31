@@ -61,10 +61,10 @@ class BO:
     """
 
     def __init__(self, range_X: np.ndarray,
-        str_cov: str=constants.STR_GP_COV,
+        str_cov: str=constants.STR_COV,
         str_acq: str=constants.STR_BO_ACQ,
         normalize_Y: bool=constants.NORMALIZE_RESPONSE,
-        use_ard: bool=True,
+        use_ard: bool=constants.USE_ARD,
         prior_mu: constants.TYPING_UNION_CALLABLE_NONE=None,
         str_surrogate: str=constants.STR_SURROGATE,
         str_optimizer_method_gp: str=constants.STR_OPTIMIZER_METHOD_GP,
@@ -91,7 +91,7 @@ class BO:
         assert len(range_X.shape) == 2
         assert range_X.shape[1] == 2
         assert (range_X[:, 0] <= range_X[:, 1]).all()
-        assert str_cov in constants.ALLOWED_GP_COV
+        assert str_cov in constants.ALLOWED_COV
         assert str_acq in constants.ALLOWED_BO_ACQ
         assert str_optimizer_method_gp in constants.ALLOWED_OPTIMIZER_METHOD_GP
         assert str_optimizer_method_bo in constants.ALLOWED_OPTIMIZER_METHOD_BO

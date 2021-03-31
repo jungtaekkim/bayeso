@@ -54,7 +54,7 @@ def sample_functions(mu: np.ndarray, Sigma: np.ndarray,
 @utils_common.validate_types
 def predict_with_cov(X_train: np.ndarray, Y_train: np.ndarray, X_test: np.ndarray,
     cov_X_X: np.ndarray, inv_cov_X_X: np.ndarray, hyps: dict,
-    str_cov: str=constants.STR_GP_COV,
+    str_cov: str=constants.STR_COV,
     prior_mu: constants.TYPING_UNION_CALLABLE_NONE=None,
     debug: bool=False
 ) -> constants.TYPING_TUPLE_THREE_ARRAYS:
@@ -121,7 +121,7 @@ def predict_with_cov(X_train: np.ndarray, Y_train: np.ndarray, X_test: np.ndarra
 
 @utils_common.validate_types
 def predict_with_hyps(X_train: np.ndarray, Y_train: np.ndarray, X_test: np.ndarray, hyps: dict,
-    str_cov: str=constants.STR_GP_COV,
+    str_cov: str=constants.STR_COV,
     prior_mu: constants.TYPING_UNION_CALLABLE_NONE=None,
     debug: bool=False
 ) -> constants.TYPING_TUPLE_THREE_ARRAYS:
@@ -177,7 +177,7 @@ def predict_with_hyps(X_train: np.ndarray, Y_train: np.ndarray, X_test: np.ndarr
 
 @utils_common.validate_types
 def predict_with_optimized_hyps(X_train: np.ndarray, Y_train: np.ndarray, X_test: np.ndarray,
-    str_cov: str=constants.STR_GP_COV,
+    str_cov: str=constants.STR_COV,
     str_optimizer_method: str=constants.STR_OPTIMIZER_METHOD_GP,
     prior_mu: constants.TYPING_UNION_CALLABLE_NONE=None,
     fix_noise: float=constants.FIX_GP_NOISE,

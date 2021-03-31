@@ -20,7 +20,7 @@ def test_get_optimized_kernel_typing():
 
     assert annos['X_train'] == np.ndarray
     assert annos['Y_train'] == np.ndarray
-    assert annos['prior_mu'] == typing.Union[callable, type(None)]
+    assert annos['prior_mu'] == typing.Union[typing.Callable, type(None)]
     assert annos['str_cov'] == str
     assert annos['str_optimizer_method'] == str
     assert annos['fix_noise'] == bool

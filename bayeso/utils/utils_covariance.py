@@ -11,7 +11,7 @@ from bayeso import constants
 
 
 @utils_common.validate_types
-def _get_list_first() -> list:
+def _get_list_first() -> constants.TYPING_LIST[str]:
     """
     It provides list of strings.
     The strings in that list require two hyperparameters, `signal` and `lengthscales`.
@@ -56,7 +56,7 @@ def get_hyps(str_cov: str, dim: int,
     assert isinstance(dim, int)
     assert isinstance(use_gp, bool)
     assert isinstance(use_ard, bool)
-    assert str_cov in constants.ALLOWED_GP_COV
+    assert str_cov in constants.ALLOWED_COV
 
     hyps = dict()
     hyps['noise'] = constants.GP_NOISE
@@ -82,7 +82,7 @@ def get_range_hyps(str_cov: str, dim: int,
     use_gp: bool=True,
     use_ard: bool=True,
     fix_noise: bool=False
-) -> list:
+) -> constants.TYPING_LIST[list]:
     """
     It returns default optimization ranges of hyperparameters for Gaussian process regression.
 
@@ -109,7 +109,7 @@ def get_range_hyps(str_cov: str, dim: int,
     assert isinstance(use_gp, bool)
     assert isinstance(use_ard, bool)
     assert isinstance(fix_noise, bool)
-    assert str_cov in constants.ALLOWED_GP_COV
+    assert str_cov in constants.ALLOWED_COV
 
     range_hyps = []
 
@@ -161,7 +161,7 @@ def convert_hyps(str_cov: str, hyps: dict,
     assert isinstance(hyps, dict)
     assert isinstance(use_gp, bool)
     assert isinstance(fix_noise, bool)
-    assert str_cov in constants.ALLOWED_GP_COV
+    assert str_cov in constants.ALLOWED_COV
 
     list_hyps = []
     if not fix_noise:
@@ -174,8 +174,13 @@ def convert_hyps(str_cov: str, hyps: dict,
 
     if str_cov in list_first:
         list_hyps.append(hyps['signal'])
-        for elem_lengthscale in hyps['lengthscales']:
-            list_hyps.append(elem_lengthscale)
+        if isinstance(hyps['lengthscales'], np.ndarray):
+            for elem_lengthscale in hyps['lengthscales']:
+                list_hyps.append(elem_lengthscale)
+        elif isinstance(hyps['lengthscales'], float):
+            list_hyps.append(hyps['lengthscales'])
+        else:
+            raise ValueError('covert_hyps: not allowed type for lengthscales.')
     else:
         raise NotImplementedError('convert_hyps: allowed str_cov, but it is not implemented.')
     return np.array(list_hyps)
@@ -183,6 +188,7 @@ def convert_hyps(str_cov: str, hyps: dict,
 @utils_common.validate_types
 def restore_hyps(str_cov: str, hyps: np.ndarray,
     use_gp: bool=True,
+    use_ard: bool=True,
     fix_noise: bool=False,
     noise: float=constants.GP_NOISE
 ) -> dict:
@@ -195,6 +201,8 @@ def restore_hyps(str_cov: str, hyps: np.ndarray,
     :type hyps: numpy.ndarray
     :param use_gp: flag for Gaussian process or Student-$t$ process.
     :type use_gp: bool., optional
+    :param use_ard: flag for using automatic relevance determination.
+    :type use_ard: bool., optional
     :param fix_noise: flag for fixing a noise.
     :type fix_noise: bool., optional
     :param noise: fixed noise value.
@@ -210,10 +218,11 @@ def restore_hyps(str_cov: str, hyps: np.ndarray,
     assert isinstance(str_cov, str)
     assert isinstance(hyps, np.ndarray)
     assert isinstance(use_gp, bool)
+    assert isinstance(use_ard, bool)
     assert isinstance(fix_noise, bool)
     assert isinstance(noise, float)
     assert len(hyps.shape) == 1
-    assert str_cov in constants.ALLOWED_GP_COV
+    assert str_cov in constants.ALLOWED_COV
 
     dict_hyps = dict()
     if not fix_noise:
@@ -231,10 +240,15 @@ def restore_hyps(str_cov: str, hyps: np.ndarray,
 
     if str_cov in list_first:
         dict_hyps['signal'] = hyps[ind_start]
-        list_lengthscales = []
-        for ind_elem in range(ind_start + 1, len(hyps)):
-            list_lengthscales.append(hyps[ind_elem])
-        dict_hyps['lengthscales'] = np.array(list_lengthscales)
+
+        if use_ard:
+            list_lengthscales = []
+            for ind_elem in range(ind_start + 1, len(hyps)):
+                list_lengthscales.append(hyps[ind_elem])
+            dict_hyps['lengthscales'] = np.array(list_lengthscales)
+        else:
+            assert hyps.shape[0] == ind_start + 2
+            dict_hyps['lengthscales'] = hyps[ind_start + 1]
     else:
         raise NotImplementedError('restore_hyps: allowed str_cov, but it is not implemented.')
     return dict_hyps
@@ -266,7 +280,7 @@ def validate_hyps_dict(hyps: dict, str_cov: str, dim: int,
     assert isinstance(str_cov, str)
     assert isinstance(dim, int)
     assert isinstance(use_gp, bool)
-    assert str_cov in constants.ALLOWED_GP_COV
+    assert str_cov in constants.ALLOWED_COV
 
     is_valid = True
 
@@ -335,7 +349,7 @@ def validate_hyps_arr(hyps: np.ndarray, str_cov: str, dim: int,
     assert isinstance(str_cov, str)
     assert isinstance(dim, int)
     assert isinstance(use_gp, bool)
-    assert str_cov in constants.ALLOWED_GP_COV
+    assert str_cov in constants.ALLOWED_COV
 
 #    is_valid = True
 
@@ -369,15 +383,15 @@ def check_str_cov(str_fun: str, str_cov: str, shape_X1: tuple,
     assert isinstance(shape_X1, tuple)
     assert shape_X2 is None or isinstance(shape_X2, tuple)
 
-    if str_cov in constants.ALLOWED_GP_COV_BASE:
+    if str_cov in constants.ALLOWED_COV_BASE:
         assert len(shape_X1) == 2
         if shape_X2 is not None:
             assert len(shape_X2) == 2
-    elif str_cov in constants.ALLOWED_GP_COV_SET:
+    elif str_cov in constants.ALLOWED_COV_SET:
         assert len(shape_X1) == 3
         if shape_X2 is not None:
             assert len(shape_X2) == 3
-    elif str_cov in constants.ALLOWED_GP_COV: # pragma: no cover
+    elif str_cov in constants.ALLOWED_COV: # pragma: no cover
         raise ValueError('{}: missing conditions for str_cov.'.format(str_fun))
     else:
         raise ValueError('{}: invalid str_cov.'.format(str_fun))
