@@ -127,6 +127,7 @@ def get_range_hyps(str_cov: str, dim: int,
             for _ in range(0, dim):
                 range_hyps += constants.RANGE_LENGTHSCALES
         else:
+            # INFO: dim is ignored.
             range_hyps += constants.RANGE_LENGTHSCALES
     else:
         raise NotImplementedError('get_hyps: allowed str_cov, but it is not implemented.')
@@ -179,10 +180,11 @@ def convert_hyps(str_cov: str, hyps: dict,
                 list_hyps.append(elem_lengthscale)
         elif isinstance(hyps['lengthscales'], float):
             list_hyps.append(hyps['lengthscales'])
-        else:
+        else: # pragma: no cover
             raise ValueError('covert_hyps: not allowed type for lengthscales.')
     else:
         raise NotImplementedError('convert_hyps: allowed str_cov, but it is not implemented.')
+
     return np.array(list_hyps)
 
 @utils_common.validate_types
@@ -282,45 +284,42 @@ def validate_hyps_dict(hyps: dict, str_cov: str, dim: int,
     assert isinstance(use_gp, bool)
     assert str_cov in constants.ALLOWED_COV
 
-    is_valid = True
-
     if 'noise' not in hyps:
-        is_valid = False
-    else:
-        if not isinstance(hyps['noise'], float):
-            is_valid = False
-        else:
-            if np.abs(hyps['noise']) >= constants.BOUND_UPPER_GP_NOISE:
-                hyps['noise'] = constants.BOUND_UPPER_GP_NOISE
+        raise ValueError('validate_hyps_dict: invalid noise.')
+
+    if not isinstance(hyps['noise'], float):
+        raise ValueError('validate_hyps_dict: invalid noise.')
+
+    if np.abs(hyps['noise']) >= constants.BOUND_UPPER_GP_NOISE:
+        hyps['noise'] = constants.BOUND_UPPER_GP_NOISE
 
     if not use_gp:
         if 'dof' not in hyps:
-            is_valid = False
-        else:
-            if not isinstance(hyps['dof'], float):
-                is_valid = False
-            if isinstance(hyps['dof'], float) and hyps['dof'] <= 2.0:
-                hyps['dof'] = 2.00001
+            raise ValueError('validate_hyps_dict: invalid dof.')
 
-    if str_cov in ('eq', 'se', 'matern32', 'matern52'):
-        if 'lengthscales' not in hyps:
-            is_valid = False
-        else:
-            if isinstance(hyps['lengthscales'], np.ndarray) \
-                and hyps['lengthscales'].shape[0] != dim:
-                is_valid = False
-            if not isinstance(hyps['lengthscales'], np.ndarray) \
-                and not isinstance(hyps['lengthscales'], float):
-                is_valid = False
-        if 'signal' not in hyps:
-            is_valid = False
-        else:
-            if not isinstance(hyps['signal'], float):
-                is_valid = False
-    else:
-        is_valid = False
+        if not isinstance(hyps['dof'], float):
+            raise ValueError('validate_hyps_dict: invalid dof.')
 
-    return hyps, is_valid
+        if isinstance(hyps['dof'], float) and hyps['dof'] <= 2.0:
+            hyps['dof'] = 2.00001
+
+    if 'lengthscales' not in hyps:
+        raise ValueError('validate_hyps_dict: invalid lengthscales.')
+
+    if isinstance(hyps['lengthscales'], np.ndarray) \
+        and hyps['lengthscales'].shape[0] != dim:
+        raise ValueError('validate_hyps_dict: invalid lengthscales.')
+    if not isinstance(hyps['lengthscales'], np.ndarray) \
+        and not isinstance(hyps['lengthscales'], float):
+        raise ValueError('validate_hyps_dict: invalid lengthscales.')
+
+    if 'signal' not in hyps:
+        raise ValueError('validate_hyps_dict: invalid signal.')
+
+    if not isinstance(hyps['signal'], float):
+        raise ValueError('validate_hyps_dict: invalid signal.')
+
+    return hyps
 
 @utils_common.validate_types
 def validate_hyps_arr(hyps: np.ndarray, str_cov: str, dim: int,

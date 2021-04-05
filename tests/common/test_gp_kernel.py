@@ -24,6 +24,7 @@ def test_get_optimized_kernel_typing():
     assert annos['str_cov'] == str
     assert annos['str_optimizer_method'] == str
     assert annos['str_modelselection_method'] == str
+    assert annos['use_ard'] == bool
     assert annos['fix_noise'] == bool
     assert annos['debug'] == bool
     assert annos['return'] == typing.Tuple[np.ndarray, np.ndarray, dict]
@@ -105,4 +106,7 @@ def test_get_optimized_kernel():
     cov_X_X, inv_cov_X_X, hyps = package_target.get_optimized_kernel(X_set, Y, prior_mu, 'set_se', str_optimizer_method='L-BFGS-B')
     print(hyps)
     cov_X_X, inv_cov_X_X, hyps = package_target.get_optimized_kernel(X_set, Y, prior_mu, 'set_se', str_modelselection_method='loocv')
+    print(hyps)
+
+    cov_X_X, inv_cov_X_X, hyps = package_target.get_optimized_kernel(X, Y, prior_mu, 'se', use_ard=False)
     print(hyps)

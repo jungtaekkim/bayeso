@@ -355,7 +355,8 @@ def plot_gp_via_distribution(X_train: np.ndarray, Y_train: np.ndarray,
     _show_figure(pause_figure, time_pause)
 
 @utils_common.validate_types
-def plot_minimum_vs_iter(minima: np.ndarray, list_str_label: constants.TYPING_LIST[str], num_init: int, draw_std: bool,
+def plot_minimum_vs_iter(minima: np.ndarray, list_str_label: constants.TYPING_LIST[str],
+    num_init: int, draw_std: bool,
     include_marker: bool=True,
     include_legend: bool=False,
     use_tex: bool=False,

@@ -106,23 +106,15 @@ def predict_with_cov(X_train: np.ndarray, Y_train: np.ndarray, X_test: np.ndarra
 
     """
 
-    assert isinstance(X_train, np.ndarray)
-    assert isinstance(Y_train, np.ndarray)
-    assert isinstance(X_test, np.ndarray)
+    utils_gp.validate_common_args(X_train, Y_train, str_cov, prior_mu, debug, X_test)
     assert isinstance(cov_X_X, np.ndarray)
     assert isinstance(inv_cov_X_X, np.ndarray)
     assert isinstance(hyps, dict)
-    assert isinstance(str_cov, str)
-    assert isinstance(debug, bool)
-    assert callable(prior_mu) or prior_mu is None
-    assert len(Y_train.shape) == 2
     assert len(cov_X_X.shape) == 2
     assert len(inv_cov_X_X.shape) == 2
     assert (np.array(cov_X_X.shape) == np.array(inv_cov_X_X.shape)).all()
     utils_covariance.check_str_cov('predict_with_cov', str_cov,
         X_train.shape, shape_X2=X_test.shape)
-    assert X_train.shape[0] == Y_train.shape[0]
-    assert X_train.shape[1] == X_test.shape[1]
 
     prior_mu_train = utils_gp.get_prior_mu(prior_mu, X_train)
     prior_mu_test = utils_gp.get_prior_mu(prior_mu, X_test)
@@ -183,18 +175,10 @@ def predict_with_hyps(X_train: np.ndarray, Y_train: np.ndarray, X_test: np.ndarr
 
     """
 
-    assert isinstance(X_train, np.ndarray)
-    assert isinstance(Y_train, np.ndarray)
-    assert isinstance(X_test, np.ndarray)
+    utils_gp.validate_common_args(X_train, Y_train, str_cov, prior_mu, debug, X_test)
     assert isinstance(hyps, dict)
-    assert isinstance(str_cov, str)
-    assert isinstance(debug, bool)
-    assert callable(prior_mu) or prior_mu is None
-    assert len(Y_train.shape) == 2
     utils_covariance.check_str_cov('predict_with_hyps', str_cov, X_train.shape,
         shape_X2=X_test.shape)
-    assert X_train.shape[0] == Y_train.shape[0]
-    assert X_train.shape[1] == X_test.shape[1]
 
     cov_X_X, inv_cov_X_X, _ = covariance.get_kernel_inverse(X_train,
         hyps, str_cov, debug=debug)
@@ -247,19 +231,11 @@ def predict_with_optimized_hyps(X_train: np.ndarray, Y_train: np.ndarray, X_test
 
     """
 
-    assert isinstance(X_train, np.ndarray)
-    assert isinstance(Y_train, np.ndarray)
-    assert isinstance(X_test, np.ndarray)
-    assert isinstance(str_cov, str)
+    utils_gp.validate_common_args(X_train, Y_train, str_cov, prior_mu, debug, X_test)
     assert isinstance(str_optimizer_method, str)
     assert isinstance(fix_noise, bool)
-    assert isinstance(debug, bool)
-    assert callable(prior_mu) or prior_mu is None
-    assert len(Y_train.shape) == 2
     utils_covariance.check_str_cov('predict_with_optimized_kernel', str_cov,
         X_train.shape, shape_X2=X_test.shape)
-    assert X_train.shape[0] == Y_train.shape[0]
-    assert X_train.shape[1] == X_test.shape[1]
     assert str_optimizer_method in constants.ALLOWED_OPTIMIZER_METHOD_GP
 
     time_start = time.time()
@@ -273,5 +249,5 @@ def predict_with_optimized_hyps(X_train: np.ndarray, Y_train: np.ndarray, X_test
 
     time_end = time.time()
     if debug:
-        logger.debug('time consumed to construct gpr: %.4f sec.', time_end - time_start)
+        logger.debug('time consumed to construct tpr: %.4f sec.', time_end - time_start)
     return nu_Xs, mu_Xs, sigma_Xs, Sigma_Xs

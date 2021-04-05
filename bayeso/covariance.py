@@ -568,10 +568,7 @@ def cov_main(str_cov: str, X: np.ndarray, Xp: np.ndarray, hyps: dict, same_X_Xp:
         dim_Xp = Xp.shape[1]
         assert dim_X == dim_Xp
 
-        hyps, is_valid = utils_covariance.validate_hyps_dict(hyps, str_cov, dim_X)
-        # TODO: ValueError is appropriate? We can just raise AssertionError in validate_hyps_dict.
-        if not is_valid:
-            raise ValueError('cov_main: invalid hyperparameters.')
+        hyps = utils_covariance.validate_hyps_dict(hyps, str_cov, dim_X)
 
         fun_cov = choose_fun_cov(str_cov)
         cov_X_Xp += fun_cov(X, Xp, hyps['lengthscales'], hyps['signal'])
@@ -589,10 +586,7 @@ def cov_main(str_cov: str, X: np.ndarray, Xp: np.ndarray, hyps: dict, same_X_Xp:
 
         assert dim_X == dim_Xp
 
-        hyps, is_valid = utils_covariance.validate_hyps_dict(hyps, str_cov, dim_X)
-        # TODO: ValueError is appropriate? We can just raise AssertionError in validate_hyps_dict.
-        if not is_valid:
-            raise ValueError('cov_main: invalid hyperparameters.')
+        hyps = utils_covariance.validate_hyps_dict(hyps, str_cov, dim_X)
 
         if not same_X_Xp:
             for ind_X in range(0, num_X):

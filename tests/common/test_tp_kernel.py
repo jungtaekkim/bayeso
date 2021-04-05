@@ -23,6 +23,7 @@ def test_get_optimized_kernel_typing():
     assert annos['prior_mu'] == typing.Union[typing.Callable, type(None)]
     assert annos['str_cov'] == str
     assert annos['str_optimizer_method'] == str
+    assert annos['use_ard'] == bool
     assert annos['fix_noise'] == bool
     assert annos['debug'] == bool
     assert annos['return'] == typing.Tuple[np.ndarray, np.ndarray, dict]
@@ -80,6 +81,9 @@ def test_get_optimized_kernel():
     print(hyps)
 
     cov_X_X, inv_cov_X_X, hyps = package_target.get_optimized_kernel(X, Y, prior_mu, 'se', str_optimizer_method='L-BFGS-B')
+    print(hyps)
+
+    cov_X_X, inv_cov_X_X, hyps = package_target.get_optimized_kernel(X, Y, prior_mu, 'se', str_optimizer_method='L-BFGS-B', use_ard=False)
     print(hyps)
 
     cov_X_X, inv_cov_X_X, hyps = package_target.get_optimized_kernel(X, Y, prior_mu, 'se', str_optimizer_method='SLSQP')

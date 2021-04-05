@@ -24,7 +24,9 @@ logger = utils_logger.get_logger('utils_bo')
 
 
 @utils_common.validate_types
-def get_best_acquisition_by_evaluation(initials: np.ndarray, fun_objective: constants.TYPING_CALLABLE) -> np.ndarray:
+def get_best_acquisition_by_evaluation(initials: np.ndarray,
+    fun_objective: constants.TYPING_CALLABLE
+) -> np.ndarray:
     """
     It returns the best acquisition with respect to values of `fun_objective`.
     Here, the best acquisition is a minimizer of `fun_objective`.

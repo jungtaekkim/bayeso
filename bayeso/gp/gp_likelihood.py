@@ -10,6 +10,7 @@ import scipy.linalg
 
 from bayeso import covariance
 from bayeso import constants
+from bayeso.utils import utils_gp
 from bayeso.utils import utils_covariance
 from bayeso.utils import utils_common
 from bayeso.utils import utils_logger
@@ -20,6 +21,7 @@ logger = utils_logger.get_logger('gp_likelihood')
 @utils_common.validate_types
 def neg_log_ml(X_train: np.ndarray, Y_train: np.ndarray, hyps: np.ndarray,
     str_cov: str, prior_mu_train: np.ndarray,
+    use_ard: bool=constants.USE_ARD,
     fix_noise: bool=constants.FIX_GP_NOISE,
     use_cholesky: bool=True,
     use_gradient: bool=True,
@@ -38,6 +40,8 @@ def neg_log_ml(X_train: np.ndarray, Y_train: np.ndarray, hyps: np.ndarray,
     :type str_cov: str.
     :param prior_mu_train: the prior values computed by get_prior_mu(). Shape: (n, 1).
     :type prior_mu_train: numpy.ndarray
+    :param use_ard: flag for automatic relevance determination.
+    :type use_ard: bool., optional
     :param fix_noise: flag for fixing a noise.
     :type fix_noise: bool., optional
     :param use_cholesky: flag for using a cholesky decomposition.
@@ -56,21 +60,19 @@ def neg_log_ml(X_train: np.ndarray, Y_train: np.ndarray, hyps: np.ndarray,
 
     """
 
-    assert isinstance(X_train, np.ndarray)
-    assert isinstance(Y_train, np.ndarray)
+    # TODO: add use_ard.
+    utils_gp.validate_common_args(X_train, Y_train, str_cov, None, debug)
     assert isinstance(hyps, np.ndarray)
-    assert isinstance(str_cov, str)
     assert isinstance(prior_mu_train, np.ndarray)
+    assert isinstance(use_ard, bool)
     assert isinstance(fix_noise, bool)
     assert isinstance(use_cholesky, bool)
     assert isinstance(use_gradient, bool)
-    assert isinstance(debug, bool)
-    assert len(Y_train.shape) == 2
     assert len(prior_mu_train.shape) == 2
     assert X_train.shape[0] == Y_train.shape[0] == prior_mu_train.shape[0]
     utils_covariance.check_str_cov('neg_log_ml', str_cov, X_train.shape)
 
-    hyps = utils_covariance.restore_hyps(str_cov, hyps, fix_noise=fix_noise)
+    hyps = utils_covariance.restore_hyps(str_cov, hyps, use_ard=use_ard, fix_noise=fix_noise)
     new_Y_train = Y_train - prior_mu_train
     if use_cholesky:
         cov_X_X, lower, grad_cov_X_X = covariance.get_kernel_cholesky(X_train,
@@ -144,14 +146,10 @@ def neg_log_pseudo_l_loocv(X_train: np.ndarray, Y_train: np.ndarray, hyps: np.nd
 
     """
 
-    assert isinstance(X_train, np.ndarray)
-    assert isinstance(Y_train, np.ndarray)
+    utils_gp.validate_common_args(X_train, Y_train, str_cov, None, debug)
     assert isinstance(hyps, np.ndarray)
-    assert isinstance(str_cov, str)
     assert isinstance(prior_mu_train, np.ndarray)
     assert isinstance(fix_noise, bool)
-    assert isinstance(debug, bool)
-    assert len(Y_train.shape) == 2
     assert len(prior_mu_train.shape) == 2
     assert X_train.shape[0] == Y_train.shape[0] == prior_mu_train.shape[0]
     utils_covariance.check_str_cov('neg_log_pseudo_l_loocv', str_cov, X_train.shape)

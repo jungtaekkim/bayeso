@@ -57,16 +57,10 @@ def get_optimized_kernel(X_train: np.ndarray, Y_train: np.ndarray,
 
     """
 
-    assert isinstance(X_train, np.ndarray)
-    assert isinstance(Y_train, np.ndarray)
-    assert callable(prior_mu) or prior_mu is None
-    assert isinstance(str_cov, str)
+    utils_gp.validate_common_args(X_train, Y_train, str_cov, prior_mu, debug)
     assert isinstance(str_optimizer_method, str)
     assert isinstance(use_ard, bool)
     assert isinstance(fix_noise, bool)
-    assert isinstance(debug, bool)
-    assert len(Y_train.shape) == 2
-    assert X_train.shape[0] == Y_train.shape[0]
     utils_covariance.check_str_cov('get_optimized_kernel', str_cov, X_train.shape)
     assert str_optimizer_method in constants.ALLOWED_OPTIMIZER_METHOD_TP
 
@@ -86,7 +80,9 @@ def get_optimized_kernel(X_train: np.ndarray, Y_train: np.ndarray,
         use_gradient = False
 
     neg_log_ml_ = lambda hyps: tp_likelihood.neg_log_ml(X_train, Y_train, hyps, str_cov,
-        prior_mu_train, fix_noise=fix_noise, use_gradient=use_gradient,
+        prior_mu_train, fix_noise=fix_noise,
+        use_gradient=use_gradient,
+        use_ard=use_ard,
         debug=debug)
 
     hyps_converted = utils_covariance.convert_hyps(
@@ -105,7 +101,6 @@ def get_optimized_kernel(X_train: np.ndarray, Y_train: np.ndarray,
 
         if debug:
             logger.debug('scipy message: %s', result_optimized.message)
-
         result_optimized = result_optimized.x
     else: # pragma: no cover
         raise ValueError('get_optimized_kernel: missing conditions for str_optimizer_method')
@@ -113,13 +108,12 @@ def get_optimized_kernel(X_train: np.ndarray, Y_train: np.ndarray,
     hyps = utils_covariance.restore_hyps(str_cov, result_optimized,
         use_ard=use_ard, fix_noise=fix_noise, use_gp=False)
 
-    hyps, _ = utils_covariance.validate_hyps_dict(hyps, str_cov, num_dim, use_gp=False)
+    hyps = utils_covariance.validate_hyps_dict(hyps, str_cov, num_dim, use_gp=False)
     cov_X_X, inv_cov_X_X, _ = covariance.get_kernel_inverse(X_train,
         hyps, str_cov, fix_noise=fix_noise, debug=debug)
-
     time_end = time.time()
 
     if debug:
         logger.debug('hyps optimized: %s', utils_logger.get_str_hyps(hyps))
-        logger.debug('time consumed to construct gpr: %.4f sec.', time_end - time_start)
+        logger.debug('time consumed to construct tpr: %.4f sec.', time_end - time_start)
     return cov_X_X, inv_cov_X_X, hyps

@@ -115,6 +115,18 @@ def test_get_range_hyps():
     assert isinstance(cur_range, list)
     assert cur_range == [[0.001, 10.0], [2.00001, 200.0], [0.01, 1000.0], [0.01, 1000.0]]
 
+    cur_range = package_target.get_range_hyps('se', 2, use_ard=True, fix_noise=False, use_gp=True)
+    print(type(cur_range))
+    print(cur_range)
+    assert isinstance(cur_range, list)
+    assert cur_range == [[0.001, 10.0], [0.01, 1000.0], [0.01, 1000.0], [0.01, 1000.0]]
+
+    cur_range = package_target.get_range_hyps('se', 2, use_ard=False, fix_noise=True, use_gp=True)
+    print(type(cur_range))
+    print(cur_range)
+    assert isinstance(cur_range, list)
+    assert cur_range == [[0.01, 1000.0], [0.01, 1000.0]]
+
 def test_convert_hyps_typing():
     annos = package_target.convert_hyps.__annotations__
 
@@ -180,6 +192,7 @@ def test_restore_hyps_typing():
     assert annos['str_cov'] == str
     assert annos['hyps'] == np.ndarray
     assert annos['use_gp'] == bool
+    assert annos['use_ard'] == bool
     assert annos['fix_noise'] == bool
     assert annos['noise'] == float
     assert annos['return'] == dict
@@ -235,6 +248,12 @@ def test_restore_hyps():
     assert restored_hyps['signal'] == cur_hyps[1]
     assert (restored_hyps['lengthscales'] == cur_hyps[2:]).all()
 
+    cur_hyps = np.array([0.1, 1.0, 4.0])
+    restored_hyps = package_target.restore_hyps('se', cur_hyps, fix_noise=False)
+    assert restored_hyps['noise'] == cur_hyps[0]
+    assert restored_hyps['signal'] == cur_hyps[1]
+    assert restored_hyps['lengthscales'] == cur_hyps[2]
+
 def test_validate_hyps_dict_typing():
     annos = package_target.validate_hyps_dict.__annotations__
 
@@ -250,94 +269,84 @@ def test_validate_hyps_dict():
 
     cur_hyps = package_target.get_hyps(str_cov, num_dim)
     with pytest.raises(AssertionError) as error:
-        _, is_valid = package_target.validate_hyps_dict(123, str_cov, num_dim)
+        _ = package_target.validate_hyps_dict(123, str_cov, num_dim)
     with pytest.raises(AssertionError) as error:
-        _, is_valid = package_target.validate_hyps_dict(cur_hyps, 'abc', num_dim)
+        _ = package_target.validate_hyps_dict(cur_hyps, 'abc', num_dim)
     with pytest.raises(AssertionError) as error:
-        _, is_valid = package_target.validate_hyps_dict(cur_hyps, str_cov, 'abc')
+        _ = package_target.validate_hyps_dict(cur_hyps, str_cov, 'abc')
     with pytest.raises(AssertionError) as error:
-        _, is_valid = package_target.validate_hyps_dict(cur_hyps, str_cov, num_dim, use_gp=1)
+        _ = package_target.validate_hyps_dict(cur_hyps, str_cov, num_dim, use_gp=1)
     with pytest.raises(AssertionError) as error:
-        _, is_valid = package_target.validate_hyps_dict(cur_hyps, str_cov, num_dim, use_gp='abc')
+        _ = package_target.validate_hyps_dict(cur_hyps, str_cov, num_dim, use_gp='abc')
 
     cur_hyps = package_target.get_hyps(str_cov, num_dim)
     cur_hyps.pop('noise')
-    with pytest.raises(AssertionError) as error:
-        _, is_valid = package_target.validate_hyps_dict(cur_hyps, str_cov, num_dim)
-        assert is_valid == True
+    with pytest.raises(ValueError) as error:
+        _ = package_target.validate_hyps_dict(cur_hyps, str_cov, num_dim)
 
     cur_hyps = package_target.get_hyps(str_cov, num_dim)
     cur_hyps.pop('lengthscales')
-    with pytest.raises(AssertionError) as error:
-        _, is_valid = package_target.validate_hyps_dict(cur_hyps, str_cov, num_dim)
-        assert is_valid == True
+    with pytest.raises(ValueError) as error:
+        _ = package_target.validate_hyps_dict(cur_hyps, str_cov, num_dim)
 
     cur_hyps = package_target.get_hyps(str_cov, num_dim)
     cur_hyps.pop('signal')
-    with pytest.raises(AssertionError) as error:
-        _, is_valid = package_target.validate_hyps_dict(cur_hyps, str_cov, num_dim)
-        assert is_valid == True
+    with pytest.raises(ValueError) as error:
+        _ = package_target.validate_hyps_dict(cur_hyps, str_cov, num_dim)
 
     cur_hyps = package_target.get_hyps(str_cov, num_dim)
     cur_hyps['noise'] = 'abc'
-    with pytest.raises(AssertionError) as error:
-        _, is_valid = package_target.validate_hyps_dict(cur_hyps, str_cov, num_dim)
-        assert is_valid == True
+    with pytest.raises(ValueError) as error:
+        _ = package_target.validate_hyps_dict(cur_hyps, str_cov, num_dim)
 
     cur_hyps = package_target.get_hyps(str_cov, num_dim)
     cur_hyps['noise'] = np.inf
-    cur_hyps, is_valid = package_target.validate_hyps_dict(cur_hyps, str_cov, num_dim)
+    cur_hyps = package_target.validate_hyps_dict(cur_hyps, str_cov, num_dim)
     assert cur_hyps['noise'] == constants.BOUND_UPPER_GP_NOISE
 
     cur_hyps = package_target.get_hyps(str_cov, num_dim)
-    with pytest.raises(AssertionError) as error:
-        _, is_valid = package_target.validate_hyps_dict(cur_hyps, str_cov, 123)
-        assert is_valid == True
+    with pytest.raises(ValueError) as error:
+        _ = package_target.validate_hyps_dict(cur_hyps, str_cov, 123)
 
     cur_hyps = package_target.get_hyps(str_cov, num_dim)
     cur_hyps['lengthscales'] = 'abc'
-    with pytest.raises(AssertionError) as error:
-        _, is_valid = package_target.validate_hyps_dict(cur_hyps, str_cov, num_dim)
-        assert is_valid == True
+    with pytest.raises(ValueError) as error:
+        _ = package_target.validate_hyps_dict(cur_hyps, str_cov, num_dim)
 
     cur_hyps = package_target.get_hyps(str_cov, num_dim)
     cur_hyps['signal'] = 'abc'
-    with pytest.raises(AssertionError) as error:
-        _, is_valid = package_target.validate_hyps_dict(cur_hyps, str_cov, num_dim)
-        assert is_valid == True
+    with pytest.raises(ValueError) as error:
+        _ = package_target.validate_hyps_dict(cur_hyps, str_cov, num_dim)
 
     cur_hyps = package_target.get_hyps(str_cov, num_dim, use_gp=False)
     cur_hyps['signal'] = 'abc'
-    with pytest.raises(AssertionError) as error:
-        _, is_valid = package_target.validate_hyps_dict(cur_hyps, str_cov, num_dim)
-        assert is_valid == True
+    with pytest.raises(ValueError) as error:
+        _ = package_target.validate_hyps_dict(cur_hyps, str_cov, num_dim)
 
     cur_hyps = package_target.get_hyps(str_cov, num_dim, use_gp=False)
     cur_hyps['dof'] = 'abc'
-    with pytest.raises(AssertionError) as error:
-        _, is_valid = package_target.validate_hyps_dict(cur_hyps, str_cov, num_dim, use_gp=False)
-        assert is_valid == True
+    with pytest.raises(ValueError) as error:
+        _ = package_target.validate_hyps_dict(cur_hyps, str_cov, num_dim, use_gp=False)
 
     cur_hyps = package_target.get_hyps(str_cov, num_dim, use_gp=False)
     cur_hyps.pop('dof')
-    with pytest.raises(AssertionError) as error:
-        _, is_valid = package_target.validate_hyps_dict(cur_hyps, str_cov, num_dim, use_gp=False)
-        assert is_valid == True
+    with pytest.raises(ValueError) as error:
+        _ = package_target.validate_hyps_dict(cur_hyps, str_cov, num_dim, use_gp=False)
 
     cur_hyps = package_target.get_hyps(str_cov, num_dim, use_gp=False)
     cur_hyps['dof'] = 1.5
     with pytest.raises(AssertionError) as error:
-        _, is_valid = package_target.validate_hyps_dict(cur_hyps, str_cov, num_dim, use_gp=False)
+        _ = package_target.validate_hyps_dict(cur_hyps, str_cov, num_dim, use_gp=False)
         if cur_hyps['dof'] == 2.00001:
             assert False
     with pytest.raises(AssertionError) as error:
         assert cur_hyps['dof'] == 1.5
 
     cur_hyps = package_target.get_hyps(str_cov, num_dim, use_ard=False, use_gp=False)
+    print(cur_hyps)
     cur_hyps['lengthscales'] = 'abc'
-    with pytest.raises(AssertionError) as error:
-        _, is_valid = package_target.validate_hyps_dict(cur_hyps, str_cov, num_dim, use_gp=False)
-        assert is_valid == True
+    with pytest.raises(ValueError) as error:
+        _ = package_target.validate_hyps_dict(cur_hyps, str_cov, num_dim, use_gp=False)
 
 def test_validate_hyps_arr_typing():
     annos = package_target.validate_hyps_arr.__annotations__
