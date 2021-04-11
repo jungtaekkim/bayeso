@@ -22,7 +22,7 @@ def choose_fun_cov(str_cov: str) -> constants.TYPING_CALLABLE:
     :type str_cov: str.
 
     :returns: covariance function.
-    :rtype: function
+    :rtype: callable
 
     :raises: AssertionError
 
@@ -50,7 +50,7 @@ def choose_fun_grad_cov(str_cov: str) -> constants.TYPING_CALLABLE:
     :type str_cov: str.
 
     :returns: function for computing gradients of covariance function.
-    :rtype: function
+    :rtype: callable
 
     :raises: AssertionError
 

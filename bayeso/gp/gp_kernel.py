@@ -38,7 +38,7 @@ def get_optimized_kernel(X_train: np.ndarray, Y_train: np.ndarray,
     :param Y_train: outputs. Shape: (n, 1).
     :type Y_train: numpy.ndarray
     :param prior_mu: prior mean function or None.
-    :type prior_mu: function or NoneType
+    :type prior_mu: callable or NoneType
     :param str_cov: the name of covariance function.
     :type str_cov: str.
     :param str_optimizer_method: the name of optimization method.

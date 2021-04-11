@@ -34,7 +34,7 @@ def get_best_acquisition_by_evaluation(initials: np.ndarray,
     :param initials: inputs. Shape: (n, d).
     :type initials: numpy.ndarray
     :param fun_objective: an objective function.
-    :type fun_objective: function
+    :type fun_objective: callable
 
     :returns: the best example of `initials`. Shape: (1, d).
     :rtype: numpy.ndarray
@@ -185,7 +185,7 @@ def choose_fun_acquisition(str_acq: str, hyps: dict) -> constants.TYPING_CALLABL
     :type hyps: dict.
 
     :returns: acquisition function.
-    :rtype: function
+    :rtype: callable
 
     :raises: AssertionError
 

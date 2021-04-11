@@ -43,7 +43,7 @@ class BO:
     :param use_ard: flag for automatic relevance determination.
     :type use_ard: bool., optional
     :param prior_mu: None, or prior mean function.
-    :type prior_mu: NoneType, or function, optional
+    :type prior_mu: NoneType, or callable, optional
     :param str_surrogate: the name of surrogate model.
     :type str_surrogate: str., optional
     :param str_optimizer_method_gp: the name of optimization method for
@@ -278,7 +278,7 @@ class BO:
         :param str_sampling_method: the name of sampling method.
         :type str_sampling_method: str.
         :param fun_objective: None, or objective function.
-        :type fun_objective: NoneType or function, optional
+        :type fun_objective: NoneType or callable, optional
         :param num_samples: the number of samples.
         :type num_samples: int., optional
         :param seed: None, or random seed.
@@ -355,7 +355,7 @@ class BO:
         It returns acquisition function values over `X_test`.
 
         :param fun_acquisition: acquisition function.
-        :type fun_acquisition: function
+        :type fun_acquisition: callable
         :param X_train: inputs. Shape: (n, d) or (n, m, d).
         :type X_train: numpy.ndarray
         :param Y_train: outputs. Shape: (n, 1).
@@ -406,7 +406,7 @@ class BO:
         start acquisition function optimization.
 
         :param fun_objective: negative acquisition function.
-        :type fun_objective: function
+        :type fun_objective: callable
         :param str_sampling_method: the name of sampling method.
         :type str_sampling_method: str.
         :param num_samples: the number of samples.
@@ -489,7 +489,7 @@ class BO:
         :type X_train: numpy.ndarray
         :param Y_train: outputs. Shape: (n, 1).
         :type Y_train: numpy.ndarray
-        :param str_sampling_method_method: the name of sampling method for
+        :param str_sampling_method: the name of sampling method for
             acquisition function optimization.
         :type str_sampling_method: str., optional
         :param num_samples: the number of samples.

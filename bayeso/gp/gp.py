@@ -78,7 +78,7 @@ def predict_with_cov(X_train: np.ndarray, Y_train: np.ndarray, X_test: np.ndarra
     :param str_cov: the name of covariance function.
     :type str_cov: str., optional
     :param prior_mu: None, or prior mean function.
-    :type prior_mu: NoneType, or function, optional
+    :type prior_mu: NoneType, or callable, optional
     :param debug: flag for printing log messages.
     :type debug: bool., optional
 
@@ -133,7 +133,7 @@ def predict_with_hyps(X_train: np.ndarray, Y_train: np.ndarray, X_test: np.ndarr
     :param str_cov: the name of covariance function.
     :type str_cov: str., optional
     :param prior_mu: None, or prior mean function.
-    :type prior_mu: NoneType, or function, optional
+    :type prior_mu: NoneType, or callable, optional
     :param debug: flag for printing log messages.
     :type debug: bool., optional
 
@@ -183,7 +183,7 @@ def predict_with_optimized_hyps(X_train: np.ndarray, Y_train: np.ndarray, X_test
     :param str_optimizer_method: the name of optimization method.
     :type str_optimizer_method: str., optional
     :param prior_mu: None, or prior mean function.
-    :type prior_mu: NoneType, or function, optional
+    :type prior_mu: NoneType, or callable, optional
     :param fix_noise: flag for fixing a noise.
     :type fix_noise: bool., optional
     :param debug: flag for printing log messages.

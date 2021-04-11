@@ -32,7 +32,7 @@ def run_single_round_with_all_initial_information(model_bo: bo.BO,
     :param model_bo: Bayesian optimization model.
     :type model_bo: bayeso.bo.BO
     :param fun_target: a target function.
-    :type fun_target: function
+    :type fun_target: callable
     :param X_train: initial inputs. Shape: (n, d) or (n, m, d).
     :type X_train: numpy.ndarray
     :param Y_train: initial outputs. Shape: (n, 1).
@@ -146,7 +146,7 @@ def run_single_round_with_initial_inputs(model_bo: bo.BO,
     :param model_bo: Bayesian optimization model.
     :type model_bo: bayeso.bo.BO
     :param fun_target: a target function.
-    :type fun_target: function
+    :type fun_target: callable
     :param X_train: initial inputs. Shape: (n, d) or (n, m, d).
     :type X_train: numpy.ndarray
     :param num_iter: the number of iterations for Bayesian optimization.
@@ -228,7 +228,7 @@ def run_single_round(model_bo: bo.BO, fun_target: constants.TYPING_CALLABLE,
     :param model_bo: Bayesian optimization model.
     :type model_bo: bayeso.bo.BO
     :param fun_target: a target function.
-    :type fun_target: function
+    :type fun_target: callable
     :param num_init: the number of initial examples for Bayesian optimization.
     :type num_init: int.
     :param num_iter: the number of iterations for Bayesian optimization.
