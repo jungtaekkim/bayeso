@@ -71,7 +71,6 @@ def get_hyps(str_cov: str, dim: int,
         if use_ard:
             hyps['lengthscales'] = np.ones(dim)
         else:
-            # TODO: It makes bunch of errors. I should fix it.
             hyps['lengthscales'] = 1.0
     else:
         raise NotImplementedError('get_hyps: allowed str_cov, but it is not implemented.')

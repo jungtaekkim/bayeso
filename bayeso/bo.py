@@ -77,7 +77,6 @@ class BO:
 
         """
 
-        # TODO: use use_ard.
         assert isinstance(range_X, np.ndarray)
         assert isinstance(str_cov, str)
         assert isinstance(str_acq, str)
@@ -266,7 +265,6 @@ class BO:
             + self.range_X[:, 0].flatten()
         return samples
 
-    # TODO: num_grids should be able to be input.
     def get_samples(self, str_sampling_method: str,
         fun_objective: constants.TYPING_UNION_CALLABLE_NONE=None,
         num_samples: int=constants.NUM_SAMPLES_AO,
@@ -300,8 +298,8 @@ class BO:
         if str_sampling_method == 'grid':
             assert fun_objective is not None
             if self.debug:
-                logger.debug('num_samples is ignored, because grid is chosen.')
-            samples = self._get_samples_grid()
+                logger.debug('For this option, num_samples is used as num_grids.')
+            samples = self._get_samples_grid(num_grids=num_samples)
             samples = utils_bo.get_best_acquisition_by_evaluation(samples, fun_objective)
         elif str_sampling_method == 'uniform':
             samples = self._get_samples_uniform(num_samples, seed=seed)
@@ -527,20 +525,26 @@ class BO:
 
         time_start_gp = time.time()
         if str_mlm_method == 'regular':
-            cov_X_X, inv_cov_X_X, hyps = gp_kernel.get_optimized_kernel(X_train, Y_train,
+            cov_X_X, inv_cov_X_X, hyps = gp_kernel.get_optimized_kernel(
+                X_train, Y_train,
                 self.prior_mu, self.str_cov,
                 str_optimizer_method=self.str_optimizer_method_gp,
                 str_modelselection_method=self.str_modelselection_method,
-                debug=self.debug)
+                use_ard=self.use_ard,
+                debug=self.debug
+            )
         elif str_mlm_method == 'converged':
             fix_noise = constants.FIX_GP_NOISE
 
             if self.is_optimize_hyps:
-                cov_X_X, inv_cov_X_X, hyps = gp_kernel.get_optimized_kernel(X_train, Y_train,
+                cov_X_X, inv_cov_X_X, hyps = gp_kernel.get_optimized_kernel(
+                    X_train, Y_train,
                     self.prior_mu, self.str_cov,
                     str_optimizer_method=self.str_optimizer_method_gp,
                     str_modelselection_method=self.str_modelselection_method,
-                    debug=self.debug)
+                    use_ard=self.use_ard,
+                    debug=self.debug
+                )
 
                 self.is_optimize_hyps = not utils_bo.check_hyps_convergence(self.historical_hyps,
                     hyps, self.str_cov, fix_noise)

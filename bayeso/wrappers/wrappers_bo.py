@@ -98,10 +98,8 @@ def run_single_round_with_all_initial_information(model_bo: bo.BO,
         if model_bo.debug:
             logger.debug('next_point: %s', utils_logger.get_str_array(next_point))
 
-        # TODO: check this code, which uses norm.
-#        if np.where(np.sum(next_point == X_final, axis=1) == X_final.shape[1])[0].shape[0] > 0:
-        if np.where(np.linalg.norm(next_point - X_final, axis=1) < 1e-3)[0]\
-            .shape[0] > 0: # pragma: no cover
+        if np.where(np.linalg.norm(next_point - X_final, axis=1)\
+            < constants.TOLERANCE_DUPLICATED_ACQ)[0].shape[0] > 0: # pragma: no cover
             next_point = utils_bo.get_next_best_acquisition(next_points, acquisitions, X_final)
             if model_bo.debug:
                 logger.debug('next_point is repeated, so next best is selected.\

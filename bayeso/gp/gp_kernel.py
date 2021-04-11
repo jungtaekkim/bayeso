@@ -69,7 +69,6 @@ def get_optimized_kernel(X_train: np.ndarray, Y_train: np.ndarray,
     utils_covariance.check_str_cov('get_optimized_kernel', str_cov, X_train.shape)
     assert str_optimizer_method in constants.ALLOWED_OPTIMIZER_METHOD_GP
     assert str_modelselection_method in constants.ALLOWED_MODELSELECTION_METHOD
-    # TODO: fix this.
     use_gradient = bool(str_optimizer_method != 'Nelder-Mead')
 
     time_start = time.time()
@@ -133,10 +132,6 @@ def get_optimized_kernel(X_train: np.ndarray, Y_train: np.ndarray,
         if debug:
             logger.debug('scipy message: %s', result_optimized.message)
         result_optimized = result_optimized.x
-    # TODO: Fill this conditions
-    elif str_optimizer_method == 'DIRECT': # pragma: no cover
-        raise NotImplementedError('get_optimized_kernel: allowed str_optimizer_method,\
-            but it is not implemented.')
     else: # pragma: no cover
         raise ValueError('get_optimized_kernel: missing conditions for str_optimizer_method')
 

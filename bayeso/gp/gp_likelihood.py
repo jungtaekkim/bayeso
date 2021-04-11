@@ -101,9 +101,11 @@ def neg_log_ml(X_train: np.ndarray, Y_train: np.ndarray, hyps: np.ndarray,
 
         first_term = -0.5 * np.dot(np.dot(new_Y_train.T, inv_cov_X_X), new_Y_train)
         sign_second_term, second_term = np.linalg.slogdet(cov_X_X)
-        # TODO: let me think.
+
+        # TODO: It should be checked.
         if sign_second_term <= 0: # pragma: no cover
             second_term = 0.0
+
         second_term = -0.5 * second_term
 
     third_term = -float(X_train.shape[0]) / 2.0 * np.log(2.0 * np.pi)
@@ -146,6 +148,7 @@ def neg_log_pseudo_l_loocv(X_train: np.ndarray, Y_train: np.ndarray, hyps: np.nd
 
     """
 
+    # TODO: add use_ard.
     utils_gp.validate_common_args(X_train, Y_train, str_cov, None, debug)
     assert isinstance(hyps, np.ndarray)
     assert isinstance(prior_mu_train, np.ndarray)

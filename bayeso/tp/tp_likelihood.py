@@ -83,9 +83,11 @@ def neg_log_ml(X_train: np.ndarray, Y_train: np.ndarray, hyps: np.ndarray,
 
     first_term = -0.5 * num_X * np.log((nu - 2.0) * np.pi)
     sign_second_term, second_term = np.linalg.slogdet(cov_X_X)
-    # TODO: let me think.
+
+    # TODO: it should be checked.
     if sign_second_term <= 0: # pragma: no cover
         second_term = 0.0
+
     second_term = -0.5 * second_term
 
     third_term = np.log(scipy.special.gamma((nu + num_X) / 2.0) / scipy.special.gamma(nu / 2.0))
