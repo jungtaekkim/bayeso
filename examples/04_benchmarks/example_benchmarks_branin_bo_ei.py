@@ -6,7 +6,7 @@ import numpy as np
 import os
 
 from bayeso import bo
-from benchmarks.two_dim_branin import Branin
+from bayeso_benchmarks.two_dim_branin import Branin
 from bayeso.wrappers import wrappers_bo
 from bayeso.utils import utils_bo
 from bayeso.utils import utils_plotting
