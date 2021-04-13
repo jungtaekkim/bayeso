@@ -83,3 +83,10 @@ def test_neg_log_ml():
     ])
     assert np.abs(neg_log_ml_ - truth_log_ml_) < TEST_EPSILON
     assert np.all(np.abs(neg_grad_log_ml_ - truth_grad_log_ml_) < TEST_EPSILON)
+
+    dict_hyps = utils_covariance.get_hyps(str_cov, dim_X, use_gp=use_gp)
+    arr_hyps = utils_covariance.convert_hyps(str_cov, dict_hyps, fix_noise=True, use_gp=use_gp)
+
+    neg_log_ml_, neg_grad_log_ml_ = package_target.neg_log_ml(X, Y, arr_hyps, str_cov, prior_mu_X, fix_noise=True, use_gradient=True)
+    print(neg_log_ml_)
+    print(neg_grad_log_ml_)
