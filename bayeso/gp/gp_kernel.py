@@ -70,6 +70,8 @@ def get_optimized_kernel(X_train: np.ndarray, Y_train: np.ndarray,
     assert str_optimizer_method in constants.ALLOWED_OPTIMIZER_METHOD_GP
     assert str_modelselection_method in constants.ALLOWED_MODELSELECTION_METHOD
     use_gradient = bool(str_optimizer_method != 'Nelder-Mead')
+    # TODO: Now, use_gradient is fixed as False.
+    use_gradient = False
 
     time_start = time.time()
 
@@ -108,6 +110,7 @@ def get_optimized_kernel(X_train: np.ndarray, Y_train: np.ndarray,
             method=str_optimizer_method, jac=use_gradient, options={'disp': False})
 
         if debug:
+            logger.debug('negative log marginal likelihood: %.6f', result_optimized.fun)
             logger.debug('scipy message: %s', result_optimized.message)
 
         result_optimized = result_optimized.x
@@ -123,6 +126,7 @@ def get_optimized_kernel(X_train: np.ndarray, Y_train: np.ndarray,
             options={'disp': False})
 
         if debug:
+            logger.debug('negative log marginal likelihood: %.6f', result_optimized.fun)
             logger.debug('scipy message: %s', result_optimized.message)
         result_optimized = result_optimized.x
     elif str_optimizer_method in ['Nelder-Mead']:
@@ -130,6 +134,7 @@ def get_optimized_kernel(X_train: np.ndarray, Y_train: np.ndarray,
             method=str_optimizer_method, options={'disp': False})
 
         if debug:
+            logger.debug('negative log marginal likelihood: %.6f', result_optimized.fun)
             logger.debug('scipy message: %s', result_optimized.message)
         result_optimized = result_optimized.x
     else: # pragma: no cover

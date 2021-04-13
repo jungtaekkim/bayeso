@@ -66,6 +66,7 @@ def get_optimized_kernel(X_train: np.ndarray, Y_train: np.ndarray,
 
     # TODO: Fix it later.
     use_gradient = True
+    use_gradient = False
 
     time_start = time.time()
 

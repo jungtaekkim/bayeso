@@ -533,6 +533,43 @@ class BO:
                 use_ard=self.use_ard,
                 debug=self.debug
             )
+        elif str_mlm_method == 'combined':
+            from bayeso.gp import gp_likelihood
+            from bayeso.utils import utils_gp
+            from bayeso.utils import utils_covariance
+
+            prior_mu_train = utils_gp.get_prior_mu(self.prior_mu, X_train)
+
+            neg_log_ml_best = np.inf
+            cov_X_X_best = None
+            inv_cov_X_X_best = None
+            hyps_best = None
+
+            for cur_str_optimizer_method in ['BFGS', 'Nelder-Mead']:
+                cov_X_X, inv_cov_X_X, hyps = gp_kernel.get_optimized_kernel(
+                    X_train, Y_train,
+                    self.prior_mu, self.str_cov,
+                    str_optimizer_method=cur_str_optimizer_method,
+                    str_modelselection_method=self.str_modelselection_method,
+                    use_ard=self.use_ard,
+                    debug=self.debug
+                )
+                cur_neg_log_ml_ = gp_likelihood.neg_log_ml(X_train, Y_train,
+                    utils_covariance.convert_hyps(self.str_cov, hyps,
+                        fix_noise=constants.FIX_GP_NOISE),
+                    self.str_cov, prior_mu_train,
+                    use_ard=self.use_ard, fix_noise=constants.FIX_GP_NOISE,
+                    use_gradient=False, debug=self.debug)
+
+                if cur_neg_log_ml_ < neg_log_ml_best:
+                    neg_log_ml_best = cur_neg_log_ml_
+                    cov_X_X_best = cov_X_X
+                    inv_cov_X_X_best = inv_cov_X_X
+                    hyps_best = hyps
+
+            cov_X_X = cov_X_X_best
+            inv_cov_X_X = inv_cov_X_X_best
+            hyps = hyps_best
         elif str_mlm_method == 'converged':
             fix_noise = constants.FIX_GP_NOISE
 

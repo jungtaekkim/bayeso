@@ -56,6 +56,7 @@ ALLOWED_OPTIMIZER_METHOD_GP = [
 ]
 ALLOWED_OPTIMIZER_METHOD_TP = ['L-BFGS-B', 'SLSQP']
 ALLOWED_OPTIMIZER_METHOD_BO = ['L-BFGS-B', 'DIRECT', 'CMA-ES']
+
 # INFO: Do not use _ (underscore) in base str_cov.
 ALLOWED_COV_BASE = ['eq', 'se', 'matern32', 'matern52']
 ALLOWED_COV_SET = ['set_' + str_cov for str_cov in ALLOWED_COV_BASE]
@@ -63,7 +64,7 @@ ALLOWED_COV = ALLOWED_COV_BASE + ALLOWED_COV_SET
 ALLOWED_BO_ACQ = ['pi', 'ei', 'ucb', 'aei', 'pure_exploit', 'pure_explore']
 ALLOWED_INITIALIZING_METHOD_BO = ['uniform', 'gaussian', 'sobol', 'halton']
 ALLOWED_SAMPLING_METHOD = ALLOWED_INITIALIZING_METHOD_BO + ['grid']
-ALLOWED_MLM_METHOD = ['regular', 'converged']
+ALLOWED_MLM_METHOD = ['regular', 'combined', 'converged']
 ALLOWED_MODELSELECTION_METHOD = ['ml', 'loocv']
 ALLOWED_SURROGATE = ['gp', 'tp']
 

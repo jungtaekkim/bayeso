@@ -10,7 +10,7 @@ First, import some packages we need.
     import numpy as np
 
     from bayeso import bo
-    from benchmarks.two_dim_branin import Branin
+    from bayeso_benchmarks.two_dim_branin import Branin
     from bayeso.wrappers import wrappers_bo
     from bayeso.utils import utils_plotting
 
@@ -88,7 +88,7 @@ Full code:
     import numpy as np
 
     from bayeso import bo
-    from benchmarks.two_dim_branin import Branin
+    from bayeso_benchmarks.two_dim_branin import Branin
     from bayeso.wrappers import wrappers_bo
     from bayeso.utils import utils_plotting
 

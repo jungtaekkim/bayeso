@@ -516,6 +516,33 @@ def test_optimize_str_mlm_method():
     assert next_points.shape[1] == dim_X
     assert next_points.shape[0] == acquisitions.shape[0]
 
+    model_bo = package_target.BO(arr_range_1)
+    next_point, dict_info = model_bo.optimize(X, Y, str_mlm_method='combined')
+    next_points = dict_info['next_points']
+    acquisitions = dict_info['acquisitions']
+    cov_X_X = dict_info['cov_X_X']
+    inv_cov_X_X = dict_info['inv_cov_X_X']
+    hyps = dict_info['hyps']
+    time_overall = dict_info['time_overall']
+    time_gp = dict_info['time_gp']
+    time_acq = dict_info['time_acq']
+
+    assert isinstance(next_point, np.ndarray)
+    assert isinstance(next_points, np.ndarray)
+    assert isinstance(acquisitions, np.ndarray)
+    assert isinstance(cov_X_X, np.ndarray)
+    assert isinstance(inv_cov_X_X, np.ndarray)
+    assert isinstance(hyps, dict)
+    assert isinstance(time_overall, float)
+    assert isinstance(time_gp, float)
+    assert isinstance(time_acq, float)
+    assert len(next_point.shape) == 1
+    assert len(next_points.shape) == 2
+    assert len(acquisitions.shape) == 1
+    assert next_point.shape[0] == dim_X
+    assert next_points.shape[1] == dim_X
+    assert next_points.shape[0] == acquisitions.shape[0]
+
 def test_optimize_str_modelselection_method():
     np.random.seed(42)
     arr_range_1 = np.array([
