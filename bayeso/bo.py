@@ -345,8 +345,61 @@ class BO:
 
         return self.get_samples(str_initial_method, num_samples=num_initials, seed=seed)
 
-    def _optimize_objective(self, fun_acquisition: callable, X_train: np.ndarray,
-        Y_train: np.ndarray, X_test: np.ndarray, cov_X_X: np.ndarray,
+    def compute_acquisitions(self, X: np.ndarray,
+        X_train: np.ndarray, Y_train: np.ndarray,
+        cov_X_X: np.ndarray, inv_cov_X_X: np.ndarray, hyps: dict
+    ) -> np.ndarray:
+        """
+        It computes acquisition function values over 'X',
+        where `X_train`, `Y_train`, `cov_X_X`, `inv_cov_X_X`, and `hyps`
+        are given.
+
+        :param X: inputs. Shape: (l, d) or (l, m, d).
+        :type X: numpy.ndarray
+        :param X_train: inputs. Shape: (n, d) or (n, m, d).
+        :type X_train: numpy.ndarray
+        :param Y_train: outputs. Shape: (n, 1).
+        :type Y_train: numpy.ndarray
+        :param cov_X_X: kernel matrix over `X_train`. Shape: (n, n).
+        :type cov_X_X: numpy.ndarray
+        :param inv_cov_X_X: kernel matrix inverse over `X_train`. Shape: (n, n).
+        :type inv_cov_X_X: numpy.ndarray
+        :param hyps: dictionary of hyperparameters.
+        :type hyps: dict.
+
+        :returns: acquisition function values over `X`. Shape: (l, ).
+        :rtype: numpy.ndarray
+
+        """
+
+        assert isinstance(X, np.ndarray)
+        assert isinstance(X_train, np.ndarray)
+        assert isinstance(Y_train, np.ndarray)
+        assert len(X.shape) == 2 or len(X.shape) == 3
+        assert len(X_train.shape) == 2 or len(X_train.shape) == 3
+        assert len(Y_train.shape) == 2
+        assert Y_train.shape[1] == 1
+        assert X_train.shape[0] == Y_train.shape[0]
+        if len(X_train.shape) == 2:
+            assert X.shape[1] == X_train.shape[1] == self.num_dim
+        else:
+            assert X.shape[2] == X_train.shape[2] == self.num_dim
+
+        fun_acquisition = utils_bo.choose_fun_acquisition(self.str_acq, hyps)
+
+        acquisitions = constants.MULTIPLIER_ACQ * self._optimize_objective(
+            fun_acquisition, X_train, Y_train,
+            X, cov_X_X, inv_cov_X_X, hyps
+        )
+
+        assert isinstance(acquisitions, np.ndarray)
+        assert len(acquisitions.shape) == 1
+        assert X.shape[0] == acquisitions.shape[0]
+        return acquisitions
+
+    def _optimize_objective(self, fun_acquisition: constants.TYPING_CALLABLE,
+        X_train: np.ndarray, Y_train: np.ndarray,
+        X_test: np.ndarray, cov_X_X: np.ndarray,
         inv_cov_X_X: np.ndarray, hyps: dict
     ) -> np.ndarray:
         """
@@ -381,7 +434,7 @@ class BO:
             pred_std=np.ravel(pred_std), Y_train=Y_train)
         return acquisitions
 
-    def _get_bounds(self) -> list:
+    def _get_bounds(self) -> constants.TYPING_LIST:
         """
         It returns list of range tuples, obtained from `self.range_X`.
 
@@ -395,7 +448,8 @@ class BO:
             list_bounds.append(tuple(elem))
         return list_bounds
 
-    def _optimize(self, fun_negative_acquisition: callable, str_sampling_method: str,
+    def _optimize(self, fun_negative_acquisition: constants.TYPING_CALLABLE,
+        str_sampling_method: str,
         num_samples: int
     ) -> constants.TYPING_TUPLE_TWO_ARRAYS:
         """

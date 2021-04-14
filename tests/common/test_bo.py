@@ -8,6 +8,8 @@ import pytest
 import numpy as np
 
 from bayeso import bo as package_target
+from bayeso import covariance
+from bayeso.utils import utils_covariance
 
 
 TEST_EPSILON = 1e-5
@@ -739,3 +741,62 @@ def test_optimize_use_ard():
     assert isinstance(hyps['lengthscales'], np.ndarray)
     assert len(hyps['lengthscales'].shape) == 1
     assert hyps['lengthscales'].shape[0] == 3
+
+def test_compute_acquisitions():
+    np.random.seed(42)
+    arr_range_1 = np.array([
+        [0.0, 10.0],
+        [-2.0, 2.0],
+        [-5.0, 5.0],
+    ])
+    dim_X = arr_range_1.shape[0]
+    num_X = 5
+    X = np.random.randn(num_X, dim_X)
+    Y = np.random.randn(num_X, 1)
+
+    model_bo = package_target.BO(arr_range_1, str_acq='pi')
+    hyps = utils_covariance.get_hyps(model_bo.str_cov, dim=dim_X, use_ard=model_bo.use_ard)
+
+    cov_X_X, inv_cov_X_X, _ = covariance.get_kernel_inverse(X, hyps, model_bo.str_cov)
+
+    X_test = model_bo.get_samples('sobol', num_samples=10, seed=111)
+    truth_X_test = np.array([
+        [1.5372224315069616, 0.04384007956832647, -2.2484372765757143],
+        [7.530325392726809, -1.5013302871957421, 3.6598239350132644],
+        [5.009974606800824, 1.4473280012607574, -2.9132778802886605],
+        [4.057266886811703, -0.9762288630008698, 1.8228407809510827],
+        [2.9087040200829506, 1.576258834451437, 3.9799577672965825],
+        [6.793604656122625, -0.0973438061773777, -0.07283419137820601],
+        [9.274512701667845, 0.914928319863975, 0.8972382079809904],
+        [0.4274896439164877, -1.380226788111031, -4.483412243425846],
+        [1.1341158207505941, 1.000061221420765, 0.24217900820076466],
+        [9.78826540056616, -0.5445895120501518, -3.8301817141473293],
+    ])
+    print(X_test)
+
+    assert np.all(np.abs(X_test - truth_X_test) < TEST_EPSILON)
+
+    with pytest.raises(AssertionError) as error:
+        model_bo.compute_acquisitions(1, X, Y, cov_X_X, inv_cov_X_X, hyps)
+    with pytest.raises(AssertionError) as error:
+        model_bo.compute_acquisitions(X_test, 1, Y, cov_X_X, inv_cov_X_X, hyps)
+    with pytest.raises(AssertionError) as error:
+        model_bo.compute_acquisitions(X_test, X, 1, cov_X_X, inv_cov_X_X, hyps)
+    with pytest.raises(AssertionError) as error:
+        model_bo.compute_acquisitions(X_test, X, Y, 1, inv_cov_X_X, hyps)
+    with pytest.raises(AssertionError) as error:
+        model_bo.compute_acquisitions(X_test, X, Y, cov_X_X, 1, hyps)
+    with pytest.raises(AssertionError) as error:
+        model_bo.compute_acquisitions(X_test, X, Y, cov_X_X, inv_cov_X_X, 1)
+    with pytest.raises(AssertionError) as error:
+        model_bo.compute_acquisitions(X_test, X, Y, cov_X_X, inv_cov_X_X, 'abc')
+
+    acqs = model_bo.compute_acquisitions(X_test, X, Y, cov_X_X, inv_cov_X_X, hyps)
+    print(acqs)
+    
+    truth_acqs = np.array([0.9602042008680384, 0.7893457649458702, 0.7874870212950252, 0.8113392160307042, 0.7900800170056282, 0.789580990650518, 0.7893341902282358, 0.8667465389980766, 0.23928549511387842, 0.7893341160443801])
+
+    assert isinstance(acqs, np.ndarray)
+    assert len(acqs.shape) == 1
+    assert X_test.shape[0] == acqs.shape[0]
+    assert np.all(np.abs(acqs - truth_acqs) < TEST_EPSILON)
