@@ -800,3 +800,37 @@ def test_compute_acquisitions():
     assert len(acqs.shape) == 1
     assert X_test.shape[0] == acqs.shape[0]
     assert np.all(np.abs(acqs - truth_acqs) < TEST_EPSILON)
+
+def test_compute_acquisitions_set():
+    np.random.seed(42)
+    arr_range_1 = np.array([
+        [0.0, 10.0],
+        [-2.0, 2.0],
+        [-5.0, 5.0],
+    ])
+    dim_X = arr_range_1.shape[0]
+    num_X = 5
+    num_instances = 4
+    X = np.random.randn(num_X, num_instances, dim_X)
+    Y = np.random.randn(num_X, 1)
+
+    model_bo = package_target.BO(arr_range_1, str_acq='pi', str_cov='set_se')
+    hyps = utils_covariance.get_hyps(model_bo.str_cov, dim=dim_X, use_ard=model_bo.use_ard)
+
+    cov_X_X, inv_cov_X_X, _ = covariance.get_kernel_inverse(X, hyps, model_bo.str_cov)
+    
+    X_test = np.array([
+        [
+            [1.0, 0.0, 0.0, 1.0],
+            [2.0, -1.0, 2.0, 1.0],
+            [3.0, -2.0, 4.0, 1.0],
+        ],
+        [
+            [4.0, 2.0, -3.0, 1.0],
+            [5.0, 0.0, -2.0, 1.0],
+            [6.0, -2.0, -1.0, 1.0],
+        ],
+    ])
+
+    with pytest.raises(AssertionError) as error:
+        model_bo.compute_acquisitions(X_test, X, Y, cov_X_X, inv_cov_X_X, hyps)
