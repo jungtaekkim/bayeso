@@ -1,6 +1,6 @@
 pytest
-pytest-timeout
 pytest-benchmark
+pytest-timeout
 coveralls
 sphinx
 sphinx_rtd_theme

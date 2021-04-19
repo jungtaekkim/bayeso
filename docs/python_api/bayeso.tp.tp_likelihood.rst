@@ -1,7 +1,7 @@
-bayeso.gp.gp\_tensorflow
+bayeso.tp.tp\_likelihood
 ========================
 
-.. automodule:: bayeso.gp.gp_tensorflow
+.. automodule:: bayeso.tp.tp_likelihood
    :members:
    :private-members:
    :undoc-members:

@@ -4,12 +4,9 @@ python:
   - '3.6'
   - '3.7'
   - '3.8'
+  - '3.9'
 install:
   - pip install .
-  - pip install tensorflow
-  - pip install tensorflow-probability
-  - pip install torch
-  - pip install gpytorch
 script:
   - pip install coveralls
   - pip install pytest-timeout

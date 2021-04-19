@@ -9,14 +9,14 @@ import pytest
 import numpy as np
 
 from bayeso import bo
-from bayeso.wrappers import wrappers_bo
+from bayeso.wrappers import wrappers_bo as package_target
 
 
 def test_run_single_round_with_all_initial_information_typing():
-    annos = wrappers_bo.run_single_round_with_all_initial_information.__annotations__
+    annos = package_target.run_single_round_with_all_initial_information.__annotations__
 
     assert annos['model_bo'] == bo.BO
-    assert annos['fun_target'] == callable
+    assert annos['fun_target'] == typing.Callable
     assert annos['X_train'] == np.ndarray
     assert annos['Y_train'] == np.ndarray
     assert annos['num_iter'] == int
@@ -39,31 +39,31 @@ def test_run_single_round_with_all_initial_information():
     model_bo = bo.BO(arr_range)
 
     with pytest.raises(AssertionError) as error:
-        wrappers_bo.run_single_round_with_all_initial_information(1, fun_target, X, Y, num_iter)
+        package_target.run_single_round_with_all_initial_information(1, fun_target, X, Y, num_iter)
     with pytest.raises(AssertionError) as error:
-        wrappers_bo.run_single_round_with_all_initial_information(model_bo, 1, X, Y, num_iter)
+        package_target.run_single_round_with_all_initial_information(model_bo, 1, X, Y, num_iter)
     with pytest.raises(AssertionError) as error:
-        wrappers_bo.run_single_round_with_all_initial_information(model_bo, fun_target, 1, Y, num_iter)
+        package_target.run_single_round_with_all_initial_information(model_bo, fun_target, 1, Y, num_iter)
     with pytest.raises(AssertionError) as error:
-        wrappers_bo.run_single_round_with_all_initial_information(model_bo, fun_target, X, 1, num_iter)
+        package_target.run_single_round_with_all_initial_information(model_bo, fun_target, X, 1, num_iter)
     with pytest.raises(AssertionError) as error:
-        wrappers_bo.run_single_round_with_all_initial_information(model_bo, fun_target, X, Y, 'abc')
+        package_target.run_single_round_with_all_initial_information(model_bo, fun_target, X, Y, 'abc')
     with pytest.raises(AssertionError) as error:
-        wrappers_bo.run_single_round_with_all_initial_information(model_bo, fun_target, np.random.randn(num_X), Y, num_iter)
+        package_target.run_single_round_with_all_initial_information(model_bo, fun_target, np.random.randn(num_X), Y, num_iter)
     with pytest.raises(AssertionError) as error:
-        wrappers_bo.run_single_round_with_all_initial_information(model_bo, fun_target, X, np.random.randn(num_X), num_iter)
+        package_target.run_single_round_with_all_initial_information(model_bo, fun_target, X, np.random.randn(num_X), num_iter)
     with pytest.raises(AssertionError) as error:
-        wrappers_bo.run_single_round_with_all_initial_information(model_bo, fun_target, np.random.randn(2, dim_X), Y, num_iter)
+        package_target.run_single_round_with_all_initial_information(model_bo, fun_target, np.random.randn(2, dim_X), Y, num_iter)
     with pytest.raises(AssertionError) as error:
-        wrappers_bo.run_single_round_with_all_initial_information(model_bo, fun_target, X, np.random.randn(num_X, 2), num_iter)
+        package_target.run_single_round_with_all_initial_information(model_bo, fun_target, X, np.random.randn(num_X, 2), num_iter)
     with pytest.raises(AssertionError) as error:
-        wrappers_bo.run_single_round_with_all_initial_information(model_bo, fun_target, X, Y, num_iter, str_sampling_method_ao=1)
+        package_target.run_single_round_with_all_initial_information(model_bo, fun_target, X, Y, num_iter, str_sampling_method_ao=1)
     with pytest.raises(AssertionError) as error:
-        wrappers_bo.run_single_round_with_all_initial_information(model_bo, fun_target, X, Y, num_iter, str_sampling_method_ao='abc')
+        package_target.run_single_round_with_all_initial_information(model_bo, fun_target, X, Y, num_iter, str_sampling_method_ao='abc')
     with pytest.raises(AssertionError) as error:
-        wrappers_bo.run_single_round_with_all_initial_information(model_bo, fun_target, X, Y, num_iter, num_samples_ao='abc')
+        package_target.run_single_round_with_all_initial_information(model_bo, fun_target, X, Y, num_iter, num_samples_ao='abc')
 
-    X_final, Y_final, time_all_final, time_gp_final, time_acq_final = wrappers_bo.run_single_round_with_all_initial_information(model_bo, fun_target, X, Y, num_iter)
+    X_final, Y_final, time_all_final, time_gp_final, time_acq_final = package_target.run_single_round_with_all_initial_information(model_bo, fun_target, X, Y, num_iter)
     assert len(X_final.shape) == 2
     assert len(Y_final.shape) == 2
     assert len(time_all_final.shape) == 1
@@ -76,10 +76,10 @@ def test_run_single_round_with_all_initial_information():
     assert time_gp_final.shape[0] == time_acq_final.shape[0]
 
 def test_run_single_round_with_initial_inputs_typing():
-    annos = wrappers_bo.run_single_round_with_initial_inputs.__annotations__
+    annos = package_target.run_single_round_with_initial_inputs.__annotations__
 
     assert annos['model_bo'] == bo.BO
-    assert annos['fun_target'] == callable
+    assert annos['fun_target'] == typing.Callable
     assert annos['X_train'] == np.ndarray
     assert annos['num_iter'] == int
     assert annos['str_sampling_method_ao'] == str
@@ -100,23 +100,23 @@ def test_run_single_round_with_initial_inputs():
     model_bo = bo.BO(arr_range)
 
     with pytest.raises(AssertionError) as error:
-        wrappers_bo.run_single_round_with_initial_inputs(1, fun_target, X, num_iter)
+        package_target.run_single_round_with_initial_inputs(1, fun_target, X, num_iter)
     with pytest.raises(AssertionError) as error:
-        wrappers_bo.run_single_round_with_initial_inputs(model_bo, 1, X, num_iter)
+        package_target.run_single_round_with_initial_inputs(model_bo, 1, X, num_iter)
     with pytest.raises(AssertionError) as error:
-        wrappers_bo.run_single_round_with_initial_inputs(model_bo, fun_target, 1, num_iter)
+        package_target.run_single_round_with_initial_inputs(model_bo, fun_target, 1, num_iter)
     with pytest.raises(AssertionError) as error:
-        wrappers_bo.run_single_round_with_initial_inputs(model_bo, fun_target, X, 1.2)
+        package_target.run_single_round_with_initial_inputs(model_bo, fun_target, X, 1.2)
     with pytest.raises(AssertionError) as error:
-        wrappers_bo.run_single_round_with_initial_inputs(model_bo, fun_target, np.random.randn(num_X), num_iter)
+        package_target.run_single_round_with_initial_inputs(model_bo, fun_target, np.random.randn(num_X), num_iter)
     with pytest.raises(AssertionError) as error:
-        wrappers_bo.run_single_round_with_initial_inputs(model_bo, fun_target, X, num_iter, str_sampling_method_ao=1)
+        package_target.run_single_round_with_initial_inputs(model_bo, fun_target, X, num_iter, str_sampling_method_ao=1)
     with pytest.raises(AssertionError) as error:
-        wrappers_bo.run_single_round_with_initial_inputs(model_bo, fun_target, X, num_iter, str_sampling_method_ao='abc')
+        package_target.run_single_round_with_initial_inputs(model_bo, fun_target, X, num_iter, str_sampling_method_ao='abc')
     with pytest.raises(AssertionError) as error:
-        wrappers_bo.run_single_round_with_initial_inputs(model_bo, fun_target, X, num_iter, num_samples_ao='abc')
+        package_target.run_single_round_with_initial_inputs(model_bo, fun_target, X, num_iter, num_samples_ao='abc')
 
-    X_final, Y_final, time_all_final, time_gp_final, time_acq_final = wrappers_bo.run_single_round_with_initial_inputs(model_bo, fun_target, X, num_iter)
+    X_final, Y_final, time_all_final, time_gp_final, time_acq_final = package_target.run_single_round_with_initial_inputs(model_bo, fun_target, X, num_iter)
     assert len(X_final.shape) == 2
     assert len(Y_final.shape) == 2
     assert len(time_all_final.shape) == 1
@@ -128,10 +128,10 @@ def test_run_single_round_with_initial_inputs():
     assert time_gp_final.shape[0] == time_acq_final.shape[0]
 
 def test_run_single_round_typing():
-    annos = wrappers_bo.run_single_round.__annotations__
+    annos = package_target.run_single_round.__annotations__
 
     assert annos['model_bo'] == bo.BO
-    assert annos['fun_target'] == callable
+    assert annos['fun_target'] == typing.Callable
     assert annos['num_init'] == int
     assert annos['num_iter'] == int
     assert annos['str_sampling_method_ao'] == str
@@ -152,27 +152,27 @@ def test_run_single_round():
     model_bo = bo.BO(arr_range, debug=True)
 
     with pytest.raises(AssertionError) as error:
-        wrappers_bo.run_single_round(1, fun_target, num_X, num_iter)
+        package_target.run_single_round(1, fun_target, num_X, num_iter)
     with pytest.raises(AssertionError) as error:
-        wrappers_bo.run_single_round(model_bo, 1, num_X, num_iter)
+        package_target.run_single_round(model_bo, 1, num_X, num_iter)
     with pytest.raises(AssertionError) as error:
-        wrappers_bo.run_single_round(model_bo, fun_target, 1.2, num_iter)
+        package_target.run_single_round(model_bo, fun_target, 1.2, num_iter)
     with pytest.raises(AssertionError) as error:
-        wrappers_bo.run_single_round(model_bo, fun_target, num_X, 1.2)
+        package_target.run_single_round(model_bo, fun_target, num_X, 1.2)
     with pytest.raises(AssertionError) as error:
-        wrappers_bo.run_single_round(model_bo, fun_target, num_X, num_iter, str_initial_method_bo=1)
+        package_target.run_single_round(model_bo, fun_target, num_X, num_iter, str_initial_method_bo=1)
     with pytest.raises(AssertionError) as error:
-        wrappers_bo.run_single_round(model_bo, fun_target, num_X, num_iter, str_initial_method_bo='abc')
+        package_target.run_single_round(model_bo, fun_target, num_X, num_iter, str_initial_method_bo='abc')
     with pytest.raises(AssertionError) as error:
-        wrappers_bo.run_single_round(model_bo, fun_target, num_X, num_iter, str_initial_method_bo='grid')
+        package_target.run_single_round(model_bo, fun_target, num_X, num_iter, str_initial_method_bo='grid')
     with pytest.raises(AssertionError) as error:
-        wrappers_bo.run_single_round(model_bo, fun_target, num_X, num_iter, str_sampling_method_ao=1)
+        package_target.run_single_round(model_bo, fun_target, num_X, num_iter, str_sampling_method_ao=1)
     with pytest.raises(AssertionError) as error:
-        wrappers_bo.run_single_round(model_bo, fun_target, num_X, num_iter, str_sampling_method_ao='abc')
+        package_target.run_single_round(model_bo, fun_target, num_X, num_iter, str_sampling_method_ao='abc')
     with pytest.raises(AssertionError) as error:
-        wrappers_bo.run_single_round(model_bo, fun_target, num_X, num_iter, seed=1.2)
+        package_target.run_single_round(model_bo, fun_target, num_X, num_iter, seed=1.2)
 
-    X_final, Y_final, time_all_final, time_gp_final, time_acq_final = wrappers_bo.run_single_round(model_bo, fun_target, num_X, num_iter, str_initial_method_bo='uniform')
+    X_final, Y_final, time_all_final, time_gp_final, time_acq_final = package_target.run_single_round(model_bo, fun_target, num_X, num_iter, str_initial_method_bo='uniform')
     assert len(X_final.shape) == 2
     assert len(Y_final.shape) == 2
     assert len(time_all_final.shape) == 1

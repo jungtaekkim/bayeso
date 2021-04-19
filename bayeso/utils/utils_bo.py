@@ -24,7 +24,9 @@ logger = utils_logger.get_logger('utils_bo')
 
 
 @utils_common.validate_types
-def get_best_acquisition_by_evaluation(initials: np.ndarray, fun_objective: callable) -> np.ndarray:
+def get_best_acquisition_by_evaluation(initials: np.ndarray,
+    fun_objective: constants.TYPING_CALLABLE
+) -> np.ndarray:
     """
     It returns the best acquisition with respect to values of `fun_objective`.
     Here, the best acquisition is a minimizer of `fun_objective`.
@@ -32,7 +34,7 @@ def get_best_acquisition_by_evaluation(initials: np.ndarray, fun_objective: call
     :param initials: inputs. Shape: (n, d).
     :type initials: numpy.ndarray
     :param fun_objective: an objective function.
-    :type fun_objective: function
+    :type fun_objective: callable
 
     :returns: the best example of `initials`. Shape: (1, d).
     :rtype: numpy.ndarray
@@ -56,7 +58,8 @@ def get_best_acquisition_by_evaluation(initials: np.ndarray, fun_objective: call
     return initial_best
 
 @utils_common.validate_types
-def get_best_acquisition_by_history(X: np.ndarray, Y: np.ndarray) -> constants.TYPING_TUPLE_ARRAY_FLOAT:
+def get_best_acquisition_by_history(X: np.ndarray, Y: np.ndarray
+) -> constants.TYPING_TUPLE_ARRAY_FLOAT:
     """
     It returns the best acquisition that has shown minimum result, and its minimum result.
 
@@ -172,7 +175,7 @@ def check_optimizer_method_bo(str_optimizer_method_bo: str, dim: int, debug: boo
     return str_optimizer_method_bo
 
 @utils_common.validate_types
-def choose_fun_acquisition(str_acq: str, hyps: dict) -> callable:
+def choose_fun_acquisition(str_acq: str, hyps: dict) -> constants.TYPING_CALLABLE:
     """
     It chooses and returns an acquisition function.
 
@@ -182,7 +185,7 @@ def choose_fun_acquisition(str_acq: str, hyps: dict) -> callable:
     :type hyps: dict.
 
     :returns: acquisition function.
-    :rtype: function
+    :rtype: callable
 
     :raises: AssertionError
 
@@ -212,7 +215,8 @@ def choose_fun_acquisition(str_acq: str, hyps: dict) -> callable:
     return fun_acquisition
 
 @utils_common.validate_types
-def check_hyps_convergence(list_hyps: list, hyps: dict, str_cov: str, fix_noise: bool,
+def check_hyps_convergence(list_hyps: constants.TYPING_LIST[dict], hyps: dict,
+    str_cov: str, fix_noise: bool,
     ratio_threshold: float=0.05
 ) -> bool:
     """

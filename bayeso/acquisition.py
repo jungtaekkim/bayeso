@@ -2,7 +2,8 @@
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
 # last updated: September 24, 2020
 #
-"""It defines acquisition functions."""
+"""It defines acquisition functions, each of which
+is employed to determine where next to evaluate."""
 
 import numpy as np
 import scipy.stats
@@ -16,7 +17,7 @@ def pi(pred_mean: np.ndarray, pred_std: np.ndarray, Y_train: np.ndarray,
     jitter: float=constants.JITTER_ACQ
 ) -> np.ndarray:
     """
-    It is a probability improvement criterion.
+    It is a probability of improvement criterion.
 
     :param pred_mean: posterior predictive mean function over `X_test`.
         Shape: (l, ).

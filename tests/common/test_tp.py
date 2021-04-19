@@ -2,15 +2,15 @@
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
 # last updated: March 22, 2021
 #
-"""test_gp"""
+"""test_tp"""
 
 import typing
 import pytest
 import numpy as np
 
 from bayeso import constants
-from bayeso.gp import gp as package_target
-from bayeso.gp import gp_kernel
+from bayeso.tp import tp as package_target
+from bayeso.tp import tp_kernel
 from bayeso.utils import utils_covariance
 
 
@@ -19,6 +19,7 @@ TEST_EPSILON = 1e-7
 def test_sample_functions_typing():
     annos = package_target.sample_functions.__annotations__
 
+    assert annos['nu'] == float
     assert annos['mu'] == np.ndarray
     assert annos['Sigma'] == np.ndarray
     assert annos['num_samples'] == int
@@ -26,29 +27,38 @@ def test_sample_functions_typing():
 
 def test_sample_functions():
     num_points = 10
+    nu = 4.0
     mu = np.zeros(num_points)
     Sigma = np.eye(num_points)
-    num_samples = 5
+    num_samples = 20
 
     with pytest.raises(AssertionError) as error:
-        package_target.sample_functions(mu, 'abc')
+        package_target.sample_functions(nu, mu, 'abc')
     with pytest.raises(AssertionError) as error:
-        package_target.sample_functions('abc', Sigma)
+        package_target.sample_functions(nu, 'abc', Sigma)
     with pytest.raises(AssertionError) as error:
-        package_target.sample_functions(mu, np.eye(20))
+        package_target.sample_functions('abc', mu, Sigma)
     with pytest.raises(AssertionError) as error:
-        package_target.sample_functions(mu, np.ones(num_points))
+        package_target.sample_functions(4, mu, Sigma)
     with pytest.raises(AssertionError) as error:
-        package_target.sample_functions(np.zeros(20), Sigma)
+        package_target.sample_functions(nu, mu, np.eye(20))
     with pytest.raises(AssertionError) as error:
-        package_target.sample_functions(np.eye(10), Sigma)
+        package_target.sample_functions(nu, mu, np.ones(num_points))
     with pytest.raises(AssertionError) as error:
-        package_target.sample_functions(mu, Sigma, num_samples='abc')
+        package_target.sample_functions(nu, np.zeros(20), Sigma)
     with pytest.raises(AssertionError) as error:
-        package_target.sample_functions(mu, Sigma, num_samples=1.2)
+        package_target.sample_functions(nu, np.eye(10), Sigma)
+    with pytest.raises(AssertionError) as error:
+        package_target.sample_functions(nu, mu, Sigma, num_samples='abc')
+    with pytest.raises(AssertionError) as error:
+        package_target.sample_functions(nu, mu, Sigma, num_samples=1.2)
 
 
-    functions = package_target.sample_functions(mu, Sigma, num_samples=num_samples)
+    functions = package_target.sample_functions(nu, mu, Sigma, num_samples=num_samples)
+    assert functions.shape[1] == num_points
+    assert functions.shape[0] == num_samples
+
+    functions = package_target.sample_functions(np.inf, mu, Sigma, num_samples=num_samples)
     assert functions.shape[1] == num_points
     assert functions.shape[0] == num_samples
 
@@ -64,7 +74,7 @@ def test_predict_with_cov_typing():
     assert annos['str_cov'] == str
     assert annos['prior_mu'] == typing.Union[typing.Callable, type(None)]
     assert annos['debug'] == bool
-    assert annos['return'] == typing.Tuple[np.ndarray, np.ndarray, np.ndarray]
+    assert annos['return'] == typing.Tuple[float, np.ndarray, np.ndarray, np.ndarray]
 
 def test_predict_with_cov():
     np.random.seed(42)
@@ -75,7 +85,7 @@ def test_predict_with_cov():
     Y = np.random.randn(num_X, 1)
     X_test = np.random.randn(num_X_test, dim_X)
     prior_mu = None
-    cov_X_X, inv_cov_X_X, hyps = gp_kernel.get_optimized_kernel(X, Y, prior_mu, 'se')
+    cov_X_X, inv_cov_X_X, hyps = tp_kernel.get_optimized_kernel(X, Y, prior_mu, 'se')
 
     with pytest.raises(AssertionError) as error:
         package_target.predict_with_cov(X, Y, X_test, cov_X_X, inv_cov_X_X, hyps, str_cov='se', prior_mu='abc')
@@ -110,6 +120,12 @@ def test_predict_with_cov():
     with pytest.raises(AssertionError) as error:
         package_target.predict_with_cov(X, Y, X_test, np.random.randn(10), np.random.randn(10), hyps, str_cov='se', prior_mu=prior_mu)
 
+    nu_test, mu_test, sigma_test, Sigma_test = package_target.predict_with_cov(X, Y, X_test, cov_X_X, inv_cov_X_X, hyps, str_cov='se', prior_mu=prior_mu)
+    print(nu_test)
+    print(mu_test)
+    print(sigma_test)
+    print(Sigma_test)
+
 def test_predict_with_hyps_typing():
     annos = package_target.predict_with_hyps.__annotations__
 
@@ -120,7 +136,7 @@ def test_predict_with_hyps_typing():
     assert annos['str_cov'] == str
     assert annos['prior_mu'] == typing.Union[typing.Callable, type(None)]
     assert annos['debug'] == bool
-    assert annos['return'] == typing.Tuple[np.ndarray, np.ndarray, np.ndarray]
+    assert annos['return'] == typing.Tuple[float, np.ndarray, np.ndarray, np.ndarray]
 
 def test_predict_with_hyps():
     np.random.seed(42)
@@ -131,7 +147,7 @@ def test_predict_with_hyps():
     Y = np.random.randn(num_X, 1)
     X_test = np.random.randn(num_X_test, dim_X)
     prior_mu = None
-    cov_X_X, inv_cov_X_X, hyps = gp_kernel.get_optimized_kernel(X, Y, prior_mu, 'se')
+    cov_X_X, inv_cov_X_X, hyps = tp_kernel.get_optimized_kernel(X, Y, prior_mu, 'se')
 
     with pytest.raises(AssertionError) as error:
         package_target.predict_with_hyps(X, Y, X_test, hyps, str_cov='se', prior_mu='abc')
@@ -152,7 +168,8 @@ def test_predict_with_hyps():
     with pytest.raises(AssertionError) as error:
         package_target.predict_with_hyps(X, np.random.randn(10, 1), X_test, hyps, str_cov='se', prior_mu=prior_mu)
 
-    mu_test, sigma_test, Sigma_test = package_target.predict_with_hyps(X, Y, X_test, hyps, str_cov='se', prior_mu=prior_mu)
+    nu_test, mu_test, sigma_test, Sigma_test = package_target.predict_with_hyps(X, Y, X_test, hyps, str_cov='se', prior_mu=prior_mu)
+    print(nu_test)
     print(mu_test)
     print(sigma_test)
     print(Sigma_test)
@@ -168,7 +185,7 @@ def test_predict_with_optimized_hyps_typing():
     assert annos['prior_mu'] == typing.Union[typing.Callable, type(None)]
     assert annos['fix_noise'] == float
     assert annos['debug'] == bool
-    assert annos['return'] == typing.Tuple[np.ndarray, np.ndarray, np.ndarray]
+    assert annos['return'] == typing.Tuple[float, np.ndarray, np.ndarray, np.ndarray]
 
 def test_predict_with_optimized_hyps():
     np.random.seed(42)
@@ -201,11 +218,11 @@ def test_predict_with_optimized_hyps():
         package_target.predict_with_optimized_hyps(X, Y, X_test, str_optimizer_method=1)
     with pytest.raises(AssertionError) as error:
         package_target.predict_with_optimized_hyps(X, Y, X_test, fix_noise=1)
-
     with pytest.raises(AssertionError) as error:
         package_target.predict_with_optimized_hyps(X, Y, X_test, debug=1)
 
-    mu_test, sigma_test, Sigma_test = package_target.predict_with_optimized_hyps(X, Y, X_test, debug=True)
+    nu_test, mu_test, sigma_test, Sigma_test = package_target.predict_with_optimized_hyps(X, Y, X_test, debug=True)
+    print(nu_test)
     print(mu_test)
     print(sigma_test)
     print(Sigma_test)

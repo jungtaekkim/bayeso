@@ -154,7 +154,7 @@ def plot_gp_via_sample(X: np.ndarray, Ys: np.ndarray,
     draw_zero_axis: bool=False,
     pause_figure: bool=True,
     time_pause: constants.TYPING_UNION_INT_FLOAT=constants.TIME_PAUSE,
-    colors: list=constants.COLORS,
+    colors: np.ndarray=constants.COLORS,
 ) -> constants.TYPE_NONE: # pragma: no cover
     """
     It is for plotting sampled functions from multivariate distributions.
@@ -179,8 +179,8 @@ def plot_gp_via_sample(X: np.ndarray, Ys: np.ndarray,
     :type pause_figure: bool., optional
     :param time_pause: pausing time.
     :type time_pause: int. or float, optional
-    :param colors: list of colors.
-    :type colors: list, optional
+    :param colors: array of colors.
+    :type colors: np.ndarray, optional
 
     :returns: None.
     :rtype: NoneType
@@ -199,7 +199,7 @@ def plot_gp_via_sample(X: np.ndarray, Ys: np.ndarray,
     assert isinstance(draw_zero_axis, bool)
     assert isinstance(pause_figure, bool)
     assert isinstance(time_pause, (int, float))
-    assert isinstance(colors, list)
+    assert isinstance(colors, np.ndarray)
     assert len(X.shape) == 2
     assert len(Ys.shape) == 2
     assert X.shape[1] == 1
@@ -240,7 +240,7 @@ def plot_gp_via_distribution(X_train: np.ndarray, Y_train: np.ndarray,
     pause_figure: bool=True,
     time_pause: constants.TYPING_UNION_INT_FLOAT=constants.TIME_PAUSE,
     range_shade: float=constants.RANGE_SHADE,
-    colors: list=constants.COLORS,
+    colors: np.ndarray=constants.COLORS,
 ) -> constants.TYPE_NONE: # pragma: no cover
     """
     It is for plotting Gaussian process regression.
@@ -277,8 +277,8 @@ def plot_gp_via_distribution(X_train: np.ndarray, Y_train: np.ndarray,
     :type time_pause: int. or float, optional
     :param range_shade: shade range for standard deviation.
     :type range_shade: float, optional
-    :param colors: list of colors.
-    :type colors: list, optional
+    :param colors: array of colors.
+    :type colors: np.ndarray, optional
 
     :returns: None.
     :rtype: NoneType
@@ -302,7 +302,7 @@ def plot_gp_via_distribution(X_train: np.ndarray, Y_train: np.ndarray,
     assert isinstance(pause_figure, bool)
     assert isinstance(time_pause, (int, float))
     assert isinstance(range_shade, float)
-    assert isinstance(colors, list)
+    assert isinstance(colors, np.ndarray)
     assert len(X_train.shape) == 2
     assert len(X_test.shape) == 2
     assert len(Y_train.shape) == 2
@@ -355,7 +355,8 @@ def plot_gp_via_distribution(X_train: np.ndarray, Y_train: np.ndarray,
     _show_figure(pause_figure, time_pause)
 
 @utils_common.validate_types
-def plot_minimum_vs_iter(minima: np.ndarray, list_str_label: list, num_init: int, draw_std: bool,
+def plot_minimum_vs_iter(minima: np.ndarray, list_str_label: constants.TYPING_LIST[str],
+    num_init: int, draw_std: bool,
     include_marker: bool=True,
     include_legend: bool=False,
     use_tex: bool=False,
@@ -366,8 +367,8 @@ def plot_minimum_vs_iter(minima: np.ndarray, list_str_label: list, num_init: int
     pause_figure: bool=True,
     time_pause: constants.TYPING_UNION_INT_FLOAT=constants.TIME_PAUSE,
     range_shade: float=constants.RANGE_SHADE,
-    markers: list=constants.MARKERS,
-    colors: list=constants.COLORS,
+    markers: np.ndarray=constants.MARKERS,
+    colors: np.ndarray=constants.COLORS,
 ) -> constants.TYPE_NONE: # pragma: no cover
     """
     It is for plotting optimization results of Bayesian optimization, in
@@ -403,10 +404,10 @@ def plot_minimum_vs_iter(minima: np.ndarray, list_str_label: list, num_init: int
     :type time_pause: int. or float, optional
     :param range_shade: shade range for standard deviation.
     :type range_shade: float, optional
-    :param markers: list of markers.
-    :type markers: list, optional
-    :param colors: list of colors.
-    :type colors: list, optional
+    :param markers: array of markers.
+    :type markers: np.ndarray, optional
+    :param colors: array of colors.
+    :type colors: np.ndarray, optional
 
     :returns: None.
     :rtype: NoneType
@@ -429,8 +430,8 @@ def plot_minimum_vs_iter(minima: np.ndarray, list_str_label: list, num_init: int
     assert isinstance(pause_figure, bool)
     assert isinstance(time_pause, (int, float))
     assert isinstance(range_shade, float)
-    assert isinstance(markers, list)
-    assert isinstance(colors, list)
+    assert isinstance(markers, np.ndarray)
+    assert isinstance(colors, np.ndarray)
     assert len(minima.shape) == 3
     assert minima.shape[0] == len(list_str_label)
     assert minima.shape[2] >= num_init
@@ -499,7 +500,7 @@ def plot_minimum_vs_iter(minima: np.ndarray, list_str_label: list, num_init: int
 
 @utils_common.validate_types
 def plot_minimum_vs_time(times: np.ndarray, minima: np.ndarray,
-    list_str_label: list, num_init: int, draw_std: bool,
+    list_str_label: constants.TYPING_LIST[str], num_init: int, draw_std: bool,
     include_marker: bool=True,
     include_legend: bool=False,
     use_tex: bool=False,
@@ -510,8 +511,8 @@ def plot_minimum_vs_time(times: np.ndarray, minima: np.ndarray,
     pause_figure: bool=True,
     time_pause: constants.TYPING_UNION_INT_FLOAT=constants.TIME_PAUSE,
     range_shade: float=constants.RANGE_SHADE,
-    markers: list=constants.MARKERS,
-    colors: list=constants.COLORS,
+    markers: np.ndarray=constants.MARKERS,
+    colors: np.ndarray=constants.COLORS,
 ) -> constants.TYPE_NONE: # pragma: no cover
     """
     It is for plotting optimization results of Bayesian optimization, in terms of execution time.
@@ -550,10 +551,10 @@ def plot_minimum_vs_time(times: np.ndarray, minima: np.ndarray,
     :type time_pause: int. or float, optional
     :param range_shade: shade range for standard deviation.
     :type range_shade: float, optional
-    :param markers: list of markers.
-    :type markers: list, optional
-    :param colors: list of colors.
-    :type colors: list, optional
+    :param markers: array of markers.
+    :type markers: np.ndarray, optional
+    :param colors: array of colors.
+    :type colors: np.ndarray, optional
 
     :returns: None.
     :rtype: NoneType
@@ -577,8 +578,8 @@ def plot_minimum_vs_time(times: np.ndarray, minima: np.ndarray,
     assert isinstance(pause_figure, bool)
     assert isinstance(time_pause, (int, float))
     assert isinstance(range_shade, float)
-    assert isinstance(markers, list)
-    assert isinstance(colors, list)
+    assert isinstance(markers, np.ndarray)
+    assert isinstance(colors, np.ndarray)
     assert len(times.shape) == 3
     assert len(minima.shape) == 3
     assert times.shape[0] == minima.shape[0] == len(list_str_label)

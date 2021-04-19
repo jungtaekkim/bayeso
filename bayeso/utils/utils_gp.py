@@ -1,55 +1,15 @@
 #
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: September 24, 2020
+# last updated: December 29, 2020
 #
-"""It is utilities for Gaussian process regression."""
+"""It is utilities for Gaussian process regression and
+Student-:math:`t` process regression."""
 
 import numpy as np
 
 from bayeso.utils import utils_common
 from bayeso import constants
 
-
-@utils_common.validate_types
-def check_str_cov(str_fun: str, str_cov: str, shape_X1: tuple,
-    shape_X2: tuple=None
-) -> constants.TYPE_NONE:
-    """
-    It is for validating the shape of X1 (and optionally the shape of X2).
-
-    :param str_fun: the name of function.
-    :type str_fun: str.
-    :param str_cov: the name of covariance function.
-    :type str_cov: str.
-    :param shape_X1: the shape of X1.
-    :type shape_X1: tuple
-    :param shape_X2: None, or the shape of X2.
-    :type shape_X2: NoneType or tuple, optional
-
-    :returns: None, if it is valid. Raise an error, otherwise.
-    :rtype: NoneType
-
-    :raises: AssertionError, ValueError
-
-    """
-
-    assert isinstance(str_fun, str)
-    assert isinstance(str_cov, str)
-    assert isinstance(shape_X1, tuple)
-    assert shape_X2 is None or isinstance(shape_X2, tuple)
-
-    if str_cov in constants.ALLOWED_GP_COV_BASE:
-        assert len(shape_X1) == 2
-        if shape_X2 is not None:
-            assert len(shape_X2) == 2
-    elif str_cov in constants.ALLOWED_GP_COV_SET:
-        assert len(shape_X1) == 3
-        if shape_X2 is not None:
-            assert len(shape_X2) == 3
-    elif str_cov in constants.ALLOWED_GP_COV: # pragma: no cover
-        raise ValueError('{}: missing conditions for str_cov.'.format(str_fun))
-    else:
-        raise ValueError('{}: invalid str_cov.'.format(str_fun))
 
 @utils_common.validate_types
 def get_prior_mu(prior_mu: constants.TYPING_UNION_CALLABLE_NONE, X: np.ndarray) -> np.ndarray:
@@ -79,3 +39,44 @@ def get_prior_mu(prior_mu: constants.TYPING_UNION_CALLABLE_NONE, X: np.ndarray) 
         assert len(prior_mu_X.shape) == 2
         assert X.shape[0] == prior_mu_X.shape[0]
     return prior_mu_X
+
+@utils_common.validate_types
+def validate_common_args(X_train: np.ndarray, Y_train: np.ndarray,
+    str_cov: str, prior_mu: constants.TYPING_UNION_CALLABLE_NONE,
+    debug: bool,
+    X_test: constants.TYPING_UNION_ARRAY_NONE=None,
+) -> constants.TYPE_NONE:
+    """
+    It validates the common arguments for various functions.
+
+    :param X_train: inputs. Shape: (n, d) or (n, m, d).
+    :type X_train: numpy.ndarray
+    :param Y_train: outputs. Shape: (n, 1).
+    :type Y_train: numpy.ndarray
+    :param str_cov: the name of covariance function.
+    :type str_cov: str.
+    :param prior_mu: None, or prior mean function.
+    :type prior_mu: NoneType, or function
+    :param debug: flag for printing log messages.
+    :type debug: bool.
+    :param X_test: inputs or None. Shape: (l, d) or (l, m, d).
+    :type X_test: numpy.ndarray, or NoneType, optional
+
+    :returns: None.
+    :rtype: NoneType
+
+    :raises: AssertionError
+
+    """
+
+    assert isinstance(X_train, np.ndarray)
+    assert isinstance(Y_train, np.ndarray)
+    assert isinstance(str_cov, str)
+    assert callable(prior_mu) or prior_mu is None
+    assert isinstance(debug, bool)
+    assert len(Y_train.shape) == 2
+    assert X_train.shape[0] == Y_train.shape[0]
+    assert isinstance(X_test, (np.ndarray, type(None)))
+
+    if X_test is not None:
+        assert X_train.shape[1] == X_test.shape[1]

@@ -6,7 +6,7 @@ import numpy as np
 import os
 
 from bayeso import bo
-from benchmarks.two_dim_eggholder import Eggholder
+from bayeso_benchmarks.two_dim_eggholder import Eggholder
 from bayeso.wrappers import wrappers_bo
 from bayeso.utils import utils_bo
 from bayeso.utils import utils_plotting
@@ -32,7 +32,7 @@ def main():
     list_time = []
     for ind_bo in range(0, num_bo):
         print('BO Round', ind_bo + 1)
-        X_final, Y_final, time_final, _, _ = wrappers_bo.run_single_round(model_bo, fun_target, num_init, num_iter, str_initial_method_bo='uniform', str_sampling_method_ao='uniform', num_samples_ao=100)
+        X_final, Y_final, time_final, _, _ = wrappers_bo.run_single_round(model_bo, fun_target, num_init, num_iter, str_initial_method_bo='halton', str_sampling_method_ao='halton', num_samples_ao=100, seed=42 * (ind_bo + 1))
         print(X_final)
         print(Y_final)
         print(time_final)

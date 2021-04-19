@@ -1,7 +1,7 @@
-bayeso.gp.gp\_scipy
-===================
+bayeso.tp.tp
+============
 
-.. automodule:: bayeso.gp.gp_scipy
+.. automodule:: bayeso.tp.tp
    :members:
    :private-members:
    :undoc-members:

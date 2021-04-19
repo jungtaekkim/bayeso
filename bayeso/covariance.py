@@ -1,11 +1,12 @@
 #
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: September 24, 2020
+# last updated: December 29, 2020
 #
 """It defines covariance functions and their associated functions."""
 
 import numpy as np
 import scipy.spatial.distance as scisd
+import scipy.linalg
 
 from bayeso import constants
 from bayeso.utils import utils_covariance
@@ -13,46 +14,169 @@ from bayeso.utils import utils_common
 
 
 @utils_common.validate_types
-def choose_fun_cov(str_cov: str, choose_grad: bool) -> callable:
+def choose_fun_cov(str_cov: str) -> constants.TYPING_CALLABLE:
     """
-    It is for choosing a covariance function or a function for computing
-    gradients of covariance function.
+    It chooses a covariance function.
 
     :param str_cov: the name of covariance function.
     :type str_cov: str.
-    :param choose_grad: flag for returning a function for the gradients
-    :type choose_grad: bool.
 
-    :returns: covariance function, or function for computing gradients of
-        covariance function.
-    :rtype: function
+    :returns: covariance function.
+    :rtype: callable
 
     :raises: AssertionError
 
     """
 
     assert isinstance(str_cov, str)
-    assert isinstance(choose_grad, bool)
 
     if str_cov in ('eq', 'se'):
-        if choose_grad:
-            fun_cov = grad_cov_se
-        else:
-            fun_cov = cov_se
+        fun_cov = cov_se
     elif str_cov == 'matern32':
-        if choose_grad:
-            fun_cov = grad_cov_matern32
-        else:
-            fun_cov = cov_matern32
+        fun_cov = cov_matern32
     elif str_cov == 'matern52':
-        if choose_grad:
-            fun_cov = grad_cov_matern52
-        else:
-            fun_cov = cov_matern52
+        fun_cov = cov_matern52
     else:
-        raise NotImplementedError('choose_fun_cov: allowed str_cov and \
-            choose_grad conditions, but it is not implemented.')
+        raise NotImplementedError('choose_fun_cov: allowed str_cov condition,\
+            but it is not implemented.')
     return fun_cov
+
+@utils_common.validate_types
+def choose_fun_grad_cov(str_cov: str) -> constants.TYPING_CALLABLE:
+    """
+    It chooses a function for computing gradients of covariance function.
+
+    :param str_cov: the name of covariance function.
+    :type str_cov: str.
+
+    :returns: function for computing gradients of covariance function.
+    :rtype: callable
+
+    :raises: AssertionError
+
+    """
+
+    assert isinstance(str_cov, str)
+
+    if str_cov in ('eq', 'se'):
+        fun_grad_cov = grad_cov_se
+    elif str_cov == 'matern32':
+        fun_grad_cov = grad_cov_matern32
+    elif str_cov == 'matern52':
+        fun_grad_cov = grad_cov_matern52
+    else:
+        raise NotImplementedError('choose_fun_grad_cov: allowed str_cov condition,\
+            but it is not implemented.')
+    return fun_grad_cov
+
+@utils_common.validate_types
+def get_kernel_inverse(X_train: np.ndarray, hyps: dict, str_cov: str,
+    fix_noise: bool=constants.FIX_GP_NOISE,
+    use_gradient: bool=False,
+    debug: bool=False
+) -> constants.TYPING_TUPLE_THREE_ARRAYS:
+    """
+    This function computes a kernel inverse without any matrix decomposition techniques.
+
+    :param X_train: inputs. Shape: (n, d) or (n, m, d).
+    :type X_train: numpy.ndarray
+    :param hyps: dictionary of hyperparameters for Gaussian process.
+    :type hyps: dict.
+    :param str_cov: the name of covariance function.
+    :type str_cov: str.
+    :param fix_noise: flag for fixing a noise.
+    :type fix_noise: bool., optional
+    :param use_gradient: flag for computing and returning gradients of
+        negative log marginal likelihood.
+    :type use_gradient: bool., optional
+    :param debug: flag for printing log messages.
+    :type debug: bool., optional
+
+    :returns: a tuple of kernel matrix over `X_train`, kernel matrix
+        inverse, and gradients of kernel matrix. If `use_gradient` is False,
+        gradients of kernel matrix would be None.
+    :rtype: tuple of (numpy.ndarray, numpy.ndarray, numpy.ndarray)
+
+    :raises: AssertionError
+
+    """
+
+    assert isinstance(X_train, np.ndarray)
+    assert isinstance(hyps, dict)
+    assert isinstance(str_cov, str)
+    assert isinstance(use_gradient, bool)
+    assert isinstance(fix_noise, bool)
+    assert isinstance(debug, bool)
+    utils_covariance.check_str_cov('get_kernel_inverse', str_cov, X_train.shape)
+
+    cov_X_X = cov_main(str_cov, X_train, X_train, hyps, True) \
+        + hyps['noise']**2 * np.eye(X_train.shape[0])
+    cov_X_X = (cov_X_X + cov_X_X.T) / 2.0
+    inv_cov_X_X = np.linalg.inv(cov_X_X)
+
+    if use_gradient:
+        grad_cov_X_X = grad_cov_main(str_cov, X_train, X_train,
+            hyps, fix_noise, same_X_Xp=True)
+    else:
+        grad_cov_X_X = None
+
+    return cov_X_X, inv_cov_X_X, grad_cov_X_X
+
+@utils_common.validate_types
+def get_kernel_cholesky(X_train: np.ndarray, hyps: dict, str_cov: str,
+    fix_noise: bool=constants.FIX_GP_NOISE,
+    use_gradient: bool=False,
+    debug: bool=False
+) -> constants.TYPING_TUPLE_THREE_ARRAYS:
+    """
+    This function computes a kernel inverse with Cholesky decomposition.
+
+    :param X_train: inputs. Shape: (n, d) or (n, m, d).
+    :type X_train: numpy.ndarray
+    :param hyps: dictionary of hyperparameters for Gaussian process.
+    :type hyps: dict.
+    :param str_cov: the name of covariance function.
+    :type str_cov: str.
+    :param fix_noise: flag for fixing a noise.
+    :type fix_noise: bool., optional
+    :param use_gradient: flag for computing and returning gradients of
+        negative log marginal likelihood.
+    :type use_gradient: bool., optional
+    :param debug: flag for printing log messages.
+    :type debug: bool., optional
+
+    :returns: a tuple of kernel matrix over `X_train`, lower matrix computed
+        by Cholesky decomposition, and gradients of kernel matrix. If
+        `use_gradient` is False, gradients of kernel matrix would be None.
+    :rtype: tuple of (numpy.ndarray, numpy.ndarray, numpy.ndarray)
+
+    :raises: AssertionError
+
+    """
+
+    assert isinstance(X_train, np.ndarray)
+    assert isinstance(hyps, dict)
+    assert isinstance(str_cov, str)
+    assert isinstance(fix_noise, bool)
+    assert isinstance(use_gradient, bool)
+    assert isinstance(debug, bool)
+    utils_covariance.check_str_cov('get_kernel_cholesky', str_cov, X_train.shape)
+
+    cov_X_X = cov_main(str_cov, X_train, X_train, hyps, True) \
+        + hyps['noise']**2 * np.eye(X_train.shape[0])
+    cov_X_X = (cov_X_X + cov_X_X.T) / 2.0
+    try:
+        lower = scipy.linalg.cholesky(cov_X_X, lower=True)
+    except np.linalg.LinAlgError: # pragma: no cover
+        cov_X_X += 1e-2 * np.eye(X_train.shape[0])
+        lower = scipy.linalg.cholesky(cov_X_X, lower=True)
+
+    if use_gradient:
+        grad_cov_X_X = grad_cov_main(str_cov, X_train, X_train,
+            hyps, fix_noise, same_X_Xp=True)
+    else:
+        grad_cov_X_X = None
+    return cov_X_X, lower, grad_cov_X_X
 
 @utils_common.validate_types
 def cov_se(X: np.ndarray, Xp: np.ndarray, lengthscales: constants.TYPING_UNION_ARRAY_FLOAT,
@@ -382,11 +506,11 @@ def cov_set(str_cov: str, X: np.ndarray, Xp: np.ndarray,
         assert X.shape[1] == Xp.shape[1] == lengthscales.shape[0]
     else:
         assert X.shape[1] == Xp.shape[1]
-    assert str_cov in constants.ALLOWED_GP_COV_BASE
+    assert str_cov in constants.ALLOWED_COV_BASE
     num_X = X.shape[0]
     num_Xp = Xp.shape[0]
 
-    fun_cov = choose_fun_cov(str_cov, False)
+    fun_cov = choose_fun_cov(str_cov)
     cov_X_Xp = fun_cov(X, Xp, lengthscales, signal)
     cov_X_Xp = np.sum(cov_X_Xp)
 
@@ -427,7 +551,7 @@ def cov_main(str_cov: str, X: np.ndarray, Xp: np.ndarray, hyps: dict, same_X_Xp:
     assert isinstance(hyps, dict)
     assert isinstance(same_X_Xp, bool)
     assert isinstance(jitter, float)
-    assert str_cov in constants.ALLOWED_GP_COV
+    assert str_cov in constants.ALLOWED_COV
 
     num_X = X.shape[0]
     num_Xp = Xp.shape[0]
@@ -437,34 +561,32 @@ def cov_main(str_cov: str, X: np.ndarray, Xp: np.ndarray, hyps: dict, same_X_Xp:
         assert num_X == num_Xp
         cov_X_Xp += np.eye(num_X) * jitter
 
-    if str_cov in ('eq', 'se', 'matern32', 'matern52'):
+    if str_cov in constants.ALLOWED_COV_BASE:
         assert len(X.shape) == 2
         assert len(Xp.shape) == 2
         dim_X = X.shape[1]
         dim_Xp = Xp.shape[1]
         assert dim_X == dim_Xp
 
-        hyps, is_valid = utils_covariance.validate_hyps_dict(hyps, str_cov, dim_X)
-        # TODO: ValueError is appropriate? We can just raise AssertionError in validate_hyps_dict.
-        if not is_valid:
-            raise ValueError('cov_main: invalid hyperparameters.')
+        hyps = utils_covariance.validate_hyps_dict(hyps, str_cov, dim_X)
 
-        fun_cov = choose_fun_cov(str_cov, False)
+        fun_cov = choose_fun_cov(str_cov)
         cov_X_Xp += fun_cov(X, Xp, hyps['lengthscales'], hyps['signal'])
+
         assert cov_X_Xp.shape == (num_X, num_Xp)
-    elif str_cov in constants.ALLOWED_GP_COV_SET:
+    elif str_cov in constants.ALLOWED_COV_SET:
         list_str_cov = str_cov.split('_')
         str_cov = list_str_cov[1]
+
         assert len(X.shape) == 3
         assert len(Xp.shape) == 3
+
         dim_X = X.shape[2]
         dim_Xp = Xp.shape[2]
+
         assert dim_X == dim_Xp
 
-        hyps, is_valid = utils_covariance.validate_hyps_dict(hyps, str_cov, dim_X)
-        # TODO: ValueError is appropriate? We can just raise AssertionError in validate_hyps_dict.
-        if not is_valid:
-            raise ValueError('cov_main: invalid hyperparameters.')
+        hyps = utils_covariance.validate_hyps_dict(hyps, str_cov, dim_X)
 
         if not same_X_Xp:
             for ind_X in range(0, num_X):
@@ -521,7 +643,7 @@ def grad_cov_main(str_cov: str, X: np.ndarray, Xp: np.ndarray, hyps: dict, fix_n
     assert isinstance(fix_noise, bool)
     assert isinstance(same_X_Xp, bool)
     assert isinstance(jitter, float)
-    assert str_cov in constants.ALLOWED_GP_COV
+    assert str_cov in constants.ALLOWED_COV
     # TODO: X and Xp should be same?
     assert same_X_Xp
 
@@ -537,7 +659,7 @@ def grad_cov_main(str_cov: str, X: np.ndarray, Xp: np.ndarray, hyps: dict, fix_n
 
     cov_X_Xp = cov_main(str_cov, X, Xp, hyps, same_X_Xp, jitter=jitter)
 
-    fun_grad_cov = choose_fun_cov(str_cov, True)
+    fun_grad_cov = choose_fun_grad_cov(str_cov)
     grad_cov_X_Xp = fun_grad_cov(cov_X_Xp, X, Xp, hyps, num_hyps, fix_noise)
 
     return grad_cov_X_Xp

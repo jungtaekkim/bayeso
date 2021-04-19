@@ -9,7 +9,7 @@ from bayeso import acquisition
 from bayeso.gp import gp
 from bayeso.utils import utils_common
 from bayeso.utils import utils_plotting
-from benchmarks.two_dim_branin import Branin
+from bayeso_benchmarks.two_dim_branin import Branin
 
 
 STR_FUN_TARGET = 'branin'

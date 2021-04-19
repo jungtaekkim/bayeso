@@ -1,7 +1,7 @@
 Installing BayesO
 #################
 
-We recommend it should be installed in **virtualenv**.
+We recommend installing it with **virtualenv**.
 You can choose one of three installation options.
 
 Installing from PyPI

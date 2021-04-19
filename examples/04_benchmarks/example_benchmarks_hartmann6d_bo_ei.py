@@ -6,7 +6,7 @@ import numpy as np
 import os
 
 from bayeso import bo
-from benchmarks.six_dim_hartmann6d import Hartmann6D
+from bayeso_benchmarks.six_dim_hartmann6d import Hartmann6D
 from bayeso.wrappers import wrappers_bo
 from bayeso.utils import utils_bo
 from bayeso.utils import utils_plotting
