@@ -71,13 +71,14 @@ def get_optimized_kernel(X_train: np.ndarray, Y_train: np.ndarray,
     assert str_modelselection_method in constants.ALLOWED_MODELSELECTION_METHOD
     use_gradient = bool(str_optimizer_method != 'Nelder-Mead')
     # TODO: Now, use_gradient is fixed as False.
-    use_gradient = False
+#    use_gradient = False
 
     time_start = time.time()
 
     if debug:
         logger.debug('str_optimizer_method: %s', str_optimizer_method)
         logger.debug('str_modelselection_method: %s', str_modelselection_method)
+        logger.debug('use_gradient: %s', use_gradient)
 
     prior_mu_train = utils_gp.get_prior_mu(prior_mu, X_train)
     if str_cov in constants.ALLOWED_COV_BASE:

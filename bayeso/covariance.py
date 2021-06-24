@@ -265,13 +265,11 @@ def grad_cov_se(cov_X_Xp: np.ndarray, X: np.ndarray, Xp: np.ndarray, hyps: dict,
 
     grad_cov_X_Xp[:, :, ind_next] += 2.0 * cov_X_Xp / hyps['signal']
 
-    term_pre = cov_X_Xp * dist**2
-
     if isinstance(hyps['lengthscales'], np.ndarray) and len(hyps['lengthscales'].shape) == 1:
         for ind_ in range(0, hyps['lengthscales'].shape[0]):
-            grad_cov_X_Xp[:, :, ind_next+ind_+1] += term_pre * hyps['lengthscales'][ind_]**(-1)
+            grad_cov_X_Xp[:, :, ind_next+ind_+1] += cov_X_Xp * scisd.cdist(X[:, ind_][..., np.newaxis], Xp[:, ind_][..., np.newaxis], metric='euclidean')**2 * hyps['lengthscales'][ind_]**(-3)
     else:
-        grad_cov_X_Xp[:, :, ind_next+1] += term_pre * hyps['lengthscales']**(-1)
+        grad_cov_X_Xp[:, :, ind_next+1] += cov_X_Xp * dist**2 * hyps['lengthscales']**(-1)
 
     return grad_cov_X_Xp
 
@@ -361,13 +359,13 @@ def grad_cov_matern32(cov_X_Xp: np.ndarray, X: np.ndarray, Xp: np.ndarray, hyps:
 
     grad_cov_X_Xp[:, :, ind_next] += 2.0 * cov_X_Xp / hyps['signal']
 
-    term_pre = 3.0 * hyps['signal']**2 * np.exp(-np.sqrt(3) * dist) * dist**2
+    term_pre = 3.0 * hyps['signal']**2 * np.exp(-np.sqrt(3) * dist)
 
     if isinstance(hyps['lengthscales'], np.ndarray) and len(hyps['lengthscales'].shape) == 1:
         for ind_ in range(0, hyps['lengthscales'].shape[0]):
-            grad_cov_X_Xp[:, :, ind_next+ind_+1] += term_pre * hyps['lengthscales'][ind_]**(-1)
+            grad_cov_X_Xp[:, :, ind_next+ind_+1] += term_pre * scisd.cdist(X[:, ind_][..., np.newaxis], Xp[:, ind_][..., np.newaxis], metric='euclidean')**2 * hyps['lengthscales'][ind_]**(-3)
     else:
-        grad_cov_X_Xp[:, :, ind_next+1] += term_pre * hyps['lengthscales']**(-1)
+        grad_cov_X_Xp[:, :, ind_next+1] += term_pre * dist**2 * hyps['lengthscales']**(-1)
 
     return grad_cov_X_Xp
 
@@ -460,13 +458,13 @@ def grad_cov_matern52(cov_X_Xp: np.ndarray, X: np.ndarray, Xp: np.ndarray, hyps:
     grad_cov_X_Xp[:, :, ind_next] += 2.0 * cov_X_Xp / hyps['signal']
 
     term_pre = 5.0 / 3.0 * hyps['signal']**2 * (1.0 + np.sqrt(5) * dist) \
-        * np.exp(-np.sqrt(5) * dist) * dist**3
+        * np.exp(-np.sqrt(5) * dist)
 
     if isinstance(hyps['lengthscales'], np.ndarray) and len(hyps['lengthscales'].shape) == 1:
         for ind_ in range(0, hyps['lengthscales'].shape[0]):
-            grad_cov_X_Xp[:, :, ind_next+ind_+1] += term_pre * hyps['lengthscales'][ind_]**(-1)
+            grad_cov_X_Xp[:, :, ind_next+ind_+1] += term_pre * scisd.cdist(X[:, ind_][..., np.newaxis], Xp[:, ind_][..., np.newaxis], metric='euclidean')**2 * hyps['lengthscales'][ind_]**(-3)
     else:
-        grad_cov_X_Xp[:, :, ind_next+1] += term_pre * hyps['lengthscales']**(-1)
+        grad_cov_X_Xp[:, :, ind_next+1] += term_pre * hyps['lengthscales']**(-1) * dist**2
 
     return grad_cov_X_Xp
 
