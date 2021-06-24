@@ -23,9 +23,9 @@ def fun_target(X):
 
 def main():
     num_bo = 5
-    num_iter = 20
+    num_iter = 100
     num_init = 5
-    
+
     bounds = obj_fun.get_bounds()
     model_bo = bo.BO(bounds, debug=True)
     list_Y = []

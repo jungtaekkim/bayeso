@@ -71,15 +71,18 @@ def test_neg_log_ml():
     neg_log_ml_, neg_grad_log_ml_ = package_target.neg_log_ml(X, Y, arr_hyps, str_cov, prior_mu_X, fix_noise=fix_noise, use_gradient=True)
     print(neg_log_ml_)
     print(neg_grad_log_ml_)
+    print(neg_grad_log_ml_[2])
+    print(neg_grad_log_ml_[3])
+    print(neg_grad_log_ml_[4])
 
     truth_log_ml_ = 5.634155417555853
     truth_grad_log_ml_ = np.array([
         -1.60446383e-02,
         1.75087448e-01,
         -1.60448396e+00,
-        -5.50871167e-05,
-        -5.50871167e-05,
-        -5.50871167e-05,
+        -1.836237221888097e-05,
+        -1.836237221888097e-05,
+        -1.836237221888097e-05,
     ])
     assert np.abs(neg_log_ml_ - truth_log_ml_) < TEST_EPSILON
     assert np.all(np.abs(neg_grad_log_ml_ - truth_grad_log_ml_) < TEST_EPSILON)
