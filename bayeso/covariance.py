@@ -2,7 +2,10 @@
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
 # last updated: December 29, 2020
 #
-"""It defines covariance functions and their associated functions."""
+"""It defines covariance functions and their associated functions.
+Derivatives of covariance functions with respect to hyperparameters are described
+in `the notes <http://jungtaek.github.io/notes/derivatives_kernels.pdf>`_,
+"""
 
 import numpy as np
 import scipy.spatial.distance as scisd
