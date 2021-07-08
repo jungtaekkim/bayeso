@@ -64,5 +64,11 @@ def test_import_utils_utils_plotting():
 def test_import_utils_utils_logger():
     import bayeso.utils.utils_logger
 
+def test_import_wrappers():
+    import bayeso.wrappers
+
 def test_import_wrappers_wrappers_bo():
     import bayeso.wrappers.wrappers_bo
+
+def test_import_wrappers_wrappers_bayesian_optimization():
+    import bayeso.wrappers.wrappers_bayesian_optimization
