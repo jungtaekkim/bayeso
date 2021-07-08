@@ -93,13 +93,13 @@ def get_next_best_acquisition(points: np.ndarray, acquisitions: np.ndarray,
     points_evaluated: np.ndarray
 ) -> np.ndarray:
     """
-    It returns the next best acquired example.
+    It returns the next best acquired sample.
 
     :param points: inputs for acquisition function. Shape: (n, d).
     :type points: numpy.ndarray
     :param acquisitions: acquisition function values over `points`. Shape: (n, ).
     :type acquisitions: numpy.ndarray
-    :param points_evaluated: examples evaluated so far. Shape: (m, d).
+    :param points_evaluated: the samples evaluated so far. Shape: (m, d).
     :type points_evaluated: numpy.ndarray
 
     :returns: next best acquired point. Shape: (d, ).

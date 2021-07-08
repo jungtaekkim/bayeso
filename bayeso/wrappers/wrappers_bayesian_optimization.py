@@ -16,6 +16,56 @@ logger = utils_logger.get_logger('wrappers_bayesian_optimization')
 
 
 class BayesianOptimization:
+    """
+    It is a wrapper class for Bayesian optimization.
+    A function for optimizing `fun_target` runs a single round
+    of Bayesian optimization.
+
+    :param range_X: a search space. Shape: (d, 2).
+    :type range_X: numpy.ndarray
+    :param fun_target: a target function.
+    :type fun_target: callable
+    :param num_iter: an iteration budget for Bayesian optimization.
+    :type num_iter: int.
+    :param str_surrogate: the name of surrogate model.
+    :type str_surrogate: str., optional
+    :param str_cov: the name of covariance function.
+    :type str_cov: str., optional
+    :param str_acq: the name of acquisition function.
+    :type str_acq: str., optional
+    :param normalize_Y: a flag for normalizing outputs.
+    :type normalize_Y: bool., optional
+    :param use_ard: a flag for automatic relevance determination.
+    :type use_ard: bool., optional
+    :param prior_mu: None, or a prior mean function.
+    :type prior_mu: NoneType, or callable, optional
+    :param str_initial_method_bo: the name of initialization method for
+        sampling initial examples in Bayesian optimization.
+    :type str_initial_method_bo: str., optional
+    :param str_sampling_method_ao: the name of sampling method for
+        acquisition function optimization.
+    :type str_sampling_method_ao: str., optional
+    :param str_optimizer_method_gp: the name of optimization method for
+        Gaussian process regression.
+    :type str_optimizer_method_gp: str., optional
+    :param str_optimizer_method_bo: the name of optimization method for
+        Bayesian optimization.
+    :type str_optimizer_method_bo: str., optional
+    :param str_mlm_method: the name of marginal likelihood maximization
+        method for Gaussian process regression.
+    :type str_mlm_method: str., optional
+    :param str_modelselection_method: the name of model selection method
+        for Gaussian process regression.
+    :type str_modelselection_method: str., optional
+    :param num_samples_ao: the number of samples for acquisition function
+        optimization. If a local search method (e.g., L-BFGS-B) is selected
+        for acquisition function optimization, it is employed.
+    :type num_samples_ao: int., optional
+    :param debug: a flag for printing log messages.
+    :type debug: bool., optional
+
+    """
+
     def __init__(self,
         range_X: np.ndarray,
         fun_target: constants.TYPING_CALLABLE,
@@ -97,6 +147,14 @@ class BayesianOptimization:
         self.model_bo = self._get_model_bo()
 
     def _get_model_bo(self):
+        """
+        It returns an object of bayeso.bo.BO.
+
+        :returns: an object of Bayesian optimization.
+        :rtype: bayeso.bo.BO
+
+        """
+
         model_bo = bo.BO(
             self.range_X,
             str_cov=self.str_cov,
@@ -118,6 +176,30 @@ class BayesianOptimization:
         next_samples: np.ndarray,
         acq_vals: np.ndarray,
     ):
+        """
+        It returns the next best sample in terms of acquisition function values.
+
+        :param next_sample: the next sample acquired.
+        :type next_sample: np.ndarray
+        :param X: the samples evaluated so far.
+        :type X: np.ndarray
+        :param next_samples: the candidates of the next sample.
+        :type next_samples: np.ndarray
+        :param acq_vals: the values of acquisition function over `next_samples`.
+        :type acq_vals: np.ndarray
+
+        :returns: the next best sample. Shape: (d, ).
+        :rtype: numpy.ndarray
+
+        :raises: AssertionError
+
+        """
+
+        assert isinstance(next_sample, np.ndarray)
+        assert isinstance(X, np.ndarray)
+        assert isinstance(next_samples, np.ndarray)
+        assert isinstance(acq_vals, np.ndarray)
+
         if np.where(np.linalg.norm(next_sample - X, axis=1)\
             < constants.TOLERANCE_DUPLICATED_ACQ)[0].shape[0] > 0: # pragma: no cover
             next_sample = utils_bo.get_next_best_acquisition(
@@ -131,6 +213,29 @@ class BayesianOptimization:
     def optimize_with_all_initial_information(self,
         X: np.ndarray, Y: np.ndarray,
     ) -> constants.TYPING_TUPLE_FIVE_ARRAYS:
+        """
+        It returns the optimization results and times consumed, given
+        inital inputs `X` and their corresponding outputs `Y`.
+
+        :param X: initial inputs. Shape: (n, d) or (n, m, d).
+        :type X: numpy.ndarray
+        :param Y: initial outputs. Shape: (n, 1).
+        :type Y: numpy.ndarray
+
+        :returns: a tuple of acquired samples, their function values, overall
+            times consumed per iteration, time consumed in modeling Gaussian process
+            regression, and time consumed in acquisition function optimization.
+            Shape: ((n + `num_iter`, d), (n + `num_iter`, 1),
+            (`num_iter`, ), (`num_iter`, ), (`num_iter`, )),
+            or ((n + `num_iter`, m, d),
+            (n + `num_iter`, m, 1), (`num_iter`, ), (`num_iter`, ),
+            (`num_iter`, )).
+        :rtype: (numpy.ndarray, numpy.ndarray, numpy.ndarray, numpy.ndarray, numpy.ndarray)
+
+        :raises: AssertionError
+
+        """
+
         assert isinstance(X, np.ndarray)
         assert isinstance(Y, np.ndarray)
         assert len(X.shape) == 2
@@ -194,6 +299,27 @@ class BayesianOptimization:
     def optimize_with_initial_inputs(self,
         X: np.ndarray,
     ) -> constants.TYPING_TUPLE_FIVE_ARRAYS:
+        """
+        It returns the optimization results and times consumed, given
+        inital inputs `X`.
+
+        :param X: initial inputs. Shape: (n, d) or (n, m, d).
+        :type X: numpy.ndarray
+
+        :returns: a tuple of acquired samples, their function values, overall
+            times consumed per iteration, time consumed in modeling Gaussian process
+            regression, and time consumed in acquisition function optimization.
+            Shape: ((n + `num_iter`, d), (n + `num_iter`, 1),
+            (n + `num_iter`, ), (`num_iter`, ), (`num_iter`, )),
+            or ((n + `num_iter`, m, d),
+            (n + `num_iter`, m, 1), (n + `num_iter`, ), (`num_iter`, ),
+            (`num_iter`, )).
+        :rtype: (numpy.ndarray, numpy.ndarray, numpy.ndarray, numpy.ndarray, numpy.ndarray)
+
+        :raises: AssertionError
+
+        """
+
         assert isinstance(X, np.ndarray)
         assert len(X.shape) == 2
 
@@ -220,6 +346,33 @@ class BayesianOptimization:
         num_init: int,
         seed: constants.TYPING_UNION_INT_NONE=None,
     ) -> constants.TYPING_TUPLE_FIVE_ARRAYS:
+        """
+        It returns the optimization results and times consumed, given
+        the number of initial samples `num_init` and a random seed
+        `seed`.
+
+        :param num_init: the number of initial samples.
+        :type num_init: int.
+        :param seed: None, or a random seed.
+        :type seed: NoneType or int., optional
+
+        :returns: a tuple of acquired samples, their function values, overall
+            times consumed per iteration, time consumed in modeling Gaussian process
+            regression, and time consumed in acquisition function optimization.
+            Shape: ((`num_init` + `num_iter`, d), (`num_init` + `num_iter`, 1),
+            (`num_init` + `num_iter`, ), (`num_iter`, ), (`num_iter`, )),
+            or ((`num_init` + `num_iter`, m, d),
+            (`num_init` + `num_iter`, m, 1), (`num_init` + `num_iter`, ),
+            (`num_iter`, ),
+            (`num_iter`, )),
+            where d is a dimensionality of the problem we are solving
+            and m is a cardinality of sets.
+        :rtype: (numpy.ndarray, numpy.ndarray, numpy.ndarray, numpy.ndarray, numpy.ndarray)
+
+        :raises: AssertionError
+
+        """
+
         assert isinstance(num_init, int)
         assert isinstance(seed, (int, type(None)))
         assert num_init > 0
