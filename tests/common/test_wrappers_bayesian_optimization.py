@@ -40,7 +40,7 @@ def test_load_bayesian_optimization():
     num_iter = 20
 
     model_bo = package_target.BayesianOptimization(range_1, fun_target, num_iter)
-    model_bo = package_target.BayesianOptimization(range_2, fun_target, num_iter)
+    model_bo = package_target.BayesianOptimization(range_2, fun_target, num_iter, debug=True)
 
     with pytest.raises(AssertionError) as error:
         model_bo = package_target.BayesianOptimization('abc', fun_target, num_iter)
@@ -95,7 +95,7 @@ def test_optimize_with_all_initial_information():
     Y = np.random.randn(num_init, 1)
     fun_target = lambda x: 2.0 * x + 1.0
 
-    model_bo = package_target.BayesianOptimization(range_, fun_target, num_iter)
+    model_bo = package_target.BayesianOptimization(range_, fun_target, num_iter, debug=True)
 
     with pytest.raises(AssertionError) as error:
         model_bo.optimize_with_all_initial_information(X, 'abc')
@@ -126,7 +126,7 @@ def test_optimize_with_initial_inputs():
     X = np.random.randn(num_init, dim_X)
     fun_target = lambda x: 2.0 * x + 1.0
 
-    model_bo = package_target.BayesianOptimization(range_, fun_target, num_iter)
+    model_bo = package_target.BayesianOptimization(range_, fun_target, num_iter, debug=True)
 
     with pytest.raises(AssertionError) as error:
         model_bo.optimize_with_initial_inputs('abc')
@@ -156,7 +156,7 @@ def test_optimize():
     num_iter = 5
     fun_target = lambda x: 2.0 * x + 1.0
 
-    model_bo = package_target.BayesianOptimization(range_, fun_target, num_iter)
+    model_bo = package_target.BayesianOptimization(range_, fun_target, num_iter, debug=True)
 
     with pytest.raises(AssertionError) as error:
         model_bo.optimize('abc')

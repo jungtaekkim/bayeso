@@ -49,4 +49,3 @@ License
 =======
 
 `MIT License <https://github.com/jungtaekkim/bayeso/blob/main/LICENSE>`_
-
