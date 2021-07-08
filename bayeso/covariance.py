@@ -1,10 +1,10 @@
 #
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: December 29, 2020
+# last updated: July 8, 2021
 #
 """It defines covariance functions and their associated functions.
 Derivatives of covariance functions with respect to hyperparameters are described
-in `the notes <http://jungtaek.github.io/notes/derivatives_kernels.pdf>`_,
+in `these notes <http://jungtaek.github.io/notes/derivatives_kernels.pdf>`_.
 """
 
 import numpy as np
