@@ -1,6 +1,6 @@
 #
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: March 22, 2021
+# last updated: July 9, 2021
 #
 """test_import"""
 
@@ -67,8 +67,8 @@ def test_import_utils_utils_logger():
 def test_import_wrappers():
     import bayeso.wrappers
 
-def test_import_wrappers_wrappers_bo():
-    import bayeso.wrappers.wrappers_bo
+def test_import_wrappers_wrappers_bo_function():
+    import bayeso.wrappers.wrappers_bo_function
 
-def test_import_wrappers_wrappers_bayesian_optimization():
-    import bayeso.wrappers.wrappers_bayesian_optimization
+def test_import_wrappers_wrappers_bo_class():
+    import bayeso.wrappers.wrappers_bo_class

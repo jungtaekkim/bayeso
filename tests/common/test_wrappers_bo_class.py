@@ -2,12 +2,12 @@
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
 # last updated: July 8, 2021
 #
-"""test_wrappers_bayesian_optimization"""
+"""test_wrappers_bo_class"""
 
 import pytest
 import numpy as np
 
-from bayeso.wrappers import wrappers_bayesian_optimization as package_target
+from bayeso.wrappers import wrappers_bo_class as package_target
 
 
 TEST_EPSILON = 1e-5

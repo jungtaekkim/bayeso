@@ -19,7 +19,7 @@ class BayesianOptimization:
     """
     It is a wrapper class for Bayesian optimization.
     A function for optimizing `fun_target` runs a single round
-    of Bayesian optimization.
+    of Bayesian optimization with an iteration budget `num_iter`.
 
     :param range_X: a search space. Shape: (d, 2).
     :type range_X: numpy.ndarray
@@ -148,7 +148,7 @@ class BayesianOptimization:
 
     def _get_model_bo(self):
         """
-        It returns an object of bayeso.bo.BO.
+        It returns an object of `bayeso.bo.BO`.
 
         :returns: an object of Bayesian optimization.
         :rtype: bayeso.bo.BO

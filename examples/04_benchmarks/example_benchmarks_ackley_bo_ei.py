@@ -7,7 +7,8 @@ import os
 
 from bayeso import bo
 from bayeso_benchmarks.inf_dim_ackley import Ackley
-from bayeso.wrappers import wrappers_bo
+from bayeso import wrappers
+#from bayeso.wrappers import wrappers_bo_function
 from bayeso.utils import utils_bo
 from bayeso.utils import utils_plotting
 
@@ -32,7 +33,7 @@ def main():
     list_time = []
     for ind_bo in range(0, num_bo):
         print('BO Round', ind_bo + 1)
-        X_final, Y_final, time_final, _, _ = wrappers_bo.run_single_round(model_bo, fun_target, num_init, num_iter, str_initial_method_bo='gaussian', str_sampling_method_ao='gaussian', num_samples_ao=100, seed=42 * (ind_bo + 1))
+        X_final, Y_final, time_final, _, _ = wrappers.run_single_round(model_bo, fun_target, num_init, num_iter, str_initial_method_bo='gaussian', str_sampling_method_ao='gaussian', num_samples_ao=100, seed=42 * (ind_bo + 1))
         print(X_final)
         print(Y_final)
         print(time_final)

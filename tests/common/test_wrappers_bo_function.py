@@ -1,15 +1,15 @@
 #
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: September 24, 2020
+# last updated: July 9, 2021
 #
-"""test_wrappers_bo"""
+"""test_wrappers_bo_function"""
 
 import typing
 import pytest
 import numpy as np
 
 from bayeso import bo
-from bayeso.wrappers import wrappers_bo as package_target
+from bayeso.wrappers import wrappers_bo_function as package_target
 
 
 def test_run_single_round_with_all_initial_information_typing():
