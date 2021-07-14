@@ -9,5 +9,5 @@ bayeso.wrappers
 
 .. toctree::
 
-   bayeso.wrappers.wrappers_bo
-   bayeso.wrappers.wrappers_bayesian_optimization
+   bayeso.wrappers.wrappers_bo_class
+   bayeso.wrappers.wrappers_bo_function
