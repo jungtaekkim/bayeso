@@ -40,7 +40,7 @@ def main():
 
     mu, sigma = trees_common.predict_by_trees(X_test, trees)
 
-    utils_plotting.plot_gp_via_distribution(X_train, Y_train, X_test, mu, sigma, Y_test, path_save=PATH_SAVE, str_postfix='cos', time_pause=np.inf)
+    utils_plotting.plot_gp_via_distribution(X_train, Y_train, X_test, mu, sigma, Y_test, path_save=PATH_SAVE, str_postfix='cos')
 
 if __name__ == '__main__':
     if not os.path.isdir(PATH_SAVE):
