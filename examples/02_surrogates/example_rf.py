@@ -18,11 +18,10 @@ def main():
     X_train = np.array([
         [-3.0],
         [-1.0],
-        [-1.5],
-        [3.0],
-        [2.5],
+        [0.0],
         [1.0],
         [2.0],
+        [4.0],
     ])
     Y_train = np.cos(X_train) + np.random.randn(X_train.shape[0], 1) * 0.2
     num_test = 200
@@ -41,7 +40,7 @@ def main():
 
     mu, sigma = trees_common.predict_by_trees(X_test, trees)
 
-    utils_plotting.plot_gp_via_distribution(X_train, Y_train, X_test, mu, sigma, Y_test, path_save=PATH_SAVE, str_postfix='cos')
+    utils_plotting.plot_gp_via_distribution(X_train, Y_train, X_test, mu, sigma, Y_test, path_save=PATH_SAVE, str_postfix='cos', time_pause=np.inf)
 
 if __name__ == '__main__':
     if not os.path.isdir(PATH_SAVE):

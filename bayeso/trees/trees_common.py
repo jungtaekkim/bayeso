@@ -93,9 +93,8 @@ def _split(X, Y, num_features, split_random_location):
     assert len(X.shape) == 2
     assert len(Y.shape) == 2
     assert X.shape[0] == Y.shape[0]
+    assert X.shape[0] > 0
     assert Y.shape[1] == 1
-
-    # TODO: when X.shape[0] < 2, it needs to be handled.
 
     cur_ind = np.inf
     cur_val = np.inf
@@ -106,19 +105,27 @@ def _split(X, Y, num_features, split_random_location):
 
     for ind in features:
         dim_to_split = int(ind)
+        num_evaluations = 1
+        candidates_loc = np.sort(np.unique(X[:, dim_to_split]))
 
-        if X.shape[0] > 1 and split_random_location:
-            min_bx = np.min(X[:, dim_to_split])
-            max_bx = np.max(X[:, dim_to_split])
-
-        for bx, by in zip(X, Y):
-            if X.shape[0] > 1 and split_random_location:
-                val_to_split = np.random.uniform(low=min_bx, high=max_bx)
+        if candidates_loc.shape[0] > 1:
+            if split_random_location:
+                min_bx = np.min(X[:, dim_to_split])
+                max_bx = np.max(X[:, dim_to_split])
             else:
-                val_to_split = bx[dim_to_split]
+                num_evaluations = candidates_loc.shape[0] - 1
 
+        for ind_loc in range(0, num_evaluations):
+            if candidates_loc.shape[0] > 1:
+                if split_random_location:
+                    val_to_split = np.random.uniform(low=min_bx, high=max_bx)
+                else:
+                    val_to_split = np.mean(candidates_loc[ind_loc:ind_loc+2])
+            else:
+                val_to_split = X[0, dim_to_split]
 
             left_right = _split_left_right(X, Y, dim_to_split, val_to_split)
+            left, right = left_right
             score = mse(left_right)
 
             if score < cur_score:
@@ -127,7 +134,11 @@ def _split(X, Y, num_features, split_random_location):
                 cur_score = score
                 cur_left_right = left_right
 
-    return {'index': cur_ind, 'value': cur_val, 'left_right': cur_left_right}
+    return {
+        'index': cur_ind,
+        'value': cur_val,
+        'left_right': cur_left_right
+    }
 
 def split(node, depth_max, size_min_leaf, num_features, split_random_location, cur_depth):
     assert isinstance(node, dict)
@@ -148,16 +159,24 @@ def split(node, depth_max, size_min_leaf, num_features, split_random_location, c
         node['left'], node['right'] = left, right
         return
 
+    ##
     if len(left) <= size_min_leaf:
         node['left'] = left
     else:
-        node['left'] = _split(get_inputs_from_leaf(left), get_outputs_from_leaf(left), num_features, split_random_location)
+        X_left = get_inputs_from_leaf(left)
+        Y_left = get_outputs_from_leaf(left)
+
+        node['left'] = _split(X_left, Y_left, num_features, split_random_location)
         split(node['left'], depth_max, size_min_leaf, num_features, split_random_location, cur_depth + 1)
 
+    ##
     if len(right) <= size_min_leaf:
         node['right'] = right
     else:
-        node['right'] = _split(get_inputs_from_leaf(right), get_outputs_from_leaf(right), num_features, split_random_location)
+        X_right = get_inputs_from_leaf(right)
+        Y_right = get_outputs_from_leaf(right)
+
+        node['right'] = _split(X_right, Y_right, num_features, split_random_location)
         split(node['right'], depth_max, size_min_leaf, num_features, split_random_location, cur_depth + 1)
 
 def _predict_by_tree(bx, tree):
