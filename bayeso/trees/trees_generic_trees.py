@@ -1,6 +1,6 @@
 #
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: August 03, 2021
+# last updated: August 6, 2021
 #
 """
 """
@@ -8,18 +8,49 @@
 import numpy as np
 
 from bayeso.trees import trees_common
+from bayeso.utils import utils_common
 
 
+@utils_common.validate_types
 def get_generic_trees(
-    X, Y,
-    num_trees,
-    depth_max,
-    size_min_leaf,
-    ratio_sample,
-    replace_samples,
-    num_features,
-    split_random_location,
-):
+    X: np.ndarray, Y: np.ndarray,
+    num_trees: int,
+    depth_max: int,
+    size_min_leaf: int,
+    ratio_sample: float,
+    replace_samples: bool,
+    num_features: int,
+    split_random_location: bool,
+) -> list:
+    """
+    It returns a list of generic trees.
+
+    :param X: inputs. Shape: (N, d).
+    :type X: np.ndarray
+    :param Y: outputs. Shape: (N, 1).
+    :type Y: str.
+    :param num_trees: the number of trees.
+    :type num_trees: int.
+    :param depth_max: maximum depth of tree.
+    :type depth_max: int.
+    :param size_min_leaf: minimum size of leaf.
+    :type size_min_leaf: int.
+    :param ratio_sample: ratio of dataset subsampling.
+    :type ratio_sample: float
+    :param replace_samples: flag for replacement.
+    :type replace_samples: bool.
+    :param num_features: the number of split features.
+    :type num_features: int.
+    :param split_random_location: flag for random split location.
+    :type split_random_location: bool.
+
+    :returns: list of trees
+    :rtype: list
+
+    :raises: AssertionError
+
+    """
+
     assert isinstance(X, np.ndarray)
     assert isinstance(Y, np.ndarray)
     assert isinstance(num_trees, int)
@@ -49,5 +80,4 @@ def get_generic_trees(
 
         list_trees.append(root)
 
-    assert len(list_trees) == num_trees
     return list_trees

@@ -15,6 +15,7 @@ list_packages = [
     'bayeso',
     'bayeso.gp',
     'bayeso.tp',
+    'bayeso.trees',
     'bayeso.wrappers',
     'bayeso.utils'
 ]

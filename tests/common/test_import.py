@@ -1,6 +1,6 @@
 #
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: July 9, 2021
+# last updated: August 6, 2021
 #
 """test_import"""
 
@@ -42,6 +42,18 @@ def test_import_tp_tp_kernel():
 
 def test_import_tp_tp_likelihood():
     import bayeso.tp.tp_likelihood
+
+def test_import_trees():
+    import bayeso.trees
+
+def test_import_trees_trees_common():
+    import bayeso.trees.trees_common
+
+def test_import_trees_trees_generic_trees():
+    import bayeso.trees.trees_generic_trees
+
+def test_import_trees_trees_random_forest():
+    import bayeso.trees.trees_random_forest
 
 def test_import_utils():
     import bayeso.utils

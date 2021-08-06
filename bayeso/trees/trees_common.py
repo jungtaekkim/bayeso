@@ -1,26 +1,32 @@
 #
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: August 03, 2021
+# last updated: August 6, 2021
 #
 """
 """
 
 import numpy as np
 
+from bayeso import constants
+from bayeso.utils import utils_common
 
-def get_inputs_from_leaf(leaf):
+
+@utils_common.validate_types
+def get_inputs_from_leaf(leaf: list) -> np.ndarray:
     assert isinstance(leaf, list)
 
     X = [bx for bx, by in leaf]
     return np.array(X)
 
-def get_outputs_from_leaf(leaf):
+@utils_common.validate_types
+def get_outputs_from_leaf(leaf: list) -> np.ndarray:
     assert isinstance(leaf, list)
 
     Y = [by for bx, by in leaf]
     return np.array(Y)
 
-def _mse(Y):
+@utils_common.validate_types
+def _mse(Y: np.ndarray) -> float:
     if Y.shape[0] > 0:
         mean = np.mean(Y, axis=0)
         mse_ = np.mean((Y - mean)**2)
@@ -28,7 +34,8 @@ def _mse(Y):
         mse_ = 1e8
     return mse_
 
-def mse(left_right):
+@utils_common.validate_types
+def mse(left_right: tuple) -> float:
     assert isinstance(left_right, tuple)
 
     left, right = left_right
@@ -41,7 +48,11 @@ def mse(left_right):
 
     return mse_left + mse_right
 
-def subsample(X, Y, ratio_sample, replace_samples):
+@utils_common.validate_types
+def subsample(
+    X: np.ndarray, Y: np.ndarray,
+    ratio_sample: float, replace_samples: bool
+) -> constants.TYPING_TUPLE_TWO_ARRAYS:
     assert isinstance(X, np.ndarray)
     assert isinstance(Y, np.ndarray)
     assert isinstance(ratio_sample, float)
@@ -63,7 +74,11 @@ def subsample(X, Y, ratio_sample, replace_samples):
     assert X_.shape[0] == Y_.shape[0] == num_samples
     return X_, Y_
 
-def _split_left_right(X, Y, dim_to_split, val_to_split):
+@utils_common.validate_types
+def _split_left_right(
+    X: np.ndarray, Y: np.ndarray,
+    dim_to_split: int, val_to_split: float
+) -> tuple:
     assert isinstance(X, np.ndarray)
     assert isinstance(Y, np.ndarray)
     assert isinstance(dim_to_split, int)
@@ -84,7 +99,11 @@ def _split_left_right(X, Y, dim_to_split, val_to_split):
             right.append((bx, by))
     return left, right
 
-def _split(X, Y, num_features, split_random_location):
+@utils_common.validate_types
+def _split(
+    X: np.ndarray, Y: np.ndarray,
+    num_features: int, split_random_location: bool
+) -> dict:
     assert isinstance(X, np.ndarray)
     assert isinstance(Y, np.ndarray)
     assert isinstance(num_features, int)
@@ -140,13 +159,23 @@ def _split(X, Y, num_features, split_random_location):
         'left_right': cur_left_right
     }
 
-def split(node, depth_max, size_min_leaf, num_features, split_random_location, cur_depth):
+@utils_common.validate_types
+def split(
+    node: dict,
+    depth_max: int,
+    size_min_leaf: int,
+    num_features: int,
+    split_random_location: bool,
+    cur_depth: int
+) -> constants.TYPE_NONE:
     assert isinstance(node, dict)
     assert isinstance(depth_max, int)
     assert isinstance(size_min_leaf, int)
     assert isinstance(num_features, int)
-    assert isinstance(cur_depth, int)
     assert isinstance(split_random_location, bool)
+    assert isinstance(cur_depth, int)
+
+    assert cur_depth > 0
 
     left, right = node['left_right']
     del(node['left_right'])
@@ -179,7 +208,8 @@ def split(node, depth_max, size_min_leaf, num_features, split_random_location, c
         node['right'] = _split(X_right, Y_right, num_features, split_random_location)
         split(node['right'], depth_max, size_min_leaf, num_features, split_random_location, cur_depth + 1)
 
-def _predict_by_tree(bx, tree):
+@utils_common.validate_types
+def _predict_by_tree(bx: np.ndarray, tree: dict) -> constants.TYPING_TUPLE_TWO_ARRAYS:
     assert isinstance(bx, np.ndarray)
     assert isinstance(tree, dict)
 
@@ -198,7 +228,8 @@ def _predict_by_tree(bx, tree):
             cur_Y = get_outputs_from_leaf(tree['right'])
             return np.mean(cur_Y), np.std(cur_Y)
 
-def _predict_by_trees(bx, list_trees):
+@utils_common.validate_types
+def _predict_by_trees(bx: np.ndarray, list_trees: list) -> constants.TYPING_TUPLE_TWO_ARRAYS:
     assert isinstance(bx, np.ndarray)
     assert isinstance(list_trees, list)
 
@@ -218,7 +249,8 @@ def _predict_by_trees(bx, list_trees):
 
     return mu, sigma
 
-def predict_by_trees(X, list_trees):
+@utils_common.validate_types
+def predict_by_trees(X: np.ndarray, list_trees: list) -> constants.TYPING_TUPLE_TWO_ARRAYS:
     assert isinstance(X, np.ndarray)
     assert isinstance(list_trees, list)
 
@@ -238,7 +270,20 @@ def predict_by_trees(X, list_trees):
 
     return preds_mu, preds_sigma
 
-def compute_sigma(preds_mu_leaf, preds_sigma_leaf, min_sigma=0.0):
+@utils_common.validate_types
+def compute_sigma(
+    preds_mu_leaf: np.ndarray,
+    preds_sigma_leaf: np.ndarray,
+    min_sigma: float=0.0
+) -> np.ndarray:
+    assert isinstance(preds_mu_leaf, np.ndarray)
+    assert isinstance(preds_sigma_leaf, np.ndarray)
+    assert isinstance(min_sigma, float)
+
+    assert len(preds_mu_leaf.shape) == 1
+    assert len(preds_sigma_leaf.shape) == 1
+    assert preds_mu_leaf.shape[0] == preds_sigma_leaf.shape[0]
+
     preds_sigma_leaf_ = np.maximum(preds_sigma_leaf, np.zeros(preds_sigma_leaf.shape) + min_sigma)
 
     sigma = np.mean(preds_mu_leaf**2 + preds_sigma_leaf_**2)

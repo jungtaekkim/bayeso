@@ -66,7 +66,7 @@ ALLOWED_INITIALIZING_METHOD_BO = ['uniform', 'gaussian', 'sobol', 'halton']
 ALLOWED_SAMPLING_METHOD = ALLOWED_INITIALIZING_METHOD_BO + ['grid']
 ALLOWED_MLM_METHOD = ['regular', 'combined', 'converged']
 ALLOWED_MODELSELECTION_METHOD = ['ml', 'loocv']
-ALLOWED_SURROGATE = ['gp', 'tp']
+ALLOWED_SURROGATE = ['gp', 'tp', 'rf']
 
 KEYS_INFO_BENCHMARK = ['dim_fun', 'bounds', 'global_minimum_X', 'global_minimum_y']
 
