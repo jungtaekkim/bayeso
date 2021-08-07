@@ -27,6 +27,10 @@ def get_outputs_from_leaf(leaf: list) -> np.ndarray:
 
 @utils_common.validate_types
 def _mse(Y: np.ndarray) -> float:
+    assert isinstance(Y, np.ndarray)
+    if len(Y.shape) == 2:
+        assert Y.shape[1] == 1
+
     if Y.shape[0] > 0:
         mean = np.mean(Y, axis=0)
         mse_ = np.mean((Y - mean)**2)
@@ -51,11 +55,11 @@ def mse(left_right: tuple) -> float:
 @utils_common.validate_types
 def subsample(
     X: np.ndarray, Y: np.ndarray,
-    ratio_sample: float, replace_samples: bool
+    ratio_sampling: float, replace_samples: bool
 ) -> constants.TYPING_TUPLE_TWO_ARRAYS:
     assert isinstance(X, np.ndarray)
     assert isinstance(Y, np.ndarray)
-    assert isinstance(ratio_sample, float)
+    assert isinstance(ratio_sampling, float)
     assert isinstance(replace_samples, bool)
 
     assert len(X.shape) == 2
@@ -64,7 +68,7 @@ def subsample(
     assert Y.shape[1] == 1
 
     num_X = X.shape[0]
-    num_samples = int(num_X * ratio_sample)
+    num_samples = int(num_X * ratio_sampling)
 
     indices = np.random.choice(num_X, num_samples, replace=replace_samples)
 

@@ -17,7 +17,7 @@ def get_generic_trees(
     num_trees: int,
     depth_max: int,
     size_min_leaf: int,
-    ratio_sample: float,
+    ratio_sampling: float,
     replace_samples: bool,
     num_features: int,
     split_random_location: bool,
@@ -35,8 +35,8 @@ def get_generic_trees(
     :type depth_max: int.
     :param size_min_leaf: minimum size of leaf.
     :type size_min_leaf: int.
-    :param ratio_sample: ratio of dataset subsampling.
-    :type ratio_sample: float
+    :param ratio_sampling: ratio of dataset subsampling.
+    :type ratio_sampling: float
     :param replace_samples: flag for replacement.
     :type replace_samples: bool.
     :param num_features: the number of split features.
@@ -56,7 +56,7 @@ def get_generic_trees(
     assert isinstance(num_trees, int)
     assert isinstance(depth_max, int)
     assert isinstance(size_min_leaf, int)
-    assert isinstance(ratio_sample, float)
+    assert isinstance(ratio_sampling, float)
     assert isinstance(replace_samples, bool)
     assert isinstance(num_features, int)
     assert isinstance(split_random_location, bool)
@@ -66,14 +66,14 @@ def get_generic_trees(
     assert X.shape[0] == Y.shape[0]
     assert Y.shape[1] == 1
     if replace_samples:
-        assert ratio_sample > 0.0
+        assert ratio_sampling > 0.0
     else:
-        assert ratio_sample > 0.0 and ratio_sample <= 1.0
+        assert ratio_sampling > 0.0 and ratio_sampling <= 1.0
 
     list_trees = []
 
     for ind in range(0, num_trees):
-        X_, Y_ = trees_common.subsample(X, Y, ratio_sample, replace_samples)
+        X_, Y_ = trees_common.subsample(X, Y, ratio_sampling, replace_samples)
 
         root = trees_common._split(X_, Y_, num_features, split_random_location)
         trees_common.split(root, depth_max, size_min_leaf, num_features, split_random_location, 1)

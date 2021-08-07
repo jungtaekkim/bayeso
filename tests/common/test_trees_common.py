@@ -59,3 +59,69 @@ def test_get_outputs_from_leaf():
     outputs = package_target.get_outputs_from_leaf(leaf)
     assert outputs.shape[0] == len(leaf)
     assert outputs.shape[1] == leaf[0][1].shape[0]
+
+def test__mse_typing():
+    annos = package_target._mse.__annotations__
+
+    assert annos['Y'] == np.ndarray
+    assert annos['return'] == float
+
+def test__mse():
+    Y = np.array([
+        [1.0],
+        [2.0],
+        [6.0],
+    ])
+
+    with pytest.raises(AssertionError) as error:
+        package_target._mse(123)
+    with pytest.raises(AssertionError) as error:
+        package_target._mse('abc')
+
+    output = package_target._mse(np.zeros((0, 1)))
+    assert output == 1e8
+
+    output = package_target._mse(np.array([]))
+    assert output == 1e8
+
+    output = package_target._mse(Y)
+    assert output == 14.0 / 3
+
+def test_mse_typing():
+    annos = package_target.mse.__annotations__
+
+    assert annos['left_right'] == tuple
+    assert annos['return'] == float
+
+def test_mse():
+    left = [
+        (np.array([1.0, 2.0, 3.0]), np.array([0.5])),
+        (np.array([2.0, 2.0, 1.0]), np.array([0.1])),
+        (np.array([3.0, 0.0, 1.0]), np.array([0.2])),
+        (np.array([4.0, 0.0, 3.0]), np.array([0.3])),
+    ]
+    right = [
+        (np.array([10.0, 20.0, 30.0]), np.array([0.6])),
+        (np.array([20.0, 20.0, 10.0]), np.array([0.9])),
+        (np.array([30.0, 0.0, 10.0]), np.array([0.9])),
+        (np.array([40.0, 0.0, 30.0]), np.array([0.8])),
+    ]
+
+    with pytest.raises(AssertionError) as error:
+        package_target.mse(123)
+    with pytest.raises(AssertionError) as error:
+        package_target.mse('abc')
+    with pytest.raises(AssertionError) as error:
+        package_target.mse(np.zeros((4, 1)))
+
+    output = package_target.mse(([], []))
+    assert output == 2e8
+
+    output = package_target.mse((left, []))
+    assert output == 0.021875 + 1e8
+
+    output = package_target.mse(([], right))
+    assert output == 1e8 + 0.015
+
+    output = package_target.mse((left, right))
+    assert np.abs(output - (0.021875 + 0.015)) < TEST_EPSILON
