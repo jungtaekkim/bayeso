@@ -11,8 +11,8 @@
 
 Simple, but essential Bayesian optimization package.
 
-* [http://bayeso.org](http://bayeso.org)
-* [Online documentation](http://bayeso.readthedocs.io)
+* [https://bayeso.org](https://bayeso.org)
+* [Online documentation](https://bayeso.readthedocs.io)
 
 ## Installation
 We recommend installing it with `virtualenv`.
@@ -70,14 +70,14 @@ We test our package in the following versions.
 * Python 3.9
 
 ## Contributor
-* [Jungtaek Kim](http://jungtaek.github.io) (POSTECH)
+* [Jungtaek Kim](https://jungtaek.github.io) (POSTECH)
 
 ## Citation
 ```
 @misc{KimJ2017bayeso,
     author={Kim, Jungtaek and Choi, Seungjin},
     title={{BayesO}: A {Bayesian} optimization framework in {Python}},
-    howpublished={\url{http://bayeso.org}},
+    howpublished={\url{https://bayeso.org}},
     year={2017}
 }
 ```
