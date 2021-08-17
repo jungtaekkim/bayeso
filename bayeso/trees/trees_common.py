@@ -67,6 +67,11 @@ def subsample(
     assert X.shape[0] == Y.shape[0]
     assert Y.shape[1] == 1
 
+    if replace_samples:
+        assert ratio_sampling > 0.0
+    else:
+        assert ratio_sampling > 0.0 and ratio_sampling <= 1.0
+
     num_X = X.shape[0]
     num_samples = int(num_X * ratio_sampling)
 
@@ -75,7 +80,6 @@ def subsample(
     X_ = X[indices]
     Y_ = Y[indices]
 
-    assert X_.shape[0] == Y_.shape[0] == num_samples
     return X_, Y_
 
 @utils_common.validate_types
