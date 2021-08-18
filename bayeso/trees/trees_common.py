@@ -217,7 +217,7 @@ def split(
         split(node['right'], depth_max, size_min_leaf, num_features, split_random_location, cur_depth + 1)
 
 @utils_common.validate_types
-def _predict_by_tree(bx: np.ndarray, tree: dict) -> constants.TYPING_TUPLE_TWO_ARRAYS:
+def _predict_by_tree(bx: np.ndarray, tree: dict) -> constants.TYPING_TUPLE_TWO_FLOATS:
     assert isinstance(bx, np.ndarray)
     assert isinstance(tree, dict)
 
@@ -237,7 +237,7 @@ def _predict_by_tree(bx: np.ndarray, tree: dict) -> constants.TYPING_TUPLE_TWO_A
             return np.mean(cur_Y), np.std(cur_Y)
 
 @utils_common.validate_types
-def _predict_by_trees(bx: np.ndarray, list_trees: list) -> constants.TYPING_TUPLE_TWO_ARRAYS:
+def _predict_by_trees(bx: np.ndarray, list_trees: list) -> constants.TYPING_TUPLE_TWO_FLOATS:
     assert isinstance(bx, np.ndarray)
     assert isinstance(list_trees, list)
 
