@@ -90,7 +90,7 @@ def _split_left_right(
     assert isinstance(X, np.ndarray)
     assert isinstance(Y, np.ndarray)
     assert isinstance(dim_to_split, int)
-    assert isinstance(val_to_split, float)
+    assert isinstance(val_to_split, (float, np.float16, np.float32, np.float64))
 
     assert len(X.shape) == 2
     assert len(Y.shape) == 2
@@ -188,7 +188,7 @@ def split(
     left, right = node['left_right']
     del(node['left_right'])
 
-    if not left or not right:
+    if not left or not right: # pragma: no cover
         node['left'] = node['right'] = left + right
         return
 
@@ -297,7 +297,7 @@ def compute_sigma(
     sigma = np.mean(preds_mu_leaf**2 + preds_sigma_leaf_**2)
     sigma -= np.mean(preds_mu_leaf)**2
 
-    if sigma < 0.0:
+    if sigma < 0.0: # pragma: no cover
         sigma = 0.0
     sigma = np.sqrt(sigma)
 
