@@ -44,5 +44,6 @@ The code can be found in `our GitHub repository <https://github.com/jungtaekkim/
    python_api/bayeso
    python_api/bayeso.gp
    python_api/bayeso.tp
+   python_api/bayeso.trees
    python_api/bayeso.utils
    python_api/bayeso.wrappers
