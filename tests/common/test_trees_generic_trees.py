@@ -87,5 +87,8 @@ def test_get_generic_trees():
     X = np.reshape(np.arange(0, 160), (40, 4)).astype(np.float16)
     trees = package_target.get_generic_trees(X, Y, num_trees, depth_max, size_min_leaf, ratio_sampling, replace_samples, num_features, False)
 
+    X = np.reshape(np.arange(0, 160), (40, 4)).astype(np.float16)
+    trees = package_target.get_generic_trees(X, Y, num_trees, depth_max, size_min_leaf, ratio_sampling, False, num_features, False)
+
     X = np.reshape(np.arange(0, 160), (40, 4)).astype(float)
-    trees = package_target.get_generic_trees(X, Y, num_trees, depth_max, size_min_leaf, ratio_sampling, replace_samples, num_features, split_random_location)
+    trees = package_target.get_generic_trees(X, Y, num_trees, depth_max, size_min_leaf, 2.0, True, num_features, False)

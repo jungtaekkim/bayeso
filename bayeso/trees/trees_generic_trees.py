@@ -2,8 +2,7 @@
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
 # last updated: August 6, 2021
 #
-"""
-"""
+"""It defines generic trees."""
 
 import numpy as np
 

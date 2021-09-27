@@ -2,8 +2,7 @@
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
 # last updated: August 6, 2021
 #
-"""
-"""
+"""It defines a common function for tree-based surrogates."""
 
 import numpy as np
 
@@ -13,6 +12,19 @@ from bayeso.utils import utils_common
 
 @utils_common.validate_types
 def get_inputs_from_leaf(leaf: list) -> np.ndarray:
+    """
+    It returns an input from a leaf.
+
+    :param leaf: pairs of input and output in a leaf.
+    :type leaf: list
+
+    :returns: an input. Shape: (n, d).
+    :rtype: np.ndarray
+
+    :raises: AssertionError
+
+    """
+
     assert isinstance(leaf, list)
 
     X = [bx for bx, by in leaf]
@@ -20,6 +32,19 @@ def get_inputs_from_leaf(leaf: list) -> np.ndarray:
 
 @utils_common.validate_types
 def get_outputs_from_leaf(leaf: list) -> np.ndarray:
+    """
+    It returns an output from a leaf.
+
+    :param leaf: pairs of input and output in a leaf.
+    :type leaf: list
+
+    :returns: an output. Shape: (n, 1).
+    :rtype: np.ndarray
+
+    :raises: AssertionError
+
+    """
+
     assert isinstance(leaf, list)
 
     Y = [by for bx, by in leaf]

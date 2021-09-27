@@ -34,6 +34,7 @@ def test_get_inputs_from_leaf():
         package_target.get_inputs_from_leaf('abc')
 
     inputs = package_target.get_inputs_from_leaf(leaf)
+    assert len(inputs.shape) == 2
     assert inputs.shape[0] == len(leaf)
     assert inputs.shape[1] == leaf[0][0].shape[0]
 
@@ -57,6 +58,7 @@ def test_get_outputs_from_leaf():
         package_target.get_outputs_from_leaf('abc')
 
     outputs = package_target.get_outputs_from_leaf(leaf)
+    assert len(outputs.shape) == 2
     assert outputs.shape[0] == len(leaf)
     assert outputs.shape[1] == leaf[0][1].shape[0]
 
