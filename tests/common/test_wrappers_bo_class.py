@@ -55,8 +55,6 @@ def test_load_bayesian_optimization():
     with pytest.raises(AssertionError) as error:
         model_bo = package_target.BayesianOptimization(range_1, fun_target, 'abc')
     with pytest.raises(AssertionError) as error:
-        model_bo = package_target.BayesianOptimization(range_1, fun_target, num_iter, str_surrogate=123)
-    with pytest.raises(AssertionError) as error:
         model_bo = package_target.BayesianOptimization(range_1, fun_target, num_iter, str_cov=123)
     with pytest.raises(AssertionError) as error:
         model_bo = package_target.BayesianOptimization(range_1, fun_target, num_iter, str_acq=123)

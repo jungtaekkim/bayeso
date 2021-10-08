@@ -162,7 +162,6 @@ class BayesianOptimization:
             normalize_Y=self.normalize_Y,
             use_ard=self.use_ard,
             prior_mu=self.prior_mu,
-            str_surrogate=self.str_surrogate,
             str_optimizer_method_gp=self.str_optimizer_method_gp,
             str_optimizer_method_bo=self.str_optimizer_method_bo,
             str_modelselection_method=self.str_modelselection_method,

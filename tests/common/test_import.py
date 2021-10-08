@@ -10,6 +10,9 @@ def test_import_bayeso():
 def test_import_bo():
     import bayeso.bo
 
+def test_import_bo_bo_w_gp():
+    import bayeso.bo.bo_w_gp
+
 def test_import_covariance():
     import bayeso.covariance
 
