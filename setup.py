@@ -13,6 +13,7 @@ else:
 path_requirements = 'requirements.txt'
 list_packages = [
     'bayeso',
+    'bayeso.bo',
     'bayeso.gp',
     'bayeso.tp',
     'bayeso.trees',

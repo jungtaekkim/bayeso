@@ -81,7 +81,7 @@ def run_single_round_with_all_initial_information(model_bo: bo.BO,
     X_final = X_train
     Y_final = Y_train
     time_all_final = []
-    time_gp_final = []
+    time_surrogate_final = []
     time_acq_final = []
     for ind_iter in range(0, num_iter):
         logger.info('Iteration %d', ind_iter + 1)
@@ -92,7 +92,7 @@ def run_single_round_with_all_initial_information(model_bo: bo.BO,
             num_samples=num_samples_ao, str_mlm_method=str_mlm_method)
         next_points = dict_info['next_points']
         acquisitions = dict_info['acquisitions']
-        time_gp = dict_info['time_gp']
+        time_surrogate = dict_info['time_surrogate']
         time_acq = dict_info['time_acq']
 
         if model_bo.debug:
@@ -115,7 +115,7 @@ def run_single_round_with_all_initial_information(model_bo: bo.BO,
 
         time_iter_end = time.time()
         time_all_final.append(time_iter_end - time_iter_start)
-        time_gp_final.append(time_gp)
+        time_surrogate_final.append(time_surrogate)
         time_acq_final.append(time_acq)
 
     time_end = time.time()
@@ -124,9 +124,9 @@ def run_single_round_with_all_initial_information(model_bo: bo.BO,
         logger.debug('overall time consumed in single BO round: %.4f sec.', time_end - time_start)
 
     time_all_final = np.array(time_all_final)
-    time_gp_final = np.array(time_gp_final)
+    time_surrogate_final = np.array(time_surrogate_final)
     time_acq_final = np.array(time_acq_final)
-    return X_final, Y_final, time_all_final, time_gp_final, time_acq_final
+    return X_final, Y_final, time_all_final, time_surrogate_final, time_acq_final
 
 @utils_common.validate_types
 def run_single_round_with_initial_inputs(model_bo: bo.BO,
@@ -193,7 +193,7 @@ def run_single_round_with_initial_inputs(model_bo: bo.BO,
 
     Y_train = np.array(Y_train)
     Y_train = np.reshape(Y_train, (Y_train.shape[0], 1))
-    X_final, Y_final, time_all_final, time_gp_final, time_acq_final \
+    X_final, Y_final, time_all_final, time_surrogate_final, time_acq_final \
         = run_single_round_with_all_initial_information(
             model_bo,
             fun_target,
@@ -206,7 +206,7 @@ def run_single_round_with_initial_inputs(model_bo: bo.BO,
         )
     return X_final, Y_final, \
         np.concatenate((time_initials, time_all_final)), \
-        time_gp_final, time_acq_final
+        time_surrogate_final, time_acq_final
 
 @utils_common.validate_types
 def run_single_round(model_bo: bo.BO, fun_target: constants.TYPING_CALLABLE,
@@ -294,7 +294,7 @@ def run_single_round(model_bo: bo.BO, fun_target: constants.TYPING_CALLABLE,
     if model_bo.debug:
         logger.debug('X_init:\n%s', utils_logger.get_str_array(X_init))
 
-    X_final, Y_final, time_all_final, time_gp_final, time_acq_final \
+    X_final, Y_final, time_all_final, time_surrogate_final, time_acq_final \
         = run_single_round_with_initial_inputs(
             model_bo, fun_target, X_init, num_iter,
             str_sampling_method_ao=str_sampling_method_ao,
@@ -308,4 +308,4 @@ def run_single_round(model_bo: bo.BO, fun_target: constants.TYPING_CALLABLE,
         logger.debug('overall time consumed including initializations: %.4f sec.',
             time_end - time_start)
 
-    return X_final, Y_final, time_all_final, time_gp_final, time_acq_final
+    return X_final, Y_final, time_all_final, time_surrogate_final, time_acq_final

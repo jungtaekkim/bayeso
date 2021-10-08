@@ -102,18 +102,18 @@ def test_optimize_with_all_initial_information():
     with pytest.raises(AssertionError) as error:
         model_bo.optimize_with_all_initial_information('abc', Y)
 
-    X_, Y_, time_all_, time_gp_, time_acq_ = model_bo.optimize_with_all_initial_information(X, Y)
+    X_, Y_, time_all_, time_surrogate_, time_acq_ = model_bo.optimize_with_all_initial_information(X, Y)
 
     assert len(X_.shape) == 2
     assert len(Y_.shape) == 2
     assert len(time_all_.shape) == 1
-    assert len(time_gp_.shape) == 1
+    assert len(time_surrogate_.shape) == 1
     assert len(time_acq_.shape) == 1
     assert X_.shape[1] == dim_X
     assert Y_.shape[1] == 1
     assert X_.shape[0] == Y_.shape[0] == num_init + num_iter
     assert time_all_.shape[0] == num_iter
-    assert time_gp_.shape[0] == time_acq_.shape[0] == num_iter
+    assert time_surrogate_.shape[0] == time_acq_.shape[0] == num_iter
 
 def test_optimize_with_initial_inputs():
     np.random.seed(42)
@@ -133,18 +133,18 @@ def test_optimize_with_initial_inputs():
     with pytest.raises(AssertionError) as error:
         model_bo.optimize_with_initial_inputs(123)
 
-    X_, Y_, time_all_, time_gp_, time_acq_ = model_bo.optimize_with_initial_inputs(X)
+    X_, Y_, time_all_, time_surrogate_, time_acq_ = model_bo.optimize_with_initial_inputs(X)
 
     assert len(X_.shape) == 2
     assert len(Y_.shape) == 2
     assert len(time_all_.shape) == 1
-    assert len(time_gp_.shape) == 1
+    assert len(time_surrogate_.shape) == 1
     assert len(time_acq_.shape) == 1
     assert X_.shape[1] == dim_X
     assert Y_.shape[1] == 1
     assert X_.shape[0] == Y_.shape[0] == num_init + num_iter
     assert time_all_.shape[0] == num_init + num_iter
-    assert time_gp_.shape[0] == time_acq_.shape[0] == num_iter
+    assert time_surrogate_.shape[0] == time_acq_.shape[0] == num_iter
 
 def test_optimize():
     np.random.seed(42)
@@ -163,15 +163,15 @@ def test_optimize():
     with pytest.raises(AssertionError) as error:
         model_bo.optimize(num_init, seed='abc')
 
-    X_, Y_, time_all_, time_gp_, time_acq_ = model_bo.optimize(num_init)
+    X_, Y_, time_all_, time_surrogate_, time_acq_ = model_bo.optimize(num_init)
 
     assert len(X_.shape) == 2
     assert len(Y_.shape) == 2
     assert len(time_all_.shape) == 1
-    assert len(time_gp_.shape) == 1
+    assert len(time_surrogate_.shape) == 1
     assert len(time_acq_.shape) == 1
     assert X_.shape[1] == dim_X
     assert Y_.shape[1] == 1
     assert X_.shape[0] == Y_.shape[0] == num_init + num_iter
     assert time_all_.shape[0] == num_init + num_iter
-    assert time_gp_.shape[0] == time_acq_.shape[0] == num_iter
+    assert time_surrogate_.shape[0] == time_acq_.shape[0] == num_iter

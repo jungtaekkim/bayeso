@@ -245,7 +245,7 @@ def test_optimize():
     inv_cov_X_X = dict_info['inv_cov_X_X']
     hyps = dict_info['hyps']
     time_overall = dict_info['time_overall']
-    time_gp = dict_info['time_gp']
+    time_surrogate = dict_info['time_surrogate']
     time_acq = dict_info['time_acq']
 
     assert isinstance(next_point, np.ndarray)
@@ -255,7 +255,7 @@ def test_optimize():
     assert isinstance(inv_cov_X_X, np.ndarray)
     assert isinstance(hyps, dict)
     assert isinstance(time_overall, float)
-    assert isinstance(time_gp, float)
+    assert isinstance(time_surrogate, float)
     assert isinstance(time_acq, float)
     assert len(next_point.shape) == 1
     assert len(next_points.shape) == 2
@@ -284,7 +284,7 @@ def test_optimize_str_acq():
     inv_cov_X_X = dict_info['inv_cov_X_X']
     hyps = dict_info['hyps']
     time_overall = dict_info['time_overall']
-    time_gp = dict_info['time_gp']
+    time_surrogate = dict_info['time_surrogate']
     time_acq = dict_info['time_acq']
 
     assert isinstance(next_point, np.ndarray)
@@ -294,7 +294,7 @@ def test_optimize_str_acq():
     assert isinstance(inv_cov_X_X, np.ndarray)
     assert isinstance(hyps, dict)
     assert isinstance(time_overall, float)
-    assert isinstance(time_gp, float)
+    assert isinstance(time_surrogate, float)
     assert isinstance(time_acq, float)
     assert len(next_point.shape) == 1
     assert len(next_points.shape) == 2
@@ -311,7 +311,7 @@ def test_optimize_str_acq():
     inv_cov_X_X = dict_info['inv_cov_X_X']
     hyps = dict_info['hyps']
     time_overall = dict_info['time_overall']
-    time_gp = dict_info['time_gp']
+    time_surrogate = dict_info['time_surrogate']
     time_acq = dict_info['time_acq']
 
     assert isinstance(next_point, np.ndarray)
@@ -321,7 +321,7 @@ def test_optimize_str_acq():
     assert isinstance(inv_cov_X_X, np.ndarray)
     assert isinstance(hyps, dict)
     assert isinstance(time_overall, float)
-    assert isinstance(time_gp, float)
+    assert isinstance(time_surrogate, float)
     assert isinstance(time_acq, float)
     assert len(next_point.shape) == 1
     assert len(next_points.shape) == 2
@@ -338,7 +338,7 @@ def test_optimize_str_acq():
     inv_cov_X_X = dict_info['inv_cov_X_X']
     hyps = dict_info['hyps']
     time_overall = dict_info['time_overall']
-    time_gp = dict_info['time_gp']
+    time_surrogate = dict_info['time_surrogate']
     time_acq = dict_info['time_acq']
 
     assert isinstance(next_point, np.ndarray)
@@ -348,7 +348,7 @@ def test_optimize_str_acq():
     assert isinstance(inv_cov_X_X, np.ndarray)
     assert isinstance(hyps, dict)
     assert isinstance(time_overall, float)
-    assert isinstance(time_gp, float)
+    assert isinstance(time_surrogate, float)
     assert isinstance(time_acq, float)
     assert len(next_point.shape) == 1
     assert len(next_points.shape) == 2
@@ -365,7 +365,7 @@ def test_optimize_str_acq():
     inv_cov_X_X = dict_info['inv_cov_X_X']
     hyps = dict_info['hyps']
     time_overall = dict_info['time_overall']
-    time_gp = dict_info['time_gp']
+    time_surrogate = dict_info['time_surrogate']
     time_acq = dict_info['time_acq']
 
     assert isinstance(next_point, np.ndarray)
@@ -375,7 +375,7 @@ def test_optimize_str_acq():
     assert isinstance(inv_cov_X_X, np.ndarray)
     assert isinstance(hyps, dict)
     assert isinstance(time_overall, float)
-    assert isinstance(time_gp, float)
+    assert isinstance(time_surrogate, float)
     assert isinstance(time_acq, float)
     assert len(next_point.shape) == 1
     assert len(next_points.shape) == 2
@@ -392,7 +392,7 @@ def test_optimize_str_acq():
     inv_cov_X_X = dict_info['inv_cov_X_X']
     hyps = dict_info['hyps']
     time_overall = dict_info['time_overall']
-    time_gp = dict_info['time_gp']
+    time_surrogate = dict_info['time_surrogate']
     time_acq = dict_info['time_acq']
 
     assert isinstance(next_point, np.ndarray)
@@ -402,7 +402,7 @@ def test_optimize_str_acq():
     assert isinstance(inv_cov_X_X, np.ndarray)
     assert isinstance(hyps, dict)
     assert isinstance(time_overall, float)
-    assert isinstance(time_gp, float)
+    assert isinstance(time_surrogate, float)
     assert isinstance(time_acq, float)
     assert len(next_point.shape) == 1
     assert len(next_points.shape) == 2
@@ -431,7 +431,7 @@ def test_optimize_str_optimize_method_bo():
     inv_cov_X_X = dict_info['inv_cov_X_X']
     hyps = dict_info['hyps']
     time_overall = dict_info['time_overall']
-    time_gp = dict_info['time_gp']
+    time_surrogate = dict_info['time_surrogate']
     time_acq = dict_info['time_acq']
 
     assert isinstance(next_point, np.ndarray)
@@ -441,7 +441,7 @@ def test_optimize_str_optimize_method_bo():
     assert isinstance(inv_cov_X_X, np.ndarray)
     assert isinstance(hyps, dict)
     assert isinstance(time_overall, float)
-    assert isinstance(time_gp, float)
+    assert isinstance(time_surrogate, float)
     assert isinstance(time_acq, float)
     assert len(next_point.shape) == 1
     assert len(next_points.shape) == 2
@@ -460,7 +460,7 @@ def test_optimize_str_optimize_method_bo():
     inv_cov_X_X = dict_info['inv_cov_X_X']
     hyps = dict_info['hyps']
     time_overall = dict_info['time_overall']
-    time_gp = dict_info['time_gp']
+    time_surrogate = dict_info['time_surrogate']
     time_acq = dict_info['time_acq']
 
     assert isinstance(next_point, np.ndarray)
@@ -470,7 +470,7 @@ def test_optimize_str_optimize_method_bo():
     assert isinstance(inv_cov_X_X, np.ndarray)
     assert isinstance(hyps, dict)
     assert isinstance(time_overall, float)
-    assert isinstance(time_gp, float)
+    assert isinstance(time_surrogate, float)
     assert isinstance(time_acq, float)
     assert len(next_point.shape) == 1
     assert len(next_points.shape) == 2
@@ -499,7 +499,7 @@ def test_optimize_str_mlm_method():
     inv_cov_X_X = dict_info['inv_cov_X_X']
     hyps = dict_info['hyps']
     time_overall = dict_info['time_overall']
-    time_gp = dict_info['time_gp']
+    time_surrogate = dict_info['time_surrogate']
     time_acq = dict_info['time_acq']
 
     assert isinstance(next_point, np.ndarray)
@@ -509,7 +509,7 @@ def test_optimize_str_mlm_method():
     assert isinstance(inv_cov_X_X, np.ndarray)
     assert isinstance(hyps, dict)
     assert isinstance(time_overall, float)
-    assert isinstance(time_gp, float)
+    assert isinstance(time_surrogate, float)
     assert isinstance(time_acq, float)
     assert len(next_point.shape) == 1
     assert len(next_points.shape) == 2
@@ -526,7 +526,7 @@ def test_optimize_str_mlm_method():
     inv_cov_X_X = dict_info['inv_cov_X_X']
     hyps = dict_info['hyps']
     time_overall = dict_info['time_overall']
-    time_gp = dict_info['time_gp']
+    time_surrogate = dict_info['time_surrogate']
     time_acq = dict_info['time_acq']
 
     assert isinstance(next_point, np.ndarray)
@@ -536,7 +536,7 @@ def test_optimize_str_mlm_method():
     assert isinstance(inv_cov_X_X, np.ndarray)
     assert isinstance(hyps, dict)
     assert isinstance(time_overall, float)
-    assert isinstance(time_gp, float)
+    assert isinstance(time_surrogate, float)
     assert isinstance(time_acq, float)
     assert len(next_point.shape) == 1
     assert len(next_points.shape) == 2
@@ -565,7 +565,7 @@ def test_optimize_str_modelselection_method():
     inv_cov_X_X = dict_info['inv_cov_X_X']
     hyps = dict_info['hyps']
     time_overall = dict_info['time_overall']
-    time_gp = dict_info['time_gp']
+    time_surrogate = dict_info['time_surrogate']
     time_acq = dict_info['time_acq']
 
     assert isinstance(next_point, np.ndarray)
@@ -575,7 +575,7 @@ def test_optimize_str_modelselection_method():
     assert isinstance(inv_cov_X_X, np.ndarray)
     assert isinstance(hyps, dict)
     assert isinstance(time_overall, float)
-    assert isinstance(time_gp, float)
+    assert isinstance(time_surrogate, float)
     assert isinstance(time_acq, float)
     assert len(next_point.shape) == 1
     assert len(next_points.shape) == 2
@@ -604,7 +604,7 @@ def test_optimize_normalize_Y():
     inv_cov_X_X = dict_info['inv_cov_X_X']
     hyps = dict_info['hyps']
     time_overall = dict_info['time_overall']
-    time_gp = dict_info['time_gp']
+    time_surrogate = dict_info['time_surrogate']
     time_acq = dict_info['time_acq']
 
     assert isinstance(next_point, np.ndarray)
@@ -614,7 +614,7 @@ def test_optimize_normalize_Y():
     assert isinstance(inv_cov_X_X, np.ndarray)
     assert isinstance(hyps, dict)
     assert isinstance(time_overall, float)
-    assert isinstance(time_gp, float)
+    assert isinstance(time_surrogate, float)
     assert isinstance(time_acq, float)
     assert len(next_point.shape) == 1
     assert len(next_points.shape) == 2
@@ -642,7 +642,7 @@ def test_optimize_normalize_Y():
     inv_cov_X_X = dict_info['inv_cov_X_X']
     hyps = dict_info['hyps']
     time_overall = dict_info['time_overall']
-    time_gp = dict_info['time_gp']
+    time_surrogate = dict_info['time_surrogate']
     time_acq = dict_info['time_acq']
 
     assert isinstance(next_point, np.ndarray)
@@ -652,7 +652,7 @@ def test_optimize_normalize_Y():
     assert isinstance(inv_cov_X_X, np.ndarray)
     assert isinstance(hyps, dict)
     assert isinstance(time_overall, float)
-    assert isinstance(time_gp, float)
+    assert isinstance(time_surrogate, float)
     assert isinstance(time_acq, float)
     assert len(next_point.shape) == 1
     assert len(next_points.shape) == 2
@@ -681,7 +681,7 @@ def test_optimize_use_ard():
     inv_cov_X_X = dict_info['inv_cov_X_X']
     hyps = dict_info['hyps']
     time_overall = dict_info['time_overall']
-    time_gp = dict_info['time_gp']
+    time_surrogate = dict_info['time_surrogate']
     time_acq = dict_info['time_acq']
 
     assert isinstance(next_point, np.ndarray)
@@ -691,7 +691,7 @@ def test_optimize_use_ard():
     assert isinstance(inv_cov_X_X, np.ndarray)
     assert isinstance(hyps, dict)
     assert isinstance(time_overall, float)
-    assert isinstance(time_gp, float)
+    assert isinstance(time_surrogate, float)
     assert isinstance(time_acq, float)
     assert len(next_point.shape) == 1
     assert len(next_points.shape) == 2
@@ -720,7 +720,7 @@ def test_optimize_use_ard():
     inv_cov_X_X = dict_info['inv_cov_X_X']
     hyps = dict_info['hyps']
     time_overall = dict_info['time_overall']
-    time_gp = dict_info['time_gp']
+    time_surrogate = dict_info['time_surrogate']
     time_acq = dict_info['time_acq']
 
     assert isinstance(next_point, np.ndarray)
@@ -730,7 +730,7 @@ def test_optimize_use_ard():
     assert isinstance(inv_cov_X_X, np.ndarray)
     assert isinstance(hyps, dict)
     assert isinstance(time_overall, float)
-    assert isinstance(time_gp, float)
+    assert isinstance(time_surrogate, float)
     assert isinstance(time_acq, float)
     assert len(next_point.shape) == 1
     assert len(next_points.shape) == 2

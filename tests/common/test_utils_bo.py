@@ -81,7 +81,7 @@ def test_choose_fun_acquisition_typing():
     annos = package_target.choose_fun_acquisition.__annotations__
 
     assert annos['str_acq'] == str
-    assert annos['hyps'] == dict
+    assert annos['noise'] == typing.Union[float, type(None)]
     assert annos['return'] == typing.Callable
 
 def test_choose_fun_acquisition():

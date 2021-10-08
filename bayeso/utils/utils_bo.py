@@ -175,7 +175,9 @@ def check_optimizer_method_bo(str_optimizer_method_bo: str, dim: int, debug: boo
     return str_optimizer_method_bo
 
 @utils_common.validate_types
-def choose_fun_acquisition(str_acq: str, hyps: dict) -> constants.TYPING_CALLABLE:
+def choose_fun_acquisition(
+    str_acq: str, noise: constants.TYPING_UNION_FLOAT_NONE=None
+) -> constants.TYPING_CALLABLE:
     """
     It chooses and returns an acquisition function.
 
@@ -192,7 +194,7 @@ def choose_fun_acquisition(str_acq: str, hyps: dict) -> constants.TYPING_CALLABL
     """
 
     assert isinstance(str_acq, str)
-    assert isinstance(hyps, dict)
+    assert isinstance(noise, (float, constants.TYPE_NONE))
     assert str_acq in constants.ALLOWED_BO_ACQ
 
     if str_acq == 'pi':
@@ -202,8 +204,10 @@ def choose_fun_acquisition(str_acq: str, hyps: dict) -> constants.TYPING_CALLABL
     elif str_acq == 'ucb':
         fun_acquisition = acquisition.ucb
     elif str_acq == 'aei':
+        assert noise is not None
+
         fun_acquisition = lambda pred_mean, pred_std, Y_train: acquisition.aei(
-            pred_mean, pred_std, Y_train, hyps['noise'])
+            pred_mean, pred_std, Y_train, noise)
     elif str_acq == 'pure_exploit':
         fun_acquisition = lambda pred_mean, pred_std, Y_train: acquisition.pure_exploit(
             pred_mean)
@@ -212,6 +216,7 @@ def choose_fun_acquisition(str_acq: str, hyps: dict) -> constants.TYPING_CALLABL
     else:
         raise NotImplementedError('_choose_fun_acquisition: allowed str_acq,\
             but it is not implemented.')
+
     return fun_acquisition
 
 @utils_common.validate_types

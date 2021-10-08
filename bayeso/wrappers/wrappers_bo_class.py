@@ -248,7 +248,7 @@ class BayesianOptimization:
         X_ = X
         Y_ = Y
         time_all_ = []
-        time_gp_ = []
+        time_surrogate_ = []
         time_acq_ = []
 
         for ind_iter in range(0, self.num_iter):
@@ -262,7 +262,7 @@ class BayesianOptimization:
 
             next_samples = dict_info['next_points']
             acq_vals = dict_info['acquisitions']
-            time_gp = dict_info['time_gp']
+            time_surrogate = dict_info['time_surrogate']
             time_acq = dict_info['time_acq']
 
             if self.debug:
@@ -282,7 +282,7 @@ class BayesianOptimization:
 
             time_iter_end = time.time()
             time_all_.append(time_iter_end - time_iter_start)
-            time_gp_.append(time_gp)
+            time_surrogate_.append(time_surrogate)
             time_acq_.append(time_acq)
 
         time_end = time.time()
@@ -291,10 +291,10 @@ class BayesianOptimization:
             logger.debug('overall time consumed in single BO round: %.4f sec.', time_end - time_start)
 
         time_all_ = np.array(time_all_)
-        time_gp_ = np.array(time_gp_)
+        time_surrogate_ = np.array(time_surrogate_)
         time_acq_ = np.array(time_acq_)
 
-        return X_, Y_, time_all_, time_gp_, time_acq_
+        return X_, Y_, time_all_, time_surrogate_, time_acq_
 
     def optimize_with_initial_inputs(self,
         X: np.ndarray,
@@ -335,12 +335,12 @@ class BayesianOptimization:
         Y = np.array(Y)
         Y = np.reshape(Y, (Y.shape[0], 1))
 
-        X_, Y_, time_all_, time_gp_, time_acq_ \
+        X_, Y_, time_all_, time_surrogate_, time_acq_ \
             = self.optimize_with_all_initial_information(X, Y)
 
         time_all_ = np.concatenate((time_initials, time_all_))
 
-        return X_, Y_, time_all_, time_gp_, time_acq_
+        return X_, Y_, time_all_, time_surrogate_, time_acq_
 
     def optimize(self,
         num_init: int,
@@ -403,7 +403,7 @@ class BayesianOptimization:
         if self.debug:
             logger.debug('X_init:\n%s', utils_logger.get_str_array(X_init))
 
-        X, Y, time_all, time_gp, time_acq = self.optimize_with_initial_inputs(X_init)
+        X, Y, time_all, time_surrogate, time_acq = self.optimize_with_initial_inputs(X_init)
 
         time_end = time.time()
 
@@ -411,4 +411,4 @@ class BayesianOptimization:
             logger.debug('overall time consumed including initializations: %.4f sec.',
                 time_end - time_start)
 
-        return X, Y, time_all, time_gp, time_acq
+        return X, Y, time_all, time_surrogate, time_acq

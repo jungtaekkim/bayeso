@@ -1,6 +1,6 @@
 #
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: March 22, 2021
+# last updated: October 6, 2021
 #
 """This file declares various default constants.
 If you would like to see the details, check out
@@ -67,8 +67,6 @@ ALLOWED_SAMPLING_METHOD = ALLOWED_INITIALIZING_METHOD_BO + ['grid']
 ALLOWED_MLM_METHOD = ['regular', 'combined', 'converged']
 ALLOWED_MODELSELECTION_METHOD = ['ml', 'loocv']
 ALLOWED_SURROGATE = ['gp', 'tp', 'rf']
-
-KEYS_INFO_BENCHMARK = ['dim_fun', 'bounds', 'global_minimum_X', 'global_minimum_y']
 
 COLORS = np.array([
     'red',
