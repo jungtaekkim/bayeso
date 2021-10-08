@@ -247,7 +247,7 @@ class BaseBO(abc.ABC):
         assert isinstance(num_samples, int)
         assert isinstance(seed, (int, constants.TYPE_NONE))
 
-        sampler = qmcpy.Halton(self.num_dim, randomize='OWEN', seed=seed)
+        sampler = qmcpy.Halton(self.num_dim, randomize='OWEN', generalize=False, seed=seed)
         samples = sampler.gen_samples(num_samples)
 
         samples = samples * (self.range_X[:, 1].flatten() - self.range_X[:, 0].flatten()) \
