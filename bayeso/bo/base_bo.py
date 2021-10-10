@@ -336,12 +336,27 @@ class BaseBO(abc.ABC):
 
     @abc.abstractmethod
     def compute_posteriors(self): # pragma: no cover
+        """
+        It is an abstract method.
+
+        """
+
         pass
 
     @abc.abstractmethod
     def compute_acquisitions(self): # pragma: no cover
+        """
+        It is an abstract method.
+
+        """
+
         pass
 
     @abc.abstractmethod
     def optimize(self): # pragma: no cover
+        """
+        It is an abstract method.
+
+        """
+
         pass
