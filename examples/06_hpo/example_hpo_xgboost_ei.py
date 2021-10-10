@@ -16,13 +16,13 @@ from bayeso import acquisition
 from bayeso.wrappers import wrappers_bo_function
 from bayeso.utils import utils_plotting
 
+
 DIGITS = sklearn.datasets.load_digits()
 DIGITS_DATA = DIGITS.images
 DIGITS_DATA = np.reshape(DIGITS_DATA, (DIGITS_DATA.shape[0], DIGITS_DATA.shape[1] * DIGITS_DATA.shape[2]))
 DIGITS_LABELS = DIGITS.target
 DATA_TRAIN, DATA_TEST, LABELS_TRAIN, LABELS_TEST = sklearn.model_selection.train_test_split(DIGITS_DATA, DIGITS_LABELS, test_size=0.3, stratify=DIGITS_LABELS)
 PATH_SAVE = '../figures/hpo/'
-
 
 def fun_target(X):
     print(X)

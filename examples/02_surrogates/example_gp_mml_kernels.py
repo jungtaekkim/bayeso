@@ -9,6 +9,7 @@ from bayeso.gp import gp
 from bayeso.utils import utils_common
 from bayeso.utils import utils_plotting
 
+
 PATH_SAVE = '../figures/gp/'
 list_str_covs = [
     'se',
@@ -34,6 +35,7 @@ def main(str_cov):
 
     mu, sigma, Sigma = gp.predict_with_optimized_hyps(X_train, Y_train, X_test, str_cov=str_cov, fix_noise=False, debug=True)
     utils_plotting.plot_gp_via_distribution(X_train, Y_train, X_test, mu, sigma, Y_test, path_save=PATH_SAVE, str_postfix='cos_' + str_cov)
+
 
 if __name__ == '__main__':
     if not os.path.isdir(PATH_SAVE):

@@ -36,7 +36,8 @@ def main():
         hyps = dict_info['hyps']
 
         mu_test, sigma_test, Sigma_test = gp.predict_with_cov(X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps)
-        acq_test = acquisition.ei(mu_test.flatten(), sigma_test.flatten(), Y_train)
+        acq_test = model_bo.compute_acquisitions(X_test, X_train, Y_train, cov_X_X, inv_cov_X_X, hyps)
+
         acq_test = np.expand_dims(acq_test, axis=1)
         X_train = np.vstack((X_train, next_x))
         Y_train = fun_target(X_train)

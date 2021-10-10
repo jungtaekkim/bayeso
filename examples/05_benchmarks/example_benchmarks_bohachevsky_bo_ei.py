@@ -23,7 +23,7 @@ def fun_target(X):
 
 def main():
     num_bo = 5
-    num_iter = 50
+    num_iter = 10
     num_init = 5
 
     bounds = obj_fun.get_bounds()

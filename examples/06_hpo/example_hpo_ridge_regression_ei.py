@@ -16,12 +16,12 @@ from bayeso import acquisition
 from bayeso.wrappers import wrappers_bo_function
 from bayeso.utils import utils_plotting
 
+
 BOSTON = sklearn.datasets.load_boston()
 BOSTON_DATA = BOSTON.data
 BOSTON_LABELS = BOSTON.target
 DATA_TRAIN, DATA_TEST, LABELS_TRAIN, LABELS_TEST = sklearn.model_selection.train_test_split(BOSTON_DATA, BOSTON_LABELS, test_size=0.3)
 PATH_SAVE = '../figures/hpo/'
-
 
 def fun_target(X):
     print(X)

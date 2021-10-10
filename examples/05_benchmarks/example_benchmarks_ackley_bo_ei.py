@@ -1,4 +1,4 @@
-# example_benchmarks_branin_bo_ei
+# example_benchmarks_ackley_bo_ei
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
 # last updated: April 28, 2020
 
@@ -6,24 +6,25 @@ import numpy as np
 import os
 
 from bayeso import bo
-from bayeso_benchmarks.two_dim_branin import Branin
-from bayeso.wrappers import wrappers_bo_function
+from bayeso_benchmarks.inf_dim_ackley import Ackley
+from bayeso import wrappers
+#from bayeso.wrappers import wrappers_bo_function
 from bayeso.utils import utils_bo
 from bayeso.utils import utils_plotting
 
 
-STR_FUN_TARGET = 'branin'
+STR_FUN_TARGET = 'ackley'
 PATH_SAVE = '../figures/benchmarks/'
+NUM_DIM = 3
 
-obj_fun = Branin()
-
+obj_fun = Ackley(NUM_DIM)
 
 def fun_target(X):
     return obj_fun.output(X)
 
 def main():
     num_bo = 5
-    num_iter = 50
+    num_iter = 10
     num_init = 5
 
     bounds = obj_fun.get_bounds()
@@ -32,7 +33,7 @@ def main():
     list_time = []
     for ind_bo in range(0, num_bo):
         print('BO Round', ind_bo + 1)
-        X_final, Y_final, time_final, _, _ = wrappers_bo_function.run_single_round(model_bo, fun_target, num_init, num_iter, str_initial_method_bo='sobol', str_sampling_method_ao='sobol', num_samples_ao=100)
+        X_final, Y_final, time_final, _, _ = wrappers.run_single_round(model_bo, fun_target, num_init, num_iter, str_initial_method_bo='gaussian', str_sampling_method_ao='gaussian', num_samples_ao=100, seed=42 * (ind_bo + 1))
         print(X_final)
         print(Y_final)
         print(time_final)

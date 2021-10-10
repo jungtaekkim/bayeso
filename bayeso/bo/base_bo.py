@@ -335,13 +335,13 @@ class BaseBO(abc.ABC):
         return self.get_samples(str_initial_method, num_samples=num_initials, seed=seed)
 
     @abc.abstractmethod
-    def compute_posteriors(self):
+    def compute_posteriors(self): # pragma: no cover
         pass
 
     @abc.abstractmethod
-    def compute_acquisitions(self):
+    def compute_acquisitions(self): # pragma: no cover
         pass
 
     @abc.abstractmethod
-    def optimize(self):
+    def optimize(self): # pragma: no cover
         pass

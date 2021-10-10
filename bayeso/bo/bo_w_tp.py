@@ -3,7 +3,7 @@
 # last updated: October 8, 2021
 #
 """It defines a class of Bayesian optimization
-with Gaussian process regression."""
+with Student-:math:`t` process regression."""
 
 import numpy as np
 import time
@@ -21,13 +21,13 @@ import qmcpy
 from bayeso.bo import base_bo
 from bayeso import covariance
 from bayeso import constants
-from bayeso.gp import gp
-from bayeso.gp import gp_kernel
+from bayeso.tp import tp
+from bayeso.tp import tp_kernel
 from bayeso.utils import utils_bo
 from bayeso.utils import utils_logger
 
 
-class BOwGP(base_bo.BaseBO):
+class BOwTP(base_bo.BaseBO):
     """
     It is a Bayesian optimization class.
 
@@ -43,15 +43,12 @@ class BOwGP(base_bo.BaseBO):
     :type use_ard: bool., optional
     :param prior_mu: None, or prior mean function.
     :type prior_mu: NoneType, or callable, optional
-    :param str_optimizer_method_gp: the name of optimization method for
-        Gaussian process regression.
-    :type str_optimizer_method_gp: str., optional
+    :param str_optimizer_method_tp: the name of optimization method for
+        Student-:math:`t` process regression.
+    :type str_optimizer_method_tp: str., optional
     :param str_optimizer_method_bo: the name of optimization method for
         Bayesian optimization.
     :type str_optimizer_method_bo: str., optional
-    :param str_modelselection_method: the name of model selection method
-        for Gaussian process regression.
-    :type str_modelselection_method: str., optional
     :param debug: flag for printing log messages.
     :type debug: bool., optional
 
@@ -63,9 +60,8 @@ class BOwGP(base_bo.BaseBO):
         normalize_Y: bool=constants.NORMALIZE_RESPONSE,
         use_ard: bool=constants.USE_ARD,
         prior_mu: constants.TYPING_UNION_CALLABLE_NONE=None,
-        str_optimizer_method_gp: str=constants.STR_OPTIMIZER_METHOD_GP,
+        str_optimizer_method_tp: str=constants.STR_OPTIMIZER_METHOD_TP,
         str_optimizer_method_bo: str=constants.STR_OPTIMIZER_METHOD_AO,
-        str_modelselection_method: str=constants.STR_MODELSELECTION_METHOD,
         debug: bool=False
     ):
         """
@@ -79,8 +75,7 @@ class BOwGP(base_bo.BaseBO):
         assert isinstance(normalize_Y, bool)
         assert isinstance(use_ard, bool)
         assert isinstance(str_optimizer_method_bo, str)
-        assert isinstance(str_optimizer_method_gp, str)
-        assert isinstance(str_modelselection_method, str)
+        assert isinstance(str_optimizer_method_tp, str)
         assert isinstance(debug, bool)
         assert callable(prior_mu) or prior_mu is None
         assert len(range_X.shape) == 2
@@ -88,22 +83,19 @@ class BOwGP(base_bo.BaseBO):
         assert (range_X[:, 0] <= range_X[:, 1]).all()
         assert str_cov in constants.ALLOWED_COV
         assert str_acq in constants.ALLOWED_BO_ACQ
-        assert str_optimizer_method_gp in constants.ALLOWED_OPTIMIZER_METHOD_GP
+        assert str_optimizer_method_tp in constants.ALLOWED_OPTIMIZER_METHOD_TP
         assert str_optimizer_method_bo in constants.ALLOWED_OPTIMIZER_METHOD_BO
-        assert str_modelselection_method in constants.ALLOWED_MODELSELECTION_METHOD
 
-        str_surrogate = 'gp'
+        str_surrogate = 'tp'
         assert str_surrogate in constants.ALLOWED_SURROGATE
 
         super().__init__(range_X, str_surrogate, str_acq, str_optimizer_method_bo, normalize_Y, debug)
 
         self.str_cov = str_cov
         self.use_ard = use_ard
-        self.str_optimizer_method_gp = str_optimizer_method_gp
-        self.str_modelselection_method = str_modelselection_method
+        self.str_optimizer_method_tp = str_optimizer_method_tp
         self.prior_mu = prior_mu
 
-        self.is_optimize_hyps = True
         self.historical_hyps = []
 
     def _optimize(self, fun_negative_acquisition: constants.TYPING_CALLABLE,
@@ -190,7 +182,7 @@ class BOwGP(base_bo.BaseBO):
         inv_cov_X_X: np.ndarray, hyps: dict
     ) -> np.ndarray:
         """
-        It returns posterior mean and standard deviation functions over `X_test`.
+        It returns posterior mean and standard deviation over `X_test`.
 
         :param X_train: inputs. Shape: (n, d) or (n, m, d).
         :type X_train: numpy.ndarray
@@ -205,13 +197,12 @@ class BOwGP(base_bo.BaseBO):
         :param hyps: dictionary of hyperparameters for Gaussian process.
         :type hyps: dict.
 
-        :returns: posterior mean and standard deviation functions
-            over `X_test`. Shape: ((l, ), (l, )).
+        :returns: posterior mean and standard deviation over `X_test`. Shape: ((l, ), (l, )).
         :rtype: (numpy.ndarray, numpy.ndarray)
 
         """
 
-        pred_mean, pred_std, _ = gp.predict_with_cov(
+        _, pred_mean, pred_std, _ = tp.predict_with_cov(
             X_train, Y_train, X_test,
             cov_X_X, inv_cov_X_X, hyps, str_cov=self.str_cov,
             prior_mu=self.prior_mu, debug=self.debug
@@ -291,7 +282,6 @@ class BOwGP(base_bo.BaseBO):
     def optimize(self, X_train: np.ndarray, Y_train: np.ndarray,
         str_sampling_method: str=constants.STR_SAMPLING_METHOD_AO,
         num_samples: int=constants.NUM_SAMPLES_AO,
-        str_mlm_method: str=constants.STR_MLM_METHOD,
     ) -> constants.TYPING_TUPLE_ARRAY_DICT:
         """
         It computes acquired example, candidates of acquired examples,
@@ -308,9 +298,6 @@ class BOwGP(base_bo.BaseBO):
         :type str_sampling_method: str., optional
         :param num_samples: the number of samples.
         :type num_samples: int., optional
-        :param str_mlm_method: the name of marginal likelihood maximization
-            method for Gaussian process regression.
-        :type str_mlm_method: str., optional
 
         :returns: acquired example and dictionary of information. Shape: ((d, ), dict.).
         :rtype: (numpy.ndarray, dict.)
@@ -323,7 +310,6 @@ class BOwGP(base_bo.BaseBO):
         assert isinstance(Y_train, np.ndarray)
         assert isinstance(str_sampling_method, str)
         assert isinstance(num_samples, int)
-        assert isinstance(str_mlm_method, str)
         assert len(X_train.shape) == 2
         assert len(Y_train.shape) == 2
         assert Y_train.shape[1] == 1
@@ -331,7 +317,6 @@ class BOwGP(base_bo.BaseBO):
         assert X_train.shape[1] == self.num_dim
         assert num_samples > 0
         assert str_sampling_method in constants.ALLOWED_SAMPLING_METHOD
-        assert str_mlm_method in constants.ALLOWED_MLM_METHOD
 
         time_start = time.time()
 
@@ -341,75 +326,13 @@ class BOwGP(base_bo.BaseBO):
 
         time_start_surrogate = time.time()
 
-        if str_mlm_method == 'regular':
-            cov_X_X, inv_cov_X_X, hyps = gp_kernel.get_optimized_kernel(
-                X_train, Y_train,
-                self.prior_mu, self.str_cov,
-                str_optimizer_method=self.str_optimizer_method_gp,
-                str_modelselection_method=self.str_modelselection_method,
-                use_ard=self.use_ard,
-                debug=self.debug
-            )
-        elif str_mlm_method == 'combined':
-            from bayeso.gp import gp_likelihood
-            from bayeso.utils import utils_gp
-            from bayeso.utils import utils_covariance
-
-            prior_mu_train = utils_gp.get_prior_mu(self.prior_mu, X_train)
-
-            neg_log_ml_best = np.inf
-            cov_X_X_best = None
-            inv_cov_X_X_best = None
-            hyps_best = None
-
-            for cur_str_optimizer_method in ['BFGS', 'Nelder-Mead']:
-                cov_X_X, inv_cov_X_X, hyps = gp_kernel.get_optimized_kernel(
-                    X_train, Y_train,
-                    self.prior_mu, self.str_cov,
-                    str_optimizer_method=cur_str_optimizer_method,
-                    str_modelselection_method=self.str_modelselection_method,
-                    use_ard=self.use_ard,
-                    debug=self.debug
-                )
-                cur_neg_log_ml_ = gp_likelihood.neg_log_ml(X_train, Y_train,
-                    utils_covariance.convert_hyps(self.str_cov, hyps,
-                        fix_noise=constants.FIX_GP_NOISE),
-                    self.str_cov, prior_mu_train,
-                    use_ard=self.use_ard, fix_noise=constants.FIX_GP_NOISE,
-                    use_gradient=False, debug=self.debug)
-
-                if cur_neg_log_ml_ < neg_log_ml_best:
-                    neg_log_ml_best = cur_neg_log_ml_
-                    cov_X_X_best = cov_X_X
-                    inv_cov_X_X_best = inv_cov_X_X
-                    hyps_best = hyps
-
-            cov_X_X = cov_X_X_best
-            inv_cov_X_X = inv_cov_X_X_best
-            hyps = hyps_best
-        elif str_mlm_method == 'converged':
-            fix_noise = constants.FIX_GP_NOISE
-
-            if self.is_optimize_hyps:
-                cov_X_X, inv_cov_X_X, hyps = gp_kernel.get_optimized_kernel(
-                    X_train, Y_train,
-                    self.prior_mu, self.str_cov,
-                    str_optimizer_method=self.str_optimizer_method_gp,
-                    str_modelselection_method=self.str_modelselection_method,
-                    use_ard=self.use_ard,
-                    debug=self.debug
-                )
-
-                self.is_optimize_hyps = not utils_bo.check_hyps_convergence(self.historical_hyps,
-                    hyps, self.str_cov, fix_noise)
-            else: # pragma: no cover
-                if self.debug:
-                    self.logger.debug('hyps converged.')
-                hyps = self.historical_hyps[-1]
-                cov_X_X, inv_cov_X_X, _ = covariance.get_kernel_inverse(X_train, hyps,
-                    self.str_cov, fix_noise=fix_noise, debug=self.debug)
-        else: # pragma: no cover
-            raise ValueError('optimize: missing condition for str_mlm_method.')
+        cov_X_X, inv_cov_X_X, hyps = tp_kernel.get_optimized_kernel(
+            X_train, Y_train,
+            self.prior_mu, self.str_cov,
+            str_optimizer_method=self.str_optimizer_method_tp,
+            use_ard=self.use_ard,
+            debug=self.debug
+        )
 
         self.historical_hyps.append(hyps)
 
