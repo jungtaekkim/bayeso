@@ -16,7 +16,6 @@ try:
     import cma
 except: # pragma: no cover
     cma = None
-import qmcpy
 
 from bayeso.bo import base_bo
 from bayeso import covariance
@@ -29,7 +28,7 @@ from bayeso.utils import utils_logger
 
 class BOwTP(base_bo.BaseBO):
     """
-    It is a Bayesian optimization class.
+    It is a Bayesian optimization class with Student-:math:`t` process regression.
 
     :param range_X: a search space. Shape: (d, 2).
     :type range_X: numpy.ndarray
