@@ -160,7 +160,8 @@ def check_optimizer_method_bo(str_optimizer_method_bo: str, dim: int, debug: boo
     assert isinstance(str_optimizer_method_bo, str)
     assert isinstance(dim, int)
     assert isinstance(debug, bool)
-    assert str_optimizer_method_bo in constants.ALLOWED_OPTIMIZER_METHOD_BO
+    assert str_optimizer_method_bo in constants.ALLOWED_OPTIMIZER_METHOD_BO \
+        + constants.ALLOWED_OPTIMIZER_METHOD_BO_TREES
 
     if str_optimizer_method_bo == 'DIRECT' and directminimize is None: # pragma: no cover
         logger.warning('DIRECT is selected, but it is not installed.')

@@ -57,7 +57,8 @@ class BaseBO(abc.ABC):
         assert len(range_X.shape) == 2
         assert range_X.shape[1] == 2
         assert (range_X[:, 0] <= range_X[:, 1]).all()
-        assert str_surrogate in constants.ALLOWED_SURROGATE
+        assert str_surrogate in constants.ALLOWED_SURROGATE \
+            + constants.ALLOWED_SURROGATE_TREES
         assert str_acq in constants.ALLOWED_BO_ACQ
         assert str_optimizer_method_bo in constants.ALLOWED_OPTIMIZER_METHOD_BO \
             + constants.ALLOWED_OPTIMIZER_METHOD_BO_TREES

@@ -2,17 +2,16 @@
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
 # last updated: October 8, 2021
 #
-"""test_bo_bo_w_tp"""
+"""test_bo_bo_w_trees"""
 
 import pytest
 import numpy as np
 
-from bayeso.bo import bo_w_tp as package_target
-from bayeso import covariance
-from bayeso.utils import utils_covariance
+from bayeso.bo import bo_w_trees as package_target
+from bayeso.trees import trees_random_forest
 
 
-BO = package_target.BOwTP
+BO = package_target.BOwTrees
 TEST_EPSILON = 1e-5
 
 def test_load_bo():
@@ -48,23 +47,9 @@ def test_load_bo():
     with pytest.raises(AssertionError) as error:
         model_bo = BO(arr_range_4)
     with pytest.raises(AssertionError) as error:
-        model_bo = BO(arr_range_1, str_cov=1)
+        model_bo = BO(arr_range_1, str_surrogate=1)
     with pytest.raises(AssertionError) as error:
-        model_bo = BO(arr_range_1, str_cov='abc')
-    with pytest.raises(AssertionError) as error:
-        model_bo = BO(arr_range_1, str_acq=1)
-    with pytest.raises(AssertionError) as error:
-        model_bo = BO(arr_range_1, str_acq='abc')
-    with pytest.raises(AssertionError) as error:
-        model_bo = BO(arr_range_1, use_ard='abc')
-    with pytest.raises(AssertionError) as error:
-        model_bo = BO(arr_range_1, use_ard=1)
-    with pytest.raises(AssertionError) as error:
-        model_bo = BO(arr_range_1, prior_mu=1)
-    with pytest.raises(AssertionError) as error:
-        model_bo = BO(arr_range_1, str_optimizer_method_tp=1)
-    with pytest.raises(AssertionError) as error:
-        model_bo = BO(arr_range_1, str_optimizer_method_tp='abc')
+        model_bo = BO(arr_range_1, str_surrogate='abc')
     with pytest.raises(AssertionError) as error:
         model_bo = BO(arr_range_1, str_optimizer_method_bo=1)
     with pytest.raises(AssertionError) as error:
@@ -73,7 +58,7 @@ def test_load_bo():
         model_bo = BO(arr_range_1, debug=1)
 
     model_bo = BO(arr_range_1)
-    model_bo = BO(arr_range_2)
+    model_bo = BO(arr_range_2, debug=True)
 
 def test_get_samples():
     np.random.seed(42)
@@ -285,9 +270,7 @@ def test_optimize():
     next_point, dict_info = model_bo.optimize(X, Y)
     next_points = dict_info['next_points']
     acquisitions = dict_info['acquisitions']
-    cov_X_X = dict_info['cov_X_X']
-    inv_cov_X_X = dict_info['inv_cov_X_X']
-    hyps = dict_info['hyps']
+    trees = dict_info['trees']
     time_overall = dict_info['time_overall']
     time_surrogate = dict_info['time_surrogate']
     time_acq = dict_info['time_acq']
@@ -295,9 +278,7 @@ def test_optimize():
     assert isinstance(next_point, np.ndarray)
     assert isinstance(next_points, np.ndarray)
     assert isinstance(acquisitions, np.ndarray)
-    assert isinstance(cov_X_X, np.ndarray)
-    assert isinstance(inv_cov_X_X, np.ndarray)
-    assert isinstance(hyps, dict)
+    assert isinstance(trees, list)
     assert isinstance(time_overall, float)
     assert isinstance(time_surrogate, float)
     assert isinstance(time_acq, float)
@@ -324,9 +305,7 @@ def test_optimize_str_acq():
     next_point, dict_info = model_bo.optimize(X, Y)
     next_points = dict_info['next_points']
     acquisitions = dict_info['acquisitions']
-    cov_X_X = dict_info['cov_X_X']
-    inv_cov_X_X = dict_info['inv_cov_X_X']
-    hyps = dict_info['hyps']
+    trees = dict_info['trees']
     time_overall = dict_info['time_overall']
     time_surrogate = dict_info['time_surrogate']
     time_acq = dict_info['time_acq']
@@ -334,9 +313,7 @@ def test_optimize_str_acq():
     assert isinstance(next_point, np.ndarray)
     assert isinstance(next_points, np.ndarray)
     assert isinstance(acquisitions, np.ndarray)
-    assert isinstance(cov_X_X, np.ndarray)
-    assert isinstance(inv_cov_X_X, np.ndarray)
-    assert isinstance(hyps, dict)
+    assert isinstance(trees, list)
     assert isinstance(time_overall, float)
     assert isinstance(time_surrogate, float)
     assert isinstance(time_acq, float)
@@ -351,9 +328,7 @@ def test_optimize_str_acq():
     next_point, dict_info = model_bo.optimize(X, Y)
     next_points = dict_info['next_points']
     acquisitions = dict_info['acquisitions']
-    cov_X_X = dict_info['cov_X_X']
-    inv_cov_X_X = dict_info['inv_cov_X_X']
-    hyps = dict_info['hyps']
+    trees = dict_info['trees']
     time_overall = dict_info['time_overall']
     time_surrogate = dict_info['time_surrogate']
     time_acq = dict_info['time_acq']
@@ -361,9 +336,7 @@ def test_optimize_str_acq():
     assert isinstance(next_point, np.ndarray)
     assert isinstance(next_points, np.ndarray)
     assert isinstance(acquisitions, np.ndarray)
-    assert isinstance(cov_X_X, np.ndarray)
-    assert isinstance(inv_cov_X_X, np.ndarray)
-    assert isinstance(hyps, dict)
+    assert isinstance(trees, list)
     assert isinstance(time_overall, float)
     assert isinstance(time_surrogate, float)
     assert isinstance(time_acq, float)
@@ -378,9 +351,7 @@ def test_optimize_str_acq():
     next_point, dict_info = model_bo.optimize(X, Y)
     next_points = dict_info['next_points']
     acquisitions = dict_info['acquisitions']
-    cov_X_X = dict_info['cov_X_X']
-    inv_cov_X_X = dict_info['inv_cov_X_X']
-    hyps = dict_info['hyps']
+    trees = dict_info['trees']
     time_overall = dict_info['time_overall']
     time_surrogate = dict_info['time_surrogate']
     time_acq = dict_info['time_acq']
@@ -388,9 +359,7 @@ def test_optimize_str_acq():
     assert isinstance(next_point, np.ndarray)
     assert isinstance(next_points, np.ndarray)
     assert isinstance(acquisitions, np.ndarray)
-    assert isinstance(cov_X_X, np.ndarray)
-    assert isinstance(inv_cov_X_X, np.ndarray)
-    assert isinstance(hyps, dict)
+    assert isinstance(trees, list)
     assert isinstance(time_overall, float)
     assert isinstance(time_surrogate, float)
     assert isinstance(time_acq, float)
@@ -405,9 +374,7 @@ def test_optimize_str_acq():
     next_point, dict_info = model_bo.optimize(X, Y)
     next_points = dict_info['next_points']
     acquisitions = dict_info['acquisitions']
-    cov_X_X = dict_info['cov_X_X']
-    inv_cov_X_X = dict_info['inv_cov_X_X']
-    hyps = dict_info['hyps']
+    trees = dict_info['trees']
     time_overall = dict_info['time_overall']
     time_surrogate = dict_info['time_surrogate']
     time_acq = dict_info['time_acq']
@@ -415,9 +382,7 @@ def test_optimize_str_acq():
     assert isinstance(next_point, np.ndarray)
     assert isinstance(next_points, np.ndarray)
     assert isinstance(acquisitions, np.ndarray)
-    assert isinstance(cov_X_X, np.ndarray)
-    assert isinstance(inv_cov_X_X, np.ndarray)
-    assert isinstance(hyps, dict)
+    assert isinstance(trees, list)
     assert isinstance(time_overall, float)
     assert isinstance(time_surrogate, float)
     assert isinstance(time_acq, float)
@@ -432,9 +397,7 @@ def test_optimize_str_acq():
     next_point, dict_info = model_bo.optimize(X, Y)
     next_points = dict_info['next_points']
     acquisitions = dict_info['acquisitions']
-    cov_X_X = dict_info['cov_X_X']
-    inv_cov_X_X = dict_info['inv_cov_X_X']
-    hyps = dict_info['hyps']
+    trees = dict_info['trees']
     time_overall = dict_info['time_overall']
     time_surrogate = dict_info['time_surrogate']
     time_acq = dict_info['time_acq']
@@ -442,9 +405,7 @@ def test_optimize_str_acq():
     assert isinstance(next_point, np.ndarray)
     assert isinstance(next_points, np.ndarray)
     assert isinstance(acquisitions, np.ndarray)
-    assert isinstance(cov_X_X, np.ndarray)
-    assert isinstance(inv_cov_X_X, np.ndarray)
-    assert isinstance(hyps, dict)
+    assert isinstance(trees, list)
     assert isinstance(time_overall, float)
     assert isinstance(time_surrogate, float)
     assert isinstance(time_acq, float)
@@ -467,13 +428,11 @@ def test_optimize_str_optimize_method_bo():
     X = np.random.randn(num_X, dim_X)
     Y = np.random.randn(num_X, 1)
 
-    model_bo = BO(arr_range_1, str_optimizer_method_bo='L-BFGS-B')
+    model_bo = BO(arr_range_1, str_optimizer_method_bo='random_search')
     next_point, dict_info = model_bo.optimize(X, Y)
     next_points = dict_info['next_points']
     acquisitions = dict_info['acquisitions']
-    cov_X_X = dict_info['cov_X_X']
-    inv_cov_X_X = dict_info['inv_cov_X_X']
-    hyps = dict_info['hyps']
+    trees = dict_info['trees']
     time_overall = dict_info['time_overall']
     time_surrogate = dict_info['time_surrogate']
     time_acq = dict_info['time_acq']
@@ -481,38 +440,7 @@ def test_optimize_str_optimize_method_bo():
     assert isinstance(next_point, np.ndarray)
     assert isinstance(next_points, np.ndarray)
     assert isinstance(acquisitions, np.ndarray)
-    assert isinstance(cov_X_X, np.ndarray)
-    assert isinstance(inv_cov_X_X, np.ndarray)
-    assert isinstance(hyps, dict)
-    assert isinstance(time_overall, float)
-    assert isinstance(time_surrogate, float)
-    assert isinstance(time_acq, float)
-    assert len(next_point.shape) == 1
-    assert len(next_points.shape) == 2
-    assert len(acquisitions.shape) == 1
-    assert next_point.shape[0] == dim_X
-    assert next_points.shape[1] == dim_X
-    assert next_points.shape[0] == acquisitions.shape[0]
-
-    # TODO: add DIRECT test, now it causes an error.
-
-    model_bo = BO(arr_range_1, str_optimizer_method_bo='CMA-ES')
-    next_point, dict_info = model_bo.optimize(X, Y)
-    next_points = dict_info['next_points']
-    acquisitions = dict_info['acquisitions']
-    cov_X_X = dict_info['cov_X_X']
-    inv_cov_X_X = dict_info['inv_cov_X_X']
-    hyps = dict_info['hyps']
-    time_overall = dict_info['time_overall']
-    time_surrogate = dict_info['time_surrogate']
-    time_acq = dict_info['time_acq']
-
-    assert isinstance(next_point, np.ndarray)
-    assert isinstance(next_points, np.ndarray)
-    assert isinstance(acquisitions, np.ndarray)
-    assert isinstance(cov_X_X, np.ndarray)
-    assert isinstance(inv_cov_X_X, np.ndarray)
-    assert isinstance(hyps, dict)
+    assert isinstance(trees, list)
     assert isinstance(time_overall, float)
     assert isinstance(time_surrogate, float)
     assert isinstance(time_acq, float)
@@ -539,9 +467,7 @@ def test_optimize_normalize_Y():
     next_point, dict_info = model_bo.optimize(X, Y)
     next_points = dict_info['next_points']
     acquisitions = dict_info['acquisitions']
-    cov_X_X = dict_info['cov_X_X']
-    inv_cov_X_X = dict_info['inv_cov_X_X']
-    hyps = dict_info['hyps']
+    trees = dict_info['trees']
     time_overall = dict_info['time_overall']
     time_surrogate = dict_info['time_surrogate']
     time_acq = dict_info['time_acq']
@@ -549,9 +475,7 @@ def test_optimize_normalize_Y():
     assert isinstance(next_point, np.ndarray)
     assert isinstance(next_points, np.ndarray)
     assert isinstance(acquisitions, np.ndarray)
-    assert isinstance(cov_X_X, np.ndarray)
-    assert isinstance(inv_cov_X_X, np.ndarray)
-    assert isinstance(hyps, dict)
+    assert isinstance(trees, list)
     assert isinstance(time_overall, float)
     assert isinstance(time_surrogate, float)
     assert isinstance(time_acq, float)
@@ -577,9 +501,7 @@ def test_optimize_normalize_Y():
     next_point, dict_info = model_bo.optimize(X, Y)
     next_points = dict_info['next_points']
     acquisitions = dict_info['acquisitions']
-    cov_X_X = dict_info['cov_X_X']
-    inv_cov_X_X = dict_info['inv_cov_X_X']
-    hyps = dict_info['hyps']
+    trees = dict_info['trees']
     time_overall = dict_info['time_overall']
     time_surrogate = dict_info['time_surrogate']
     time_acq = dict_info['time_acq']
@@ -587,9 +509,7 @@ def test_optimize_normalize_Y():
     assert isinstance(next_point, np.ndarray)
     assert isinstance(next_points, np.ndarray)
     assert isinstance(acquisitions, np.ndarray)
-    assert isinstance(cov_X_X, np.ndarray)
-    assert isinstance(inv_cov_X_X, np.ndarray)
-    assert isinstance(hyps, dict)
+    assert isinstance(trees, list)
     assert isinstance(time_overall, float)
     assert isinstance(time_surrogate, float)
     assert isinstance(time_acq, float)
@@ -599,87 +519,6 @@ def test_optimize_normalize_Y():
     assert next_point.shape[0] == dim_X
     assert next_points.shape[1] == dim_X
     assert next_points.shape[0] == acquisitions.shape[0]
-
-def test_optimize_use_ard():
-    np.random.seed(42)
-    arr_range = np.array([
-        [0.0, 10.0],
-        [-2.0, 2.0],
-        [-5.0, 5.0],
-    ])
-    dim_X = arr_range.shape[0]
-    num_X = 5
-    X = np.random.randn(num_X, dim_X)
-    Y = np.random.randn(num_X, 1)
-
-    model_bo = BO(arr_range, use_ard=False)
-    next_point, dict_info = model_bo.optimize(X, Y)
-    next_points = dict_info['next_points']
-    acquisitions = dict_info['acquisitions']
-    cov_X_X = dict_info['cov_X_X']
-    inv_cov_X_X = dict_info['inv_cov_X_X']
-    hyps = dict_info['hyps']
-    time_overall = dict_info['time_overall']
-    time_surrogate = dict_info['time_surrogate']
-    time_acq = dict_info['time_acq']
-
-    assert isinstance(next_point, np.ndarray)
-    assert isinstance(next_points, np.ndarray)
-    assert isinstance(acquisitions, np.ndarray)
-    assert isinstance(cov_X_X, np.ndarray)
-    assert isinstance(inv_cov_X_X, np.ndarray)
-    assert isinstance(hyps, dict)
-    assert isinstance(time_overall, float)
-    assert isinstance(time_surrogate, float)
-    assert isinstance(time_acq, float)
-    assert len(next_point.shape) == 1
-    assert len(next_points.shape) == 2
-    assert len(acquisitions.shape) == 1
-    assert next_point.shape[0] == dim_X
-    assert next_points.shape[1] == dim_X
-    assert next_points.shape[0] == acquisitions.shape[0]
-    assert isinstance(hyps['lengthscales'], float)
-
-    X = np.array([
-        [3.0, 0.0, 1.0],
-        [2.0, -1.0, 4.0],
-        [9.0, 1.5, 3.0],
-    ])
-    Y = np.array([
-        [100.0],
-        [100.0],
-        [100.0],
-    ])
-
-    model_bo = BO(arr_range, use_ard=True)
-    next_point, dict_info = model_bo.optimize(X, Y)
-    next_points = dict_info['next_points']
-    acquisitions = dict_info['acquisitions']
-    cov_X_X = dict_info['cov_X_X']
-    inv_cov_X_X = dict_info['inv_cov_X_X']
-    hyps = dict_info['hyps']
-    time_overall = dict_info['time_overall']
-    time_surrogate = dict_info['time_surrogate']
-    time_acq = dict_info['time_acq']
-
-    assert isinstance(next_point, np.ndarray)
-    assert isinstance(next_points, np.ndarray)
-    assert isinstance(acquisitions, np.ndarray)
-    assert isinstance(cov_X_X, np.ndarray)
-    assert isinstance(inv_cov_X_X, np.ndarray)
-    assert isinstance(hyps, dict)
-    assert isinstance(time_overall, float)
-    assert isinstance(time_surrogate, float)
-    assert isinstance(time_acq, float)
-    assert len(next_point.shape) == 1
-    assert len(next_points.shape) == 2
-    assert len(acquisitions.shape) == 1
-    assert next_point.shape[0] == dim_X
-    assert next_points.shape[1] == dim_X
-    assert next_points.shape[0] == acquisitions.shape[0]
-    assert isinstance(hyps['lengthscales'], np.ndarray)
-    assert len(hyps['lengthscales'].shape) == 1
-    assert hyps['lengthscales'].shape[0] == 3
 
 def test_compute_posteriors():
     np.random.seed(42)
@@ -694,30 +533,26 @@ def test_compute_posteriors():
     Y = np.random.randn(num_X, 1)
 
     model_bo = BO(arr_range_1, str_acq='ei')
-    hyps = utils_covariance.get_hyps(model_bo.str_cov, dim=dim_X, use_ard=model_bo.use_ard, use_gp=False)
 
-    cov_X_X, inv_cov_X_X, _ = covariance.get_kernel_inverse(X, hyps, model_bo.str_cov)
+    num_trees = 10
+    depth_max = 5
+    size_min_leaf = 1
+    num_features = int(np.sqrt(dim_X))
+
+    trees = trees_random_forest.get_random_forest(
+        X, Y, num_trees, depth_max, size_min_leaf, num_features
+    )
 
     X_test = model_bo.get_samples('sobol', num_samples=10, seed=111)
 
     with pytest.raises(AssertionError) as error:
-        model_bo.compute_posteriors(1, Y, X_test, cov_X_X, inv_cov_X_X, hyps)
+        model_bo.compute_posteriors(1, trees)
     with pytest.raises(AssertionError) as error:
-        model_bo.compute_posteriors(X, 1, X_test, cov_X_X, inv_cov_X_X, hyps)
+        model_bo.compute_posteriors(X_test, 1)
     with pytest.raises(AssertionError) as error:
-        model_bo.compute_posteriors(X, Y, 1, cov_X_X, inv_cov_X_X, hyps)
-    with pytest.raises(AssertionError) as error:
-        model_bo.compute_posteriors(X, Y, X_test, 1, inv_cov_X_X, hyps)
-    with pytest.raises(AssertionError) as error:
-        model_bo.compute_posteriors(X, Y, X_test, cov_X_X, 1, hyps)
-    with pytest.raises(AssertionError) as error:
-        model_bo.compute_posteriors(X, Y, X_test, cov_X_X, inv_cov_X_X, 1)
-    with pytest.raises(AssertionError) as error:
-        model_bo.compute_posteriors(X, Y, X_test, cov_X_X, inv_cov_X_X, 1.0)
-    with pytest.raises(AssertionError) as error:
-        model_bo.compute_posteriors(X, Y, X_test, cov_X_X, inv_cov_X_X, 'abc')
+        model_bo.compute_posteriors(X_test, 'abc')
 
-    pred_mean, pred_std = model_bo.compute_posteriors(X, Y, X_test, cov_X_X, inv_cov_X_X, hyps)
+    pred_mean, pred_std = model_bo.compute_posteriors(X_test, trees)
 
     assert len(pred_mean.shape) == 1
     assert len(pred_std.shape) == 1
@@ -736,9 +571,15 @@ def test_compute_acquisitions():
     Y = np.random.randn(num_X, 1)
 
     model_bo = BO(arr_range_1, str_acq='pi')
-    hyps = utils_covariance.get_hyps(model_bo.str_cov, dim=dim_X, use_ard=model_bo.use_ard, use_gp=False)
 
-    cov_X_X, inv_cov_X_X, _ = covariance.get_kernel_inverse(X, hyps, model_bo.str_cov)
+    num_trees = 10
+    depth_max = 5
+    size_min_leaf = 1
+    num_features = int(np.sqrt(dim_X))
+
+    trees = trees_random_forest.get_random_forest(
+        X, Y, num_trees, depth_max, size_min_leaf, num_features
+    )
 
     X_test = model_bo.get_samples('sobol', num_samples=10, seed=111)
 
@@ -802,74 +643,34 @@ def test_compute_acquisitions():
     assert np.all(np.abs(X_test - truth_X_test) < TEST_EPSILON)
 
     with pytest.raises(AssertionError) as error:
-        model_bo.compute_acquisitions(1, X, Y, cov_X_X, inv_cov_X_X, hyps)
+        model_bo.compute_acquisitions(1, X, Y, trees)
     with pytest.raises(AssertionError) as error:
-        model_bo.compute_acquisitions(X_test, 1, Y, cov_X_X, inv_cov_X_X, hyps)
+        model_bo.compute_acquisitions(X_test, 1, Y, trees)
     with pytest.raises(AssertionError) as error:
-        model_bo.compute_acquisitions(X_test, X, 1, cov_X_X, inv_cov_X_X, hyps)
+        model_bo.compute_acquisitions(X_test, X, 1, trees)
     with pytest.raises(AssertionError) as error:
-        model_bo.compute_acquisitions(X_test, X, Y, 1, inv_cov_X_X, hyps)
-    with pytest.raises(AssertionError) as error:
-        model_bo.compute_acquisitions(X_test, X, Y, cov_X_X, 1, hyps)
-    with pytest.raises(AssertionError) as error:
-        model_bo.compute_acquisitions(X_test, X, Y, cov_X_X, inv_cov_X_X, 1)
-    with pytest.raises(AssertionError) as error:
-        model_bo.compute_acquisitions(X_test, X, Y, cov_X_X, inv_cov_X_X, 'abc')
+        model_bo.compute_acquisitions(X_test, X, Y, 1)
 
-    acqs = model_bo.compute_acquisitions(X_test, X, Y, cov_X_X, inv_cov_X_X, hyps)
+    acqs = model_bo.compute_acquisitions(X_test, X, Y, trees)
 
     print('acqs')
     for elem_1 in acqs:
         print(elem_1)
 
     truth_acqs = np.array([
-        0.7500194489918637,
-        0.6348962471015972,
-        0.6349325148618066,
-        0.6268334289619735,
-        0.9924822420888568,
-        0.634579365188473,
-        0.6348891861191759,
-        0.6352907928438323,
-        0.6363098111953723,
-        0.6348886483569965,
+        1.5383677003079725,
+        0.14825375074630032,
+        0.35937446144515556,
+        0.9292712629776662,
+        0.37973674308370486,
+        0.08481804223405748,
+        2.480378097616968,
+        0.08481804223405748,
+        1.270109195616298,
+        0.08481804223405748,
     ])
 
     assert isinstance(acqs, np.ndarray)
     assert len(acqs.shape) == 1
     assert X_test.shape[0] == acqs.shape[0]
     assert np.all(np.abs(acqs - truth_acqs) < TEST_EPSILON)
-
-def test_compute_acquisitions_set():
-    np.random.seed(42)
-    arr_range_1 = np.array([
-        [0.0, 10.0],
-        [-2.0, 2.0],
-        [-5.0, 5.0],
-    ])
-    dim_X = arr_range_1.shape[0]
-    num_X = 5
-    num_instances = 4
-    X = np.random.randn(num_X, num_instances, dim_X)
-    Y = np.random.randn(num_X, 1)
-
-    model_bo = BO(arr_range_1, str_acq='pi', str_cov='set_se')
-    hyps = utils_covariance.get_hyps(model_bo.str_cov, dim=dim_X, use_ard=model_bo.use_ard, use_gp=False)
-
-    cov_X_X, inv_cov_X_X, _ = covariance.get_kernel_inverse(X, hyps, model_bo.str_cov)
-    
-    X_test = np.array([
-        [
-            [1.0, 0.0, 0.0, 1.0],
-            [2.0, -1.0, 2.0, 1.0],
-            [3.0, -2.0, 4.0, 1.0],
-        ],
-        [
-            [4.0, 2.0, -3.0, 1.0],
-            [5.0, 0.0, -2.0, 1.0],
-            [6.0, -2.0, -1.0, 1.0],
-        ],
-    ])
-
-    with pytest.raises(AssertionError) as error:
-        model_bo.compute_acquisitions(X_test, X, Y, cov_X_X, inv_cov_X_X, hyps)
