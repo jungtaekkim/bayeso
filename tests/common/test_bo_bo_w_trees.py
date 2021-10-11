@@ -246,6 +246,8 @@ def test_optimize():
     Y = np.random.randn(num_X, 1)
     model_bo = BO(arr_range_1)
 
+    num_samples = 10
+
     with pytest.raises(AssertionError) as error:
         model_bo.optimize(1, Y)
     with pytest.raises(AssertionError) as error:
@@ -267,7 +269,7 @@ def test_optimize():
     with pytest.raises(AssertionError) as error:
         model_bo.optimize(X, Y, num_samples='abc')
 
-    next_point, dict_info = model_bo.optimize(X, Y)
+    next_point, dict_info = model_bo.optimize(X, Y, num_samples=num_samples)
     next_points = dict_info['next_points']
     acquisitions = dict_info['acquisitions']
     trees = dict_info['trees']
@@ -301,8 +303,10 @@ def test_optimize_str_acq():
     X = np.random.randn(num_X, dim_X)
     Y = np.random.randn(num_X, 1)
 
+    num_samples = 10
+
     model_bo = BO(arr_range_1, str_acq='pi')
-    next_point, dict_info = model_bo.optimize(X, Y)
+    next_point, dict_info = model_bo.optimize(X, Y, num_samples=num_samples)
     next_points = dict_info['next_points']
     acquisitions = dict_info['acquisitions']
     trees = dict_info['trees']
@@ -325,7 +329,7 @@ def test_optimize_str_acq():
     assert next_points.shape[0] == acquisitions.shape[0]
 
     model_bo = BO(arr_range_1, str_acq='ucb')
-    next_point, dict_info = model_bo.optimize(X, Y)
+    next_point, dict_info = model_bo.optimize(X, Y, num_samples=num_samples)
     next_points = dict_info['next_points']
     acquisitions = dict_info['acquisitions']
     trees = dict_info['trees']
@@ -348,7 +352,7 @@ def test_optimize_str_acq():
     assert next_points.shape[0] == acquisitions.shape[0]
 
     model_bo = BO(arr_range_1, str_acq='aei', debug=True)
-    next_point, dict_info = model_bo.optimize(X, Y)
+    next_point, dict_info = model_bo.optimize(X, Y, num_samples=num_samples)
     next_points = dict_info['next_points']
     acquisitions = dict_info['acquisitions']
     trees = dict_info['trees']
@@ -371,7 +375,7 @@ def test_optimize_str_acq():
     assert next_points.shape[0] == acquisitions.shape[0]
 
     model_bo = BO(arr_range_1, str_acq='pure_exploit', debug=True)
-    next_point, dict_info = model_bo.optimize(X, Y)
+    next_point, dict_info = model_bo.optimize(X, Y, num_samples=num_samples)
     next_points = dict_info['next_points']
     acquisitions = dict_info['acquisitions']
     trees = dict_info['trees']
@@ -394,7 +398,7 @@ def test_optimize_str_acq():
     assert next_points.shape[0] == acquisitions.shape[0]
 
     model_bo = BO(arr_range_1, str_acq='pure_explore', debug=True)
-    next_point, dict_info = model_bo.optimize(X, Y)
+    next_point, dict_info = model_bo.optimize(X, Y, num_samples=num_samples)
     next_points = dict_info['next_points']
     acquisitions = dict_info['acquisitions']
     trees = dict_info['trees']
@@ -428,8 +432,10 @@ def test_optimize_str_optimize_method_bo():
     X = np.random.randn(num_X, dim_X)
     Y = np.random.randn(num_X, 1)
 
+    num_samples = 10
+
     model_bo = BO(arr_range_1, str_optimizer_method_bo='random_search')
-    next_point, dict_info = model_bo.optimize(X, Y)
+    next_point, dict_info = model_bo.optimize(X, Y, num_samples=num_samples)
     next_points = dict_info['next_points']
     acquisitions = dict_info['acquisitions']
     trees = dict_info['trees']
@@ -463,8 +469,10 @@ def test_optimize_normalize_Y():
     X = np.random.randn(num_X, dim_X)
     Y = np.random.randn(num_X, 1)
 
+    num_samples = 10
+
     model_bo = BO(arr_range, str_acq='ei', normalize_Y=True)
-    next_point, dict_info = model_bo.optimize(X, Y)
+    next_point, dict_info = model_bo.optimize(X, Y, num_samples=num_samples)
     next_points = dict_info['next_points']
     acquisitions = dict_info['acquisitions']
     trees = dict_info['trees']
@@ -498,7 +506,7 @@ def test_optimize_normalize_Y():
     ])
 
     model_bo = BO(arr_range, str_acq='ei', normalize_Y=True)
-    next_point, dict_info = model_bo.optimize(X, Y)
+    next_point, dict_info = model_bo.optimize(X, Y, num_samples=num_samples)
     next_points = dict_info['next_points']
     acquisitions = dict_info['acquisitions']
     trees = dict_info['trees']
