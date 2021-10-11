@@ -723,6 +723,63 @@ def test_compute_posteriors():
     assert len(pred_std.shape) == 1
     assert pred_mean.shape[0] == pred_mean.shape[0] == X_test.shape[0]
 
+def test_compute_posteriors_set():
+    np.random.seed(42)
+    arr_range_1 = np.array([
+        [0.0, 10.0],
+        [-2.0, 2.0],
+        [-5.0, 5.0],
+    ])
+    dim_X = arr_range_1.shape[0]
+    num_X = 5
+    num_instances = 4
+    X = np.random.randn(num_X, num_instances, dim_X)
+    Y = np.random.randn(num_X, 1)
+
+    model_bo = BO(arr_range_1, str_acq='pi', str_cov='set_se')
+    hyps = utils_covariance.get_hyps(model_bo.str_cov, dim=dim_X, use_ard=model_bo.use_ard, use_gp=False)
+
+    cov_X_X, inv_cov_X_X, _ = covariance.get_kernel_inverse(X, hyps, model_bo.str_cov)
+    
+    X_test = np.array([
+        [
+            [1.0, 0.0, 0.0, 1.0],
+            [2.0, -1.0, 2.0, 1.0],
+            [3.0, -2.0, 4.0, 1.0],
+        ],
+        [
+            [4.0, 2.0, -3.0, 1.0],
+            [5.0, 0.0, -2.0, 1.0],
+            [6.0, -2.0, -1.0, 1.0],
+        ],
+    ])
+
+    with pytest.raises(AssertionError) as error:
+        model_bo.compute_posteriors(1, Y, X_test, cov_X_X, inv_cov_X_X, hyps)
+    with pytest.raises(AssertionError) as error:
+        model_bo.compute_posteriors(X, 1, X_test, cov_X_X, inv_cov_X_X, hyps)
+    with pytest.raises(AssertionError) as error:
+        model_bo.compute_posteriors(X, Y, 1, cov_X_X, inv_cov_X_X, hyps)
+    with pytest.raises(AssertionError) as error:
+        model_bo.compute_posteriors(X, Y, X_test, 1, inv_cov_X_X, hyps)
+    with pytest.raises(AssertionError) as error:
+        model_bo.compute_posteriors(X, Y, X_test, cov_X_X, 1, hyps)
+    with pytest.raises(AssertionError) as error:
+        model_bo.compute_posteriors(X, Y, X_test, cov_X_X, inv_cov_X_X, 1)
+    with pytest.raises(AssertionError) as error:
+        model_bo.compute_posteriors(X, Y, X_test, cov_X_X, inv_cov_X_X, 1.0)
+    with pytest.raises(AssertionError) as error:
+        model_bo.compute_posteriors(X, Y, X_test, cov_X_X, inv_cov_X_X, 'abc')
+
+
+    with pytest.raises(AssertionError) as error:
+        model_bo.compute_posteriors(X, Y, X_test, cov_X_X, inv_cov_X_X, hyps)
+
+    pred_mean, pred_std = model_bo.compute_posteriors(X, Y, X_test[:, :, :dim_X], cov_X_X, inv_cov_X_X, hyps)
+    assert len(pred_mean.shape) == 1
+    assert len(pred_std.shape) == 1
+    assert pred_mean.shape[0] == pred_mean.shape[0] == X_test.shape[0]
+
 def test_compute_acquisitions():
     np.random.seed(42)
     arr_range_1 = np.array([

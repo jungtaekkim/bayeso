@@ -74,9 +74,13 @@ def validate_common_args(X_train: np.ndarray, Y_train: np.ndarray,
     assert isinstance(str_cov, str)
     assert callable(prior_mu) or prior_mu is None
     assert isinstance(debug, bool)
+    assert len(X_train.shape) == 2 or len(X_train.shape) == 3
     assert len(Y_train.shape) == 2
     assert X_train.shape[0] == Y_train.shape[0]
     assert isinstance(X_test, (np.ndarray, type(None)))
 
     if X_test is not None:
-        assert X_train.shape[1] == X_test.shape[1]
+        if len(X_train.shape) == 2:
+            assert X_train.shape[1] == X_test.shape[1]
+        else:
+            assert X_train.shape[2] == X_test.shape[2]
