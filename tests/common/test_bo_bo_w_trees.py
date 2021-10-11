@@ -682,3 +682,9 @@ def test_compute_acquisitions():
     assert len(acqs.shape) == 1
     assert X_test.shape[0] == acqs.shape[0]
     assert np.all(np.abs(acqs - truth_acqs) < TEST_EPSILON)
+
+    acqs = model_bo.compute_acquisitions(X_test[0], X, Y, trees)
+
+    assert isinstance(acqs, np.ndarray)
+    assert len(acqs.shape) == 1
+    assert acqs.shape[0] == 1

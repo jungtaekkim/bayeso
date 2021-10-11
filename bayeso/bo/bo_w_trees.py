@@ -85,7 +85,7 @@ class BOwTrees(base_bo.BaseBO):
         """
         It returns posterior mean and standard deviation functions over `X`.
 
-        :param X: inputs. Shape: (l, d) or (l, m, d).
+        :param X: inputs. Shape: (l, d).
         :type X: numpy.ndarray
         :param cov_X_X: kernel matrix over `X_train`. Shape: (n, n).
         :type cov_X_X: numpy.ndarray
@@ -99,6 +99,11 @@ class BOwTrees(base_bo.BaseBO):
         :rtype: (numpy.ndarray, numpy.ndarray)
 
         """
+
+        assert isinstance(X, np.ndarray)
+        assert isinstance(trees, list)
+        assert len(X.shape) == 2
+        assert X.shape[1] == self.num_dim
 
         pred_mean, pred_std = trees_common.predict_by_trees(X, trees)
 
@@ -115,9 +120,9 @@ class BOwTrees(base_bo.BaseBO):
         It computes acquisition function values over 'X',
         where `X_train` and `Y_train` are given.
 
-        :param X: inputs. Shape: (l, d) or (l, m, d).
+        :param X: inputs. Shape: (l, d).
         :type X: numpy.ndarray
-        :param X_train: inputs. Shape: (n, d) or (n, m, d).
+        :param X_train: inputs. Shape: (n, d).
         :type X_train: numpy.ndarray
         :param Y_train: outputs. Shape: (n, 1).
         :type Y_train: numpy.ndarray
@@ -139,10 +144,7 @@ class BOwTrees(base_bo.BaseBO):
         if len(X.shape) == 1:
             X = np.atleast_2d(X)
 
-        if len(X_train.shape) == 2:
-            assert X.shape[1] == X_train.shape[1] == self.num_dim
-        else:
-            assert X.shape[2] == X_train.shape[2] == self.num_dim
+        assert X.shape[1] == X_train.shape[1] == self.num_dim
 
         fun_acquisition = utils_bo.choose_fun_acquisition(self.str_acq, constants.GP_NOISE)
 
@@ -165,7 +167,7 @@ class BOwTrees(base_bo.BaseBO):
         inverse matrix of the covariance matrix, hyperparameters optimized,
         and execution times.
 
-        :param X_train: inputs. Shape: (n, d) or (n, m, d).
+        :param X_train: inputs. Shape: (n, d).
         :type X_train: numpy.ndarray
         :param Y_train: outputs. Shape: (n, 1).
         :type Y_train: numpy.ndarray

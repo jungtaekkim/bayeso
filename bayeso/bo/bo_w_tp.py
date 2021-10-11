@@ -201,6 +201,26 @@ class BOwTP(base_bo.BaseBO):
 
         """
 
+        assert isinstance(X_train, np.ndarray)
+        assert isinstance(Y_train, np.ndarray)
+        assert isinstance(X_test, np.ndarray)
+        assert isinstance(cov_X_X, np.ndarray)
+        assert isinstance(inv_cov_X_X, np.ndarray)
+        assert isinstance(hyps, dict)
+        assert len(X_train.shape) == 2 or len(X_train.shape) == 3
+        assert len(Y_train.shape) == 2
+        assert len(X_test.shape) == 2 or len(X_test.shape) == 3
+        assert len(cov_X_X.shape) == 2
+        assert len(inv_cov_X_X.shape) == 2
+        assert Y_train.shape[1] == 1
+        assert X_train.shape[0] == Y_train.shape[0]
+        if len(X_train.shape) == 2:
+            assert X_test.shape[1] == X_train.shape[1] == self.num_dim
+        else:
+            assert X_test.shape[2] == X_train.shape[2] == self.num_dim
+        assert cov_X_X.shape[0] == cov_X_X.shape[1] == X_train.shape[0]
+        assert inv_cov_X_X.shape[0] == inv_cov_X_X.shape[1] == X_train.shape[0]
+
         _, pred_mean, pred_std, _ = tp.predict_with_cov(
             X_train, Y_train, X_test,
             cov_X_X, inv_cov_X_X, hyps, str_cov=self.str_cov,
