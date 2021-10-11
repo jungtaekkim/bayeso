@@ -67,6 +67,37 @@ class BOwTrees(base_bo.BaseBO):
         depth_max=5,
         size_min_leaf=1,
     ):
+        """
+        It returns a list of trees.
+
+        :param X_train: inputs. Shape: (n, d).
+        :type X_train: numpy.ndarray
+        :param Y_train: outputs. Shape: (n, 1).
+        :type Y_train: numpy.ndarray
+        :param num_trees: the number of trees.
+        :type num_trees: int., optional
+        :param depth_max: maximum depth.
+        :type depth_max: int., optional
+        :param size_min_leaf: minimum size of leaves.
+        :type size_min_leaf: int., optional
+
+        :returns: list of trees.
+        :rtype: list
+
+        :raises: AssertionError
+
+        """
+
+        assert isinstance(X_train, np.ndarray)
+        assert isinstance(Y_train, np.ndarray)
+        assert isinstance(num_trees, int)
+        assert isinstance(depth_max, int)
+        assert isinstance(size_min_leaf, int)
+        assert len(X_train.shape) == 2
+        assert len(Y_train.shape) == 2
+        assert X_train.shape[0] == Y_train.shape[0]
+        assert Y_train.shape[1] == 1
+
         num_features = int(np.sqrt(self.num_dim))
 
         if self.str_surrogate == 'rf':
@@ -85,18 +116,16 @@ class BOwTrees(base_bo.BaseBO):
         """
         It returns posterior mean and standard deviation functions over `X`.
 
-        :param X: inputs. Shape: (l, d).
+        :param X: inputs to test. Shape: (l, d).
         :type X: numpy.ndarray
-        :param cov_X_X: kernel matrix over `X_train`. Shape: (n, n).
-        :type cov_X_X: numpy.ndarray
-        :param inv_cov_X_X: kernel matrix inverse over `X_train`. Shape: (n, n).
-        :type inv_cov_X_X: numpy.ndarray
-        :param hyps: dictionary of hyperparameters for Gaussian process.
-        :type hyps: dict.
+        :param trees: list of trees.
+        :type trees: list
 
         :returns: posterior mean and standard deviation functions
             over `X`. Shape: ((l, ), (l, )).
         :rtype: (numpy.ndarray, numpy.ndarray)
+
+        :raises: AssertionError
 
         """
 
@@ -126,9 +155,13 @@ class BOwTrees(base_bo.BaseBO):
         :type X_train: numpy.ndarray
         :param Y_train: outputs. Shape: (n, 1).
         :type Y_train: numpy.ndarray
+        :param trees: list of trees.
+        :type trees: list
 
         :returns: acquisition function values over `X`. Shape: (l, ).
         :rtype: numpy.ndarray
+
+        :raises: AssertionError
 
         """
 

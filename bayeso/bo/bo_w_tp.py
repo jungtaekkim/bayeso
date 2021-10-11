@@ -199,6 +199,8 @@ class BOwTP(base_bo.BaseBO):
         :returns: posterior mean and standard deviation over `X_test`. Shape: ((l, ), (l, )).
         :rtype: (numpy.ndarray, numpy.ndarray)
 
+        :raises: AssertionError
+
         """
 
         assert isinstance(X_train, np.ndarray)
@@ -256,6 +258,8 @@ class BOwTP(base_bo.BaseBO):
 
         :returns: acquisition function values over `X`. Shape: (l, ).
         :rtype: numpy.ndarray
+
+        :raises: AssertionError
 
         """
 
