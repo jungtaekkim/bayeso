@@ -246,7 +246,7 @@ def test_optimize():
     Y = np.random.randn(num_X, 1)
     model_bo = BO(arr_range_1)
 
-    num_samples = 10
+    num_samples = 1000
 
     with pytest.raises(AssertionError) as error:
         model_bo.optimize(1, Y)
