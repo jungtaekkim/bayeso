@@ -24,7 +24,7 @@ def main():
         [4.0],
     ])
     Y_train = np.cos(X_train) + np.random.randn(X_train.shape[0], 1) * 0.2
-    num_test = 200
+    num_test = 10000
     X_test = np.linspace(-5, 5, num_test)
     X_test = X_test.reshape((num_test, 1))
     Y_test = np.cos(X_test)

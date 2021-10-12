@@ -5,6 +5,8 @@
 """It defines a common function for tree-based surrogates."""
 
 import numpy as np
+import multiprocessing
+import itertools
 
 from bayeso import constants
 from bayeso.utils import utils_common
@@ -283,10 +285,9 @@ def _predict_by_trees(bx: np.ndarray, list_trees: list) -> constants.TYPING_TUPL
     return mu, sigma
 
 @utils_common.validate_types
-def predict_by_trees(X: np.ndarray, list_trees: list) -> constants.TYPING_TUPLE_TWO_ARRAYS:
+def unit_predict_by_trees(X: np.ndarray, list_trees: list) -> constants.TYPING_TUPLE_TWO_ARRAYS:
     assert isinstance(X, np.ndarray)
     assert isinstance(list_trees, list)
-
     assert len(X.shape) == 2
 
     preds_mu = []
@@ -300,6 +301,41 @@ def predict_by_trees(X: np.ndarray, list_trees: list) -> constants.TYPING_TUPLE_
 
     preds_mu = np.array(preds_mu)[..., np.newaxis]
     preds_sigma = np.array(preds_sigma)[..., np.newaxis]
+
+    return preds_mu, preds_sigma
+
+@utils_common.validate_types
+def predict_by_trees(X: np.ndarray, list_trees: list) -> constants.TYPING_TUPLE_TWO_ARRAYS:
+    assert isinstance(X, np.ndarray)
+    assert isinstance(list_trees, list)
+    assert len(X.shape) == 2
+
+    num_split = 100
+    num_cpu = multiprocessing.cpu_count()
+
+    num_data = X.shape[0]
+
+    if num_data <= num_split:
+        preds_mu, preds_sigma = unit_predict_by_trees(X, list_trees)
+    else:
+        list_Xs = np.array_split(X, int(np.ceil(num_data / num_split)))
+
+        with multiprocessing.Pool(num_cpu) as p:
+            results = p.starmap(unit_predict_by_trees, zip(list_Xs, itertools.repeat(list_trees)))
+
+        preds_mu = None
+        preds_sigma = None
+
+        for unit_preds_mu, unit_preds_sigma in results:
+            if preds_mu is None:
+                preds_mu = unit_preds_mu
+            else:
+                preds_mu = np.concatenate((preds_mu, unit_preds_mu), axis=0)
+
+            if preds_sigma is None:
+                preds_sigma = unit_preds_sigma
+            else:
+                preds_sigma = np.concatenate((preds_sigma, unit_preds_sigma), axis=0)
 
     return preds_mu, preds_sigma
 
