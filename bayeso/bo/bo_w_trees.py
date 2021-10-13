@@ -191,7 +191,7 @@ class BOwTrees(base_bo.BaseBO):
         return acquisitions
 
     def optimize(self, X_train: np.ndarray, Y_train: np.ndarray,
-        str_sampling_method: str=constants.STR_SAMPLING_METHOD_AO,
+        str_sampling_method: str=constants.STR_SAMPLING_METHOD_AO_TREES,
         num_samples: int=constants.NUM_SAMPLES_AO_TREES,
     ) -> constants.TYPING_TUPLE_ARRAY_DICT:
         """

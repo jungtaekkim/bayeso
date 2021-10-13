@@ -1,6 +1,6 @@
 #
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: October 6, 2021
+# last updated: October 13, 2021
 #
 """This file declares various default constants.
 If you would like to see the details, check out
@@ -26,6 +26,7 @@ STR_INITIALIZING_METHOD_BO = 'sobol'
 STR_OPTIMIZER_METHOD_AO = 'L-BFGS-B'
 STR_SAMPLING_METHOD_AO = 'sobol'
 STR_OPTIMIZER_METHOD_AO_TREES = 'random_search'
+STR_SAMPLING_METHOD_AO_TREES = 'uniform'
 STR_MLM_METHOD = 'regular'
 STR_MODELSELECTION_METHOD = 'ml'
 
@@ -49,6 +50,8 @@ RANGE_DOF = [[2.00001, 200.0]]
 
 TIME_PAUSE = 2.0
 RANGE_SHADE = 1.96
+
+NUM_DATA_PER_SPLIT_TREES = 5000
 
 ALLOWED_OPTIMIZER_METHOD_GP = [
     'BFGS',

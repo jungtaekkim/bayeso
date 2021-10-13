@@ -310,32 +310,23 @@ def predict_by_trees(X: np.ndarray, list_trees: list) -> constants.TYPING_TUPLE_
     assert isinstance(list_trees, list)
     assert len(X.shape) == 2
 
-    num_split = 100
+    num_data_per_split = constants.NUM_DATA_PER_SPLIT_TREES
     num_cpu = multiprocessing.cpu_count()
 
     num_data = X.shape[0]
 
-    if num_data <= num_split:
+    if num_data <= num_data_per_split:
         preds_mu, preds_sigma = unit_predict_by_trees(X, list_trees)
     else:
-        list_Xs = np.array_split(X, int(np.ceil(num_data / num_split)))
+        list_Xs = np.array_split(X, int(np.ceil(num_data / num_data_per_split)))
 
         with multiprocessing.Pool(num_cpu) as p:
             results = p.starmap(unit_predict_by_trees, zip(list_Xs, itertools.repeat(list_trees)))
 
-        preds_mu = None
-        preds_sigma = None
+        list_preds_mu, list_preds_sigma = zip(*results)
 
-        for unit_preds_mu, unit_preds_sigma in results:
-            if preds_mu is None:
-                preds_mu = unit_preds_mu
-            else:
-                preds_mu = np.concatenate((preds_mu, unit_preds_mu), axis=0)
-
-            if preds_sigma is None:
-                preds_sigma = unit_preds_sigma
-            else:
-                preds_sigma = np.concatenate((preds_sigma, unit_preds_sigma), axis=0)
+        preds_mu = np.concatenate(list_preds_mu, axis=0)
+        preds_sigma = np.concatenate(list_preds_sigma, axis=0)
 
     return preds_mu, preds_sigma
 

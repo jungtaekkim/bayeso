@@ -78,6 +78,14 @@ def test_predict_by_trees_1111(benchmark):
     assert mu.shape[0] == sigma.shape[0] == num_test
 
 @pytest.mark.timeout(500)
+def test_predict_by_trees_4444(benchmark):
+    num_test = 4444
+
+    mu, sigma = benchmark.pedantic(_predict_by_trees, args=(num_test, ), rounds=num_rounds, iterations=1)
+
+    assert mu.shape[0] == sigma.shape[0] == num_test
+
+@pytest.mark.timeout(500)
 def test_predict_by_trees_10000(benchmark):
     num_test = 10000
 
