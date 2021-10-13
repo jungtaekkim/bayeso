@@ -571,6 +571,17 @@ def test_predict_by_trees():
     assert np.all(np.abs(means - means_truth) < TEST_EPSILON)
     assert np.all(np.abs(stds - stds_truth) < TEST_EPSILON)
 
+    X = np.random.randn(1000, 4)
+
+    means, stds = package_target.predict_by_trees(X, list_trees)
+
+    assert isinstance(means, np.ndarray)
+    assert isinstance(stds, np.ndarray)
+    assert len(means.shape) == 2
+    assert len(stds.shape) == 2
+    assert means.shape[0] == stds.shape[0] == X.shape[0]
+    assert means.shape[1] == stds.shape[1] == 1
+
 def test_compute_sigma_typing():
     annos = package_target.compute_sigma.__annotations__
 

@@ -1,6 +1,6 @@
 #
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: August 6, 2021
+# last updated: October 13, 2021
 #
 """It defines a common function for tree-based surrogates."""
 
@@ -21,7 +21,7 @@ def get_inputs_from_leaf(leaf: list) -> np.ndarray:
     :type leaf: list
 
     :returns: an input. Shape: (n, d).
-    :rtype: np.ndarray
+    :rtype: numpy.ndarray
 
     :raises: AssertionError
 
@@ -41,7 +41,7 @@ def get_outputs_from_leaf(leaf: list) -> np.ndarray:
     :type leaf: list
 
     :returns: an output. Shape: (n, 1).
-    :rtype: np.ndarray
+    :rtype: numpy.ndarray
 
     :raises: AssertionError
 
@@ -54,6 +54,19 @@ def get_outputs_from_leaf(leaf: list) -> np.ndarray:
 
 @utils_common.validate_types
 def _mse(Y: np.ndarray) -> float:
+    """
+    It returns a mean squared loss over `Y`.
+
+    :param Y: outputs in a leaf.
+    :type Y: numpy.ndarray
+
+    :returns: a loss value.
+    :rtype: float
+
+    :raises: AssertionError
+
+    """
+
     assert isinstance(Y, np.ndarray)
     if len(Y.shape) == 2:
         assert Y.shape[1] == 1
@@ -63,10 +76,24 @@ def _mse(Y: np.ndarray) -> float:
         mse_ = np.mean((Y - mean)**2)
     else:
         mse_ = 1e8
+
     return mse_
 
 @utils_common.validate_types
 def mse(left_right: tuple) -> float:
+    """
+    It returns a mean squared loss over `left_right`.
+
+    :param left_right: a tuple of left and right leaves.
+    :type left_right: tuple
+
+    :returns: a loss value.
+    :rtype: float
+
+    :raises: AssertionError
+
+    """
+
     assert isinstance(left_right, tuple)
 
     left, right = left_right
