@@ -18,3 +18,20 @@ def test_import_BOwGP():
 
     print(BOwGP)
     print(bayeso.bo.BOwGP)
+    print(bayeso.bo.bo_w_gp.BOwGP)
+
+def test_import_BOwTP():
+    from bayeso.bo import BOwTP
+    import bayeso.bo
+
+    print(BOwTP)
+    print(bayeso.bo.BOwTP)
+    print(bayeso.bo.bo_w_tp.BOwTP)
+
+def test_import_BOwTrees():
+    from bayeso.bo import BOwTrees
+    import bayeso.bo
+
+    print(BOwTrees)
+    print(bayeso.bo.BOwTrees)
+    print(bayeso.bo.bo_w_trees.BOwTrees)

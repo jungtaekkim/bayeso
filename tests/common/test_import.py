@@ -13,6 +13,12 @@ def test_import_bo():
 def test_import_bo_bo_w_gp():
     import bayeso.bo.bo_w_gp
 
+def test_import_bo_bo_w_tp():
+    import bayeso.bo.bo_w_tp
+
+def test_import_bo_bo_w_trees():
+    import bayeso.bo.bo_w_trees
+
 def test_import_covariance():
     import bayeso.covariance
 

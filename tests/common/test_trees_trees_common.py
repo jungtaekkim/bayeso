@@ -2,7 +2,7 @@
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
 # last updated: August 17, 2021
 #
-"""test_trees_common"""
+"""test_trees_trees_common"""
 
 import typing
 import pytest
