@@ -55,6 +55,8 @@ def test_load_bayesian_optimization():
     with pytest.raises(AssertionError) as error:
         model_bo = package_target.BayesianOptimization(range_1, fun_target, 'abc')
     with pytest.raises(AssertionError) as error:
+        model_bo = package_target.BayesianOptimization(range_1, fun_target, num_iter, str_surrogate=123)
+    with pytest.raises(AssertionError) as error:
         model_bo = package_target.BayesianOptimization(range_1, fun_target, num_iter, str_cov=123)
     with pytest.raises(AssertionError) as error:
         model_bo = package_target.BayesianOptimization(range_1, fun_target, num_iter, str_acq=123)
@@ -80,6 +82,32 @@ def test_load_bayesian_optimization():
         model_bo = package_target.BayesianOptimization(range_1, fun_target, num_iter, num_samples_ao='abc')
     with pytest.raises(AssertionError) as error:
         model_bo = package_target.BayesianOptimization(range_1, fun_target, num_iter, debug=123)
+
+def test_optimize_single_iteration():
+    np.random.seed(42)
+    range_ = np.array([
+        [-5.0, 5.0],
+    ])
+    dim_X = range_.shape[0]
+    num_init = 3
+    num_iter = 5
+    X = np.random.randn(num_init, dim_X)
+    Y = np.random.randn(num_init, 1)
+    fun_target = lambda x: 2.0 * x + 1.0
+
+    model_bo = package_target.BayesianOptimization(range_, fun_target, num_iter, debug=True)
+
+    with pytest.raises(AssertionError) as error:
+        model_bo.optimize_single_iteration(X, 'abc')
+    with pytest.raises(AssertionError) as error:
+        model_bo.optimize_single_iteration('abc', Y)
+
+    next_sample, dict_info = model_bo.optimize_single_iteration(X, Y)
+
+    assert isinstance(next_sample, np.ndarray)
+    assert isinstance(dict_info, dict)
+    assert len(next_sample.shape) == 1
+    assert next_sample.shape[0] == dim_X
 
 def test_optimize_with_all_initial_information():
     np.random.seed(42)
@@ -160,6 +188,63 @@ def test_optimize():
         model_bo.optimize('abc')
     with pytest.raises(AssertionError) as error:
         model_bo.optimize(num_init, seed='abc')
+
+    X_, Y_, time_all_, time_surrogate_, time_acq_ = model_bo.optimize(num_init)
+
+    assert len(X_.shape) == 2
+    assert len(Y_.shape) == 2
+    assert len(time_all_.shape) == 1
+    assert len(time_surrogate_.shape) == 1
+    assert len(time_acq_.shape) == 1
+    assert X_.shape[1] == dim_X
+    assert Y_.shape[1] == 1
+    assert X_.shape[0] == Y_.shape[0] == num_init + num_iter
+    assert time_all_.shape[0] == num_init + num_iter
+    assert time_surrogate_.shape[0] == time_acq_.shape[0] == num_iter
+
+def test_optimize_str_surrogate():
+    np.random.seed(42)
+    range_ = np.array([
+        [-5.0, 5.0],
+    ])
+    dim_X = range_.shape[0]
+    num_init = 3
+    num_iter = 5
+    fun_target = lambda x: 2.0 * x + 1.0
+
+    debug = False
+
+    model_bo = package_target.BayesianOptimization(range_, fun_target, num_iter, str_surrogate='gp', debug=debug)
+
+    X_, Y_, time_all_, time_surrogate_, time_acq_ = model_bo.optimize(num_init)
+
+    assert len(X_.shape) == 2
+    assert len(Y_.shape) == 2
+    assert len(time_all_.shape) == 1
+    assert len(time_surrogate_.shape) == 1
+    assert len(time_acq_.shape) == 1
+    assert X_.shape[1] == dim_X
+    assert Y_.shape[1] == 1
+    assert X_.shape[0] == Y_.shape[0] == num_init + num_iter
+    assert time_all_.shape[0] == num_init + num_iter
+    assert time_surrogate_.shape[0] == time_acq_.shape[0] == num_iter
+
+    model_bo = package_target.BayesianOptimization(range_, fun_target, num_iter, str_surrogate='tp', debug=debug)
+
+    X_, Y_, time_all_, time_surrogate_, time_acq_ = model_bo.optimize(num_init)
+
+    assert len(X_.shape) == 2
+    assert len(Y_.shape) == 2
+    assert len(time_all_.shape) == 1
+    assert len(time_surrogate_.shape) == 1
+    assert len(time_acq_.shape) == 1
+    assert X_.shape[1] == dim_X
+    assert Y_.shape[1] == 1
+    assert X_.shape[0] == Y_.shape[0] == num_init + num_iter
+    assert time_all_.shape[0] == num_init + num_iter
+    assert time_surrogate_.shape[0] == time_acq_.shape[0] == num_iter
+
+    model_bo = package_target.BayesianOptimization(range_, fun_target, num_iter, str_surrogate='rf', str_optimizer_method_bo='random_search', debug=debug)
 
     X_, Y_, time_all_, time_surrogate_, time_acq_ = model_bo.optimize(num_init)
 
