@@ -111,6 +111,25 @@ def subsample(
     X: np.ndarray, Y: np.ndarray,
     ratio_sampling: float, replace_samples: bool
 ) -> constants.TYPING_TUPLE_TWO_ARRAYS:
+    """
+    It subsamples a bootstrap sample.
+
+    :param X: inputs. Shape: (n, d).
+    :type X: numpy.ndarray
+    :param Y: outputs. Shape: (n, 1).
+    :type Y: numpy.ndarray
+    :param ratio_sampling: ratio of sampling.
+    :type ratio_sampling: float
+    :param replace_samples: a flag for sampling with replacement or without replacement.
+    :type replace_samples: bool.
+
+    :returns: a tuple of bootstrap sample. Shape: ((m, d), (m, 1)).
+    :rtype: (numpy.ndarray, numpy.ndarray)
+
+    :raises: AssertionError
+
+    """
+
     assert isinstance(X, np.ndarray)
     assert isinstance(Y, np.ndarray)
     assert isinstance(ratio_sampling, float)
@@ -141,6 +160,25 @@ def _split_left_right(
     X: np.ndarray, Y: np.ndarray,
     dim_to_split: int, val_to_split: float
 ) -> tuple:
+    """
+    It splits `X` and `Y` to left and right leaves.
+
+    :param X: inputs. Shape: (n, d).
+    :type X: numpy.ndarray
+    :param Y: outputs. Shape: (n, 1).
+    :type Y: numpy.ndarray
+    :param dim_to_split: a dimension to split.
+    :type dim_to_split: int.
+    :param val_to_split: a value to split.
+    :type val_to_split: float
+
+    :returns: a tuple of left and right leaves.
+    :rtype: tuple
+
+    :raises: AssertionError
+
+    """
+
     assert isinstance(X, np.ndarray)
     assert isinstance(Y, np.ndarray)
     assert isinstance(dim_to_split, int)
@@ -166,6 +204,26 @@ def _split(
     X: np.ndarray, Y: np.ndarray,
     num_features: int, split_random_location: bool
 ) -> dict:
+    """
+    It splits `X` and `Y` to left and right leaves as a dictionary
+    including split dimension and split location.
+
+    :param X: inputs. Shape: (n, d).
+    :type X: numpy.ndarray
+    :param Y: outputs. Shape: (n, 1).
+    :type Y: numpy.ndarray
+    :param num_features: the number of features to split.
+    :type num_features: int.
+    :param split_random_location: flag for setting a split location randomly or not.
+    :type split_random_location: bool.
+
+    :returns: a dictionary of left and right leaves, spilt dimension, and split location.
+    :rtype: dict.
+
+    :raises: AssertionError
+
+    """
+
     assert isinstance(X, np.ndarray)
     assert isinstance(Y, np.ndarray)
     assert isinstance(num_features, int)
@@ -230,6 +288,29 @@ def split(
     split_random_location: bool,
     cur_depth: int
 ) -> constants.TYPE_NONE:
+    """
+    It splits a root node to construct a tree.
+
+    :param node: a root node.
+    :type node: dict.
+    :param depth_max: maximum depth of tree.
+    :type depth_max: int.
+    :param size_min_leaf: minimum size of leaf.
+    :type size_min_leaf: int.
+    :param num_features: the number of split features.
+    :type num_features: int.
+    :param split_random_location: flag for setting a split location randomly or not.
+    :type split_random_location: bool.
+    :param cur_depth: depth of the current node.
+    :type cur_depth: int.
+
+    :returns: None.
+    :rtype: NoneType
+
+    :raises: AssertionError
+
+    """
+
     assert isinstance(node, dict)
     assert isinstance(depth_max, int)
     assert isinstance(size_min_leaf, int)
@@ -272,6 +353,21 @@ def split(
 
 @utils_common.validate_types
 def _predict_by_tree(bx: np.ndarray, tree: dict) -> constants.TYPING_TUPLE_TWO_FLOATS:
+    """
+    It predicts a posterior distribution over `bx`, given `tree`.
+
+    :param bx: an input. Shape: (d, ).
+    :type bx: numpy.ndarray
+    :param tree: a decision tree.
+    :type tree: dict.
+
+    :returns: posterior mean and standard devitation estimates.
+    :rtype: (float, float)
+
+    :raises: AssertionError
+
+    """
+
     assert isinstance(bx, np.ndarray)
     assert isinstance(tree, dict)
 
@@ -292,6 +388,21 @@ def _predict_by_tree(bx: np.ndarray, tree: dict) -> constants.TYPING_TUPLE_TWO_F
 
 @utils_common.validate_types
 def _predict_by_trees(bx: np.ndarray, list_trees: list) -> constants.TYPING_TUPLE_TWO_FLOATS:
+    """
+    It predicts a posterior distribution over `bx`, given `list_trees`.
+
+    :param bx: an input. Shape: (d, ).
+    :type bx: numpy.ndarray
+    :param list_trees: a list of decision trees.
+    :type list_trees: list
+
+    :returns: posterior mean and standard devitation estimates.
+    :rtype: (float, float)
+
+    :raises: AssertionError
+
+    """
+
     assert isinstance(bx, np.ndarray)
     assert isinstance(list_trees, list)
 
@@ -313,6 +424,21 @@ def _predict_by_trees(bx: np.ndarray, list_trees: list) -> constants.TYPING_TUPL
 
 @utils_common.validate_types
 def unit_predict_by_trees(X: np.ndarray, list_trees: list) -> constants.TYPING_TUPLE_TWO_ARRAYS:
+    """
+    It predicts a posterior distribution over `X`, given `list_trees`.
+
+    :param X: inputs. Shape: (n, d).
+    :type X: numpy.ndarray
+    :param list_trees: a list of decision trees.
+    :type list_trees: list
+
+    :returns: posterior mean and standard devitation estimates. Shape: ((n, 1), (n, 1)).
+    :rtype: (numpy.ndarray, numpy.ndarray)
+
+    :raises: AssertionError
+
+    """
+
     assert isinstance(X, np.ndarray)
     assert isinstance(list_trees, list)
     assert len(X.shape) == 2
@@ -333,6 +459,22 @@ def unit_predict_by_trees(X: np.ndarray, list_trees: list) -> constants.TYPING_T
 
 @utils_common.validate_types
 def predict_by_trees(X: np.ndarray, list_trees: list) -> constants.TYPING_TUPLE_TWO_ARRAYS:
+    """
+    It predicts a posterior distribution over `X`, given `list_trees`,
+    using `multiprocessing`.
+
+    :param X: inputs. Shape: (n, d).
+    :type X: numpy.ndarray
+    :param list_trees: a list of decision trees.
+    :type list_trees: list
+
+    :returns: posterior mean and standard devitation estimates. Shape: ((n, 1), (n, 1)).
+    :rtype: (numpy.ndarray, numpy.ndarray)
+
+    :raises: AssertionError
+
+    """
+
     assert isinstance(X, np.ndarray)
     assert isinstance(list_trees, list)
     assert len(X.shape) == 2
@@ -363,6 +505,23 @@ def compute_sigma(
     preds_sigma_leaf: np.ndarray,
     min_sigma: float=0.0
 ) -> np.ndarray:
+    """
+    It computes predictive standard deviation estimates.
+
+    :param preds_mu_leaf: predictive mean estimates of leaf. Shape: (n, ).
+    :type preds_mu_leaf: numpy.ndarray
+    :param preds_sigma_leaf: predictive standard deviation estimates of leaf. Shape: (n, ).
+    :type preds_sigma_leaf: numpy.ndarray
+    :param min_sigma: threshold for minimum standard deviation.
+    :type min_sigma: float
+
+    :returns: predictive standard deviation estimates. Shape: (n, ).
+    :rtype: numpy.ndarray
+
+    :raises: AssertionError
+
+    """
+
     assert isinstance(preds_mu_leaf, np.ndarray)
     assert isinstance(preds_sigma_leaf, np.ndarray)
     assert isinstance(min_sigma, float)
