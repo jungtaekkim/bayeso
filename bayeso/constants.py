@@ -1,6 +1,6 @@
 #
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: March 22, 2021
+# last updated: October 13, 2021
 #
 """This file declares various default constants.
 If you would like to see the details, check out
@@ -17,6 +17,7 @@ JITTER_LOG = 1e-7
 TOLERANCE_DUPLICATED_ACQ = 1e-4
 
 STR_SURROGATE = 'gp'
+STR_SURROGATE_TREES = 'rf'
 STR_OPTIMIZER_METHOD_GP = 'BFGS'
 STR_OPTIMIZER_METHOD_TP = 'SLSQP'
 STR_COV = 'matern52'
@@ -24,11 +25,14 @@ STR_BO_ACQ = 'ei'
 STR_INITIALIZING_METHOD_BO = 'sobol'
 STR_OPTIMIZER_METHOD_AO = 'L-BFGS-B'
 STR_SAMPLING_METHOD_AO = 'sobol'
+STR_OPTIMIZER_METHOD_AO_TREES = 'random_search'
+STR_SAMPLING_METHOD_AO_TREES = 'uniform'
 STR_MLM_METHOD = 'regular'
 STR_MODELSELECTION_METHOD = 'ml'
 
 NUM_GRIDS_AO = 50
 NUM_SAMPLES_AO = 100
+NUM_SAMPLES_AO_TREES = 5000
 
 MULTIPLIER_ACQ = 10.0
 MULTIPLIER_RESPONSE = 10.0
@@ -47,6 +51,8 @@ RANGE_DOF = [[2.00001, 200.0]]
 TIME_PAUSE = 2.0
 RANGE_SHADE = 1.96
 
+NUM_DATA_PER_SPLIT_TREES = 100
+
 ALLOWED_OPTIMIZER_METHOD_GP = [
     'BFGS',
     'L-BFGS-B',
@@ -56,6 +62,7 @@ ALLOWED_OPTIMIZER_METHOD_GP = [
 ]
 ALLOWED_OPTIMIZER_METHOD_TP = ['L-BFGS-B', 'SLSQP']
 ALLOWED_OPTIMIZER_METHOD_BO = ['L-BFGS-B', 'DIRECT', 'CMA-ES']
+ALLOWED_OPTIMIZER_METHOD_BO_TREES = ['random_search']
 
 # INFO: Do not use _ (underscore) in base str_cov.
 ALLOWED_COV_BASE = ['eq', 'se', 'matern32', 'matern52']
@@ -67,8 +74,7 @@ ALLOWED_SAMPLING_METHOD = ALLOWED_INITIALIZING_METHOD_BO + ['grid']
 ALLOWED_MLM_METHOD = ['regular', 'combined', 'converged']
 ALLOWED_MODELSELECTION_METHOD = ['ml', 'loocv']
 ALLOWED_SURROGATE = ['gp', 'tp']
-
-KEYS_INFO_BENCHMARK = ['dim_fun', 'bounds', 'global_minimum_X', 'global_minimum_y']
+ALLOWED_SURROGATE_TREES = ['rf']
 
 COLORS = np.array([
     'red',
@@ -117,6 +123,7 @@ TYPING_TUPLE_ARRAY_DICT = typing.Tuple[TYPE_ARR, dict]
 TYPING_TUPLE_ARRAY_FLOAT = typing.Tuple[TYPE_ARR, float]
 TYPING_TUPLE_TWO_ARRAYS = typing.Tuple[TYPE_ARR, TYPE_ARR]
 TYPING_TUPLE_TWO_ARRAYS_DICT = typing.Tuple[TYPE_ARR, TYPE_ARR, dict]
+TYPING_TUPLE_TWO_FLOATS = typing.Tuple[float, float]
 TYPING_TUPLE_THREE_ARRAYS = typing.Tuple[TYPE_ARR, TYPE_ARR, TYPE_ARR]
 TYPING_TUPLE_FIVE_ARRAYS = typing.Tuple[TYPE_ARR, TYPE_ARR, TYPE_ARR, TYPE_ARR, TYPE_ARR]
 TYPING_TUPLE_FLOAT_THREE_ARRAYS = typing.Tuple[float, TYPE_ARR, TYPE_ARR, TYPE_ARR]

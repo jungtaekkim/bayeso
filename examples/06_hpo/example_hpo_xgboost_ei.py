@@ -13,8 +13,9 @@ import sklearn.model_selection
 from bayeso import gp
 from bayeso import bo
 from bayeso import acquisition
-from bayeso.wrappers import wrappers_bo
+from bayeso.wrappers import wrappers_bo_function
 from bayeso.utils import utils_plotting
+
 
 DIGITS = sklearn.datasets.load_digits()
 DIGITS_DATA = DIGITS.images
@@ -22,7 +23,6 @@ DIGITS_DATA = np.reshape(DIGITS_DATA, (DIGITS_DATA.shape[0], DIGITS_DATA.shape[1
 DIGITS_LABELS = DIGITS.target
 DATA_TRAIN, DATA_TEST, LABELS_TRAIN, LABELS_TEST = sklearn.model_selection.train_test_split(DIGITS_DATA, DIGITS_LABELS, test_size=0.3, stratify=DIGITS_LABELS)
 PATH_SAVE = '../figures/hpo/'
-
 
 def fun_target(X):
     print(X)
@@ -38,7 +38,7 @@ def main():
     list_Y = []
     list_time = []
     for _ in range(0, 5):
-        X_final, Y_final, time_final, _, _ = wrappers_bo.run_single_round(model_bo, fun_target, num_init, 10, str_initial_method_bo='sobol', str_sampling_method_ao='sobol', num_samples_ao=100)
+        X_final, Y_final, time_final, _, _ = wrappers_bo_function.run_single_round(model_bo, fun_target, num_init, 10, str_initial_method_bo='sobol', str_sampling_method_ao='sobol', num_samples_ao=100)
         list_Y.append(Y_final)
         list_time.append(time_final)
     arr_Y = np.array(list_Y)

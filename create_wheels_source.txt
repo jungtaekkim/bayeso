@@ -1,3 +1,5 @@
+# Merge a working branch to a main branch first.
+#
 # Install setuptools wheel first
 python2 setup.py sdist bdist_wheel
 python3 setup.py sdist bdist_wheel

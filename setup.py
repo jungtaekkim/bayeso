@@ -13,8 +13,10 @@ else:
 path_requirements = 'requirements.txt'
 list_packages = [
     'bayeso',
+    'bayeso.bo',
     'bayeso.gp',
     'bayeso.tp',
+    'bayeso.trees',
     'bayeso.wrappers',
     'bayeso.utils'
 ]
@@ -24,10 +26,10 @@ with open(path_requirements) as f:
 
 setup(
     name='bayeso',
-    version='0.5.0',
+    version='0.5.1',
     author='Jungtaek Kim',
     author_email='jtkim@postech.ac.kr',
-    url='http://bayeso.org',
+    url='https://bayeso.org',
     license='MIT',
     description='Simple, but essential Bayesian optimization package',
     packages=list_packages,

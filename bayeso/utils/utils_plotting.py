@@ -116,9 +116,7 @@ def _save_figure(path_save: str, str_postfix: str,
     if path_save is not None and str_postfix is not None:
         str_figure = str_prefix + str_postfix
         plt.savefig(os.path.join(path_save, str_figure + '.pdf'),
-            format='pdf',
-            transparent=True,
-            bbox_inches='tight')
+            format='pdf', transparent=True, bbox_inches='tight')
 
 @utils_common.validate_types
 def _show_figure(pause_figure: bool, time_pause: constants.TYPING_UNION_INT_FLOAT
@@ -222,6 +220,8 @@ def plot_gp_via_sample(X: np.ndarray, Ys: np.ndarray,
 
     _set_ax_config(ax, str_x_axis, str_y_axis, xlim_min=np.min(X), xlim_max=np.max(X),
         draw_zero_axis=draw_zero_axis)
+
+    plt.tight_layout()
 
     if path_save is not None and str_postfix is not None:
         _save_figure(path_save, str_postfix, str_prefix='gp_sampled_')
@@ -349,6 +349,8 @@ def plot_gp_via_distribution(X_train: np.ndarray, Y_train: np.ndarray,
 
     _set_ax_config(ax, str_x_axis, str_y_axis, xlim_min=np.min(X_test),
         xlim_max=np.max(X_test), draw_zero_axis=draw_zero_axis)
+
+    plt.tight_layout()
 
     if path_save is not None and str_postfix is not None:
         _save_figure(path_save, str_postfix, str_prefix='gp_')
@@ -482,6 +484,8 @@ def plot_minimum_vs_iter(minima: np.ndarray, list_str_label: constants.TYPING_LI
     if include_legend:
         plt.legend(loc='upper right', fancybox=False, edgecolor='black', fontsize=24)
 
+    plt.tight_layout()
+
     if path_save is not None and str_postfix is not None:
         if draw_std:
             str_figure = 'minimum_mean_std_' + str_postfix
@@ -492,9 +496,8 @@ def plot_minimum_vs_iter(minima: np.ndarray, list_str_label: constants.TYPING_LI
         fig_legend = pylab.figure(figsize=(3, 2))
         fig_legend.legend(lines, list_str_label, 'center', fancybox=False,
             edgecolor='black', fontsize=32)
-        fig_legend.savefig(os.path.join(path_save, 'legend_{}.pdf'.format(
-            str_postfix)), format='pdf', transparent=True,
-            bbox_inches='tight')
+        fig_legend.savefig(os.path.join(path_save, 'legend_{}.pdf'.format(str_postfix)),
+            format='pdf', transparent=True, bbox_inches='tight')
 
     _show_figure(pause_figure, time_pause)
 
@@ -636,6 +639,8 @@ def plot_minimum_vs_time(times: np.ndarray, minima: np.ndarray,
 
     if include_legend:
         plt.legend(loc='upper right', fancybox=False, edgecolor='black', fontsize=24)
+
+    plt.tight_layout()
 
     if path_save is not None and str_postfix is not None:
         if draw_std:
@@ -782,6 +787,8 @@ def plot_bo_step(X_train: np.ndarray, Y_train: np.ndarray,
     _set_ax_config(ax, str_x_axis, str_y_axis, xlim_min=np.min(X_test),
         xlim_max=np.max(X_test), draw_zero_axis=draw_zero_axis)
 
+    plt.tight_layout()
+
     if path_save is not None and str_postfix is not None:
         _save_figure(path_save, str_postfix, str_prefix='bo_step_')
     _show_figure(pause_figure, time_pause)
@@ -925,6 +932,8 @@ def plot_bo_step_with_acq(X_train: np.ndarray, Y_train: np.ndarray,
     ax2.plot(X_test, acq_test, 'b', linewidth=4)
     _set_ax_config(ax2, str_x_axis, str_acq_axis, xlim_min=np.min(X_test),
         xlim_max=np.max(X_test), draw_zero_axis=draw_zero_axis)
+
+    plt.tight_layout()
 
     if path_save is not None and str_postfix is not None:
         _save_figure(path_save, str_postfix, str_prefix='bo_step_acq_')

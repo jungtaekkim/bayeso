@@ -1,11 +1,11 @@
 #
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: December 28, 2020
+# last updated: June 24, 2021
 #
 """test_import"""
 
 
-STR_VERSION = '0.5.0'
+STR_VERSION = '0.5.1'
 
 def test_version_bayeso():
     import bayeso

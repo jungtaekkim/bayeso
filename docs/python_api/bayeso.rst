@@ -10,6 +10,5 @@ bayeso
 .. toctree::
 
    bayeso.acquisition
-   bayeso.bo
    bayeso.constants
    bayeso.covariance

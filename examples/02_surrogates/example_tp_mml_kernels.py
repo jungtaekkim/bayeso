@@ -1,15 +1,15 @@
-# example_gp_mml_kernel_matern32
+# example_tp_mml_kernel_matern32
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
 # last updated: August 07, 2020
 
 import numpy as np
 import os
 
-from bayeso.gp import gp
+from bayeso.tp import tp
 from bayeso.utils import utils_common
 from bayeso.utils import utils_plotting
 
-PATH_SAVE = '../figures/gp/'
+PATH_SAVE = '../figures/tp/'
 list_str_covs = [
     'se',
     'eq',
@@ -32,8 +32,9 @@ def main(str_cov):
     X_test = X_test.reshape((num_test, 1))
     Y_test = np.cos(X_test)
 
-    mu, sigma, Sigma = gp.predict_with_optimized_hyps(X_train, Y_train, X_test, str_cov=str_cov, fix_noise=False, debug=True)
+    nu, mu, sigma, Sigma = tp.predict_with_optimized_hyps(X_train, Y_train, X_test, str_cov=str_cov, fix_noise=False, debug=True)
     utils_plotting.plot_gp_via_distribution(X_train, Y_train, X_test, mu, sigma, Y_test, path_save=PATH_SAVE, str_postfix='cos_' + str_cov)
+
 
 if __name__ == '__main__':
     if not os.path.isdir(PATH_SAVE):
@@ -41,4 +42,3 @@ if __name__ == '__main__':
 
     for str_cov in list_str_covs:
         main(str_cov)
-

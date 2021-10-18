@@ -12,4 +12,3 @@ Generic Bayesian optimization follows these steps:
 This project helps us to execute this Bayesian optimization procedure.
 In particular, **Gaussian process regression** is used as a surrogate function,
 and various acquisition functions such as **probability improvement**, **expected improvement**, and **Gaussian process upper confidence bound** are included in this project.
-

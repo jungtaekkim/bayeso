@@ -3,7 +3,7 @@
 </p>
 
 # BayesO: A Bayesian optimization framework in Python
-[![Build Status](https://travis-ci.org/jungtaekkim/bayeso.svg?branch=main)](https://travis-ci.org/jungtaekkim/bayeso)
+[![Build Status](https://app.travis-ci.com/jungtaekkim/bayeso.svg?branch=main)](https://app.travis-ci.com/jungtaekkim/bayeso)
 [![Coverage Status](https://coveralls.io/repos/github/jungtaekkim/bayeso/badge.svg?branch=main)](https://coveralls.io/github/jungtaekkim/bayeso?branch=main)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/bayeso)](https://pypi.org/project/bayeso/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -11,8 +11,8 @@
 
 Simple, but essential Bayesian optimization package.
 
-* [http://bayeso.org](http://bayeso.org)
-* [Online documentation](http://bayeso.readthedocs.io)
+* [https://bayeso.org](https://bayeso.org)
+* [Online documentation](https://bayeso.readthedocs.io)
 
 ## Installation
 We recommend installing it with `virtualenv`.
@@ -70,14 +70,14 @@ We test our package in the following versions.
 * Python 3.9
 
 ## Contributor
-* [Jungtaek Kim](http://jungtaek.github.io) (POSTECH)
+* [Jungtaek Kim](https://jungtaek.github.io) (POSTECH)
 
 ## Citation
 ```
 @misc{KimJ2017bayeso,
     author={Kim, Jungtaek and Choi, Seungjin},
     title={{BayesO}: A {Bayesian} optimization framework in {Python}},
-    howpublished={\url{http://bayeso.org}},
+    howpublished={\url{https://bayeso.org}},
     year={2017}
 }
 ```

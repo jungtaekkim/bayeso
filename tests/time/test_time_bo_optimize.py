@@ -48,12 +48,12 @@ def test_acquire_next_point_lbfgsb_10(benchmark):
     next_point = benchmark.pedantic(_acquire_next_point, args=('L-BFGS-B', 10), rounds=num_rounds, iterations=1)
     print(next_point)
 
-@pytest.mark.timeout(10)
+@pytest.mark.timeout(15)
 def test_acquire_next_point_lbfgsb_100(benchmark):
     next_point = benchmark.pedantic(_acquire_next_point, args=('L-BFGS-B', 100), rounds=num_rounds, iterations=1)
     print(next_point)
 
-@pytest.mark.timeout(100)
+@pytest.mark.timeout(150)
 def test_acquire_next_point_lbfgsb_1000(benchmark):
     next_point = benchmark.pedantic(_acquire_next_point, args=('L-BFGS-B', 1000), rounds=num_rounds, iterations=1)
     print(next_point)

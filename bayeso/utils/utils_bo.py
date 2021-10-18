@@ -93,13 +93,13 @@ def get_next_best_acquisition(points: np.ndarray, acquisitions: np.ndarray,
     points_evaluated: np.ndarray
 ) -> np.ndarray:
     """
-    It returns the next best acquired example.
+    It returns the next best acquired sample.
 
     :param points: inputs for acquisition function. Shape: (n, d).
     :type points: numpy.ndarray
     :param acquisitions: acquisition function values over `points`. Shape: (n, ).
     :type acquisitions: numpy.ndarray
-    :param points_evaluated: examples evaluated so far. Shape: (m, d).
+    :param points_evaluated: the samples evaluated so far. Shape: (m, d).
     :type points_evaluated: numpy.ndarray
 
     :returns: next best acquired point. Shape: (d, ).
@@ -160,7 +160,8 @@ def check_optimizer_method_bo(str_optimizer_method_bo: str, dim: int, debug: boo
     assert isinstance(str_optimizer_method_bo, str)
     assert isinstance(dim, int)
     assert isinstance(debug, bool)
-    assert str_optimizer_method_bo in constants.ALLOWED_OPTIMIZER_METHOD_BO
+    assert str_optimizer_method_bo in constants.ALLOWED_OPTIMIZER_METHOD_BO \
+        + constants.ALLOWED_OPTIMIZER_METHOD_BO_TREES
 
     if str_optimizer_method_bo == 'DIRECT' and directminimize is None: # pragma: no cover
         logger.warning('DIRECT is selected, but it is not installed.')
@@ -175,7 +176,9 @@ def check_optimizer_method_bo(str_optimizer_method_bo: str, dim: int, debug: boo
     return str_optimizer_method_bo
 
 @utils_common.validate_types
-def choose_fun_acquisition(str_acq: str, hyps: dict) -> constants.TYPING_CALLABLE:
+def choose_fun_acquisition(
+    str_acq: str, noise: constants.TYPING_UNION_FLOAT_NONE=None
+) -> constants.TYPING_CALLABLE:
     """
     It chooses and returns an acquisition function.
 
@@ -192,7 +195,7 @@ def choose_fun_acquisition(str_acq: str, hyps: dict) -> constants.TYPING_CALLABL
     """
 
     assert isinstance(str_acq, str)
-    assert isinstance(hyps, dict)
+    assert isinstance(noise, (float, constants.TYPE_NONE))
     assert str_acq in constants.ALLOWED_BO_ACQ
 
     if str_acq == 'pi':
@@ -202,8 +205,10 @@ def choose_fun_acquisition(str_acq: str, hyps: dict) -> constants.TYPING_CALLABL
     elif str_acq == 'ucb':
         fun_acquisition = acquisition.ucb
     elif str_acq == 'aei':
+        assert noise is not None
+
         fun_acquisition = lambda pred_mean, pred_std, Y_train: acquisition.aei(
-            pred_mean, pred_std, Y_train, hyps['noise'])
+            pred_mean, pred_std, Y_train, noise)
     elif str_acq == 'pure_exploit':
         fun_acquisition = lambda pred_mean, pred_std, Y_train: acquisition.pure_exploit(
             pred_mean)
@@ -212,6 +217,7 @@ def choose_fun_acquisition(str_acq: str, hyps: dict) -> constants.TYPING_CALLABL
     else:
         raise NotImplementedError('_choose_fun_acquisition: allowed str_acq,\
             but it is not implemented.')
+
     return fun_acquisition
 
 @utils_common.validate_types

@@ -7,7 +7,7 @@ import os
 
 from bayeso import bo
 from bayeso_benchmarks.two_dim_branin import Branin
-from bayeso.wrappers import wrappers_bo
+from bayeso.wrappers import wrappers_bo_function
 from bayeso.utils import utils_bo
 from bayeso.utils import utils_plotting
 
@@ -23,7 +23,7 @@ def fun_target(X):
 
 def main():
     num_bo = 5
-    num_iter = 20
+    num_iter = 10
     num_init = 5
 
     bounds = obj_fun.get_bounds()
@@ -32,7 +32,7 @@ def main():
     list_time = []
     for ind_bo in range(0, num_bo):
         print('BO Round', ind_bo + 1)
-        X_final, Y_final, time_final, _, _ = wrappers_bo.run_single_round(model_bo, fun_target, num_init, num_iter, str_initial_method_bo='sobol', str_sampling_method_ao='sobol', num_samples_ao=100)
+        X_final, Y_final, time_final, _, _ = wrappers_bo_function.run_single_round(model_bo, fun_target, num_init, num_iter, str_initial_method_bo='sobol', str_sampling_method_ao='sobol', num_samples_ao=100)
         print(X_final)
         print(Y_final)
         print(time_final)

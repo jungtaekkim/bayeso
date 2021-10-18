@@ -1,15 +1,15 @@
 #
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: September 24, 2020
+# last updated: July 9, 2021
 #
-"""test_wrappers_bo"""
+"""test_wrappers_bo_function"""
 
 import typing
 import pytest
 import numpy as np
 
 from bayeso import bo
-from bayeso.wrappers import wrappers_bo as package_target
+from bayeso.wrappers import wrappers_bo_function as package_target
 
 
 def test_run_single_round_with_all_initial_information_typing():
@@ -63,17 +63,17 @@ def test_run_single_round_with_all_initial_information():
     with pytest.raises(AssertionError) as error:
         package_target.run_single_round_with_all_initial_information(model_bo, fun_target, X, Y, num_iter, num_samples_ao='abc')
 
-    X_final, Y_final, time_all_final, time_gp_final, time_acq_final = package_target.run_single_round_with_all_initial_information(model_bo, fun_target, X, Y, num_iter)
+    X_final, Y_final, time_all_final, time_surrogate_final, time_acq_final = package_target.run_single_round_with_all_initial_information(model_bo, fun_target, X, Y, num_iter)
     assert len(X_final.shape) == 2
     assert len(Y_final.shape) == 2
     assert len(time_all_final.shape) == 1
-    assert len(time_gp_final.shape) == 1
+    assert len(time_surrogate_final.shape) == 1
     assert len(time_acq_final.shape) == 1
     assert X_final.shape[1] == dim_X
     assert X_final.shape[0] == Y_final.shape[0] == num_X + num_iter
     assert time_all_final.shape[0] == num_iter
     assert Y_final.shape[1] == 1
-    assert time_gp_final.shape[0] == time_acq_final.shape[0]
+    assert time_surrogate_final.shape[0] == time_acq_final.shape[0]
 
 def test_run_single_round_with_initial_inputs_typing():
     annos = package_target.run_single_round_with_initial_inputs.__annotations__
@@ -116,16 +116,16 @@ def test_run_single_round_with_initial_inputs():
     with pytest.raises(AssertionError) as error:
         package_target.run_single_round_with_initial_inputs(model_bo, fun_target, X, num_iter, num_samples_ao='abc')
 
-    X_final, Y_final, time_all_final, time_gp_final, time_acq_final = package_target.run_single_round_with_initial_inputs(model_bo, fun_target, X, num_iter)
+    X_final, Y_final, time_all_final, time_surrogate_final, time_acq_final = package_target.run_single_round_with_initial_inputs(model_bo, fun_target, X, num_iter)
     assert len(X_final.shape) == 2
     assert len(Y_final.shape) == 2
     assert len(time_all_final.shape) == 1
-    assert len(time_gp_final.shape) == 1
+    assert len(time_surrogate_final.shape) == 1
     assert len(time_acq_final.shape) == 1
     assert X_final.shape[1] == dim_X
     assert X_final.shape[0] == Y_final.shape[0] == time_all_final.shape[0] == num_X + num_iter
     assert Y_final.shape[1] == 1
-    assert time_gp_final.shape[0] == time_acq_final.shape[0]
+    assert time_surrogate_final.shape[0] == time_acq_final.shape[0]
 
 def test_run_single_round_typing():
     annos = package_target.run_single_round.__annotations__
@@ -172,13 +172,13 @@ def test_run_single_round():
     with pytest.raises(AssertionError) as error:
         package_target.run_single_round(model_bo, fun_target, num_X, num_iter, seed=1.2)
 
-    X_final, Y_final, time_all_final, time_gp_final, time_acq_final = package_target.run_single_round(model_bo, fun_target, num_X, num_iter, str_initial_method_bo='uniform')
+    X_final, Y_final, time_all_final, time_surrogate_final, time_acq_final = package_target.run_single_round(model_bo, fun_target, num_X, num_iter, str_initial_method_bo='uniform')
     assert len(X_final.shape) == 2
     assert len(Y_final.shape) == 2
     assert len(time_all_final.shape) == 1
-    assert len(time_gp_final.shape) == 1
+    assert len(time_surrogate_final.shape) == 1
     assert len(time_acq_final.shape) == 1
     assert X_final.shape[1] == dim_X
     assert X_final.shape[0] == Y_final.shape[0] == time_all_final.shape[0] == num_X + num_iter
     assert Y_final.shape[1] == 1
-    assert time_gp_final.shape[0] == time_acq_final.shape[0]
+    assert time_surrogate_final.shape[0] == time_acq_final.shape[0]
