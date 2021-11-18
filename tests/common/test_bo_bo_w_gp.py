@@ -74,6 +74,8 @@ def test_load_bo():
     with pytest.raises(AssertionError) as error:
         model_bo = BO(arr_range_1, str_modelselection_method='abc')
     with pytest.raises(AssertionError) as error:
+        model_bo = BO(arr_range_1, str_exp=123)
+    with pytest.raises(AssertionError) as error:
         model_bo = BO(arr_range_1, debug=1)
 
     model_bo = BO(arr_range_1)
@@ -849,7 +851,7 @@ def test_compute_posteriors_set():
     X = np.random.randn(num_X, num_instances, dim_X)
     Y = np.random.randn(num_X, 1)
 
-    model_bo = BO(arr_range_1, str_acq='pi', str_cov='set_se')
+    model_bo = BO(arr_range_1, str_acq='pi', str_cov='set_se', str_exp=None)
     hyps = utils_covariance.get_hyps(model_bo.str_cov, dim=dim_X, use_ard=model_bo.use_ard)
 
     cov_X_X, inv_cov_X_X, _ = covariance.get_kernel_inverse(X, hyps, model_bo.str_cov)
@@ -905,7 +907,7 @@ def test_compute_acquisitions():
     X = np.random.randn(num_X, dim_X)
     Y = np.random.randn(num_X, 1)
 
-    model_bo = BO(arr_range_1, str_acq='pi')
+    model_bo = BO(arr_range_1, str_acq='pi', str_exp='test')
     hyps = utils_covariance.get_hyps(model_bo.str_cov, dim=dim_X, use_ard=model_bo.use_ard)
 
     cov_X_X, inv_cov_X_X, _ = covariance.get_kernel_inverse(X, hyps, model_bo.str_cov)
@@ -1023,7 +1025,7 @@ def test_compute_acquisitions_set():
     X = np.random.randn(num_X, num_instances, dim_X)
     Y = np.random.randn(num_X, 1)
 
-    model_bo = BO(arr_range_1, str_acq='pi', str_cov='set_se')
+    model_bo = BO(arr_range_1, str_acq='pi', str_cov='set_se', str_exp='test')
     hyps = utils_covariance.get_hyps(model_bo.str_cov, dim=dim_X, use_ard=model_bo.use_ard)
 
     cov_X_X, inv_cov_X_X, _ = covariance.get_kernel_inverse(X, hyps, model_bo.str_cov)

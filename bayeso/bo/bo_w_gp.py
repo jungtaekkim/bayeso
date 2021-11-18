@@ -51,6 +51,8 @@ class BOwGP(base_bo.BaseBO):
     :param str_modelselection_method: the name of model selection method
         for Gaussian process regression.
     :type str_modelselection_method: str., optional
+    :param str_exp: the name of experiment.
+    :type str_exp: str., optional
     :param debug: flag for printing log messages.
     :type debug: bool., optional
 
@@ -65,6 +67,7 @@ class BOwGP(base_bo.BaseBO):
         str_optimizer_method_gp: str=constants.STR_OPTIMIZER_METHOD_GP,
         str_optimizer_method_bo: str=constants.STR_OPTIMIZER_METHOD_AO,
         str_modelselection_method: str=constants.STR_MODELSELECTION_METHOD,
+        str_exp: str=None,
         debug: bool=False
     ):
         """
@@ -80,6 +83,7 @@ class BOwGP(base_bo.BaseBO):
         assert isinstance(str_optimizer_method_bo, str)
         assert isinstance(str_optimizer_method_gp, str)
         assert isinstance(str_modelselection_method, str)
+        assert isinstance(str_exp, (type(None), str))
         assert isinstance(debug, bool)
         assert callable(prior_mu) or prior_mu is None
         assert len(range_X.shape) == 2
@@ -94,7 +98,7 @@ class BOwGP(base_bo.BaseBO):
         str_surrogate = 'gp'
         assert str_surrogate in constants.ALLOWED_SURROGATE
 
-        super().__init__(range_X, str_surrogate, str_acq, str_optimizer_method_bo, normalize_Y, debug)
+        super().__init__(range_X, str_surrogate, str_acq, str_optimizer_method_bo, normalize_Y, str_exp, debug)
 
         self.str_cov = str_cov
         self.use_ard = use_ard

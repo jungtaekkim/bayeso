@@ -55,6 +55,8 @@ def test_load_bo():
     with pytest.raises(AssertionError) as error:
         model_bo = BO(arr_range_1, str_optimizer_method_bo='abc')
     with pytest.raises(AssertionError) as error:
+        model_bo = BO(arr_range_1, str_exp=123)
+    with pytest.raises(AssertionError) as error:
         model_bo = BO(arr_range_1, debug=1)
 
     model_bo = BO(arr_range_1)
@@ -471,7 +473,7 @@ def test_optimize_normalize_Y():
 
     num_samples = 10
 
-    model_bo = BO(arr_range, str_acq='ei', normalize_Y=True)
+    model_bo = BO(arr_range, str_acq='ei', normalize_Y=True, str_exp=None)
     next_point, dict_info = model_bo.optimize(X, Y, num_samples=num_samples)
     next_points = dict_info['next_points']
     acquisitions = dict_info['acquisitions']
@@ -505,7 +507,7 @@ def test_optimize_normalize_Y():
         [100.0],
     ])
 
-    model_bo = BO(arr_range, str_acq='ei', normalize_Y=True)
+    model_bo = BO(arr_range, str_acq='ei', normalize_Y=True, str_exp=None)
     next_point, dict_info = model_bo.optimize(X, Y, num_samples=num_samples)
     next_points = dict_info['next_points']
     acquisitions = dict_info['acquisitions']
@@ -540,7 +542,7 @@ def test_compute_posteriors():
     X = np.random.randn(num_X, dim_X)
     Y = np.random.randn(num_X, 1)
 
-    model_bo = BO(arr_range_1, str_acq='ei')
+    model_bo = BO(arr_range_1, str_acq='ei', str_exp='test')
 
     num_trees = 10
     depth_max = 5
@@ -578,7 +580,7 @@ def test_compute_acquisitions():
     X = np.random.randn(num_X, dim_X)
     Y = np.random.randn(num_X, 1)
 
-    model_bo = BO(arr_range_1, str_acq='pi')
+    model_bo = BO(arr_range_1, str_acq='pi', str_exp='test')
 
     num_trees = 10
     depth_max = 5

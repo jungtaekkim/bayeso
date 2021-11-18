@@ -81,6 +81,8 @@ def test_load_bayesian_optimization():
     with pytest.raises(AssertionError) as error:
         model_bo = package_target.BayesianOptimization(range_1, fun_target, num_iter, num_samples_ao='abc')
     with pytest.raises(AssertionError) as error:
+        model_bo = package_target.BayesianOptimization(range_1, fun_target, num_iter, str_exp=123)
+    with pytest.raises(AssertionError) as error:
         model_bo = package_target.BayesianOptimization(range_1, fun_target, num_iter, debug=123)
 
 def test_optimize_single_iteration():
@@ -95,7 +97,7 @@ def test_optimize_single_iteration():
     Y = np.random.randn(num_init, 1)
     fun_target = lambda x: 2.0 * x + 1.0
 
-    model_bo = package_target.BayesianOptimization(range_, fun_target, num_iter, debug=True)
+    model_bo = package_target.BayesianOptimization(range_, fun_target, num_iter, str_exp='test', debug=True)
 
     with pytest.raises(AssertionError) as error:
         model_bo.optimize_single_iteration(X, 'abc')
@@ -121,7 +123,7 @@ def test_optimize_with_all_initial_information():
     Y = np.random.randn(num_init, 1)
     fun_target = lambda x: 2.0 * x + 1.0
 
-    model_bo = package_target.BayesianOptimization(range_, fun_target, num_iter, debug=True)
+    model_bo = package_target.BayesianOptimization(range_, fun_target, num_iter, str_exp=None, debug=True)
 
     with pytest.raises(AssertionError) as error:
         model_bo.optimize_with_all_initial_information(X, 'abc')

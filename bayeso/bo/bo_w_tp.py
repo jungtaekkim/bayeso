@@ -48,6 +48,8 @@ class BOwTP(base_bo.BaseBO):
     :param str_optimizer_method_bo: the name of optimization method for
         Bayesian optimization.
     :type str_optimizer_method_bo: str., optional
+    :param str_exp: the name of experiment.
+    :type str_exp: str., optional
     :param debug: flag for printing log messages.
     :type debug: bool., optional
 
@@ -61,6 +63,7 @@ class BOwTP(base_bo.BaseBO):
         prior_mu: constants.TYPING_UNION_CALLABLE_NONE=None,
         str_optimizer_method_tp: str=constants.STR_OPTIMIZER_METHOD_TP,
         str_optimizer_method_bo: str=constants.STR_OPTIMIZER_METHOD_AO,
+        str_exp: str=None,
         debug: bool=False
     ):
         """
@@ -75,6 +78,7 @@ class BOwTP(base_bo.BaseBO):
         assert isinstance(use_ard, bool)
         assert isinstance(str_optimizer_method_bo, str)
         assert isinstance(str_optimizer_method_tp, str)
+        assert isinstance(str_exp, (type(None), str))
         assert isinstance(debug, bool)
         assert callable(prior_mu) or prior_mu is None
         assert len(range_X.shape) == 2
@@ -88,7 +92,7 @@ class BOwTP(base_bo.BaseBO):
         str_surrogate = 'tp'
         assert str_surrogate in constants.ALLOWED_SURROGATE
 
-        super().__init__(range_X, str_surrogate, str_acq, str_optimizer_method_bo, normalize_Y, debug)
+        super().__init__(range_X, str_surrogate, str_acq, str_optimizer_method_bo, normalize_Y, str_exp, debug)
 
         self.str_cov = str_cov
         self.use_ard = use_ard

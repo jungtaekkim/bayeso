@@ -6,13 +6,14 @@
 
 import time
 import numpy as np
+from tqdm import tqdm
 
 from bayeso import constants
 from bayeso import bo
 from bayeso.utils import utils_bo
 from bayeso.utils import utils_logger
 
-logger = utils_logger.get_logger('wrappers_bayesian_optimization')
+#logger = utils_logger.get_logger('wrappers_bo_class')
 
 
 class BayesianOptimization:
@@ -61,6 +62,8 @@ class BayesianOptimization:
         optimization. If a local search method (e.g., L-BFGS-B) is selected
         for acquisition function optimization, it is employed.
     :type num_samples_ao: int., optional
+    :param str_exp: the name of experiment.
+    :type str_exp: str., optional
     :param debug: a flag for printing log messages.
     :type debug: bool., optional
 
@@ -84,6 +87,7 @@ class BayesianOptimization:
         str_mlm_method: str=constants.STR_MLM_METHOD,
         str_modelselection_method: str=constants.STR_MODELSELECTION_METHOD,
         num_samples_ao: int=constants.NUM_SAMPLES_AO,
+        str_exp: str=None,
         debug: bool=False,
     ):
         """
@@ -108,6 +112,7 @@ class BayesianOptimization:
         assert isinstance(str_mlm_method, str)
         assert isinstance(str_modelselection_method, str)
         assert isinstance(num_samples_ao, int)
+        assert isinstance(str_exp, (type(None), str))
         assert isinstance(debug, bool)
 
         assert len(range_X.shape) == 2
@@ -140,6 +145,7 @@ class BayesianOptimization:
         self.str_optimizer_method_bo = utils_bo.check_optimizer_method_bo(
             str_optimizer_method_bo, range_X.shape[0], debug)
         self.num_samples_ao = num_samples_ao
+        self.str_exp = str_exp
         self.debug = debug
 
         if str_surrogate in constants.ALLOWED_SURROGATE_TREES:
@@ -182,6 +188,7 @@ class BayesianOptimization:
             str_optimizer_method_gp=self.str_optimizer_method_gp,
             str_optimizer_method_bo=self.str_optimizer_method_bo,
             str_modelselection_method=self.str_modelselection_method,
+            str_exp=self.str_exp,
             debug=self.debug
         )
 
@@ -205,6 +212,7 @@ class BayesianOptimization:
             prior_mu=self.prior_mu,
             str_optimizer_method_tp=self.str_optimizer_method_tp,
             str_optimizer_method_bo=self.str_optimizer_method_bo,
+            str_exp=self.str_exp,
             debug=self.debug
         )
 
@@ -225,6 +233,7 @@ class BayesianOptimization:
             str_acq=self.str_acq,
             normalize_Y=self.normalize_Y,
             str_optimizer_method_bo=self.str_optimizer_method_bo,
+            str_exp=self.str_exp,
             debug=self.debug
         )
 
@@ -266,8 +275,9 @@ class BayesianOptimization:
                 next_samples, acq_vals, X)
 
             if self.debug:
-                logger.debug('next_sample is repeated, so next best is selected.\
-                    next_sample: %s', utils_logger.get_str_array(next_sample))
+                self.model_bo.logger.debug('next_sample is repeated, so next best is selected.\
+                        next_sample: %s', utils_logger.get_str_array(next_sample)
+                )
         return next_sample
 
     def optimize_single_iteration(self, X: np.ndarray, Y: np.ndarray
@@ -347,8 +357,9 @@ class BayesianOptimization:
         time_surrogate_ = []
         time_acq_ = []
 
-        for ind_iter in range(0, self.num_iter):
-            logger.info('Iteration %d', ind_iter + 1)
+        pbar = tqdm(range(0, self.num_iter))
+        for ind_iter in pbar:
+            self.model_bo.logger.info('Iteration %d', ind_iter + 1)
             time_iter_start = time.time()
 
             next_sample, dict_info = self.optimize_single_iteration(X_, Y_)
@@ -359,7 +370,7 @@ class BayesianOptimization:
             time_acq = dict_info['time_acq']
 
             if self.debug:
-                logger.debug('next_sample: %s', utils_logger.get_str_array(next_sample))
+                self.model_bo.logger.debug('next_sample: %s', utils_logger.get_str_array(next_sample))
 
             next_sample = self._get_next_best_sample(next_sample, X_, next_samples, acq_vals)
 
@@ -370,7 +381,7 @@ class BayesianOptimization:
             time_to_evaluate_end = time.time()
 
             if self.debug:
-                logger.debug('time consumed to evaluate: %.4f sec.',
+                self.model_bo.logger.debug('time consumed to evaluate: %.4f sec.',
                     time_to_evaluate_end - time_to_evaluate_start)
 
             time_iter_end = time.time()
@@ -381,7 +392,7 @@ class BayesianOptimization:
         time_end = time.time()
 
         if self.debug:
-            logger.debug('overall time consumed in single BO round: %.4f sec.', time_end - time_start)
+            self.model_bo.logger.debug('overall time consumed in single BO round: %.4f sec.', time_end - time_start)
 
         time_all_ = np.array(time_all_)
         time_surrogate_ = np.array(time_surrogate_)
@@ -436,31 +447,31 @@ class BayesianOptimization:
         return X_, Y_, time_all_, time_surrogate_, time_acq_
 
     def print_info(self, num_init, seed):
-        logger.info('====================')
-        logger.info('range_X:\n%s', utils_logger.get_str_array(self.range_X))
-        logger.info('num_init: %d', num_init)
-        logger.info('num_iter: %d', self.num_iter)
-        logger.info('str_surrogate: %s', self.str_surrogate)
+        self.model_bo.logger.info('====================')
+        self.model_bo.logger.info('range_X:\n%s', utils_logger.get_str_array(self.range_X))
+        self.model_bo.logger.info('num_init: %d', num_init)
+        self.model_bo.logger.info('num_iter: %d', self.num_iter)
+        self.model_bo.logger.info('str_surrogate: %s', self.str_surrogate)
         if self.str_surrogate in constants.ALLOWED_SURROGATE:
-            logger.info('str_cov: %s', self.str_cov)
-        logger.info('str_acq: %s', self.str_acq)
-        logger.info('normalize_Y: %s', self.normalize_Y)
+            self.model_bo.logger.info('str_cov: %s', self.str_cov)
+        self.model_bo.logger.info('str_acq: %s', self.str_acq)
+        self.model_bo.logger.info('normalize_Y: %s', self.normalize_Y)
         if self.str_surrogate in constants.ALLOWED_SURROGATE:
-            logger.info('use_ard: %s', self.use_ard)
-        logger.info('str_initial_method_bo: %s', self.str_initial_method_bo)
-        logger.info('str_sampling_method_ao: %s', self.str_sampling_method_ao)
+            self.model_bo.logger.info('use_ard: %s', self.use_ard)
+        self.model_bo.logger.info('str_initial_method_bo: %s', self.str_initial_method_bo)
+        self.model_bo.logger.info('str_sampling_method_ao: %s', self.str_sampling_method_ao)
         if self.str_surrogate in ['gp']:
-            logger.info('str_optimizer_method_gp: %s', self.str_optimizer_method_gp)
+            self.model_bo.logger.info('str_optimizer_method_gp: %s', self.str_optimizer_method_gp)
         if self.str_surrogate in ['tp']:
-            logger.info('str_optimizer_method_tp: %s', self.str_optimizer_method_tp)
-        logger.info('str_optimizer_method_bo: %s', self.str_optimizer_method_bo)
+            self.model_bo.logger.info('str_optimizer_method_tp: %s', self.str_optimizer_method_tp)
+        self.model_bo.logger.info('str_optimizer_method_bo: %s', self.str_optimizer_method_bo)
         if self.str_surrogate in ['gp']:
-            logger.info('str_mlm_method: %s', self.str_mlm_method)
-            logger.info('str_modelselection_method: %s', self.str_modelselection_method)
-        logger.info('num_samples_ao: %d', self.num_samples_ao)
-        logger.info('seed: %s', seed)
-        logger.info('debug: %s', self.debug)
-        logger.info('====================')
+            self.model_bo.logger.info('str_mlm_method: %s', self.str_mlm_method)
+            self.model_bo.logger.info('str_modelselection_method: %s', self.str_modelselection_method)
+        self.model_bo.logger.info('num_samples_ao: %d', self.num_samples_ao)
+        self.model_bo.logger.info('seed: %s', seed)
+        self.model_bo.logger.info('debug: %s', self.debug)
+        self.model_bo.logger.info('====================')
 
     def optimize(self,
         num_init: int,
@@ -503,14 +514,16 @@ class BayesianOptimization:
 
         X_init = self.model_bo.get_initials(self.str_initial_method_bo, num_init, seed=seed)
         if self.debug:
-            logger.debug('X_init:\n%s', utils_logger.get_str_array(X_init))
+            self.model_bo.logger.debug('X_init:\n%s', utils_logger.get_str_array(X_init))
 
         X, Y, time_all, time_surrogate, time_acq = self.optimize_with_initial_inputs(X_init)
 
         time_end = time.time()
 
         if self.debug:
-            logger.debug('overall time consumed including initializations: %.4f sec.',
-                time_end - time_start)
+            self.model_bo.logger.debug(
+                'overall time consumed including initializations: %.4f sec.',
+                time_end - time_start
+            )
 
         return X, Y, time_all, time_surrogate, time_acq

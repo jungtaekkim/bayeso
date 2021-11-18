@@ -13,7 +13,7 @@ from bayeso.utils import utils_bo
 from bayeso.utils import utils_common
 from bayeso.utils import utils_logger
 
-logger = utils_logger.get_logger('wrappers_bo')
+#logger = utils_logger.get_logger('wrappers_bo_function')
 
 
 @utils_common.validate_types
@@ -84,7 +84,7 @@ def run_single_round_with_all_initial_information(model_bo: bo.BO,
     time_surrogate_final = []
     time_acq_final = []
     for ind_iter in range(0, num_iter):
-        logger.info('Iteration %d', ind_iter + 1)
+        model_bo.logger.info('Iteration %d', ind_iter + 1)
         time_iter_start = time.time()
 
         next_point, dict_info = model_bo.optimize(X_final, Y_final,
@@ -96,21 +96,23 @@ def run_single_round_with_all_initial_information(model_bo: bo.BO,
         time_acq = dict_info['time_acq']
 
         if model_bo.debug:
-            logger.debug('next_point: %s', utils_logger.get_str_array(next_point))
+            model_bo.logger.debug('next_point: %s', utils_logger.get_str_array(next_point))
 
         if np.where(np.linalg.norm(next_point - X_final, axis=1)\
             < constants.TOLERANCE_DUPLICATED_ACQ)[0].shape[0] > 0: # pragma: no cover
             next_point = utils_bo.get_next_best_acquisition(next_points, acquisitions, X_final)
             if model_bo.debug:
-                logger.debug('next_point is repeated, so next best is selected.\
-                    next_point: %s', utils_logger.get_str_array(next_point))
+                model_bo.logger.debug(
+                    'next_point is repeated, so next best is selected.\
+                        next_point: %s', utils_logger.get_str_array(next_point)
+                )
         X_final = np.vstack((X_final, next_point))
 
         time_to_evaluate_start = time.time()
         Y_final = np.vstack((Y_final, fun_target(next_point)))
         time_to_evaluate_end = time.time()
         if model_bo.debug:
-            logger.debug('time consumed to evaluate: %.4f sec.',
+            model_bo.logger.debug('time consumed to evaluate: %.4f sec.',
                 time_to_evaluate_end - time_to_evaluate_start)
 
         time_iter_end = time.time()
@@ -121,7 +123,7 @@ def run_single_round_with_all_initial_information(model_bo: bo.BO,
     time_end = time.time()
 
     if model_bo.debug:
-        logger.debug('overall time consumed in single BO round: %.4f sec.', time_end - time_start)
+        model_bo.logger.debug('overall time consumed in single BO round: %.4f sec.', time_end - time_start)
 
     time_all_final = np.array(time_all_final)
     time_surrogate_final = np.array(time_surrogate_final)
@@ -274,25 +276,25 @@ def run_single_round(model_bo: bo.BO, fun_target: constants.TYPING_CALLABLE,
     assert str_initial_method_bo in constants.ALLOWED_INITIALIZING_METHOD_BO
     assert str_mlm_method in constants.ALLOWED_MLM_METHOD
 
-    logger.info('range_X:\n%s', utils_logger.get_str_array(model_bo.range_X))
-    logger.info('str_cov: %s', model_bo.str_cov)
-    logger.info('str_acq: %s', model_bo.str_acq)
-    logger.info('str_optimizer_method_gp: %s', model_bo.str_optimizer_method_gp)
-    logger.info('str_optimizer_method_bo: %s', model_bo.str_optimizer_method_bo)
-    logger.info('str_modelselection_method: %s', model_bo.str_modelselection_method)
-    logger.info('num_init: %d', num_init)
-    logger.info('num_iter: %d', num_iter)
-    logger.info('str_initial_method_bo: %s', str_initial_method_bo)
-    logger.info('str_sampling_method_ao: %s', str_sampling_method_ao)
-    logger.info('num_samples_ao: %d', num_samples_ao)
-    logger.info('str_mlm_method: %s', str_mlm_method)
-    logger.info('seed: %s', seed)
+    model_bo.logger.info('range_X:\n%s', utils_logger.get_str_array(model_bo.range_X))
+    model_bo.logger.info('str_cov: %s', model_bo.str_cov)
+    model_bo.logger.info('str_acq: %s', model_bo.str_acq)
+    model_bo.logger.info('str_optimizer_method_gp: %s', model_bo.str_optimizer_method_gp)
+    model_bo.logger.info('str_optimizer_method_bo: %s', model_bo.str_optimizer_method_bo)
+    model_bo.logger.info('str_modelselection_method: %s', model_bo.str_modelselection_method)
+    model_bo.logger.info('num_init: %d', num_init)
+    model_bo.logger.info('num_iter: %d', num_iter)
+    model_bo.logger.info('str_initial_method_bo: %s', str_initial_method_bo)
+    model_bo.logger.info('str_sampling_method_ao: %s', str_sampling_method_ao)
+    model_bo.logger.info('num_samples_ao: %d', num_samples_ao)
+    model_bo.logger.info('str_mlm_method: %s', str_mlm_method)
+    model_bo.logger.info('seed: %s', seed)
 
     time_start = time.time()
 
     X_init = model_bo.get_initials(str_initial_method_bo, num_init, seed=seed)
     if model_bo.debug:
-        logger.debug('X_init:\n%s', utils_logger.get_str_array(X_init))
+        model_bo.logger.debug('X_init:\n%s', utils_logger.get_str_array(X_init))
 
     X_final, Y_final, time_all_final, time_surrogate_final, time_acq_final \
         = run_single_round_with_initial_inputs(
@@ -305,7 +307,7 @@ def run_single_round(model_bo: bo.BO, fun_target: constants.TYPING_CALLABLE,
     time_end = time.time()
 
     if model_bo.debug:
-        logger.debug('overall time consumed including initializations: %.4f sec.',
+        model_bo.logger.debug('overall time consumed including initializations: %.4f sec.',
             time_end - time_start)
 
     return X_final, Y_final, time_all_final, time_surrogate_final, time_acq_final
