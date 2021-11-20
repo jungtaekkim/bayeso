@@ -276,8 +276,7 @@ class BayesianOptimization:
 
             if self.debug:
                 self.model_bo.logger.debug('next_sample is repeated, so next best is selected.\
-                        next_sample: %s', utils_logger.get_str_array(next_sample)
-                )
+                    next_sample: %s', utils_logger.get_str_array(next_sample))
         return next_sample
 
     def optimize_single_iteration(self, X: np.ndarray, Y: np.ndarray
@@ -521,9 +520,7 @@ class BayesianOptimization:
         time_end = time.time()
 
         if self.debug:
-            self.model_bo.logger.debug(
-                'overall time consumed including initializations: %.4f sec.',
-                time_end - time_start
-            )
+            self.model_bo.logger.debug('overall time consumed including initializations: %.4f sec.',
+                time_end - time_start)
 
         return X, Y, time_all, time_surrogate, time_acq
