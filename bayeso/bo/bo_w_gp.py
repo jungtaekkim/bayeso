@@ -361,6 +361,7 @@ class BOwGP(base_bo.BaseBO):
         assert str_mlm_method in constants.ALLOWED_MLM_METHOD
 
         time_start = time.time()
+        normalized_Y = False
 
         if self.normalize_Y and str_mlm_method != 'converged':
             if self.debug:
