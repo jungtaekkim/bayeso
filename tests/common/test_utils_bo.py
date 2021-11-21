@@ -12,6 +12,45 @@ from bayeso import constants
 from bayeso.utils import utils_bo as package_target
 
 
+def test_normalize_min_max_typing():
+    annos = package_target.normalize_min_max.__annotations__
+
+    assert annos['Y'] == np.ndarray
+    assert annos['return'] == np.ndarray
+
+def test_normalize_min_max():
+    Y = np.array([
+        [1.0],
+        [2.0],
+        [10.0],
+        [-5.0],
+        [4.0],
+        [2.0],
+        [-4.0],
+        [2.0],
+    ])
+
+    with pytest.raises(AssertionError) as error:
+        package_target.normalize_min_max(123)
+    with pytest.raises(AssertionError) as error:
+        package_target.normalize_min_max('abc')
+    with pytest.raises(AssertionError) as error:
+        package_target.normalize_min_max(np.squeeze(Y))
+
+    Y = package_target.normalize_min_max(Y)
+    truth_Y = np.array([
+        [6.0 / 15.0],
+        [7.0 / 15.0],
+        [1.0],
+        [0.0],
+        [9.0 / 15.0],
+        [7.0 / 15.0],
+        [1.0 / 15.0],
+        [7.0 / 15.0],
+    ]) * constants.MULTIPLIER_RESPONSE
+
+    assert np.all(Y == truth_Y)
+
 def test_get_best_acquisition_by_evaluation_typing():
     annos = package_target.get_best_acquisition_by_evaluation.__annotations__
 

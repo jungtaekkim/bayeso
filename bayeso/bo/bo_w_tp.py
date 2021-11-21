@@ -347,9 +347,8 @@ class BOwTP(base_bo.BaseBO):
 
         time_start = time.time()
 
-        if self.normalize_Y and np.max(Y_train) != np.min(Y_train):
-            Y_train = (Y_train - np.min(Y_train)) / (np.max(Y_train) - np.min(Y_train)) \
-                * constants.MULTIPLIER_RESPONSE
+        if self.normalize_Y:
+            Y_train = utils_bo.normalize_min_max(Y_train)
 
         time_start_surrogate = time.time()
 
@@ -379,6 +378,7 @@ class BOwTP(base_bo.BaseBO):
         dict_info = {
             'next_points': next_points,
             'acquisitions': acquisitions,
+            'Y_train': Y_train,
             'cov_X_X': cov_X_X,
             'inv_cov_X_X': inv_cov_X_X,
             'hyps': hyps,

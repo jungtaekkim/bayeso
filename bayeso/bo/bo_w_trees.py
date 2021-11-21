@@ -235,9 +235,8 @@ class BOwTrees(base_bo.BaseBO):
 
         time_start = time.time()
 
-        if self.normalize_Y and np.max(Y_train) != np.min(Y_train):
-            Y_train = (Y_train - np.min(Y_train)) / (np.max(Y_train) - np.min(Y_train)) \
-                * constants.MULTIPLIER_RESPONSE
+        if self.normalize_Y:
+            Y_train = utils_bo.normalize_min_max(Y_train)
 
         time_start_surrogate = time.time()
         trees = self.get_trees(X_train, Y_train)
@@ -263,6 +262,7 @@ class BOwTrees(base_bo.BaseBO):
 
         dict_info = {
             'next_points': next_points,
+            'Y_train': Y_train,
             'acquisitions': acquisitions,
             'trees': trees,
             'time_surrogate': time_end_surrogate - time_start_surrogate,
