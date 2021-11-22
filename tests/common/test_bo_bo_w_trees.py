@@ -472,8 +472,10 @@ def test_optimize_normalize_Y():
     X = np.random.randn(num_X, dim_X)
     Y = np.random.randn(num_X, 1)
 
+    num_samples = 10
+
     model_bo = BO(arr_range, normalize_Y=True, str_exp=None)
-    next_point, dict_info = model_bo.optimize(X, Y)
+    next_point, dict_info = model_bo.optimize(X, Y, num_samples=num_samples)
     Y_original = dict_info['Y_original']
     Y_normalized = dict_info['Y_normalized']
 
@@ -482,7 +484,7 @@ def test_optimize_normalize_Y():
     assert np.all(utils_bo.normalize_min_max(Y) == Y_normalized)
 
     model_bo = BO(arr_range, normalize_Y=False, str_exp=None)
-    next_point, dict_info = model_bo.optimize(X, Y)
+    next_point, dict_info = model_bo.optimize(X, Y, num_samples=num_samples)
     Y_original = dict_info['Y_original']
     Y_normalized = dict_info['Y_normalized']
 
