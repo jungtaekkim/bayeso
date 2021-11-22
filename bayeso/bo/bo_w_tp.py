@@ -346,6 +346,7 @@ class BOwTP(base_bo.BaseBO):
         assert str_sampling_method in constants.ALLOWED_SAMPLING_METHOD
 
         time_start = time.time()
+        Y_train_orig = Y_train
 
         if self.normalize_Y:
             if self.debug:
@@ -381,8 +382,8 @@ class BOwTP(base_bo.BaseBO):
         dict_info = {
             'next_points': next_points,
             'acquisitions': acquisitions,
-            'normalize_Y': self.normalize_Y,
-            'Y_train': Y_train,
+            'Y_original': Y_train_orig,
+            'Y_normalized': Y_train,
             'cov_X_X': cov_X_X,
             'inv_cov_X_X': inv_cov_X_X,
             'hyps': hyps,

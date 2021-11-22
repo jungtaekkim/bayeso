@@ -234,6 +234,7 @@ class BOwTrees(base_bo.BaseBO):
         assert str_sampling_method in constants.ALLOWED_SAMPLING_METHOD
 
         time_start = time.time()
+        Y_train_orig = Y_train
 
         if self.normalize_Y:
             if self.debug:
@@ -266,8 +267,8 @@ class BOwTrees(base_bo.BaseBO):
         dict_info = {
             'next_points': next_points,
             'acquisitions': acquisitions,
-            'normalize_Y': self.normalize_Y,
-            'Y_train': Y_train,
+            'Y_original': Y_train_orig,
+            'Y_normalized': Y_train,
             'trees': trees,
             'time_surrogate': time_end_surrogate - time_start_surrogate,
             'time_acq': time_end_acq - time_start_acq,

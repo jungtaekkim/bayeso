@@ -37,7 +37,7 @@ def test_normalize_min_max():
     with pytest.raises(AssertionError) as error:
         package_target.normalize_min_max(np.squeeze(Y))
 
-    Y = package_target.normalize_min_max(Y)
+    Y_normalized = package_target.normalize_min_max(Y)
     truth_Y = np.array([
         [6.0 / 15.0],
         [7.0 / 15.0],
@@ -49,7 +49,17 @@ def test_normalize_min_max():
         [7.0 / 15.0],
     ]) * constants.MULTIPLIER_RESPONSE
 
-    assert np.all(Y == truth_Y)
+    assert np.all(Y_normalized == truth_Y)
+
+    Y = np.array([
+        [10.0],
+        [10.0],
+        [10.0],
+    ])
+
+    Y_normalized = package_target.normalize_min_max(Y)
+
+    assert np.all(Y_normalized == Y)
 
 def test_get_best_acquisition_by_evaluation_typing():
     annos = package_target.get_best_acquisition_by_evaluation.__annotations__

@@ -361,14 +361,13 @@ class BOwGP(base_bo.BaseBO):
         assert str_mlm_method in constants.ALLOWED_MLM_METHOD
 
         time_start = time.time()
-        normalized_Y = False
+        Y_train_orig = Y_train
 
         if self.normalize_Y and str_mlm_method != 'converged':
             if self.debug:
                 self.logger.debug('Responses are normalized.')
 
             Y_train = utils_bo.normalize_min_max(Y_train)
-            normalized_Y = True
 
         time_start_surrogate = time.time()
 
@@ -460,8 +459,8 @@ class BOwGP(base_bo.BaseBO):
         dict_info = {
             'next_points': next_points,
             'acquisitions': acquisitions,
-            'normalize_Y': normalized_Y,
-            'Y_train': Y_train,
+            'Y_original': Y_train_orig,
+            'Y_normalized': Y_train,
             'cov_X_X': cov_X_X,
             'inv_cov_X_X': inv_cov_X_X,
             'hyps': hyps,
