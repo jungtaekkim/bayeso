@@ -142,7 +142,7 @@ def get_next_best_acquisition(points: np.ndarray, acquisitions: np.ndarray,
     assert points.shape[1] == points_evaluated.shape[1]
 
     for cur_point in points_evaluated:
-        ind_same, = np.where(np.linalg.norm(points - cur_point, axis=1) < 1e-2)
+        ind_same, = np.where(np.linalg.norm(points - cur_point, axis=1) < constants.TOLERANCE_DUPLICATED_ACQ)
         points = np.delete(points, ind_same, axis=0)
         acquisitions = np.delete(acquisitions, ind_same)
     cur_best = np.inf
