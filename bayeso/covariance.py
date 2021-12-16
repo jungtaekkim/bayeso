@@ -153,7 +153,7 @@ def get_kernel_cholesky(X_train: np.ndarray, hyps: dict, str_cov: str,
         `use_gradient` is False, gradients of kernel matrix would be None.
     :rtype: tuple of (numpy.ndarray, numpy.ndarray, numpy.ndarray)
 
-    :raises: AssertionError
+    :raises: AssertionError, ValueError
 
     """
 
@@ -168,11 +168,25 @@ def get_kernel_cholesky(X_train: np.ndarray, hyps: dict, str_cov: str,
     cov_X_X = cov_main(str_cov, X_train, X_train, hyps, True) \
         + hyps['noise']**2 * np.eye(X_train.shape[0])
     cov_X_X = (cov_X_X + cov_X_X.T) / 2.0
-    try:
-        lower = scipy.linalg.cholesky(cov_X_X, lower=True)
-    except np.linalg.LinAlgError: # pragma: no cover
-        cov_X_X += 1e-2 * np.eye(X_train.shape[0])
-        lower = scipy.linalg.cholesky(cov_X_X, lower=True)
+
+    lower = None
+
+    for jitter_cov in [0.0, 1e-4, 1e-2, 1e-1, 1e0, 1e1, 1e2]:
+        try:
+            cov_X_X_ = cov_X_X + jitter_cov * np.eye(X_train.shape[0])
+            lower = scipy.linalg.cholesky(cov_X_X_, lower=True)
+
+            # TODO: check this.
+            cov_X_X = cov_X_X_
+
+            if jitter_cov > 0.0:
+                print(jitter_cov, X_train.shape[0])
+            break
+        except np.linalg.LinAlgError: # pragma: no cover
+            pass
+
+    if lower is None:
+        raise ValueError('jitter_cov is not large enough.')
 
     if use_gradient:
         grad_cov_X_X = grad_cov_main(str_cov, X_train, X_train,
