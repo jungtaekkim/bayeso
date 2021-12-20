@@ -1,6 +1,6 @@
 #
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: October 13, 2021
+# last updated: December 20, 2021
 #
 """This file declares various default constants.
 If you would like to see the details, check out
