@@ -1,13 +1,13 @@
 About Bayesian Optimization
 ===========================
 
-Bayesian optimization is a **global optimization** strategy for **black-box** and **expensive-to-evaluate** functions.
-Generic Bayesian optimization follows these steps:
-
-.. image:: ../_static/steps/ei.*
+.. image:: ../_static/steps/ucb.*
     :width: 480
     :align: center
-    :alt: bo_with_gp_and_ei
+    :alt: bo_with_gp_and_ucb
+
+Bayesian optimization is a **global optimization** strategy for **black-box** and **expensive-to-evaluate** functions.
+Generic Bayesian optimization follows these steps:
 
 #. Build a **surrogate function** with historical inputs and their observations.
 #. Compute and maximize an **acquisition function**, defined by the outputs of surrogate function.
