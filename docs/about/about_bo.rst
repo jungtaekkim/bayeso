@@ -5,7 +5,7 @@ Bayesian optimization is a **global optimization** strategy for **black-box** an
 Generic Bayesian optimization follows these steps:
 
 .. image:: ../_static/steps/ei.*
-    :width: 320
+    :width: 480
     :align: center
     :alt: bo_with_gp_and_ei
 
