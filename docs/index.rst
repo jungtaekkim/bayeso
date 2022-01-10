@@ -8,7 +8,7 @@
 BayesO: A Bayesian optimization framework in Python
 ===================================================
 
-.. image:: ../_static/steps/ei.*
+.. image:: _static/steps/ei.*
     :width: 480
     :align: center
     :alt: bo_with_gp_and_ei
