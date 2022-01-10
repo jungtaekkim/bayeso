@@ -446,6 +446,20 @@ class BayesianOptimization:
         return X_, Y_, time_all_, time_surrogate_, time_acq_
 
     def print_info(self, num_init, seed):
+        """
+        It returns the optimization results and times consumed, given
+        inital inputs `X`.
+
+        :param num_init: the number of initial points.
+        :type num_init: int.
+        :param seed: a random seed.
+        :type seed: int.
+
+        :returns: None
+        :rtype: NoneType
+
+        """
+
         self.model_bo.logger.info('====================')
         self.model_bo.logger.info('range_X:\n%s', utils_logger.get_str_array(self.range_X))
         self.model_bo.logger.info('num_init: %d', num_init)
