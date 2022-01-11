@@ -1,6 +1,6 @@
 name: Pytest
 
-on: [push]
+on: [push, pull_request]
 
 jobs:
   build:
@@ -23,7 +23,6 @@ jobs:
       run: |
         coverage run -m pytest tests/common/
         coverage json
-        coveralls --service=github
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Execute Coveralls GitHub Action
