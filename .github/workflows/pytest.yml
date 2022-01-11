@@ -22,7 +22,7 @@ jobs:
     - name: Analyze the code with pytest
       run: |
         coverage run -m pytest tests/common/
-        coveralls
+        coveralls --service=github
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Execute Coveralls GitHub Action
