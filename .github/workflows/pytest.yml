@@ -17,15 +17,15 @@ jobs:
       - uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          pip install pytest-timeout
       - uses: lpenz/ghaction-pytest-cov@v1
       - uses: AndreMiras/coveralls-python-action@v20201129
         with:
           parallel: true
           flag-name: python-${{ matrix.python-version }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Install dependencies
-        run: |
-          pip install pytest-timeout
   coverage-finish:
     needs: test
     runs-on: ubuntu-latest
