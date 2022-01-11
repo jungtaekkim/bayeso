@@ -21,7 +21,7 @@ jobs:
         pip install .
     - name: Analyze the code with pytest
       run: |
-        coverage run -m pytest --cov-report xml --cov=myproj tests/common/
+        pytest --cov-report=xml --cov=. tests/common
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Execute Coveralls GitHub Action
