@@ -9,9 +9,9 @@ jobs:
       matrix:
         python-version: ["3.6", "3.7", "3.8", "3.9"]
     steps:
-    - env:
-      github-token: ${{ secrets.GITHUB_TOKEN }}
     - uses: actions/checkout@v2
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
       with:
