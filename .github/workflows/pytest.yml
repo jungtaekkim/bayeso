@@ -20,11 +20,11 @@ jobs:
       - name: Install dependencies
         run: |
           pip install pytest pytest-cov pytest-timeout
-      - name: Install requirements
+      - name: Run pytest
         run: |
           set -e
           pip install -e .[test]
-          pytest --cov tests/common
+          pytest tests/common --cov
         shell: bash
       - uses: AndreMiras/coveralls-python-action@v20201129
         with:
