@@ -19,11 +19,12 @@ jobs:
         python -m pip install --upgrade pip setuptools
         pip install coveralls pytest pytest-timeout
         pip install .
-    - name: Set up Coveralls GitHub Action
-      uses: coverallsapp/github-action@master
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
     - name: Analyze the code with pytest
       run: |
         coverage run -m pytest tests/common/
         coveralls
+    - name: Execute Coveralls GitHub Action
+      uses: coverallsapp/github-action@master
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+
