@@ -23,6 +23,9 @@ jobs:
           parallel: true
           flag-name: python-${{ matrix.python-version }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Install dependencies
+        run: |
+          pip install pytest-timeout
   coverage-finish:
     needs: test
     runs-on: ubuntu-latest
