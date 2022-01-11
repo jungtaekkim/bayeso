@@ -17,14 +17,15 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip setuptools
-        pip install coveralls pytest pytest-timeout
+        pip install coveralls pytest pytest-cov pytest-timeout
         pip install .
     - name: Analyze the code with pytest
       run: |
-        coverage run -m pytest tests/common/
+        coverage run -m pytest --cov-report xml --cov=myproj tests/common/
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Execute Coveralls GitHub Action
       uses: coverallsapp/github-action@master
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
+        path-to-lcov: coverage.xml
