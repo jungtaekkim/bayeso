@@ -24,9 +24,8 @@ jobs:
         coverage run -m pytest tests/common/
         coveralls
       env:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Execute Coveralls GitHub Action
       uses: coverallsapp/github-action@master
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
-
