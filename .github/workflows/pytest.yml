@@ -25,7 +25,7 @@ jobs:
           set -e
           pip install -e .[test]
           pytest --cov tests/common
-      shell: bash
+        shell: bash
       - uses: AndreMiras/coveralls-python-action@v20201129
         with:
           parallel: true
