@@ -67,11 +67,11 @@ def get_generic_trees(
     if replace_samples:
         assert ratio_sampling > 0.0
     else:
-        assert ratio_sampling > 0.0 and ratio_sampling <= 1.0
+        assert 0.0 < ratio_sampling <= 1.0
 
     list_trees = []
 
-    for ind in range(0, num_trees):
+    for _ in range(0, num_trees):
         X_, Y_ = trees_common.subsample(X, Y, ratio_sampling, replace_samples)
 
         root = trees_common._split(X_, Y_, num_features, split_random_location)

@@ -5,8 +5,8 @@
 """It defines a class of Bayesian optimization
 with Gaussian process regression."""
 
-import numpy as np
 import time
+import numpy as np
 from scipy.optimize import minimize
 try:
     from scipydirect import minimize as directminimize
@@ -98,7 +98,8 @@ class BOwGP(base_bo.BaseBO):
         str_surrogate = 'gp'
         assert str_surrogate in constants.ALLOWED_SURROGATE
 
-        super().__init__(range_X, str_surrogate, str_acq, str_optimizer_method_bo, normalize_Y, str_exp, debug)
+        super().__init__(range_X, str_surrogate, str_acq,
+            str_optimizer_method_bo, normalize_Y, str_exp, debug)
 
         self.str_cov = str_cov
         self.use_ard = use_ard
@@ -150,7 +151,8 @@ class BOwGP(base_bo.BaseBO):
                 next_point_x = next_point.x
                 list_next_point.append(next_point_x)
                 if self.debug:
-                    self.logger.debug('acquired sample: %s', utils_logger.get_str_array(next_point_x))
+                    self.logger.debug('acquired sample: %s',
+                        utils_logger.get_str_array(next_point_x))
         elif self.str_optimizer_method_bo == 'DIRECT': # pragma: no cover
             self.logger.debug('num_samples is ignored.')
 

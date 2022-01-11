@@ -4,9 +4,8 @@
 #
 """It defines an abstract class of Bayesian optimization."""
 
-import numpy as np
 import abc
-import time
+import numpy as np
 import qmcpy
 
 from bayeso import constants
@@ -78,9 +77,9 @@ class BaseBO(abc.ABC):
         self.debug = debug
 
         if str_exp is not None:
-            self.logger = utils_logger.get_logger('bo_w_{}_{}'.format(str_surrogate, str_exp))
+            self.logger = utils_logger.get_logger(f'bo_w_{str_surrogate}_{str_exp}')
         else:
-            self.logger = utils_logger.get_logger('bo_w_{}'.format(str_surrogate))
+            self.logger = utils_logger.get_logger(f'bo_w_{str_surrogate}')
 
     def _get_random_state(self, seed: constants.TYPING_UNION_INT_NONE):
         """
@@ -352,8 +351,6 @@ class BaseBO(abc.ABC):
 
         """
 
-        pass
-
     @abc.abstractmethod
     def compute_acquisitions(self): # pragma: no cover
         """
@@ -361,13 +358,9 @@ class BaseBO(abc.ABC):
 
         """
 
-        pass
-
     @abc.abstractmethod
     def optimize(self): # pragma: no cover
         """
         It is an abstract method.
 
         """
-
-        pass

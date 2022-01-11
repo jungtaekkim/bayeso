@@ -67,7 +67,7 @@ def thompson_sampling_gp_iteration(range_X: np.ndarray,
     str_cov = 'matern52'
     prior_mu = None
     str_optimizer_method_gp = 'BFGS'
-    use_ard = True
+#    use_ard = True
 
     if normalize_Y:
         if debug:
@@ -78,7 +78,9 @@ def thompson_sampling_gp_iteration(range_X: np.ndarray,
     model_bo = bo.BOwGP(range_X)
     X_test = model_bo.get_samples(str_sampling_method, num_samples=num_samples)
 
-    mu_Xs, _, Sigma_Xs = gp.predict_with_optimized_hyps(X, Y, X_test, str_cov=str_cov, str_optimizer_method=str_optimizer_method_gp, prior_mu=prior_mu, debug=debug)
+    mu_Xs, _, Sigma_Xs = gp.predict_with_optimized_hyps(X, Y, X_test,
+        str_cov=str_cov, str_optimizer_method=str_optimizer_method_gp,
+        prior_mu=prior_mu, debug=debug)
     mu_Xs = np.squeeze(mu_Xs, axis=1)
 
     Y_sampled = None
@@ -89,13 +91,11 @@ def thompson_sampling_gp_iteration(range_X: np.ndarray,
             Sigma_Xs_ = Sigma_Xs + jitter_cov * np.eye(Sigma_Xs.shape[0])
             Y_sampled = gp.sample_functions(mu_Xs, Sigma_Xs_, num_samples=1)
 
-            if debug and jitter_cov > 0.0:
-                logger.debug('final jitter: %.6f', jitter_cov)
             break
         except ValueError: # pragma: no cover
             pass
 
-    if Y_sampled is None:
+    if Y_sampled is None: # pragma: no cover
         raise ValueError('jitter_cov is not large enough.')
 
     ind_min = np.argmin(Y_sampled[:, 0])
@@ -132,7 +132,8 @@ def thompson_sampling_gp(range_X: np.ndarray,
     :param debug: flag for a debug option.
     :type debug: bool., optional
 
-    :returns: a tuple of query points and their evaluations. Shape: (`num_init` + `num_iter`, d), (`num_init` + `num_iter`, 1).
+    :returns: a tuple of query points and their evaluations.
+        Shape: (`num_init` + `num_iter`, d), (`num_init` + `num_iter`, 1).
     :rtype: (numpy.ndarray, numpy.ndarray)
 
     :raises: AssertionError
@@ -159,9 +160,10 @@ def thompson_sampling_gp(range_X: np.ndarray,
     Y = np.reshape(Y, (X.shape[0], 1))
 
     for ind_iter in range(0, num_iter):
-        print('{} iteration'.format(ind_iter + 1))
+        print(f'{ind_iter+1} iteration')
 
-        next_point = thompson_sampling_gp_iteration(range_X, X, Y, normalize_Y, str_sampling_method, num_samples, debug)
+        next_point = thompson_sampling_gp_iteration(range_X, X, Y,
+            normalize_Y, str_sampling_method, num_samples, debug)
 
         X = np.concatenate((X, [next_point]), axis=0)
         Y = np.vstack((Y, fun_target(next_point)))

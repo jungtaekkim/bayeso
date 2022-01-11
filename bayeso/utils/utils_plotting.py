@@ -496,7 +496,7 @@ def plot_minimum_vs_iter(minima: np.ndarray, list_str_label: constants.TYPING_LI
         fig_legend = pylab.figure(figsize=(3, 2))
         fig_legend.legend(lines, list_str_label, 'center', fancybox=False,
             edgecolor='black', fontsize=32)
-        fig_legend.savefig(os.path.join(path_save, 'legend_{}.pdf'.format(str_postfix)),
+        fig_legend.savefig(os.path.join(path_save, f'legend_{str_postfix}.pdf'),
             format='pdf', transparent=True, bbox_inches='tight')
 
     _show_figure(pause_figure, time_pause)
@@ -652,7 +652,7 @@ def plot_minimum_vs_time(times: np.ndarray, minima: np.ndarray,
         fig_legend = pylab.figure(figsize=(3, 2))
         fig_legend.legend(lines, list_str_label, 'center', fancybox=False,
             edgecolor='black', fontsize=32)
-        fig_legend.savefig(os.path.join(path_save, 'legend_{}.pdf'.format(str_postfix)),
+        fig_legend.savefig(os.path.join(path_save, f'legend_{str_postfix}.pdf'),
             format='pdf', transparent=True, bbox_inches='tight')
 
     _show_figure(pause_figure, time_pause)

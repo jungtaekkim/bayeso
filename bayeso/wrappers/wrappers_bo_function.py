@@ -123,7 +123,8 @@ def run_single_round_with_all_initial_information(model_bo: bo.BO,
     time_end = time.time()
 
     if model_bo.debug:
-        model_bo.logger.debug('overall time consumed in single BO round: %.4f sec.', time_end - time_start)
+        model_bo.logger.debug('overall time consumed in single BO round: %.4f sec.',
+            time_end - time_start)
 
     time_all_final = np.array(time_all_final)
     time_surrogate_final = np.array(time_surrogate_final)

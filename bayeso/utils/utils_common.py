@@ -104,12 +104,10 @@ def get_minimum(Y_all: np.ndarray, num_init: int) -> constants.TYPING_TUPLE_THRE
         minimum_best = np.inf
         list_minima_ = []
         for y in by[:num_init]:
-            if minimum_best > y:
-                minimum_best = y
+            minimum_best = min(minimum_best, y)
         list_minima_.append(minimum_best)
         for y in by[num_init:]:
-            if minimum_best > y:
-                minimum_best = y
+            minimum_best = min(minimum_best, y)
             list_minima_.append(minimum_best)
         list_minima.append(list_minima_)
 

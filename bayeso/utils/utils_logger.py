@@ -62,9 +62,9 @@ def get_str_array_1d(arr: np.ndarray) -> str:
 
     for elem in arr:
         if isinstance(elem, float):
-            elem_ = '{:.3f}'.format(elem)
+            elem_ = f'{elem:.3f}'
         else:
-            elem_ = '{}'.format(elem)
+            elem_ = f'{elem}'
 
         list_str.append(elem_)
 
@@ -173,11 +173,11 @@ def get_str_hyps(hyps: dict) -> str:
         if isinstance(val, np.ndarray):
             str_val = get_str_array(val)
         elif isinstance(val, float):
-            str_val = '{:.3f}'.format(val)
+            str_val = f'{val:.3f}'
         else:
-            str_val = '{}'.format(val)
+            str_val = f'{val}'
 
-        list_str.append("'{}'".format(key) + ': ' + str_val)
+        list_str.append(f"'{key}': {str_val}")
 
     str_hyps = ', '.join(list_str)
     str_hyps = '{' + str_hyps + '}'

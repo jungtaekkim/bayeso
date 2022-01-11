@@ -5,14 +5,13 @@
 """It defines a class of Bayesian optimization
 with tree-based surrogate models."""
 
-import numpy as np
 import time
+import numpy as np
 
 from bayeso.bo import base_bo
 from bayeso.trees import trees_common
 from bayeso import constants
 from bayeso.utils import utils_bo
-from bayeso.utils import utils_logger
 
 
 class BOwTrees(base_bo.BaseBO):
@@ -64,7 +63,8 @@ class BOwTrees(base_bo.BaseBO):
         assert str_acq in constants.ALLOWED_BO_ACQ
         assert str_optimizer_method_bo in constants.ALLOWED_OPTIMIZER_METHOD_BO_TREES
 
-        super().__init__(range_X, str_surrogate, str_acq, str_optimizer_method_bo, normalize_Y, str_exp, debug)
+        super().__init__(range_X, str_surrogate, str_acq,
+            str_optimizer_method_bo, normalize_Y, str_exp, debug)
 
     def get_trees(self, X_train, Y_train,
         num_trees=100,

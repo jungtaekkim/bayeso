@@ -58,7 +58,7 @@ def get_hyps(str_cov: str, dim: int,
     assert isinstance(use_ard, bool)
     assert str_cov in constants.ALLOWED_COV
 
-    hyps = dict()
+    hyps = {}
     hyps['noise'] = constants.GP_NOISE
 
     if not use_gp:
@@ -225,7 +225,7 @@ def restore_hyps(str_cov: str, hyps: np.ndarray,
     assert len(hyps.shape) == 1
     assert str_cov in constants.ALLOWED_COV
 
-    dict_hyps = dict()
+    dict_hyps = {}
     if not fix_noise:
         dict_hyps['noise'] = hyps[0]
         ind_start = 1
@@ -390,6 +390,6 @@ def check_str_cov(str_fun: str, str_cov: str, shape_X1: tuple,
         if shape_X2 is not None:
             assert len(shape_X2) == 3
     elif str_cov in constants.ALLOWED_COV: # pragma: no cover
-        raise ValueError('{}: missing conditions for str_cov.'.format(str_fun))
+        raise ValueError(f'{str_fun}: missing conditions for str_cov.')
     else:
-        raise ValueError('{}: invalid str_cov.'.format(str_fun))
+        raise ValueError(f'{str_fun}: invalid str_cov.')

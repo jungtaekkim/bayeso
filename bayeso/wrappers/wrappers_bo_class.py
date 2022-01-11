@@ -369,7 +369,8 @@ class BayesianOptimization:
             time_acq = dict_info['time_acq']
 
             if self.debug:
-                self.model_bo.logger.debug('next_sample: %s', utils_logger.get_str_array(next_sample))
+                self.model_bo.logger.debug('next_sample: %s',
+                    utils_logger.get_str_array(next_sample))
 
             next_sample = self._get_next_best_sample(next_sample, X_, next_samples, acq_vals)
 
@@ -391,7 +392,8 @@ class BayesianOptimization:
         time_end = time.time()
 
         if self.debug:
-            self.model_bo.logger.debug('overall time consumed in single BO round: %.4f sec.', time_end - time_start)
+            self.model_bo.logger.debug('overall time consumed in single BO round: %.4f sec.',
+                time_end - time_start)
 
         time_all_ = np.array(time_all_)
         time_surrogate_ = np.array(time_surrogate_)
@@ -480,7 +482,8 @@ class BayesianOptimization:
         self.model_bo.logger.info('str_optimizer_method_bo: %s', self.str_optimizer_method_bo)
         if self.str_surrogate in ['gp']:
             self.model_bo.logger.info('str_mlm_method: %s', self.str_mlm_method)
-            self.model_bo.logger.info('str_modelselection_method: %s', self.str_modelselection_method)
+            self.model_bo.logger.info('str_modelselection_method: %s',
+                self.str_modelselection_method)
         self.model_bo.logger.info('num_samples_ao: %d', self.num_samples_ao)
         self.model_bo.logger.info('seed: %s', seed)
         self.model_bo.logger.info('debug: %s', self.debug)
