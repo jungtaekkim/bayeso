@@ -496,7 +496,7 @@ def plot_minimum_vs_iter(minima: np.ndarray, list_str_label: constants.TYPING_LI
         fig_legend = pylab.figure(figsize=(3, 2))
         fig_legend.legend(lines, list_str_label, 'center', fancybox=False,
             edgecolor='black', fontsize=32)
-        fig_legend.savefig(os.path.join(path_save, 'legend_{}.pdf'.format(str_postfix)),
+        fig_legend.savefig(os.path.join(path_save, f'legend_{str_postfix}.pdf'),
             format='pdf', transparent=True, bbox_inches='tight')
 
     _show_figure(pause_figure, time_pause)
@@ -652,7 +652,7 @@ def plot_minimum_vs_time(times: np.ndarray, minima: np.ndarray,
         fig_legend = pylab.figure(figsize=(3, 2))
         fig_legend.legend(lines, list_str_label, 'center', fancybox=False,
             edgecolor='black', fontsize=32)
-        fig_legend.savefig(os.path.join(path_save, 'legend_{}.pdf'.format(str_postfix)),
+        fig_legend.savefig(os.path.join(path_save, f'legend_{str_postfix}.pdf'),
             format='pdf', transparent=True, bbox_inches='tight')
 
     _show_figure(pause_figure, time_pause)
@@ -768,21 +768,18 @@ def plot_bo_step(X_train: np.ndarray, Y_train: np.ndarray,
         if X_train.shape[0] > num_init:
             ax.plot(X_train[:num_init, :], Y_train[:num_init, :], 'x',
                 c='saddlebrown', ms=14, markeredgewidth=6)
-            ax.plot(X_train[num_init:X_train.shape[0]-1, :],
-                Y_train[num_init:X_train.shape[0]-1, :], 'rx',
+            ax.plot(X_train[num_init:-1, :], Y_train[num_init:-1, :], 'rx',
                 ms=14, markeredgewidth=6)
-            ax.plot(X_train[X_train.shape[0]-1, :],
-                Y_train[X_train.shape[0]-1, :], c='orange', marker='+',
-                ms=18, markeredgewidth=6)
+            ax.plot(X_train[-1, :], Y_train[-1, :],
+                c='orange', marker='+', ms=18, markeredgewidth=6)
         else:
             ax.plot(X_train, Y_train, 'x', c='saddlebrown', ms=14,
                 markeredgewidth=6)
     else:
-        ax.plot(X_train[:X_train.shape[0]-1, :],
-            Y_train[:X_train.shape[0]-1, :], 'rx', ms=14, markeredgewidth=6)
-        ax.plot(X_train[X_train.shape[0]-1, :],
-            Y_train[X_train.shape[0]-1, :], c='orange', marker='+', ms=18,
-            markeredgewidth=6)
+        ax.plot(X_train[:-1, :], Y_train[:-1, :],
+            'rx', ms=14, markeredgewidth=6)
+        ax.plot(X_train[-1, :], Y_train[-1, :],
+            c='orange', marker='+', ms=18, markeredgewidth=6)
 
     _set_ax_config(ax, str_x_axis, str_y_axis, xlim_min=np.min(X_test),
         xlim_max=np.max(X_test), draw_zero_axis=draw_zero_axis)
@@ -898,7 +895,7 @@ def plot_bo_step_with_acq(X_train: np.ndarray, Y_train: np.ndarray,
         return
     _set_font_config(use_tex)
 
-    _, (ax1, ax2) = plt.subplots(2, 1, gridspec_kw = {'height_ratios':[3, 1]})
+    _, (ax1, ax2) = plt.subplots(2, 1, figsize=(8, 6), gridspec_kw={'height_ratios':[3, 1]})
 
     ax1.plot(X_test, Y_test, 'g', linewidth=4)
     ax1.plot(X_test, mean_test, 'b', linewidth=4)
@@ -911,20 +908,17 @@ def plot_bo_step_with_acq(X_train: np.ndarray, Y_train: np.ndarray,
         if X_train.shape[0] > num_init:
             ax1.plot(X_train[:num_init, :], Y_train[:num_init, :], 'x',
                 c='saddlebrown', ms=14, markeredgewidth=6)
-            ax1.plot(X_train[num_init:X_train.shape[0]-1, :],
-                Y_train[num_init:X_train.shape[0]-1, :], 'rx',
+            ax1.plot(X_train[num_init:-1, :], Y_train[num_init:-1, :], 'rx',
                 ms=14, markeredgewidth=6)
-            ax1.plot(X_train[X_train.shape[0]-1, :],
-                Y_train[X_train.shape[0]-1, :],
+            ax1.plot(X_train[-1, :], Y_train[-1, :],
                 c='orange', marker='+', ms=18, markeredgewidth=6)
         else:
             ax1.plot(X_train, Y_train, 'x', c='saddlebrown', ms=14, markeredgewidth=6)
     else:
-        ax1.plot(X_train[:X_train.shape[0]-1, :],
-            Y_train[:X_train.shape[0]-1, :], 'rx', ms=14, markeredgewidth=6)
-        ax1.plot(X_train[X_train.shape[0]-1, :],
-            Y_train[X_train.shape[0]-1, :], c='orange', marker='+',
-            ms=18, markeredgewidth=6)
+        ax1.plot(X_train[:-1, :], Y_train[:-1, :],
+            'rx', ms=14, markeredgewidth=6)
+        ax1.plot(X_train[-1, :], Y_train[-1, :],
+            c='orange', marker='+', ms=18, markeredgewidth=6)
 
     _set_ax_config(ax1, None, str_y_axis, xlim_min=np.min(X_test),
         xlim_max=np.max(X_test), draw_zero_axis=draw_zero_axis)

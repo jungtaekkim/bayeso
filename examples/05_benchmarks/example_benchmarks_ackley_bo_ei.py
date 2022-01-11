@@ -6,9 +6,8 @@ import numpy as np
 import os
 
 from bayeso import bo
-from bayeso_benchmarks.inf_dim_ackley import Ackley
+from bayeso_benchmarks import Ackley
 from bayeso import wrappers
-#from bayeso.wrappers import wrappers_bo_function
 from bayeso.utils import utils_bo
 from bayeso.utils import utils_plotting
 

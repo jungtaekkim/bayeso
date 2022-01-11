@@ -9,6 +9,7 @@ import numpy as np
 
 from bayeso.bo import bo_w_gp as package_target
 from bayeso import covariance
+from bayeso.utils import utils_bo
 from bayeso.utils import utils_covariance
 
 
@@ -73,6 +74,8 @@ def test_load_bo():
         model_bo = BO(arr_range_1, str_modelselection_method=1)
     with pytest.raises(AssertionError) as error:
         model_bo = BO(arr_range_1, str_modelselection_method='abc')
+    with pytest.raises(AssertionError) as error:
+        model_bo = BO(arr_range_1, str_exp=123)
     with pytest.raises(AssertionError) as error:
         model_bo = BO(arr_range_1, debug=1)
 
@@ -636,83 +639,6 @@ def test_optimize_str_modelselection_method():
     assert next_points.shape[1] == dim_X
     assert next_points.shape[0] == acquisitions.shape[0]
 
-def test_optimize_normalize_Y():
-    np.random.seed(42)
-    arr_range = np.array([
-        [0.0, 10.0],
-        [-2.0, 2.0],
-        [-5.0, 5.0],
-    ])
-    dim_X = arr_range.shape[0]
-    num_X = 1
-    X = np.random.randn(num_X, dim_X)
-    Y = np.random.randn(num_X, 1)
-
-    model_bo = BO(arr_range, str_acq='ei', normalize_Y=True)
-    next_point, dict_info = model_bo.optimize(X, Y)
-    next_points = dict_info['next_points']
-    acquisitions = dict_info['acquisitions']
-    cov_X_X = dict_info['cov_X_X']
-    inv_cov_X_X = dict_info['inv_cov_X_X']
-    hyps = dict_info['hyps']
-    time_overall = dict_info['time_overall']
-    time_surrogate = dict_info['time_surrogate']
-    time_acq = dict_info['time_acq']
-
-    assert isinstance(next_point, np.ndarray)
-    assert isinstance(next_points, np.ndarray)
-    assert isinstance(acquisitions, np.ndarray)
-    assert isinstance(cov_X_X, np.ndarray)
-    assert isinstance(inv_cov_X_X, np.ndarray)
-    assert isinstance(hyps, dict)
-    assert isinstance(time_overall, float)
-    assert isinstance(time_surrogate, float)
-    assert isinstance(time_acq, float)
-    assert len(next_point.shape) == 1
-    assert len(next_points.shape) == 2
-    assert len(acquisitions.shape) == 1
-    assert next_point.shape[0] == dim_X
-    assert next_points.shape[1] == dim_X
-    assert next_points.shape[0] == acquisitions.shape[0]
-
-    X = np.array([
-        [3.0, 0.0, 1.0],
-        [2.0, -1.0, 4.0],
-        [9.0, 1.5, 3.0],
-    ])
-    Y = np.array([
-        [100.0],
-        [100.0],
-        [100.0],
-    ])
-
-    model_bo = BO(arr_range, str_acq='ei', normalize_Y=True)
-    next_point, dict_info = model_bo.optimize(X, Y)
-    next_points = dict_info['next_points']
-    acquisitions = dict_info['acquisitions']
-    cov_X_X = dict_info['cov_X_X']
-    inv_cov_X_X = dict_info['inv_cov_X_X']
-    hyps = dict_info['hyps']
-    time_overall = dict_info['time_overall']
-    time_surrogate = dict_info['time_surrogate']
-    time_acq = dict_info['time_acq']
-
-    assert isinstance(next_point, np.ndarray)
-    assert isinstance(next_points, np.ndarray)
-    assert isinstance(acquisitions, np.ndarray)
-    assert isinstance(cov_X_X, np.ndarray)
-    assert isinstance(inv_cov_X_X, np.ndarray)
-    assert isinstance(hyps, dict)
-    assert isinstance(time_overall, float)
-    assert isinstance(time_surrogate, float)
-    assert isinstance(time_acq, float)
-    assert len(next_point.shape) == 1
-    assert len(next_points.shape) == 2
-    assert len(acquisitions.shape) == 1
-    assert next_point.shape[0] == dim_X
-    assert next_points.shape[1] == dim_X
-    assert next_points.shape[0] == acquisitions.shape[0]
-
 def test_optimize_use_ard():
     np.random.seed(42)
     arr_range = np.array([
@@ -794,6 +720,35 @@ def test_optimize_use_ard():
     assert len(hyps['lengthscales'].shape) == 1
     assert hyps['lengthscales'].shape[0] == 3
 
+def test_optimize_normalize_Y():
+    np.random.seed(42)
+    arr_range = np.array([
+        [0.0, 10.0],
+        [-2.0, 2.0],
+        [-5.0, 5.0],
+    ])
+    dim_X = arr_range.shape[0]
+    num_X = 5
+    X = np.random.randn(num_X, dim_X)
+    Y = np.random.randn(num_X, 1)
+
+    model_bo = BO(arr_range, normalize_Y=True)
+    next_point, dict_info = model_bo.optimize(X, Y)
+    Y_original = dict_info['Y_original']
+    Y_normalized = dict_info['Y_normalized']
+
+    assert np.all(Y == Y_original)
+    assert np.all(Y != Y_normalized)
+    assert np.all(utils_bo.normalize_min_max(Y) == Y_normalized)
+
+    model_bo = BO(arr_range, normalize_Y=False)
+    next_point, dict_info = model_bo.optimize(X, Y)
+    Y_original = dict_info['Y_original']
+    Y_normalized = dict_info['Y_normalized']
+
+    assert np.all(Y == Y_normalized)
+    assert np.all(Y == Y_original)
+
 def test_compute_posteriors():
     np.random.seed(42)
     arr_range_1 = np.array([
@@ -849,7 +804,7 @@ def test_compute_posteriors_set():
     X = np.random.randn(num_X, num_instances, dim_X)
     Y = np.random.randn(num_X, 1)
 
-    model_bo = BO(arr_range_1, str_acq='pi', str_cov='set_se')
+    model_bo = BO(arr_range_1, str_acq='pi', str_cov='set_se', str_exp=None)
     hyps = utils_covariance.get_hyps(model_bo.str_cov, dim=dim_X, use_ard=model_bo.use_ard)
 
     cov_X_X, inv_cov_X_X, _ = covariance.get_kernel_inverse(X, hyps, model_bo.str_cov)
@@ -905,7 +860,7 @@ def test_compute_acquisitions():
     X = np.random.randn(num_X, dim_X)
     Y = np.random.randn(num_X, 1)
 
-    model_bo = BO(arr_range_1, str_acq='pi')
+    model_bo = BO(arr_range_1, str_acq='pi', str_exp='test')
     hyps = utils_covariance.get_hyps(model_bo.str_cov, dim=dim_X, use_ard=model_bo.use_ard)
 
     cov_X_X, inv_cov_X_X, _ = covariance.get_kernel_inverse(X, hyps, model_bo.str_cov)
@@ -1023,7 +978,7 @@ def test_compute_acquisitions_set():
     X = np.random.randn(num_X, num_instances, dim_X)
     Y = np.random.randn(num_X, 1)
 
-    model_bo = BO(arr_range_1, str_acq='pi', str_cov='set_se')
+    model_bo = BO(arr_range_1, str_acq='pi', str_cov='set_se', str_exp='test')
     hyps = utils_covariance.get_hyps(model_bo.str_cov, dim=dim_X, use_ard=model_bo.use_ard)
 
     cov_X_X, inv_cov_X_X, _ = covariance.get_kernel_inverse(X, hyps, model_bo.str_cov)

@@ -108,3 +108,4 @@ ENV/
 __MACOSX/
 results/
 figures/
+wandb/

@@ -29,7 +29,7 @@ def main():
     Y_train = fun_target(X_train)
     num_init = X_train.shape[0]
 
-    model_bo = bo_w_gp.BOwGP(np.array([[-6., 6.]]), str_acq=str_acq, debug=debug)
+    model_bo = bo_w_gp.BOwGP(np.array([[-6., 6.]]), str_acq=str_acq, normalize_Y=False, debug=debug)
     X_test = np.linspace(-6, 6, 400)
     X_test = np.reshape(X_test, (400, 1))
 
@@ -39,11 +39,13 @@ def main():
         inv_cov_X_X = dict_info['inv_cov_X_X']
         hyps = dict_info['hyps']
 
+        mu_test, sigma_test = model_bo.compute_posteriors(X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps)
         acq_test = model_bo.compute_acquisitions(X_test, X_train, Y_train, cov_X_X, inv_cov_X_X, hyps)
 
-        mu_test, sigma_test, Sigma_test = gp.predict_with_cov(X_train, Y_train, X_test, cov_X_X, inv_cov_X_X, hyps)
-
+        mu_test = np.expand_dims(mu_test, axis=1)
+        sigma_test = np.expand_dims(sigma_test, axis=1)
         acq_test = np.expand_dims(acq_test, axis=1)
+
         X_train = np.vstack((X_train, next_x))
         Y_train = fun_target(X_train)
 

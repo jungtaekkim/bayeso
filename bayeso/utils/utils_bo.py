@@ -24,6 +24,29 @@ logger = utils_logger.get_logger('utils_bo')
 
 
 @utils_common.validate_types
+def normalize_min_max(Y: np.ndarray
+) -> np.ndarray:
+    """
+    It normalizes `Y` by min-max normalization.
+
+    :param Y: responses. Shape: (n, 1).
+    :type Y: numpy.ndarray
+
+    :returns: normalized responses. Shape: (n, 1).
+    :rtype: numpy.ndarray
+
+    :raises: AssertionError
+
+    """
+
+    assert isinstance(Y, np.ndarray)
+    assert len(Y.shape) == 2
+
+    if np.max(Y) != np.min(Y):
+        Y = (Y - np.min(Y)) / (np.max(Y) - np.min(Y)) * constants.MULTIPLIER_RESPONSE
+    return Y
+
+@utils_common.validate_types
 def get_best_acquisition_by_evaluation(initials: np.ndarray,
     fun_objective: constants.TYPING_CALLABLE
 ) -> np.ndarray:
@@ -119,7 +142,8 @@ def get_next_best_acquisition(points: np.ndarray, acquisitions: np.ndarray,
     assert points.shape[1] == points_evaluated.shape[1]
 
     for cur_point in points_evaluated:
-        ind_same, = np.where(np.linalg.norm(points - cur_point, axis=1) < 1e-2)
+        ind_same, = np.where(np.linalg.norm(points - cur_point,
+            axis=1) < constants.TOLERANCE_DUPLICATED_ACQ)
         points = np.delete(points, ind_same, axis=0)
         acquisitions = np.delete(acquisitions, ind_same)
     cur_best = np.inf

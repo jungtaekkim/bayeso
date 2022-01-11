@@ -4,9 +4,8 @@
 #
 """It defines an abstract class of Bayesian optimization."""
 
-import numpy as np
 import abc
-import time
+import numpy as np
 import qmcpy
 
 from bayeso import constants
@@ -30,6 +29,8 @@ class BaseBO(abc.ABC):
     :type str_optimizer_method_bo: str.
     :param normalize_Y: flag for normalizing outputs.
     :type normalize_Y: bool.
+    :param str_exp: the name of experiment.
+    :type str_exp: str.
     :param debug: flag for printing log messages.
     :type debug: bool.
 
@@ -41,6 +42,7 @@ class BaseBO(abc.ABC):
         str_acq: str,
         str_optimizer_method_bo: str,
         normalize_Y: bool,
+        str_exp: str,
         debug: bool
     ):
         """
@@ -54,6 +56,7 @@ class BaseBO(abc.ABC):
         assert isinstance(str_optimizer_method_bo, str)
         assert isinstance(normalize_Y, bool)
         assert isinstance(debug, bool)
+        assert isinstance(str_exp, (type(None), str))
         assert len(range_X.shape) == 2
         assert range_X.shape[1] == 2
         assert (range_X[:, 0] <= range_X[:, 1]).all()
@@ -70,8 +73,13 @@ class BaseBO(abc.ABC):
         self.str_optimizer_method_bo = utils_bo.check_optimizer_method_bo(
             str_optimizer_method_bo, range_X.shape[0], debug)
         self.normalize_Y = normalize_Y
-        self.logger = utils_logger.get_logger('bo_w_{}'.format(str_surrogate))
+        self.str_exp = str_exp
         self.debug = debug
+
+        if str_exp is not None:
+            self.logger = utils_logger.get_logger(f'bo_w_{str_surrogate}_{str_exp}')
+        else:
+            self.logger = utils_logger.get_logger(f'bo_w_{str_surrogate}')
 
     def _get_random_state(self, seed: constants.TYPING_UNION_INT_NONE):
         """
@@ -343,8 +351,6 @@ class BaseBO(abc.ABC):
 
         """
 
-        pass
-
     @abc.abstractmethod
     def compute_acquisitions(self): # pragma: no cover
         """
@@ -352,13 +358,9 @@ class BaseBO(abc.ABC):
 
         """
 
-        pass
-
     @abc.abstractmethod
     def optimize(self): # pragma: no cover
         """
         It is an abstract method.
 
         """
-
-        pass

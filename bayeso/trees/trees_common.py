@@ -4,9 +4,9 @@
 #
 """It defines a common function for tree-based surrogates."""
 
-import numpy as np
 import multiprocessing
 import itertools
+import numpy as np
 
 from bayeso import constants
 from bayeso.utils import utils_common
@@ -143,7 +143,7 @@ def subsample(
     if replace_samples:
         assert ratio_sampling > 0.0
     else:
-        assert ratio_sampling > 0.0 and ratio_sampling <= 1.0
+        assert 0.0 < ratio_sampling <= 1.0
 
     num_X = X.shape[0]
     num_samples = int(num_X * ratio_sampling)
@@ -264,7 +264,7 @@ def _split(
                 val_to_split = X[0, dim_to_split]
 
             left_right = _split_left_right(X, Y, dim_to_split, val_to_split)
-            left, right = left_right
+#            left, right = left_right
             score = mse(left_right)
 
             if score < cur_score:
@@ -321,7 +321,7 @@ def split(
     assert cur_depth > 0
 
     left, right = node['left_right']
-    del(node['left_right'])
+    del node['left_right']
 
     if not left or not right: # pragma: no cover
         node['left'] = node['right'] = left + right
@@ -339,7 +339,8 @@ def split(
         Y_left = get_outputs_from_leaf(left)
 
         node['left'] = _split(X_left, Y_left, num_features, split_random_location)
-        split(node['left'], depth_max, size_min_leaf, num_features, split_random_location, cur_depth + 1)
+        split(node['left'], depth_max, size_min_leaf, num_features,
+            split_random_location, cur_depth + 1)
 
     ##
     if len(right) <= size_min_leaf:
@@ -349,7 +350,8 @@ def split(
         Y_right = get_outputs_from_leaf(right)
 
         node['right'] = _split(X_right, Y_right, num_features, split_random_location)
-        split(node['right'], depth_max, size_min_leaf, num_features, split_random_location, cur_depth + 1)
+        split(node['right'], depth_max, size_min_leaf, num_features,
+            split_random_location, cur_depth + 1)
 
 @utils_common.validate_types
 def _predict_by_tree(bx: np.ndarray, tree: dict) -> constants.TYPING_TUPLE_TWO_FLOATS:
@@ -376,15 +378,15 @@ def _predict_by_tree(bx: np.ndarray, tree: dict) -> constants.TYPING_TUPLE_TWO_F
     if bx[tree['index']] < tree['value']:
         if isinstance(tree['left'], dict):
             return _predict_by_tree(bx, tree['left'])
-        else:
-            cur_Y = get_outputs_from_leaf(tree['left'])
-            return np.mean(cur_Y), np.std(cur_Y)
-    else:
-        if isinstance(tree['right'], dict):
-            return _predict_by_tree(bx, tree['right'])
-        else:
-            cur_Y = get_outputs_from_leaf(tree['right'])
-            return np.mean(cur_Y), np.std(cur_Y)
+
+        cur_Y = get_outputs_from_leaf(tree['left'])
+        return np.mean(cur_Y), np.std(cur_Y)
+
+    if isinstance(tree['right'], dict):
+        return _predict_by_tree(bx, tree['right'])
+
+    cur_Y = get_outputs_from_leaf(tree['right'])
+    return np.mean(cur_Y), np.std(cur_Y)
 
 @utils_common.validate_types
 def _predict_by_trees(bx: np.ndarray, list_trees: list) -> constants.TYPING_TUPLE_TWO_FLOATS:
@@ -535,8 +537,7 @@ def compute_sigma(
     sigma = np.mean(preds_mu_leaf**2 + preds_sigma_leaf_**2)
     sigma -= np.mean(preds_mu_leaf)**2
 
-    if sigma < 0.0: # pragma: no cover
-        sigma = 0.0
+    sigma = max(sigma, 0.0)
     sigma = np.sqrt(sigma)
 
     return sigma

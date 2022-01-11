@@ -9,6 +9,7 @@ import numpy as np
 
 from bayeso.bo import bo_w_trees as package_target
 from bayeso.trees import trees_random_forest
+from bayeso.utils import utils_bo
 
 
 BO = package_target.BOwTrees
@@ -54,6 +55,8 @@ def test_load_bo():
         model_bo = BO(arr_range_1, str_optimizer_method_bo=1)
     with pytest.raises(AssertionError) as error:
         model_bo = BO(arr_range_1, str_optimizer_method_bo='abc')
+    with pytest.raises(AssertionError) as error:
+        model_bo = BO(arr_range_1, str_exp=123)
     with pytest.raises(AssertionError) as error:
         model_bo = BO(arr_range_1, debug=1)
 
@@ -465,68 +468,28 @@ def test_optimize_normalize_Y():
         [-5.0, 5.0],
     ])
     dim_X = arr_range.shape[0]
-    num_X = 1
+    num_X = 5
     X = np.random.randn(num_X, dim_X)
     Y = np.random.randn(num_X, 1)
 
     num_samples = 10
 
-    model_bo = BO(arr_range, str_acq='ei', normalize_Y=True)
+    model_bo = BO(arr_range, normalize_Y=True, str_exp=None)
     next_point, dict_info = model_bo.optimize(X, Y, num_samples=num_samples)
-    next_points = dict_info['next_points']
-    acquisitions = dict_info['acquisitions']
-    trees = dict_info['trees']
-    time_overall = dict_info['time_overall']
-    time_surrogate = dict_info['time_surrogate']
-    time_acq = dict_info['time_acq']
+    Y_original = dict_info['Y_original']
+    Y_normalized = dict_info['Y_normalized']
 
-    assert isinstance(next_point, np.ndarray)
-    assert isinstance(next_points, np.ndarray)
-    assert isinstance(acquisitions, np.ndarray)
-    assert isinstance(trees, list)
-    assert isinstance(time_overall, float)
-    assert isinstance(time_surrogate, float)
-    assert isinstance(time_acq, float)
-    assert len(next_point.shape) == 1
-    assert len(next_points.shape) == 2
-    assert len(acquisitions.shape) == 1
-    assert next_point.shape[0] == dim_X
-    assert next_points.shape[1] == dim_X
-    assert next_points.shape[0] == acquisitions.shape[0]
+    assert np.all(Y == Y_original)
+    assert np.all(Y != Y_normalized)
+    assert np.all(utils_bo.normalize_min_max(Y) == Y_normalized)
 
-    X = np.array([
-        [3.0, 0.0, 1.0],
-        [2.0, -1.0, 4.0],
-        [9.0, 1.5, 3.0],
-    ])
-    Y = np.array([
-        [100.0],
-        [100.0],
-        [100.0],
-    ])
-
-    model_bo = BO(arr_range, str_acq='ei', normalize_Y=True)
+    model_bo = BO(arr_range, normalize_Y=False, str_exp=None)
     next_point, dict_info = model_bo.optimize(X, Y, num_samples=num_samples)
-    next_points = dict_info['next_points']
-    acquisitions = dict_info['acquisitions']
-    trees = dict_info['trees']
-    time_overall = dict_info['time_overall']
-    time_surrogate = dict_info['time_surrogate']
-    time_acq = dict_info['time_acq']
+    Y_original = dict_info['Y_original']
+    Y_normalized = dict_info['Y_normalized']
 
-    assert isinstance(next_point, np.ndarray)
-    assert isinstance(next_points, np.ndarray)
-    assert isinstance(acquisitions, np.ndarray)
-    assert isinstance(trees, list)
-    assert isinstance(time_overall, float)
-    assert isinstance(time_surrogate, float)
-    assert isinstance(time_acq, float)
-    assert len(next_point.shape) == 1
-    assert len(next_points.shape) == 2
-    assert len(acquisitions.shape) == 1
-    assert next_point.shape[0] == dim_X
-    assert next_points.shape[1] == dim_X
-    assert next_points.shape[0] == acquisitions.shape[0]
+    assert np.all(Y == Y_normalized)
+    assert np.all(Y == Y_original)
 
 def test_compute_posteriors():
     np.random.seed(42)
@@ -540,7 +503,7 @@ def test_compute_posteriors():
     X = np.random.randn(num_X, dim_X)
     Y = np.random.randn(num_X, 1)
 
-    model_bo = BO(arr_range_1, str_acq='ei')
+    model_bo = BO(arr_range_1, str_acq='ei', str_exp='test')
 
     num_trees = 10
     depth_max = 5
@@ -578,7 +541,7 @@ def test_compute_acquisitions():
     X = np.random.randn(num_X, dim_X)
     Y = np.random.randn(num_X, 1)
 
-    model_bo = BO(arr_range_1, str_acq='pi')
+    model_bo = BO(arr_range_1, str_acq='pi', str_exp='test')
 
     num_trees = 10
     depth_max = 5

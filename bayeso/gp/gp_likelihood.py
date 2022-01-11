@@ -13,9 +13,6 @@ from bayeso import constants
 from bayeso.utils import utils_gp
 from bayeso.utils import utils_covariance
 from bayeso.utils import utils_common
-from bayeso.utils import utils_logger
-
-logger = utils_logger.get_logger('gp_likelihood')
 
 
 @utils_common.validate_types

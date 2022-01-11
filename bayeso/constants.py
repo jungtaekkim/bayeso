@@ -1,6 +1,6 @@
 #
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: October 13, 2021
+# last updated: December 20, 2021
 #
 """This file declares various default constants.
 If you would like to see the details, check out
@@ -14,7 +14,7 @@ JITTER_ACQ = 1e-5
 JITTER_COV = 1e-5
 JITTER_LOG = 1e-7
 
-TOLERANCE_DUPLICATED_ACQ = 1e-4
+TOLERANCE_DUPLICATED_ACQ = 1e-8
 
 STR_SURROGATE = 'gp'
 STR_SURROGATE_TREES = 'rf'

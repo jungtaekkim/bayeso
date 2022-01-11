@@ -5,8 +5,8 @@
 """It defines a class of Bayesian optimization
 with Gaussian process regression."""
 
-import numpy as np
 import time
+import numpy as np
 from scipy.optimize import minimize
 try:
     from scipydirect import minimize as directminimize
@@ -51,6 +51,8 @@ class BOwGP(base_bo.BaseBO):
     :param str_modelselection_method: the name of model selection method
         for Gaussian process regression.
     :type str_modelselection_method: str., optional
+    :param str_exp: the name of experiment.
+    :type str_exp: str., optional
     :param debug: flag for printing log messages.
     :type debug: bool., optional
 
@@ -65,6 +67,7 @@ class BOwGP(base_bo.BaseBO):
         str_optimizer_method_gp: str=constants.STR_OPTIMIZER_METHOD_GP,
         str_optimizer_method_bo: str=constants.STR_OPTIMIZER_METHOD_AO,
         str_modelselection_method: str=constants.STR_MODELSELECTION_METHOD,
+        str_exp: str=None,
         debug: bool=False
     ):
         """
@@ -80,6 +83,7 @@ class BOwGP(base_bo.BaseBO):
         assert isinstance(str_optimizer_method_bo, str)
         assert isinstance(str_optimizer_method_gp, str)
         assert isinstance(str_modelselection_method, str)
+        assert isinstance(str_exp, (type(None), str))
         assert isinstance(debug, bool)
         assert callable(prior_mu) or prior_mu is None
         assert len(range_X.shape) == 2
@@ -94,7 +98,8 @@ class BOwGP(base_bo.BaseBO):
         str_surrogate = 'gp'
         assert str_surrogate in constants.ALLOWED_SURROGATE
 
-        super().__init__(range_X, str_surrogate, str_acq, str_optimizer_method_bo, normalize_Y, debug)
+        super().__init__(range_X, str_surrogate, str_acq,
+            str_optimizer_method_bo, normalize_Y, str_exp, debug)
 
         self.str_cov = str_cov
         self.use_ard = use_ard
@@ -146,7 +151,8 @@ class BOwGP(base_bo.BaseBO):
                 next_point_x = next_point.x
                 list_next_point.append(next_point_x)
                 if self.debug:
-                    self.logger.debug('acquired sample: %s', utils_logger.get_str_array(next_point_x))
+                    self.logger.debug('acquired sample: %s',
+                        utils_logger.get_str_array(next_point_x))
         elif self.str_optimizer_method_bo == 'DIRECT': # pragma: no cover
             self.logger.debug('num_samples is ignored.')
 
@@ -357,10 +363,13 @@ class BOwGP(base_bo.BaseBO):
         assert str_mlm_method in constants.ALLOWED_MLM_METHOD
 
         time_start = time.time()
+        Y_train_orig = Y_train
 
-        if self.normalize_Y and np.max(Y_train) != np.min(Y_train):
-            Y_train = (Y_train - np.min(Y_train)) / (np.max(Y_train) - np.min(Y_train)) \
-                * constants.MULTIPLIER_RESPONSE
+        if self.normalize_Y and str_mlm_method != 'converged':
+            if self.debug:
+                self.logger.debug('Responses are normalized.')
+
+            Y_train = utils_bo.normalize_min_max(Y_train)
 
         time_start_surrogate = time.time()
 
@@ -452,6 +461,8 @@ class BOwGP(base_bo.BaseBO):
         dict_info = {
             'next_points': next_points,
             'acquisitions': acquisitions,
+            'Y_original': Y_train_orig,
+            'Y_normalized': Y_train,
             'cov_X_X': cov_X_X,
             'inv_cov_X_X': inv_cov_X_X,
             'hyps': hyps,

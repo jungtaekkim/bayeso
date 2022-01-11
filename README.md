@@ -9,6 +9,10 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Documentation Status](https://readthedocs.org/projects/bayeso/badge/?version=main)](https://bayeso.readthedocs.io/en/main/?badge=main)
 
+<p align="center">
+<img src="docs/_static/steps/ei.gif" width="600" />
+</p>
+
 Simple, but essential Bayesian optimization package.
 
 * [https://bayeso.org](https://bayeso.org)

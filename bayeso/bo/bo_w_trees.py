@@ -5,14 +5,13 @@
 """It defines a class of Bayesian optimization
 with tree-based surrogate models."""
 
-import numpy as np
 import time
+import numpy as np
 
 from bayeso.bo import base_bo
 from bayeso.trees import trees_common
 from bayeso import constants
 from bayeso.utils import utils_bo
-from bayeso.utils import utils_logger
 
 
 class BOwTrees(base_bo.BaseBO):
@@ -30,6 +29,8 @@ class BOwTrees(base_bo.BaseBO):
     :param str_optimizer_method_bo: the name of optimization method for
         Bayesian optimization.
     :type str_optimizer_method_bo: str., optional
+    :param str_exp: the name of experiment.
+    :type str_exp: str., optional
     :param debug: flag for printing log messages.
     :type debug: bool., optional
 
@@ -40,6 +41,7 @@ class BOwTrees(base_bo.BaseBO):
         str_acq: str=constants.STR_BO_ACQ,
         normalize_Y: bool=constants.NORMALIZE_RESPONSE,
         str_optimizer_method_bo: str=constants.STR_OPTIMIZER_METHOD_AO_TREES,
+        str_exp: str=None,
         debug: bool=False
     ):
         """
@@ -52,6 +54,7 @@ class BOwTrees(base_bo.BaseBO):
         assert isinstance(str_acq, str)
         assert isinstance(normalize_Y, bool)
         assert isinstance(str_optimizer_method_bo, str)
+        assert isinstance(str_exp, (type(None), str))
         assert isinstance(debug, bool)
         assert len(range_X.shape) == 2
         assert range_X.shape[1] == 2
@@ -60,7 +63,8 @@ class BOwTrees(base_bo.BaseBO):
         assert str_acq in constants.ALLOWED_BO_ACQ
         assert str_optimizer_method_bo in constants.ALLOWED_OPTIMIZER_METHOD_BO_TREES
 
-        super().__init__(range_X, str_surrogate, str_acq, str_optimizer_method_bo, normalize_Y, debug)
+        super().__init__(range_X, str_surrogate, str_acq,
+            str_optimizer_method_bo, normalize_Y, str_exp, debug)
 
     def get_trees(self, X_train, Y_train,
         num_trees=100,
@@ -230,10 +234,13 @@ class BOwTrees(base_bo.BaseBO):
         assert str_sampling_method in constants.ALLOWED_SAMPLING_METHOD
 
         time_start = time.time()
+        Y_train_orig = Y_train
 
-        if self.normalize_Y and np.max(Y_train) != np.min(Y_train):
-            Y_train = (Y_train - np.min(Y_train)) / (np.max(Y_train) - np.min(Y_train)) \
-                * constants.MULTIPLIER_RESPONSE
+        if self.normalize_Y:
+            if self.debug:
+                self.logger.debug('Responses are normalized.')
+
+            Y_train = utils_bo.normalize_min_max(Y_train)
 
         time_start_surrogate = time.time()
         trees = self.get_trees(X_train, Y_train)
@@ -260,6 +267,8 @@ class BOwTrees(base_bo.BaseBO):
         dict_info = {
             'next_points': next_points,
             'acquisitions': acquisitions,
+            'Y_original': Y_train_orig,
+            'Y_normalized': Y_train,
             'trees': trees,
             'time_surrogate': time_end_surrogate - time_start_surrogate,
             'time_acq': time_end_acq - time_start_acq,

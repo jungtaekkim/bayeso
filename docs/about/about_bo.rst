@@ -1,6 +1,11 @@
 About Bayesian Optimization
 ===========================
 
+.. image:: ../_static/steps/ucb.*
+    :width: 480
+    :align: center
+    :alt: bo_with_gp_and_ucb
+
 Bayesian optimization is a **global optimization** strategy for **black-box** and **expensive-to-evaluate** functions.
 Generic Bayesian optimization follows these steps:
 
