@@ -1,6 +1,4 @@
 [run]
-include = bayeso/*
-omit = docs/*, examples/*, tests/*
 source =
     bayeso
     tests
