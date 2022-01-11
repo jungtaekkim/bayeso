@@ -10,8 +10,6 @@ jobs:
         python-version: ["3.6", "3.7", "3.8", "3.9"]
     steps:
     - uses: actions/checkout@v2
-      env:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
       with:
@@ -25,6 +23,8 @@ jobs:
       run: |
         coverage run -m pytest tests/common/
         coveralls
+      env:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
     - name: Execute Coveralls GitHub Action
       uses: coverallsapp/github-action@master
       with:
