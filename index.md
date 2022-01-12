@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/jungtaekkim/bayeso.svg?branch=main)](https://travis-ci.org/jungtaekkim/bayeso)
+[![Build Status](https://github.com/jungtaekkim/bayeso/actions/workflows/pytest.yml/badge.svg)](https://github.com/jungtaekkim/bayeso/actions/workflows/pytest.yml)
 [![Coverage Status](https://coveralls.io/repos/github/jungtaekkim/bayeso/badge.svg?branch=main)](https://coveralls.io/github/jungtaekkim/bayeso?branch=main)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/bayeso)](https://pypi.org/project/bayeso/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -8,10 +8,16 @@
 <img src="logo_bayeso_capitalized.svg" width="400" />
 </p>
 
+<p align="center">
+<img src="ei.gif" width="600" />
+</p>
+
+
 Simple, but essential Bayesian optimization package.
 
-* [GitHub repository](https://github.com/jungtaekkim/bayeso)
-* [Online documentation](http://bayeso.readthedocs.io)
+* [BayesO: GitHub repository](https://github.com/jungtaekkim/bayeso)
+* [BayesO Benchmarks: GitHub repository](https://github.com/jungtaekkim/bayeso-benchmarks)
+* [Online documentation](https://bayeso.readthedocs.io)
 
 ## Installation
 We recommend installing it with virtualenv.
@@ -61,7 +67,7 @@ The following requirements files include the package list, the purpose of which 
 * requirements-examples.txt: It needs to be installed to execute the examples included in the BayesO repository.
 
 ## Related Package
-* [bayeso-benchmarks](https://github.com/jungtaekkim/bayeso-benchmarks): We implement benchmark functions for Bayesian optimization. This package is included in requirements-optional.txt.
+* [BayesO Benchmarks](https://github.com/jungtaekkim/bayeso-benchmarks): We implement benchmark functions for Bayesian optimization. This package is included in requirements-optional.txt.
 
 ## Supported Python Version
 We test our package in the following versions.
@@ -72,7 +78,7 @@ We test our package in the following versions.
 * Python 3.9
 
 ## Contributor
-* [Jungtaek Kim](http://jungtaek.github.io) (POSTECH)
+* [Jungtaek Kim](https://jungtaek.github.io) (POSTECH)
 
 ## Citation
 ```
@@ -83,9 +89,6 @@ We test our package in the following versions.
     year="2017"
 }
 ```
-
-## Contact
-* Jungtaek Kim: [jtkim@postech.ac.kr](mailto:jtkim@postech.ac.kr)
 
 ## License
 [MIT License](https://github.com/jungtaekkim/bayeso/blob/main/LICENSE)
