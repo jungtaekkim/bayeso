@@ -13,7 +13,7 @@ BayesO: A Bayesian optimization framework in Python
     :align: center
     :alt: bo_with_gp_and_ei
 
-`BayesO <http://bayeso.org>`_ (pronounced "bayes-o") is a simple, but essential Bayesian optimization package, written in Python.
+`BayesO <https://bayeso.org>`_ (pronounced "bayes-o") is a simple, but essential Bayesian optimization package, written in Python.
 It is developed by `machine learning group <http://mlg.postech.ac.kr>`_ at POSTECH.
 This project is licensed under `the MIT license <https://opensource.org/licenses/MIT>`_.
 
