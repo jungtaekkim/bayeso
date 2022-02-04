@@ -1,6 +1,6 @@
 #
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: September 24, 2020
+# last updated: February 4, 2022
 #
 """test_utils_bo"""
 
@@ -260,3 +260,148 @@ def test_get_best_acquisition_by_history():
 
     assert np.all(bx_best == np.array([2.0, 3.1, 2.2, 5.1]))
     assert y_best == 0.0
+
+def test_check_points_in_bounds_typing():
+    annos = package_target.check_points_in_bounds.__annotations__
+
+    assert annos['points'] == np.ndarray
+    assert annos['bounds'] == np.ndarray
+    assert annos['return'] == np.ndarray
+
+def test_check_points_in_bounds():
+    points = np.array([
+        [0.0, 0.0],
+        [0.0, 10.0],
+        [0.0, 11.0],
+        [-1.0, 0.0],
+        [-1.0, 8.0],
+        [-1.0, 11.0],
+        [4.0, 0.0],
+        [4.0, 8.0],
+        [4.0, 11.0],
+        [3.0, 7.0],
+    ])
+
+    bounds = np.array([
+        [-1.0, 4.0],
+        [0.0, 11.0],
+    ])
+
+    with pytest.raises(AssertionError) as error:
+        package_target.check_points_in_bounds(points, 1)
+    with pytest.raises(AssertionError) as error:
+        package_target.check_points_in_bounds(points, 'abc')
+    with pytest.raises(AssertionError) as error:
+        package_target.check_points_in_bounds(1, bounds)
+    with pytest.raises(AssertionError) as error:
+        package_target.check_points_in_bounds('abc', bounds)
+    with pytest.raises(AssertionError) as error:
+        package_target.check_points_in_bounds(points.flatten(), bounds)
+    with pytest.raises(AssertionError) as error:
+        package_target.check_points_in_bounds(points, bounds.flatten())
+
+    points_ = package_target.check_points_in_bounds(points, bounds)
+
+    assert np.all(points == points_)
+
+    # definitely wrong case
+    scale_error = 1e-1
+
+    points = np.array([
+        [0.0, 0.0],
+        [0.0, 10.0],
+        [0.0, 11.0],
+        [-1.0, 0.0],
+        [-1.0, 8.0],
+        [-1.0, 11.0],
+        [4.0, 0.0],
+        [4.0, 8.0],
+        [4.0, 11.0],
+        [3.0, 7.0],
+    ]) + scale_error
+
+    with pytest.raises(AssertionError) as error:
+        package_target.check_points_in_bounds(points, bounds)
+
+    points = np.array([
+        [0.0, 0.0],
+        [0.0, 10.0],
+        [0.0, 11.0],
+        [-1.0, 0.0],
+        [-1.0, 8.0],
+        [-1.0, 11.0],
+        [4.0, 0.0],
+        [4.0, 8.0],
+        [4.0, 11.0],
+        [3.0, 7.0],
+    ]) - scale_error
+
+    with pytest.raises(AssertionError) as error:
+        package_target.check_points_in_bounds(points, bounds)
+
+    points = np.array([
+        [0.0, 0.0],
+        [0.0, 10.0],
+        [0.0, 11.0],
+        [-1.0, 0.0],
+        [-1.0, 8.0],
+        [-1.0, 11.0],
+        [4.0, 0.0],
+        [4.0, 8.0],
+        [4.0, 11.0],
+        [3.0, 7.0],
+    ]) + np.array([-scale_error, scale_error])
+
+    with pytest.raises(AssertionError) as error:
+        package_target.check_points_in_bounds(points, bounds)
+
+    # wrong case due to numerical errors
+    scale_error = 1e-8
+
+    points = np.array([
+        [0.0, 0.0],
+        [0.0, 10.0],
+        [0.0, 11.0],
+        [-1.0, 0.0],
+        [-1.0, 8.0],
+        [-1.0, 11.0],
+        [4.0, 0.0],
+        [4.0, 8.0],
+        [4.0, 11.0],
+        [3.0, 7.0],
+    ]) + scale_error
+
+    with pytest.raises(AssertionError) as error:
+        package_target.check_points_in_bounds(points, bounds)
+
+    points = np.array([
+        [0.0, 0.0],
+        [0.0, 10.0],
+        [0.0, 11.0],
+        [-1.0, 0.0],
+        [-1.0, 8.0],
+        [-1.0, 11.0],
+        [4.0, 0.0],
+        [4.0, 8.0],
+        [4.0, 11.0],
+        [3.0, 7.0],
+    ]) - scale_error
+
+    with pytest.raises(AssertionError) as error:
+        package_target.check_points_in_bounds(points, bounds)
+
+    points = np.array([
+        [0.0, 0.0],
+        [0.0, 10.0],
+        [0.0, 11.0],
+        [-1.0, 0.0],
+        [-1.0, 8.0],
+        [-1.0, 11.0],
+        [4.0, 0.0],
+        [4.0, 8.0],
+        [4.0, 11.0],
+        [3.0, 7.0],
+    ]) + np.array([-scale_error, scale_error])
+
+    with pytest.raises(AssertionError) as error:
+        package_target.check_points_in_bounds(points, bounds)

@@ -291,6 +291,18 @@ def check_hyps_convergence(list_hyps: constants.TYPING_LIST[dict], hyps: dict,
 def check_points_in_bounds(points: np.ndarray, bounds: np.ndarray
 ) -> np.ndarray:
     """
+    It checks whether every instance of `points` is located in `bounds`.
+
+    :param points: points to check. Shape: (n, d).
+    :type points: numpy.ndarray
+    :param bounds: upper and lower bounds. Shape: (d, 2).
+    :type bounds: numpy.ndarray
+
+    :returns: points in `bounds`. Shape: (n, d).
+    :rtype: numpy.ndarray
+
+    :raises: AssertionError
+
     """
 
     assert isinstance(points, np.ndarray)
