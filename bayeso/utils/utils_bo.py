@@ -1,6 +1,6 @@
 #
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: November 5, 2020
+# last updated: February 4, 2022
 #
 """It is utilities for Bayesian optimization."""
 
@@ -286,3 +286,21 @@ def check_hyps_convergence(list_hyps: constants.TYPING_LIST[dict], hyps: dict,
         if np.linalg.norm(hyps_converted - target_hyps_converted, ord=2) < threshold:
             converged = True
     return converged
+
+@utils_common.validate_types
+def check_points_in_bounds(points: np.ndarray, bounds: np.ndarray
+) -> np.ndarray:
+    """
+    """
+
+    assert isinstance(points, np.ndarray)
+    assert isinstance(bounds, np.ndarray)
+    assert len(points.shape) == 2
+    assert len(bounds.shape) == 2
+    assert points.shape[1] == bounds.shape[0]
+    assert bounds.shape[1] == 2
+
+    assert np.all(points >= bounds[:, 0])
+    assert np.all(points <= bounds[:, 1])
+
+    return points

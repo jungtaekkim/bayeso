@@ -1,6 +1,6 @@
 #
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: October 8, 2021
+# last updated: February 4, 2022
 #
 """It defines a class of Bayesian optimization
 with Gaussian process regression."""
@@ -453,6 +453,10 @@ class BOwGP(base_bo.BaseBO):
         )
         next_point, next_points = self._optimize(fun_negative_acquisition,
             str_sampling_method=str_sampling_method, num_samples=num_samples)
+
+        next_point = utils_bo.check_points_in_bounds(next_point[np.newaxis, ...], np.array(self._get_bounds()))[0]
+        next_points = utils_bo.check_points_in_bounds(next_points, np.array(self._get_bounds()))
+
         time_end_acq = time.time()
 
         acquisitions = fun_negative_acquisition(next_points)

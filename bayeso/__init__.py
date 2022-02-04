@@ -1,6 +1,6 @@
 #
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: February 03, 2022
+# last updated: February 3, 2022
 #
 """BayesO is a simple, but essential Bayesian optimization
 package, implemented in Python."""

@@ -1,6 +1,6 @@
 #
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: October 8, 2021
+# last updated: February 4, 2022
 #
 """It defines a class of Bayesian optimization
 with tree-based surrogate models."""
@@ -252,6 +252,8 @@ class BOwTrees(base_bo.BaseBO):
             fun_objective=None,
             num_samples=num_samples
         )
+
+        next_points = utils_bo.check_points_in_bounds(next_points, np.array(self._get_bounds()))
 
         fun_negative_acquisition = lambda X_test: -1.0 * self.compute_acquisitions(
             X_test, X_train, Y_train, trees
