@@ -358,8 +358,8 @@ def test__split():
     print(dict_split['left_right'])
 
     assert isinstance(dict_split, dict)
-    assert dict_split['index'] == 0
-    assert dict_split['value'] == 0.2543869879098266
+    assert dict_split['index'] == 3
+    assert dict_split['value'] == 37.159879341119996
 
     X = np.ones(X.shape)
 
@@ -370,7 +370,7 @@ def test__split():
     print(dict_split['left_right'])
 
     assert isinstance(dict_split, dict)
-    assert dict_split['index'] == 1
+    assert dict_split['index'] == 0
     assert dict_split['value'] == 1.0
 
 def test_split_typing():
