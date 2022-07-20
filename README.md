@@ -75,7 +75,7 @@ We test our package in the following versions.
 * Python 3.10
 
 ## Contributor
-* [Jungtaek Kim](https://jungtaek.github.io) (POSTECH)
+* [Jungtaek Kim](https://jungtaek.github.io)
 
 ## Citation
 ```
@@ -88,7 +88,7 @@ We test our package in the following versions.
 ```
 
 ## Contact
-* Jungtaek Kim: [jtkim@postech.ac.kr](mailto:jtkim@postech.ac.kr)
+* [Jungtaek Kim](https://jungtaek.github.io)
 
 ## License
 [MIT License](LICENSE)

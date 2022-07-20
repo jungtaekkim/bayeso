@@ -27,7 +27,7 @@ The details of benchmark functions implemented in **bayeso-benchmarks** are desc
 Contributor
 ===========
 
-- `Jungtaek Kim <https://jungtaek.github.io>`_ (POSTECH)
+- `Jungtaek Kim <https://jungtaek.github.io>`_
 
 Citation
 ========
@@ -44,7 +44,7 @@ Citation
 Contact
 =======
 
-- Jungtaek Kim: `jtkim@postech.ac.kr <mailto:jtkim@postech.ac.kr>`_
+- `Jungtaek Kim <https://jungtaek.github.io>`_
 
 License
 =======
