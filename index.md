@@ -50,9 +50,6 @@ $ pip uninstall bayeso
 ## Related Package
 * [BayesO Benchmarks](https://github.com/jungtaekkim/bayeso-benchmarks): We implement benchmark functions for Bayesian optimization. This package is included in requirements-optional.txt.
 
-## Contributor
-* [Jungtaek Kim](https://jungtaek.github.io) (POSTECH)
-
 ## Citation
 ```
 @misc{KimJ2017bayeso,
