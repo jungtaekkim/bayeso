@@ -13,8 +13,6 @@ from bayeso.utils import utils_bo
 from bayeso.utils import utils_common
 from bayeso.utils import utils_logger
 
-#logger = utils_logger.get_logger('wrappers_bo_function')
-
 
 @utils_common.validate_types
 def run_single_round_with_all_initial_information(model_bo: bo.BO,

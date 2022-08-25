@@ -13,8 +13,6 @@ from bayeso import bo
 from bayeso.utils import utils_bo
 from bayeso.utils import utils_logger
 
-#logger = utils_logger.get_logger('wrappers_bo_class')
-
 
 class BayesianOptimization:
     """

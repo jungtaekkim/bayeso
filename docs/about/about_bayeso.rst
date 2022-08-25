@@ -15,6 +15,7 @@ We test our package in the following versions.
 - Python 3.7
 - Python 3.8
 - Python 3.9
+- Python 3.10
 
 Related Package for Benchmark Functions
 =======================================
@@ -26,7 +27,7 @@ The details of benchmark functions implemented in **bayeso-benchmarks** are desc
 Contributor
 ===========
 
-- `Jungtaek Kim <http://jungtaek.github.io>`_ (POSTECH)
+- `Jungtaek Kim <https://jungtaek.github.io>`_
 
 Citation
 ========
@@ -36,14 +37,14 @@ Citation
     @misc{KimJ2017bayeso,
         author={Kim, Jungtaek and Choi, Seungjin},
         title={{BayesO}: A {Bayesian} optimization framework in {Python}},
-        howpublished={\url{http://bayeso.org}},
+        howpublished={\url{https://bayeso.org}},
         year={2017}
     }
 
 Contact
 =======
 
-- Jungtaek Kim: `jtkim@postech.ac.kr <mailto:jtkim@postech.ac.kr>`_
+- `Jungtaek Kim <https://jungtaek.github.io>`_
 
 License
 =======

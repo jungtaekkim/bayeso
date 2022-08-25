@@ -189,15 +189,64 @@ def _split_left_right(
     assert X.shape[0] == Y.shape[0]
     assert Y.shape[1] == 1
 
-    left = []
-    right = []
+    indices_left = X[:, dim_to_split] < val_to_split
+    left = list(zip(X[indices_left], Y[indices_left]))
 
-    for bx, by in zip(X, Y):
-        if bx[dim_to_split] < val_to_split:
-            left.append((bx, by))
-        else:
-            right.append((bx, by))
+    indices_right = X[:, dim_to_split] >= val_to_split
+    right = list(zip(X[indices_right], Y[indices_right]))
+
     return left, right
+
+@utils_common.validate_types
+def _split_deterministic(X: np.ndarray, Y: np.ndarray, dim_to_split: int
+) -> constants.TYPING_TUPLE_INT_FLOAT_TUPLE:
+    candidates_loc = np.sort(np.unique(X[:, dim_to_split]))
+    num_evaluations = 1
+    if candidates_loc.shape[0] > 1:
+        num_evaluations = candidates_loc.shape[0] - 1
+
+    cur_ind = np.inf
+    cur_val = np.inf
+    cur_score = np.inf
+    cur_left_right = None
+
+    indices_loc = np.random.choice(
+        num_evaluations, np.minimum(20, num_evaluations), replace=False)
+
+    for ind_loc in indices_loc:
+        if candidates_loc.shape[0] > 1:
+            val_to_split = np.mean(candidates_loc[ind_loc:ind_loc+2])
+        else:
+            val_to_split = X[0, dim_to_split]
+
+        left_right = _split_left_right(X, Y, dim_to_split, val_to_split)
+        score = mse(left_right)
+
+        if score < cur_score:
+            cur_ind = dim_to_split
+            cur_val = val_to_split
+            cur_score = score
+            cur_left_right = left_right
+
+    return cur_ind, cur_val, cur_score, cur_left_right
+
+@utils_common.validate_types
+def _split_random(X: np.ndarray, Y: np.ndarray, dim_to_split: int
+) -> constants.TYPING_TUPLE_INT_FLOAT_TUPLE:
+    candidates_loc = np.sort(np.unique(X[:, dim_to_split]))
+
+    if candidates_loc.shape[0] > 1:
+        min_bx = np.min(X[:, dim_to_split])
+        max_bx = np.max(X[:, dim_to_split])
+
+        val_to_split = np.random.uniform(low=min_bx, high=max_bx)
+    else:
+        val_to_split = X[0, dim_to_split]
+
+    left_right = _split_left_right(X, Y, dim_to_split, val_to_split)
+    score = mse(left_right)
+
+    return dim_to_split, val_to_split, score, left_right
 
 @utils_common.validate_types
 def _split(
@@ -235,43 +284,28 @@ def _split(
     assert X.shape[0] > 0
     assert Y.shape[1] == 1
 
+    features = np.random.choice(X.shape[1], num_features, replace=False)
+
     cur_ind = np.inf
     cur_val = np.inf
     cur_score = np.inf
     cur_left_right = None
 
-    features = np.random.choice(X.shape[1], num_features, replace=False)
-
     for ind in features:
         dim_to_split = int(ind)
-        num_evaluations = 1
-        candidates_loc = np.sort(np.unique(X[:, dim_to_split]))
 
-        if candidates_loc.shape[0] > 1:
-            if split_random_location:
-                min_bx = np.min(X[:, dim_to_split])
-                max_bx = np.max(X[:, dim_to_split])
-            else:
-                num_evaluations = candidates_loc.shape[0] - 1
+        if split_random_location:
+            _ind, _val, _score, _left_right = _split_random(
+                X, Y, dim_to_split)
+        else:
+            _ind, _val, _score, _left_right = _split_deterministic(
+                X, Y, dim_to_split)
 
-        for ind_loc in range(0, num_evaluations):
-            if candidates_loc.shape[0] > 1:
-                if split_random_location:
-                    val_to_split = np.random.uniform(low=min_bx, high=max_bx)
-                else:
-                    val_to_split = np.mean(candidates_loc[ind_loc:ind_loc+2])
-            else:
-                val_to_split = X[0, dim_to_split]
-
-            left_right = _split_left_right(X, Y, dim_to_split, val_to_split)
-#            left, right = left_right
-            score = mse(left_right)
-
-            if score < cur_score:
-                cur_ind = dim_to_split
-                cur_val = val_to_split
-                cur_score = score
-                cur_left_right = left_right
+        if _score < cur_score:
+            cur_ind = _ind
+            cur_val = _val
+            cur_score = _score
+            cur_left_right = _left_right
 
     return {
         'index': cur_ind,

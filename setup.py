@@ -5,7 +5,8 @@ import sys
 if (sys.version_info.major == 3 and sys.version_info.minor == 6) or\
     (sys.version_info.major == 3 and sys.version_info.minor == 7) or\
     (sys.version_info.major == 3 and sys.version_info.minor == 8) or\
-    (sys.version_info.major == 3 and sys.version_info.minor == 9):
+    (sys.version_info.major == 3 and sys.version_info.minor == 9) or\
+    (sys.version_info.major == 3 and sys.version_info.minor == 10):
     print('[SETUP] bayeso supports Python {}.{} version in this system.'.format(sys.version_info.major, sys.version_info.minor))
 else:
     sys.exit('[ERROR] bayeso does not support Python {}.{} version in this system.'.format(sys.version_info.major, sys.version_info.minor))
@@ -26,7 +27,7 @@ with open(path_requirements) as f:
 
 setup(
     name='bayeso',
-    version='0.5.2',
+    version='0.5.3',
     author='Jungtaek Kim',
     author_email='jtkim@postech.ac.kr',
     url='https://bayeso.org',
@@ -40,6 +41,7 @@ setup(
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
         'License :: OSI Approved :: MIT License',
         'Topic :: Scientific/Engineering',
         'Topic :: Scientific/Engineering :: Artificial Intelligence',
