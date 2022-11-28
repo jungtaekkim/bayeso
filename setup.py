@@ -1,6 +1,7 @@
 from setuptools import setup
 import os
 import sys
+from pathlib import Path
 
 if (sys.version_info.major == 3 and sys.version_info.minor == 6) or\
     (sys.version_info.major == 3 and sys.version_info.minor == 7) or\
@@ -10,6 +11,9 @@ if (sys.version_info.major == 3 and sys.version_info.minor == 6) or\
     print('[SETUP] bayeso supports Python {}.{} version in this system.'.format(sys.version_info.major, sys.version_info.minor))
 else:
     sys.exit('[ERROR] bayeso does not support Python {}.{} version in this system.'.format(sys.version_info.major, sys.version_info.minor))
+
+this_directory = Path(__file__).parent
+long_description = (this_directory / "README.md").read_text()
 
 path_requirements = 'requirements.txt'
 list_packages = [
@@ -27,12 +31,14 @@ with open(path_requirements) as f:
 
 setup(
     name='bayeso',
-    version='0.5.3',
+    version='0.5.4',
     author='Jungtaek Kim',
     author_email='jtkim@postech.ac.kr',
     url='https://bayeso.org',
     license='MIT',
     description='Simple, but essential Bayesian optimization package',
+    long_description=long_description,
+    long_description_content_type='text/markdown',
     packages=list_packages,
     python_requires='>=3.6, <4',
     install_requires=required,
