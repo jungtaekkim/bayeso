@@ -1,6 +1,6 @@
 #
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: September 24, 2020
+# last updated: November 29, 2022
 #
 """test_acquisition"""
 
@@ -109,7 +109,7 @@ def test_ucb():
         package_target.ucb(np.ones(10), np.ones(10), increase_kappa='abc')
 
     val_acq = package_target.ucb(np.arange(0, 10), np.ones(10), Y_train=np.zeros((5, 1)))
-    truth_val_acq = np.array([3.21887582, 2.21887582, 1.21887582, 0.21887582, -0.78112418, -1.78112418, -2.78112418, -3.78112418, -4.78112418, -5.78112418])
+    truth_val_acq = np.array([3.58351894, 2.58351894, 1.58351894, 0.58351894, -0.41648106, -1.41648106, -2.41648106, -3.41648106, -4.41648106, -5.41648106])
     assert (np.abs(val_acq - truth_val_acq) < TEST_EPSILON).all()
 
     val_acq = package_target.ucb(np.arange(0, 10), np.ones(10))
