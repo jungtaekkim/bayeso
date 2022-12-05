@@ -13,6 +13,30 @@ from bayeso.utils import utils_common as package_target
 
 TEST_EPSILON = 1e-5
 
+def test_validate_types_typing():
+    annos = package_target.validate_types.__annotations__
+
+    assert annos['func'] == typing.Callable
+    assert annos['return'] == typing.Callable
+
+def test_validate_types():
+    def func_test_1(x) -> int:
+        return int(x)
+
+    with pytest.raises(AssertionError) as error:
+        package_target.validate_types(func_test_1)
+
+    def func_test_2(x: float):
+        return int(x)
+
+    with pytest.raises(AssertionError) as error:
+        package_target.validate_types(func_test_2)
+
+    def func_test_3(x: float) -> int:
+        return int(x)
+
+    package_target.validate_types(func_test_3)
+
 def test_get_grids_typing():
     annos = package_target.get_grids.__annotations__
 
