@@ -37,6 +37,10 @@ def test_validate_types():
 
     package_target.validate_types(func_test_3)
 
+    func_test_1(1.23)
+    func_test_2(1.23)
+    func_test_3(1.23)
+
 def test_get_grids_typing():
     annos = package_target.get_grids.__annotations__
 
