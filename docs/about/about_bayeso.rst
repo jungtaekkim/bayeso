@@ -16,6 +16,7 @@ We test our package in the following versions.
 - Python 3.8
 - Python 3.9
 - Python 3.10
+- Python 3.11
 
 Related Package for Benchmark Functions
 =======================================
@@ -23,11 +24,6 @@ Related Package for Benchmark Functions
 The related package **bayeso-benchmarks**, which contains some famous benchmark functions and custom benchmark functions is hosted in `this repository <https://github.com/jungtaekkim/bayeso-benchmarks>`_. It can be used to test a Bayesian optimization strategy.
 
 The details of benchmark functions implemented in **bayeso-benchmarks** are described in `these notes <https://jungtaek.github.io/notes/benchmarks_bo.pdf>`_.
-
-Contributor
-===========
-
-- `Jungtaek Kim <https://jungtaek.github.io>`_
 
 Citation
 ========
@@ -40,11 +36,6 @@ Citation
         howpublished={\url{https://bayeso.org}},
         year={2017}
     }
-
-Contact
-=======
-
-- `Jungtaek Kim <https://jungtaek.github.io>`_
 
 License
 =======

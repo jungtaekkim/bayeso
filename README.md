@@ -73,9 +73,7 @@ We test our package in the following versions.
 * Python 3.8
 * Python 3.9
 * Python 3.10
-
-## Contributor
-* [Jungtaek Kim](https://jungtaek.github.io)
+* Python 3.11
 
 ## Citation
 ```
@@ -86,9 +84,6 @@ We test our package in the following versions.
     year={2017}
 }
 ```
-
-## Contact
-* [Jungtaek Kim](https://jungtaek.github.io)
 
 ## License
 [MIT License](LICENSE)
