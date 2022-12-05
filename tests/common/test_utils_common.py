@@ -20,26 +20,27 @@ def test_validate_types_typing():
     assert annos['return'] == typing.Callable
 
 def test_validate_types():
-    def func_test_1(x) -> int:
+    def fun_test_1(x) -> int:
         return int(x)
 
     with pytest.raises(AssertionError) as error:
-        package_target.validate_types(func_test_1)
+        package_target.validate_types(fun_test_1)
 
-    def func_test_2(x: float):
+    def fun_test_2(x: float):
         return int(x)
 
     with pytest.raises(AssertionError) as error:
-        package_target.validate_types(func_test_2)
+        package_target.validate_types(fun_test_2)
 
-    def func_test_3(x: float) -> int:
+    def fun_test_3(x: float) -> int:
         return int(x)
 
-    package_target.validate_types(func_test_3)
+    fun_returned = package_target.validate_types(fun_test_3)
 
-    func_test_1(1.23)
-    func_test_2(1.23)
-    func_test_3(1.23)
+    fun_test_1(1.23)
+    fun_test_2(1.23)
+    fun_test_3(1.23)
+    fun_returned(1.23)
 
 def test_get_grids_typing():
     annos = package_target.get_grids.__annotations__
