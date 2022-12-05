@@ -7,10 +7,11 @@ if (sys.version_info.major == 3 and sys.version_info.minor == 6) or\
     (sys.version_info.major == 3 and sys.version_info.minor == 7) or\
     (sys.version_info.major == 3 and sys.version_info.minor == 8) or\
     (sys.version_info.major == 3 and sys.version_info.minor == 9) or\
-    (sys.version_info.major == 3 and sys.version_info.minor == 10):
-    print('[SETUP] bayeso supports Python {}.{} version in this system.'.format(sys.version_info.major, sys.version_info.minor))
+    (sys.version_info.major == 3 and sys.version_info.minor == 10) or\
+    (sys.version_info.major == 3 and sys.version_info.minor == 11):
+    print(f'[SETUP] bayeso supports Python {sys.version_info.major}.{sys.version_info.minor} version in this system.')
 else:
-    sys.exit('[ERROR] bayeso does not support Python {}.{} version in this system.'.format(sys.version_info.major, sys.version_info.minor))
+    sys.exit(f'[ERROR] bayeso does not support Python {sys.version_info.major}.{sys.version_info.minor} version in this system.')
 
 this_directory = Path(__file__).parent
 long_description = (this_directory / "README.md").read_text()
@@ -48,6 +49,7 @@ setup(
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
         'License :: OSI Approved :: MIT License',
         'Topic :: Scientific/Engineering',
         'Topic :: Scientific/Engineering :: Artificial Intelligence',
