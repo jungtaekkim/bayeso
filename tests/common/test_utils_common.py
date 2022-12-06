@@ -1,6 +1,6 @@
 #
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: September 24, 2020
+# last updated: December 5, 2022
 #
 """test_utils_common"""
 
@@ -186,7 +186,7 @@ def test_get_minimum():
     cur_minimum, cur_mean, cur_std = package_target.get_minimum(all_data, num_init)
     assert (cur_minimum == truth_all_data).all()
     assert (cur_mean == np.mean(truth_all_data, axis=0)).all()
-    assert (cur_std == np.std(truth_all_data, axis=0)).all()
+    assert (cur_std == np.std(truth_all_data, axis=0, ddof=1)).all()
 
 def test_get_time_typing():
     annos = package_target.get_time.__annotations__

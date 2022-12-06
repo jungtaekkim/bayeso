@@ -113,7 +113,7 @@ def get_minimum(Y_all: np.ndarray, num_init: int) -> constants.TYPING_TUPLE_THRE
 
     minima = np.array(list_minima)
     mean_minima = np.mean(minima, axis=0)
-    std_minima = np.std(minima, axis=0)
+    std_minima = np.std(minima, axis=0, ddof=1)
 
     return minima, mean_minima, std_minima
 
