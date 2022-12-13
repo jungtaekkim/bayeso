@@ -2,7 +2,7 @@
 <img src="docs/_static/assets/logo_bayeso_capitalized.svg" width="400" />
 </p>
 
-# BayesO: A Bayesian optimization framework in Python
+# BayesO: A Bayesian Optimization Framework in Python
 [![Build Status](https://github.com/jungtaekkim/bayeso/actions/workflows/pytest.yml/badge.svg)](https://github.com/jungtaekkim/bayeso/actions/workflows/pytest.yml)
 [![Coverage Status](https://coveralls.io/repos/github/jungtaekkim/bayeso/badge.svg?branch=main)](https://coveralls.io/github/jungtaekkim/bayeso?branch=main)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/bayeso)](https://pypi.org/project/bayeso/)
