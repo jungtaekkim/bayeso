@@ -121,7 +121,7 @@ def get_minimum(Y_all: np.ndarray, num_init: int) -> constants.TYPING_TUPLE_THRE
     else:
         std_minima = np.zeros_like(mean_minima)
 
-    sem_minima = std_minima / np.sqrt(Y_all.shape[0])
+    sem_minima = std_minima / np.sqrt(num_rounds)
 
     return minima, mean_minima, std_minima, sem_minima
 
