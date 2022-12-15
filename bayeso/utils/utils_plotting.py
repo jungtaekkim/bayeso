@@ -450,7 +450,7 @@ def plot_minimum_vs_iter(minima: np.ndarray, list_str_label: constants.TYPING_LI
         ind_color = ind_minimum % len(colors)
         ind_marker = ind_minimum % len(markers)
 
-        _, mean_min, std_min = utils_common.get_minimum(arr_minimum, num_init)
+        _, mean_min, std_min, _ = utils_common.get_minimum(arr_minimum, num_init)
         x_data = range(0, mean_min.shape[0])
         y_data = mean_min
         std_data = std_min
@@ -603,7 +603,7 @@ def plot_minimum_vs_time(times: np.ndarray, minima: np.ndarray,
         ind_color = ind_minimum % len(colors)
         ind_marker = ind_minimum % len(markers)
 
-        _, mean_min, std_min = utils_common.get_minimum(arr_minimum, num_init)
+        _, mean_min, std_min, _ = utils_common.get_minimum(arr_minimum, num_init)
         x_data = utils_common.get_time(times[ind_minimum], num_init,
             times.shape[2] == minima.shape[2])
         y_data = mean_min

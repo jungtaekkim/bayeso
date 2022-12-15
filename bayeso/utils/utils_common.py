@@ -1,6 +1,6 @@
 #
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: September 24, 2020
+# last updated: December 15, 2022
 #
 """It is utilities for common features."""
 
@@ -29,7 +29,7 @@ def validate_types(func: constants.TYPING_CALLABLE) -> constants.TYPING_CALLABLE
 #    arg_names = func.__code__.co_varnames[:func.__code__.co_argcount]
 
     @functools.wraps(func)
-    def _validate_types(*args, **kwargs):
+    def _validate_types(*args, **kwargs): # pragma: no cover
         return func(*args, **kwargs)
 
     return _validate_types
@@ -111,11 +111,19 @@ def get_minimum(Y_all: np.ndarray, num_init: int) -> constants.TYPING_TUPLE_THRE
             list_minima_.append(minimum_best)
         list_minima.append(list_minima_)
 
+    num_rounds = Y_all.shape[0]
+
     minima = np.array(list_minima)
     mean_minima = np.mean(minima, axis=0)
-    std_minima = np.std(minima, axis=0, ddof=1)
 
-    return minima, mean_minima, std_minima
+    if num_rounds > 1:
+        std_minima = np.std(minima, axis=0, ddof=1)
+    else:
+        std_minima = np.zeros_like(mean_minima)
+
+    sem_minima = std_minima / np.sqrt(Y_all.shape[0])
+
+    return minima, mean_minima, std_minima, sem_minima
 
 @validate_types
 def get_time(time_all: np.ndarray, num_init: int, include_init: bool) -> np.ndarray:

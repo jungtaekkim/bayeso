@@ -1,6 +1,6 @@
 #
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: December 5, 2022
+# last updated: December 15, 2022
 #
 """test_utils_common"""
 
@@ -157,13 +157,15 @@ def test_get_minimum():
     all_data = np.zeros((num_exp, num_init + num_data))
     with pytest.raises(AssertionError) as error:
         package_target.get_minimum(all_data, 2.1)
-    cur_minimum, cur_mean, cur_std = package_target.get_minimum(all_data, num_init)
+    cur_minimum, cur_mean, cur_std, cur_sem = package_target.get_minimum(all_data, num_init)
     assert len(cur_minimum.shape) == 2
     assert cur_minimum.shape == (num_exp, 1 + num_data)
     assert len(cur_mean.shape) == 1
     assert cur_mean.shape == (1 + num_data, )
     assert len(cur_std.shape) == 1
     assert cur_std.shape == (1 + num_data, )
+    assert len(cur_sem.shape) == 1
+    assert cur_sem.shape == (1 + num_data, )
 
     num_init = 5
     num_exp = 10
@@ -183,10 +185,11 @@ def test_get_minimum():
         [2.3, 2.3, 2.3, 2.3, 2.3],
         [0.8, 0.8, 0.3, 0.3, 0.3],
     ])
-    cur_minimum, cur_mean, cur_std = package_target.get_minimum(all_data, num_init)
+    cur_minimum, cur_mean, cur_std, cur_sem = package_target.get_minimum(all_data, num_init)
     assert (cur_minimum == truth_all_data).all()
     assert (cur_mean == np.mean(truth_all_data, axis=0)).all()
     assert (cur_std == np.std(truth_all_data, axis=0, ddof=1)).all()
+    assert (cur_sem == np.std(truth_all_data, axis=0, ddof=1) / np.sqrt(truth_all_data.shape[0])).all()
 
 def test_get_time_typing():
     annos = package_target.get_time.__annotations__
