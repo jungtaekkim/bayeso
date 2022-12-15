@@ -191,6 +191,19 @@ def test_get_minimum():
     assert (cur_std == np.std(truth_all_data, axis=0, ddof=1)).all()
     assert (cur_sem == np.std(truth_all_data, axis=0, ddof=1) / np.sqrt(truth_all_data.shape[0])).all()
 
+    num_init = 3
+    all_data = np.array([
+        [0.8, 2.4, 5.4, 4.5, 0.3, 1.5, 2.3],
+    ])
+    truth_all_data = np.array([
+        [0.8, 0.8, 0.3, 0.3, 0.3],
+    ])
+    cur_minimum, cur_mean, cur_std, cur_sem = package_target.get_minimum(all_data, num_init)
+    assert (cur_minimum == truth_all_data).all()
+    assert (cur_mean == np.mean(truth_all_data, axis=0)).all()
+    assert (cur_std == np.zeros(truth_all_data.shape[0])).all()
+    assert (cur_sem == np.zeros(truth_all_data.shape[0]) / np.sqrt(truth_all_data.shape[0])).all()
+
 def test_get_time_typing():
     annos = package_target.get_time.__annotations__
 
