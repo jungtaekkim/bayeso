@@ -31,11 +31,9 @@ its effectiveness in diverse applications such as hyperparameter
 optimization, automated machine learning, material design, sequential
 assembly, and chemical reaction optimization. In this paper we present an
 easy-to-use Bayesian optimization framework, referred to as *BayesO*, which
-is written in Python and licensed under the MIT license. To emphasize its
-potential strength, we compare our framework to existing Bayesian
-optimization open-source projects. Then, we provide sample codes to utilize
-our software and demonstrate experimental results of optimizing several
-synthetic benchmarks.
+is written in Python and licensed under the MIT license. To briefly
+introduce our software, we describe the functionality of BayesO and
+components for software development.
 
 # Statement of need
 
@@ -73,12 +71,9 @@ sets [@KimJ2021ml]) and different surrogate models (e.g., Gaussian process
 regression [@RasmussenCE2006book] and Student-$t$ process
 regression [@ShahA2014aistats]). In addition to such features, we describe
 how we implement our BayesO in the perspective of software development.
-Then, we provide sample codes to utilize our package and demonstrate
-experimental results of optimizing several benchmark functions. We hope that
-this BayesO project encourages us to readily utilize the powerful black-box
-optimization technique in diverse academic and industrial fields.
-
-![Visualization of Bayesian optimization procedure. Given an objective function \autoref{eqn:simple} (colored by turquoise) and four initial points (denoted as light blue $\texttt{+}$ at iteration 1), a query point (denoted as pink $\texttt{x}$) is determined by constructing a surrogate model (colored by orange) and maximizing an acquisition function (colored by light green) every iteration.\label{fig:bo_steps}](figures/bo_step_global_local_ei.png)
+We hope that this BayesO project encourages us to readily utilize the
+powerful black-box optimization technique in diverse academic and
+industrial fields.
 
 # Bayesian Optimization
 
@@ -87,6 +82,8 @@ work [@BrochuE2010arxiv; @ShahriariB2016procieee; @GarnettR2022book],
 supposing that a target objective function is black-box, Bayesian
 optimization is an approach to optimizing the objective in a
 sample-efficient manner. It repeats three primary steps:
+
+![Visualization of Bayesian optimization procedure. Given an objective function \autoref{eqn:simple} (colored by turquoise) and four initial points (denoted as light blue $\texttt{+}$ at iteration 1), a query point (denoted as pink $\texttt{x}$) is determined by constructing a surrogate model (colored by orange) and maximizing an acquisition function (colored by light green) every iteration.\label{fig:bo_steps}](figures/bo_step_global_local_ei.png)
 
 1. Building a probabilistic regression model, which is capable of
 estimating the degrees of exploration and exploitation;
@@ -114,9 +111,9 @@ Generally describing, a probabilistic regression model is expressed as
 \end{equation}
 where $\mathbf{x} \in \mathcal{X}$ is a data sample and
 ${\boldsymbol \theta}(\mathbf{x})$ indicates parameters of a distribution
-over a function response $y$ at which $\mathbf{x}$ is given. In a common
-Bayesian optimization community, ${\boldsymbol \theta}(\mathbf{x})$ is often
-modeled as parameters of Gaussian distribution, i.e., $\mu(\mathbf{x})$ and
+over a function response $y$ at which $\mathbf{x}$ is given. In the standard
+Bayesian optimization, ${\boldsymbol \theta}(\mathbf{x})$ is often modeled
+as parameters of Gaussian distribution, i.e., $\mu(\mathbf{x})$ and
 $\sigma^2(\mathbf{x})$. Based on the definition of surrogate models, an
 acquisition function is also expressed as
 $a(\mathbf{x} \mid {\boldsymbol \theta}(\mathbf{x}))$, and the next query is
