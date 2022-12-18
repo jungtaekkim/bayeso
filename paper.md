@@ -64,16 +64,18 @@ optimization [@ShieldsBJ2021nature].
 In this paper, we present an easy-to-use Bayesian optimization framework,
 referred to as *BayesO* (pronounced "bayes-o"), to effortlessly utilize
 Bayesian optimization in the problems of interest to practitioners. Our
-BayesO is written in one of popular programming languages, Python, and
-licensed under the MIT license. In particualr, it provides various features
-including different types of input variables (e.g., vectors and
+BayesO is written in one of the most popular programming languages, Python,
+and licensed under the MIT license. In particualr, it provides various
+features including different types of input variables (e.g., vectors and
 sets [@KimJ2021ml]) and different surrogate models (e.g., Gaussian process
 regression [@RasmussenCE2006book] and Student-$t$ process
-regression [@ShahA2014aistats]). In addition to such features, we describe
-how we implement our BayesO in the perspective of software development.
-We hope that this BayesO project encourages us to readily utilize the
-powerful black-box optimization technique in diverse academic and
-industrial fields.
+regression [@ShahA2014aistats]). In addition to such functionality, we
+describe how we implement our BayesO in the perspective of software
+development. We hope that this BayesO project encourages us to readily
+utilize the powerful black-box optimization technique in diverse academic
+and industrial fields.
+
+![Visualization of Bayesian optimization procedure. Given an objective function, \autoref{eqn:simple} (colored by turquoise) and four initial points (denoted as light blue $\texttt{+}$ at iteration 1), a query point (denoted as pink $\texttt{x}$) is determined by constructing a surrogate model (colored by orange) and maximizing an acquisition function (colored by light green) every iteration.\label{fig:bo_steps}](figures/bo_step_global_local_ei.png)
 
 # Bayesian Optimization
 
@@ -82,8 +84,6 @@ work [@BrochuE2010arxiv; @ShahriariB2016procieee; @GarnettR2022book],
 supposing that a target objective function is black-box, Bayesian
 optimization is an approach to optimizing the objective in a
 sample-efficient manner. It repeats three primary steps:
-
-![Visualization of Bayesian optimization procedure. Given an objective function \autoref{eqn:simple} (colored by turquoise) and four initial points (denoted as light blue $\texttt{+}$ at iteration 1), a query point (denoted as pink $\texttt{x}$) is determined by constructing a surrogate model (colored by orange) and maximizing an acquisition function (colored by light green) every iteration.\label{fig:bo_steps}](figures/bo_step_global_local_ei.png)
 
 1. Building a probabilistic regression model, which is capable of
 estimating the degrees of exploration and exploitation;
@@ -96,8 +96,7 @@ of wall-clock time, is encountered. After the stopping criterion is met, the
 best solution among the queries evaluated so far is selected by considering
 the function evaluations. As shown in \autoref{fig:bo_steps}, Bayesian
 optimization iteratively finds a candidate of global optimizer, repeating
-the aforementioned steps. Note that an objective function of the example
-shown in \autoref{fig:bo_steps} is
+the aforementioned steps. Note that, for this example, an objective is
 \begin{equation}\label{eqn:simple}
     f(x) = 2 \sin(x) + 2 \cos(2x) + 0.05 x,
 \end{equation}
@@ -111,7 +110,7 @@ Generally describing, a probabilistic regression model is expressed as
 \end{equation}
 where $\mathbf{x} \in \mathcal{X}$ is a data sample and
 ${\boldsymbol \theta}(\mathbf{x})$ indicates parameters of a distribution
-over a function response $y$ at which $\mathbf{x}$ is given. In the standard
+over a function response $y$ at which $\mathbf{x}$ is given. In generic
 Bayesian optimization, ${\boldsymbol \theta}(\mathbf{x})$ is often modeled
 as parameters of Gaussian distribution, i.e., $\mu(\mathbf{x})$ and
 $\sigma^2(\mathbf{x})$. Based on the definition of surrogate models, an
@@ -137,18 +136,17 @@ qmcpy [@ChoiSCT2022mcqmc] for low-discrepancy sequences,
 pycma [@HansenN2019software] for acquisition function optimization with
 covariance matrix adaptation evolution strategy, and tqdm for printing a
 progress bar. Note that this paper is written by referring to BayesO v0.5.4.
-Since a structure of the package can be changed in higher versions of
-BayesO, see official documentation for more details of our package.
+For higher versions of BayesO, see official documentation.
 
-Now, we enumerate the implementations of probabilistic regression models, which are supported in our package:
+Now, we enumerate the implementations of probabilistic regression models,
+which are supported in our package:
 
 - Gaussian process regression [@RasmussenCE2006book];
 - Student-$t$ process regression [@ShahA2014aistats];
 - Random forest regression [@BreimanL2001ml].
 
-Since random forest regression is not a probabilistic model inherently,
-we compute its mean and variance functions according to the work [@HutterF2014ai].
-These implementations can be found in respective subdirectories, `gp/`, `tp/`, and `trees/`.
+Since random forest regression is not a probabilistic model inherently, we
+compute its mean and variance functions based on the work [@HutterF2014ai].
 
 We implement the following acquisition functions:
 
@@ -159,16 +157,13 @@ We implement the following acquisition functions:
 - augmented expected improvement [@HuangD2006jgo];
 - Gaussian process upper confidence bound [@SrinivasN2010icml].
 
-One of these acquisition functions can be selected when a Bayesian optimization object is created,
-and these implementations can be found in a file, `acquisition.py`.
-In addition to the aforementioned acquisition functions,
-we also include the implementation of Thompson sampling [@ThompsonWR1933biometrika] in BayesO.
-It can be found in a file, `thompson_sampling.py`.
+One of these acquisition functions can be selected when a Bayesian optimization object is created. In addition to the aforementioned acquisition
+functions, we also include the implementation of Thompson
+sampling [@ThompsonWR1933biometrika] in BayesO.
 
-A main feature to optimize a black-box function is defined in a subdirectory, `bo/`.
-To support an easy-to-use interface,
-we implement a wrapper of Bayesian optimization in a subdirectory, `wrappers/`,
-and support the following scenarios:
+A main feature to optimize a black-box function is defined in a
+subdirectory, `bo/`. To support an easy-to-use interface, we implement a
+wrapper of Bayesian optimization for the following scenarios:
 
 - a run without initial inputs;
 - a run with initial inputs only;
@@ -176,16 +171,11 @@ and support the following scenarios:
 
 These wrappers enable us to randomly choose or fix initializations.
 
-# Details of BayesO
+# Software Development for BayesO
 
-In this section we describe the details on BayesO.
-
-## Software Development
-
-We present the details of software development.
-To provide the manageable maintenance of our software,
-we actively apply external development management packages,
-which are described below.
+We present the details of software development. To provide the manageable
+maintenance of our software, we actively apply external development
+management packages, which are described below.
 
 - Code analysis: The entire codes in our software are monitored and inspected to satisfy the code conventions predefined in our software. Unless otherwise specified, we do our best to satisfy all the conventions.
 - Type hints: As supported in Python 3, we provide type hints for any arguments including arguments with default values. These are tested by the decorator declared in the code.
@@ -194,25 +184,27 @@ which are described below.
 - Installation: We upload our software in a popular repository for Python packages, PyPI, accordingly BayesO can be easily installed in any supported environments.
 - Documentation: We create official documentation with docstring. A code convention, docstring is supported in Python and it is accomplished by specific templates of comments. The documentation is hosted on the Internet. Besides, it also provides a document in PDF format.
 
-# Discussion and Conclusion
+# Dicussion and Conclusion
 
-In this work we have presented our own Bayesian optimization framework, referred to as BayesO,
-which is written in Python under the MIT license.
-We described the features of our software and the components for software development.
-Based on our codebase, we showed that our BayesO is established and maintained well
-in the perspective of software development.
-Moreover, we introduced our sister project, BayesO Benchmarks, which implements
+In this work we have presented our own Bayesian optimization framework,
+referred to as BayesO, which is written in Python under the MIT license. We
+described the features of our software and the components for software
+development. Based on our codebase, we showed that our BayesO is established
+and maintained well in the perspective of software development. Moreover,
+we introduced our sister project, BayesO Benchmarks, which implements
 various benchmark functions and helps to utilize them easily.
-Finally, we demonstrated the sample codes of Branin function optimization and the experimental results of BayesO.
 
-Our project enables many researchers to suggest a new algorithm by modifying BayesO and many practitioners to utilize
-Bayesian optimization in their applications.
-However, as the limitations of this work, it is difficult to scale up Bayesian optimization in terms of the dimensionality of search space
-and the number of queries.
-Precisely describing, compared to a Bayesian optimization framework with modern learning techniques, e.g., BoTorch,
-the current version of BayesO cannot enjoy the parallel computations that are led
-from the latest machine learning frameworks, e.g., PyTorch [@PaszkeA2019neurips] and GPyTorch [@GardnerJR2018neurips].
-To resolve such limitations, we will be able to support a matrix computation with GPU operations.
+Our project enables many researchers to suggest a new algorithm by modifying
+BayesO and many practitioners to utilize Bayesian optimization in their
+applications. However, as the limitations of this work, it is difficult to
+scale up Bayesian optimization in terms of the dimensionality of search
+space and the number of queries. Precisely describing, compared to a
+Bayesian optimization framework with modern learning techniques, e.g.,
+BoTorch, the current version of BayesO cannot enjoy the parallel
+computations that are led from the latest machine learning frameworks,
+e.g., PyTorch [@PaszkeA2019neurips] and GPyTorch [@GardnerJR2018neurips]. To
+resolve such limitations, we will be able to support a matrix computation
+with GPU operations.
 
 # Acknowledgements
 
