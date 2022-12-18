@@ -128,7 +128,7 @@ for the details.
 
 # Overview of BayesO
 
-![Logo of BayesO.\label{fig:logo_bayeso}](figures/logo_bayeso_capitalized.png){ width=30% }
+![Logo of BayesO.\label{fig:logo_bayeso}](figures/logo_bayeso_capitalized.png){ width=50% }
 
 BayesO, which is licensed under the MIT license, optimizes a target objective function,
 following the procedure described in
