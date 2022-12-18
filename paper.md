@@ -87,18 +87,20 @@ work [@BrochuE2010arxiv; @ShahriariB2016procieee; @GarnettR2022book],
 supposing that a target objective function is black-box, Bayesian
 optimization is an approach to optimizing the objective in a
 sample-efficient manner. It repeats three primary steps:
-(i) Building a probabilistic regression model, which is capable of
+
+1. Building a probabilistic regression model, which is capable of
 estimating the degrees of exploration and exploitation;
-(ii) Optimizing an acquisition function, which determines where next to
+2. Optimizing an acquisition function, which determines where next to
 query, by utilizing the probabilistic regression model;
-(iii) Evaluating the candidate determined by the acquisition function,
+3. Evaluating the candidate determined by the acquisition function,
+
 until a predefined stopping criterion, e.g., an iteration budget or a budget
-of wall-clock time, is encountered. After the stopping criterion is
-met, the best solution among the queries evaluated so far is selected by
-considering the function evaluations. As shown in \autoref{fig:bo_steps},
-Bayesian optimization iteratively finds a candidate of global optimizer,
-repeating the aforementioned steps. Note that an objective function of the
-example shown in \autoref{fig:bo_steps} is
+of wall-clock time, is encountered. After the stopping criterion is met, the
+best solution among the queries evaluated so far is selected by considering
+the function evaluations. As shown in \autoref{fig:bo_steps}, Bayesian
+optimization iteratively finds a candidate of global optimizer, repeating
+the aforementioned steps. Note that an objective function of the example
+shown in \autoref{fig:bo_steps} is
 \begin{equation}\label{eqn:simple}
     f(x) = 2 \sin(x) + 2 \cos(2x) + 0.05 x,
 \end{equation}
@@ -120,30 +122,26 @@ acquisition function is also expressed as
 $a(\mathbf{x} \mid {\boldsymbol \theta}(\mathbf{x}))$, and the next query is
 determined by maximizing
 $a(\mathbf{x} \mid {\boldsymbol \theta}(\mathbf{x}))$. To focus on the
-BayesO system itself, we omit the details of surrogate models and
-acquisition functions here; see the seminal articles and textbook on
-Bayesian
+BayesO system, we omit the details of surrogate models and acquisition
+functions here; see the seminal articles and textbook on Bayesian
 optimization [@BrochuE2010arxiv; @ShahriariB2016procieee; @GarnettR2022book]
 for the details.
 
 # Overview of BayesO
 
-![Logo of BayesO.\label{fig:logo_bayeso}](figures/logo_bayeso_capitalized.png){ width=50% }
+![Logo of BayesO.\label{fig:logo_bayeso}](figures/logo_bayeso_capitalized.png){ width=60% }
 
-BayesO, which is licensed under the MIT license, optimizes a target objective function,
-following the procedure described in
-In this section we cover the overview of BayesO 
-including the implementations of probabilistic regression models 
-and acquisition functions.
-To implement our software, we actively use NumPy [@HarrisCR2020nature] and SciPy [@VirtanenP2020nm],
-which are one of the most important scientific packages in Python.
-Moreover, we utilize qmcpy [@ChoiSCT2022mcqmc] for low-discrepancy sequences,
-pycma [@HansenN2019software] for acquisition function optimization
-with covariance matrix adaptation evolution strategy,
-and tqdm for printing a progress bar.
-Note that this paper is written by referring to BayesO v0.5.4.
-Since a structure of the package can be changed in higher versions of BayesO,
-see official documentation for more details of our package.
+In this section we cover the overview of BayesO including the
+implementations of probabilistic regression models and acquisition
+functions. To implement our software, we actively use
+NumPy [@HarrisCR2020nature] and SciPy [@VirtanenP2020nm], which are one of
+the most important scientific packages in Python. Moreover, we utilize
+qmcpy [@ChoiSCT2022mcqmc] for low-discrepancy sequences,
+pycma [@HansenN2019software] for acquisition function optimization with
+covariance matrix adaptation evolution strategy, and tqdm for printing a
+progress bar. Note that this paper is written by referring to BayesO v0.5.4.
+Since a structure of the package can be changed in higher versions of
+BayesO, see official documentation for more details of our package.
 
 Now, we enumerate the implementations of probabilistic regression models, which are supported in our package:
 
