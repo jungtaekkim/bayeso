@@ -119,9 +119,7 @@ $a(\mathbf{x} \mid {\boldsymbol \theta}(\mathbf{x}))$, and the next query is
 determined by maximizing
 $a(\mathbf{x} \mid {\boldsymbol \theta}(\mathbf{x}))$. To focus on the
 BayesO system, we omit the details of surrogate models and acquisition
-functions here; see the seminal articles and textbook on Bayesian
-optimization [@BrochuE2010arxiv; @ShahriariB2016procieee; @GarnettR2022book]
-for the details.
+functions here.
 
 # Overview of BayesO
 
@@ -184,27 +182,12 @@ management packages, which are described below.
 - Installation: We upload our software in a popular repository for Python packages, PyPI, accordingly BayesO can be easily installed in any supported environments.
 - Documentation: We create official documentation with docstring. A code convention, docstring is supported in Python and it is accomplished by specific templates of comments. The documentation is hosted on the Internet. Besides, it also provides a document in PDF format.
 
-# Dicussion and Conclusion
+# Conclusion
 
 In this work we have presented our own Bayesian optimization framework,
-referred to as BayesO, which is written in Python under the MIT license. We
-described the features of our software and the components for software
-development. Based on our codebase, we showed that our BayesO is established
-and maintained well in the perspective of software development. Moreover,
-we introduced our sister project, BayesO Benchmarks, which implements
-various benchmark functions and helps to utilize them easily.
-
-Our project enables many researchers to suggest a new algorithm by modifying
-BayesO and many practitioners to utilize Bayesian optimization in their
-applications. However, as the limitations of this work, it is difficult to
-scale up Bayesian optimization in terms of the dimensionality of search
-space and the number of queries. Precisely describing, compared to a
-Bayesian optimization framework with modern learning techniques, e.g.,
-BoTorch, the current version of BayesO cannot enjoy the parallel
-computations that are led from the latest machine learning frameworks,
-e.g., PyTorch [@PaszkeA2019neurips] and GPyTorch [@GardnerJR2018neurips]. To
-resolve such limitations, we will be able to support a matrix computation
-with GPU operations.
+referred to as BayesO. We hope that our project enables many researchers to
+suggest a new algorithm by modifying BayesO and many practitioners to
+utilize Bayesian optimization in their applications.
 
 # Acknowledgements
 
