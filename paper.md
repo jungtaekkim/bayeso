@@ -171,16 +171,26 @@ These wrappers enable us to randomly choose or fix initializations.
 
 # Software Development for BayesO
 
-We present the details of software development. To provide the manageable
-maintenance of our software, we actively apply external development
-management packages, which are described below.
+To manage our software productively, we actively utilize external
+development management packages.
 
-- Code analysis: The entire codes in our software are monitored and inspected to satisfy the code conventions predefined in our software. Unless otherwise specified, we do our best to satisfy all the conventions.
-- Type hints: As supported in Python 3, we provide type hints for any arguments including arguments with default values. These are tested by the decorator declared in the code.
-- Unit tests: All the unit tests for our software are included. We have achieved 100\% coverage. In addition, unit tests for measuring execution time are also provided. The common unit tests are run by GitHub Actions; see the `.github/workflows` subdirectory.
-- Dependency: Our package depends on NumPy [@HarrisCR2020nature], SciPy [@VirtanenP2020nm], qmcpy [@ChoiSCT2022mcqmc], pycma [@HansenN2019software], and tqdm, which are listed in a file, `requirements.txt`. Other dependencies to test our software are described in multiple `requirements-*.txt` files.
-- Installation: We upload our software in a popular repository for Python packages, PyPI, accordingly BayesO can be easily installed in any supported environments.
-- Documentation: We create official documentation with docstring. A code convention, docstring is supported in Python and it is accomplished by specific templates of comments. The documentation is hosted on the Internet. Besides, it also provides a document in PDF format.
+- Code analysis: The entire codes in our software are monitored and
+inspected to satisfy the code conventions predefined in our software. Unless
+otherwise specified, we do our best to satisfy all the conventions.
+- Type hints: As supported in Python 3, we provide type hints for any
+arguments including arguments with default values.
+- Unit tests: All the unit tests for our software are included. We have
+achieved 100\% coverage. In addition, unit tests for measuring execution
+time are also provided.
+- Dependency: Our package depends on NumPy [@HarrisCR2020nature],
+SciPy [@VirtanenP2020nm], qmcpy [@ChoiSCT2022mcqmc],
+pycma [@HansenN2019software], and tqdm.
+- Installation: We upload our software in a popular repository for Python
+packages, PyPI, accordingly BayesO can be easily installed in any supported
+environments.
+- Documentation: We create official documentation with docstring. A code
+convention, docstring is supported in Python and it is accomplished by
+specific templates of comments.
 
 # Conclusion
 
