@@ -46,12 +46,12 @@ function $f$:
 \end{equation}
 where $\mathcal{X} \subset \mathbb{R}^d$ is a $d$-dimensional space. In
 general, finding a solution $\mathbf{x}^\star$ of \autoref{eqn:global_opt},
-called a global optimizer on $\mathcal{X}$, is time-consuming since we
+i.e., a global optimizer on $\mathcal{X}$, is time-consuming since we
 cannot employ any knowledge in solving this problem. Compared to other
 possible approaches, e.g., random search and evolutionary algorithm,
 Bayesian optimization successfully shows its effectiveness by utilizing a
 probabilistic regression model and an acquisition function. In particular,
-the sample-efficient approach of our interest enables us to employ it in
+the sample-efficient approach of our interest enables us to apply it in
 various real-world applications such as hyperparameter
 optimization [@SnoekJ2012neurips], automated machine
 learning [@FeurerM2015neurips; @FeurerM2022jmlr], neural architecture
@@ -65,13 +65,13 @@ In this paper, we present an easy-to-use Bayesian optimization framework,
 referred to as *BayesO* (pronounced "bayes-o"), to effortlessly utilize
 Bayesian optimization in the problems of interest to practitioners. Our
 BayesO is written in one of the most popular programming languages, Python,
-and licensed under the MIT license. In particualr, it provides various
-features including different types of input variables (e.g., vectors and
+and licensed under the MIT license. Moreover, it provides various features
+including different types of input variables (e.g., vectors and
 sets [@KimJ2021ml]) and different surrogate models (e.g., Gaussian process
 regression [@RasmussenCE2006book] and Student-$t$ process
-regression [@ShahA2014aistats]). In addition to such functionality, we
-describe how we implement our BayesO in the perspective of software
-development. We hope that this BayesO project encourages us to readily
+regression [@ShahA2014aistats]). Along with the description of such
+functionality, we cover various components for software development in the
+BayesO project. We hope that this BayesO project encourages us to readily
 utilize the powerful black-box optimization technique in diverse academic
 and industrial fields.
 
@@ -125,26 +125,20 @@ functions here.
 
 ![Logo of BayesO.\label{fig:logo_bayeso}](figures/logo_bayeso_capitalized.png){ width=60% }
 
-In this section we cover the overview of BayesO including the
-implementations of probabilistic regression models and acquisition
-functions. To implement our software, we actively use
-NumPy [@HarrisCR2020nature] and SciPy [@VirtanenP2020nm], which are one of
-the most important scientific packages in Python. Moreover, we utilize
-qmcpy [@ChoiSCT2022mcqmc] for low-discrepancy sequences,
-pycma [@HansenN2019software] for acquisition function optimization with
-covariance matrix adaptation evolution strategy, and tqdm for printing a
-progress bar. Note that this paper is written by referring to BayesO v0.5.4.
-For higher versions of BayesO, see official documentation.
+In this section we cover the overview of BayesO, e.g., probabilistic
+regression models and acquisition functions. Note that this paper is written
+by referring to BayesO v0.5.4. For higher versions of BayesO, see official
+documentation.
 
-Now, we enumerate the implementations of probabilistic regression models,
-which are supported in our package:
+BayesO supports the following probabilistic regression models:
 
 - Gaussian process regression [@RasmussenCE2006book];
 - Student-$t$ process regression [@ShahA2014aistats];
 - Random forest regression [@BreimanL2001ml].
 
-Since random forest regression is not a probabilistic model inherently, we
-compute its mean and variance functions based on the work [@HutterF2014ai].
+Although random forest regression is not a probabilistic model inherently,
+we can compute its mean and variance functions as reported
+by @HutterF2014ai.
 
 We implement the following acquisition functions:
 
@@ -156,23 +150,20 @@ We implement the following acquisition functions:
 - Gaussian process upper confidence bound [@SrinivasN2010icml].
 
 One of these acquisition functions can be selected when a Bayesian optimization object is created. In addition to the aforementioned acquisition
-functions, we also include the implementation of Thompson
-sampling [@ThompsonWR1933biometrika] in BayesO.
+functions, we also include Thompson sampling [@ThompsonWR1933biometrika]
+in BayesO.
 
-A main feature to optimize a black-box function is defined in a
-subdirectory, `bo/`. To support an easy-to-use interface, we implement a
-wrapper of Bayesian optimization for the following scenarios:
+Furthermore, to support an easy-to-use interface, we implement wrappers of
+Bayesian optimization for the following scenarios:
 
-- a run without initial inputs;
-- a run with initial inputs only;
-- a run with initial inputs and their observations.
-
-These wrappers enable us to randomly choose or fix initializations.
+- a run with randomly-chosen initial inputs;
+- a run with initial inputs provided;
+- a run with initial inputs provided and their evaluations.
 
 # Software Development for BayesO
 
-To manage our software productively, we actively utilize external
-development management packages.
+To manage BayesO productively, we actively utilize external development
+management packages.
 
 - Code analysis: The entire codes in our software are monitored and
 inspected to satisfy the code conventions predefined in our software. Unless
