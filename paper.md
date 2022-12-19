@@ -125,7 +125,7 @@ Although random forest regression is not a probabilistic model inherently,
 we can compute its mean and variance functions as reported
 by @HutterF2014ai.
 
-We implement the following acquisition functions:
+We implement several acquisition functions:
 
 - pure exploration;
 - pure exploitation;
@@ -134,11 +134,13 @@ We implement the following acquisition functions:
 - augmented expected improvement [@HuangD2006jgo];
 - Gaussian process upper confidence bound [@SrinivasN2010icml].
 
-In addition, we also include Thompson sampling [@ThompsonWR1933biometrika]
-in BayesO.
+As a strategy to optimize an acquisition function, we suggest the
+following options: DIRECT [@JonesDR1993jota], CMA-ES [@HansenN1997eufit],
+and L-BFGS-B [@ByrdRH1995siamjsc]. In addition, we also include Thompson
+sampling [@ThompsonWR1933biometrika] in BayesO.
 
-Furthermore, to support an easy-to-use interface, we implement wrappers of
-Bayesian optimization for the following scenarios:
+Furthermore, to support an easy-to-use interface, we implement the wrappers
+of Bayesian optimization for particular scenarios as follows:
 
 - a run with randomly-chosen initial inputs;
 - a run with initial inputs provided;
