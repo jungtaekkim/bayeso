@@ -71,9 +71,9 @@ sets [@KimJ2021ml]) and different surrogate models (e.g., Gaussian process
 regression [@RasmussenCE2006book] and Student-$t$ process
 regression [@ShahA2014aistats]). Along with the description of such
 functionality, we cover various components for software development in the
-BayesO project. We hope that this BayesO project encourages us to readily
-utilize the powerful black-box optimization technique in diverse academic
-and industrial fields.
+BayesO project. We hope that this BayesO project encourages researchers and
+practitioners to readily utilize the powerful black-box optimization
+technique in diverse academic and industrial fields.
 
 ![Visualization of Bayesian optimization procedure. Given an objective function, \autoref{eqn:simple} (colored by turquoise) and four initial points (denoted as light blue $\texttt{+}$ at iteration 1), a query point (denoted as pink $\texttt{x}$) is determined by constructing a surrogate model (colored by orange) and maximizing an acquisition function (colored by light green) every iteration.\label{fig:bo_steps}](figures/bo_step_global_local_ei.png)
 
@@ -85,47 +85,35 @@ supposing that a target objective function is black-box, Bayesian
 optimization is an approach to optimizing the objective in a
 sample-efficient manner. It repeats three primary steps:
 
-1. Building a probabilistic regression model, which is capable of
-estimating the degrees of exploration and exploitation;
-2. Optimizing an acquisition function, which determines where next to
-query, by utilizing the probabilistic regression model;
-3. Evaluating the candidate determined by the acquisition function,
+1. Building a probabilistic regression model, which is capable of estimating
+the degrees of exploration and exploitation;
+2. Optimizing an acquisition function, which is defined with the
+probabilistic regression model;
+3. Evaluating a query point, which is determined by optimizing the
+acquisition function,
 
 until a predefined stopping criterion, e.g., an iteration budget or a budget
-of wall-clock time, is encountered. After the stopping criterion is met, the
-best solution among the queries evaluated so far is selected by considering
-the function evaluations. As shown in \autoref{fig:bo_steps}, Bayesian
-optimization iteratively finds a candidate of global optimizer, repeating
-the aforementioned steps. Note that, for this example, an objective is
+of wall-clock time, is satisfied. Eventually, the best solution among the
+queries evaluated is selected by considering the function evaluations. As
+shown in \autoref{fig:bo_steps}, Bayesian optimization iteratively finds a
+candidate of global optimizer, repeating the aforementioned steps. Note
+that, for this example, an objective function is
 \begin{equation}\label{eqn:simple}
     f(x) = 2 \sin(x) + 2 \cos(2x) + 0.05 x,
 \end{equation}
 where $x \in [-5, 5]$, and Gaussian process regression and expected
 improvement are used as a surrogate model and an acquisition function,
-respectively.
-
-Generally describing, a probabilistic regression model is expressed as
-\begin{equation}
-    \hat{f}(\mathbf{x}) = p(y \mid \mathbf{x}, {\boldsymbol \theta}(\mathbf{x})),
-\end{equation}
-where $\mathbf{x} \in \mathcal{X}$ is a data sample and
-${\boldsymbol \theta}(\mathbf{x})$ indicates parameters of a distribution
-over a function response $y$ at which $\mathbf{x}$ is given. In generic
-Bayesian optimization, ${\boldsymbol \theta}(\mathbf{x})$ is often modeled
-as parameters of Gaussian distribution, i.e., $\mu(\mathbf{x})$ and
-$\sigma^2(\mathbf{x})$. Based on the definition of surrogate models, an
-acquisition function is also expressed as
-$a(\mathbf{x} \mid {\boldsymbol \theta}(\mathbf{x}))$, and the next query is
-determined by maximizing
-$a(\mathbf{x} \mid {\boldsymbol \theta}(\mathbf{x}))$. To focus on the
-BayesO system, we omit the details of surrogate models and acquisition
-functions here.
+respectively. To focus on the BayesO system, we omit the details of
+surrogate models and acquisition functions here; see the seminal articles
+and textbook on Bayesian
+optimization [@BrochuE2010arxiv; @ShahriariB2016procieee; @GarnettR2022book]
+for the details.
 
 # Overview of BayesO
 
-![Logo of BayesO.\label{fig:logo_bayeso}](figures/logo_bayeso_capitalized.png){ width=60% }
+![Logo of BayesO.\label{fig:logo_bayeso}](figures/logo_bayeso_capitalized.png){ width=50% }
 
-In this section we cover the overview of BayesO, e.g., probabilistic
+In this section we cover the overview of BayesO including probabilistic
 regression models and acquisition functions. Note that this paper is written
 by referring to BayesO v0.5.4. For higher versions of BayesO, see official
 documentation.
@@ -149,9 +137,8 @@ We implement the following acquisition functions:
 - augmented expected improvement [@HuangD2006jgo];
 - Gaussian process upper confidence bound [@SrinivasN2010icml].
 
-One of these acquisition functions can be selected when a Bayesian optimization object is created. In addition to the aforementioned acquisition
-functions, we also include Thompson sampling [@ThompsonWR1933biometrika]
-in BayesO.
+In addition to the aforementioned acquisition functions, we also include
+Thompson sampling [@ThompsonWR1933biometrika] in BayesO.
 
 Furthermore, to support an easy-to-use interface, we implement wrappers of
 Bayesian optimization for the following scenarios:
@@ -180,19 +167,19 @@ pycma [@HansenN2019software], and tqdm.
 packages, PyPI, accordingly BayesO can be easily installed in any supported
 environments.
 - Documentation: We create official documentation with docstring. A code
-convention, docstring is supported in Python and it is accomplished by
+convention, docstring, is supported in Python and it is accomplished by
 specific templates of comments.
 
 # Conclusion
 
 In this work we have presented our own Bayesian optimization framework,
-referred to as BayesO. We hope that our project enables many researchers to
-suggest a new algorithm by modifying BayesO and many practitioners to
-utilize Bayesian optimization in their applications.
+named BayesO. We hope that our project enables many researchers to suggest
+a new algorithm by modifying BayesO and many practitioners to utilize
+Bayesian optimization in their applications.
 
 # Acknowledgements
 
-We acknowledge contributions from Brigitta Sipocz, Syrtis Major, and Semyeong
-Oh, and support from Kathryn Johnston during the genesis of this project.
+The BayesO project has been started when JK and SC were with POSTECH, and it
+has been mostly developed at POSTECH.
 
 # References
