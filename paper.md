@@ -104,10 +104,7 @@ that, for this example, an objective function is
 where $x \in [-5, 5]$, and Gaussian process regression and expected
 improvement are used as a surrogate model and an acquisition function,
 respectively. To focus on the BayesO system, we omit the details of
-surrogate models and acquisition functions here; see the seminal articles
-and textbook on Bayesian
-optimization [@BrochuE2010arxiv; @ShahriariB2016procieee; @GarnettR2022book]
-for the details.
+surrogate models and acquisition functions here.
 
 # Overview of BayesO
 
@@ -137,8 +134,8 @@ We implement the following acquisition functions:
 - augmented expected improvement [@HuangD2006jgo];
 - Gaussian process upper confidence bound [@SrinivasN2010icml].
 
-In addition to the aforementioned acquisition functions, we also include
-Thompson sampling [@ThompsonWR1933biometrika] in BayesO.
+In addition, we also include Thompson sampling [@ThompsonWR1933biometrika]
+in BayesO.
 
 Furthermore, to support an easy-to-use interface, we implement wrappers of
 Bayesian optimization for the following scenarios:
@@ -156,7 +153,7 @@ management packages.
 inspected to satisfy the code conventions predefined in our software. Unless
 otherwise specified, we do our best to satisfy all the conventions.
 - Type hints: As supported in Python 3, we provide type hints for any
-arguments including arguments with default values.
+arguments.
 - Unit tests: All the unit tests for our software are included. We have
 achieved 100\% coverage. In addition, unit tests for measuring execution
 time are also provided.
@@ -166,9 +163,7 @@ pycma [@HansenN2019software], and tqdm.
 - Installation: We upload our software in a popular repository for Python
 packages, PyPI, accordingly BayesO can be easily installed in any supported
 environments.
-- Documentation: We create official documentation with docstring. A code
-convention, docstring, is supported in Python and it is accomplished by
-specific templates of comments.
+- Documentation: We create official documentation with docstring.
 
 # Conclusion
 
