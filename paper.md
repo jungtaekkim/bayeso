@@ -109,10 +109,9 @@ surrogate models and acquisition functions here.
 # Overview of BayesO
 
 In this section we cover the overview of BayesO including probabilistic
-regression models and acquisition functions. Note that this paper is written
-by referring to BayesO v0.5.4. For higher versions of BayesO, see official
-documentation. Note that the BayesO logo is shown
-in \autoref{fig:logo_bayeso}.
+regression models and acquisition functions, by referring to BayesO v0.5.4.
+For higher versions of BayesO, see official documentation. Note that the
+BayesO logo is shown in \autoref{fig:logo_bayeso}.
 
 ![Logo of BayesO.\label{fig:logo_bayeso}](figures/logo_bayeso_capitalized.png){ width=50% }
 
