@@ -137,7 +137,8 @@ We implement several acquisition functions:
 
 As a strategy to optimize an acquisition function, we suggest the
 following options: DIRECT [@JonesDR1993jota], CMA-ES [@HansenN1997eufit],
-and L-BFGS-B [@ByrdRH1995siamjsc].
+and L-BFGS-B [@ByrdRH1995siamjsc], which are widely used in Bayesian
+optimization.
 
 Furthermore, to support an easy-to-use interface, we implement the wrappers
 of Bayesian optimization for particular scenarios as follows:
@@ -152,8 +153,7 @@ To manage BayesO productively, we actively utilize external development
 management packages.
 
 - Code analysis: The entire codes in our software are monitored and
-inspected to satisfy the code conventions predefined in our software. Unless
-otherwise specified, we do our best to satisfy all the conventions.
+inspected to satisfy the code conventions predefined in our software.
 - Type hints: As supported in Python 3, we provide type hints for any
 arguments.
 - Unit tests: All the unit tests for our software are included. We have
