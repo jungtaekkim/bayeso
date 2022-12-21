@@ -132,13 +132,12 @@ We implement several acquisition functions:
 - probability of improvement [@MockusJ1978tgo];
 - expected improvement [@JonesDR1998jgo];
 - augmented expected improvement [@HuangD2006jgo];
-- Gaussian process upper confidence bound [@SrinivasN2010icml];
-- Thompson sampling [@ThompsonWR1933biometrika].
+- Gaussian process upper confidence bound [@SrinivasN2010icml].
 
 As a strategy to optimize an acquisition function, we suggest the
 following options: DIRECT [@JonesDR1993jota], CMA-ES [@HansenN1997eufit],
-and L-BFGS-B [@ByrdRH1995siamjsc], which are widely used in Bayesian
-optimization.
+and L-BFGS-B [@ByrdRH1995siamjsc]. In addition, we also include Thompson
+sampling [@ThompsonWR1933biometrika] in BayesO.
 
 Furthermore, to support an easy-to-use interface, we implement the wrappers
 of Bayesian optimization for particular scenarios as follows:
