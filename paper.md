@@ -38,7 +38,7 @@ components for software development.
 # Statement of need
 
 Bayesian
-optimization [@BrochuE2010arxiv; @ShahriariB2016procieee; @GarnettR2022book]
+optimization [@BrochuE2010arxiv; @ShahriariB2016procieee; @GarnettR2023book]
 is a sample-efficient method for solving the optimization of a black-box
 function $f$:
 \begin{equation}\label{eqn:global_opt}
@@ -80,7 +80,7 @@ technique in diverse academic and industrial fields.
 # Bayesian Optimization
 
 As discussed in the
-work [@BrochuE2010arxiv; @ShahriariB2016procieee; @GarnettR2022book],
+work [@BrochuE2010arxiv; @ShahriariB2016procieee; @GarnettR2023book],
 supposing that a target objective function is black-box, Bayesian
 optimization is an approach to optimizing the objective in a
 sample-efficient manner. It repeats three primary steps:
