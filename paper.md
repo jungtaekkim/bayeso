@@ -33,7 +33,7 @@ assembly, and chemical reaction optimization. In this paper we present an
 easy-to-use Bayesian optimization framework, referred to as *BayesO*, which
 is written in Python and licensed under the MIT license. To briefly
 introduce our software, we describe the functionality of BayesO and
-components for software development.
+various components for software development.
 
 # Statement of need
 
