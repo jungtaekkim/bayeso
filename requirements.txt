@@ -1,0 +1,5 @@
+numpy
+scipy
+qmcpy
+cma
+tqdm

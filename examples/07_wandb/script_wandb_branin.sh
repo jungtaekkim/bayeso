@@ -1,0 +1,10 @@
+python wandb_branin.py --num_iter 100 --initial sobol --cov matern52 --acq ei --ind_bo 0
+python wandb_branin.py --num_iter 100 --initial sobol --cov matern52 --acq ei --ind_bo 1
+python wandb_branin.py --num_iter 100 --initial sobol --cov matern52 --acq ei --ind_bo 2
+python wandb_branin.py --num_iter 100 --initial sobol --cov matern52 --acq ei --ind_bo 3
+python wandb_branin.py --num_iter 100 --initial sobol --cov matern52 --acq ei --ind_bo 4
+python wandb_branin.py --num_iter 100 --initial sobol --cov matern52 --acq ei --ind_bo 5
+python wandb_branin.py --num_iter 100 --initial sobol --cov matern52 --acq ei --ind_bo 6
+python wandb_branin.py --num_iter 100 --initial sobol --cov matern52 --acq ei --ind_bo 7
+python wandb_branin.py --num_iter 100 --initial sobol --cov matern52 --acq ei --ind_bo 8
+python wandb_branin.py --num_iter 100 --initial sobol --cov matern52 --acq ei --ind_bo 9

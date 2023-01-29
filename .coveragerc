@@ -1,0 +1,11 @@
+[run]
+relative_files = True
+source =
+    bayeso
+    tests
+
+[report]
+exclude_lines =
+    pragma: no cover
+    print
+    raise NotImplementedError

@@ -1,0 +1,4 @@
+include CODE_OF_CONDUCT.md
+include LICENSE
+include requirements.txt
+include requirements-optional.txt
