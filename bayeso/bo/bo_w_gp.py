@@ -23,6 +23,7 @@ from bayeso import constants
 from bayeso.gp import gp
 from bayeso.gp import gp_kernel
 from bayeso.utils import utils_bo
+from bayeso.utils import utils_common
 from bayeso.utils import utils_logger
 
 
@@ -149,6 +150,7 @@ class BOwGP(base_bo.BaseBO):
                     options={'disp': False}
                 )
                 next_point_x = next_point.x
+                next_point_x = utils_common.round_significant_figures(next_point_x)
                 list_next_point.append(next_point_x)
                 if self.debug:
                     self.logger.debug('acquired sample: %s',
@@ -163,6 +165,7 @@ class BOwGP(base_bo.BaseBO):
                 maxf=88888,
             )
             next_point_x = next_point.x
+            next_point_x = utils_common.round_significant_figures(next_point_x)
             list_next_point.append(next_point_x)
         elif self.str_optimizer_method_bo == 'CMA-ES':
             self.logger.debug('num_samples is ignored.')
@@ -182,6 +185,7 @@ class BOwGP(base_bo.BaseBO):
                     'bounds': [list_bounds[:, 0], list_bounds[:, 1]],
                     'verbose': -1, 'maxfevals': 1e5
                 })[0]
+            next_point_x = utils_common.round_significant_figures(next_point_x)
             list_next_point.append(next_point_x)
 
         next_points = np.array(list_next_point)

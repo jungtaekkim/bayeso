@@ -170,3 +170,18 @@ def get_time(time_all: np.ndarray, num_init: int, include_init: bool) -> np.ndar
     list_time = np.array(list_time)
 
     return np.mean(list_time, axis=0)
+
+@validate_types
+def round_significant_figures(
+    value: constants.TYPING_UNION_FLOAT_ARRAY
+) -> constants.TYPING_UNION_FLOAT_ARRAY:
+    if isinstance(value, float):
+        value = float(constants.FLOAT_CLIPPING.format(value))
+    elif isinstance(value, np.ndarray) and len(value.shape) == 1:
+        value = np.array([
+            float(constants.FLOAT_CLIPPING.format(elem)) for elem in value
+        ])
+    else:
+        raise ValueError('round_significant_figures: a wrong type')
+
+    return value
