@@ -1,6 +1,6 @@
 #
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: October 8, 2021
+# last updated: February 22, 2023
 #
 """It defines an abstract class of Bayesian optimization."""
 
@@ -265,7 +265,6 @@ class BaseBO(abc.ABC):
         return samples
 
     def get_samples(self, str_sampling_method: str,
-        fun_objective: constants.TYPING_UNION_CALLABLE_NONE=None,
         num_samples: int=constants.NUM_SAMPLES_AO,
         seed: constants.TYPING_UNION_INT_NONE=None,
     ) -> np.ndarray:
@@ -274,8 +273,6 @@ class BaseBO(abc.ABC):
 
         :param str_sampling_method: the name of sampling method.
         :type str_sampling_method: str.
-        :param fun_objective: None, or objective function.
-        :type fun_objective: NoneType or callable, optional
         :param num_samples: the number of samples.
         :type num_samples: int., optional
         :param seed: None, or random seed.
@@ -289,17 +286,14 @@ class BaseBO(abc.ABC):
         """
 
         assert isinstance(str_sampling_method, str)
-        assert callable(fun_objective) or fun_objective is None
         assert isinstance(num_samples, int)
         assert isinstance(seed, (int, constants.TYPE_NONE))
         assert str_sampling_method in constants.ALLOWED_SAMPLING_METHOD
 
         if str_sampling_method == 'grid':
-            assert fun_objective is not None
             if self.debug:
                 self.logger.debug('For this option, num_samples is used as num_grids.')
             samples = self._get_samples_grid(num_grids=num_samples)
-            samples = utils_bo.get_best_acquisition_by_evaluation(samples, fun_objective)
         elif str_sampling_method == 'uniform':
             samples = self._get_samples_uniform(num_samples, seed=seed)
         elif str_sampling_method == 'gaussian':

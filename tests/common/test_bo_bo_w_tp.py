@@ -89,15 +89,10 @@ def test_get_samples():
     num_X = 5
     X = np.random.randn(num_X, dim_X)
     Y = np.random.randn(num_X, 1)
-    fun_objective = lambda X: np.sum(X)
     model_bo = BO(arr_range, debug=True)
 
     with pytest.raises(AssertionError) as error:
         model_bo.get_samples(1)
-    with pytest.raises(AssertionError) as error:
-        model_bo.get_samples('grid', fun_objective=None)
-    with pytest.raises(AssertionError) as error:
-        model_bo.get_samples('uniform', fun_objective=1)
     with pytest.raises(AssertionError) as error:
         model_bo.get_samples('uniform', num_samples='abc')
     with pytest.raises(AssertionError) as error:
@@ -111,9 +106,41 @@ def test_get_samples():
     with pytest.raises(AssertionError) as error:
         model_bo.get_samples('abc')
 
-    arr_initials = model_bo.get_samples('grid', num_samples=50, fun_objective=fun_objective)
+    arr_initials = model_bo.get_samples('grid', num_samples=1)
     truth_arr_initials = np.array([
-        [0.0, -2.0, -5.0],
+        [0.000, -2.000, -5.000],
+    ])
+    assert (np.abs(arr_initials - truth_arr_initials) < TEST_EPSILON).all()
+
+    arr_initials = model_bo.get_samples('grid', num_samples=3)
+    truth_arr_initials = np.array([
+        [0.000, -2.000, -5.000],
+        [0.000, -2.000, 0.000],
+        [0.000, -2.000, 5.000],
+        [5.000, -2.000, -5.000],
+        [5.000, -2.000, 0.000],
+        [5.000, -2.000, 5.000],
+        [10.000, -2.000, -5.000],
+        [10.000, -2.000, 0.000],
+        [10.000, -2.000, 5.000],
+        [0.000, 0.000, -5.000],
+        [0.000, 0.000, 0.000],
+        [0.000, 0.000, 5.000],
+        [5.000, 0.000, -5.000],
+        [5.000, 0.000, 0.000],
+        [5.000, 0.000, 5.000],
+        [10.000, 0.000, -5.000],
+        [10.000, 0.000, 0.000],
+        [10.000, 0.000, 5.000],
+        [0.000, 2.000, -5.000],
+        [0.000, 2.000, 0.000],
+        [0.000, 2.000, 5.000],
+        [5.000, 2.000, -5.000],
+        [5.000, 2.000, 0.000],
+        [5.000, 2.000, 5.000],
+        [10.000, 2.000, -5.000],
+        [10.000, 2.000, 0.000],
+        [10.000, 2.000, 5.000],
     ])
     assert (np.abs(arr_initials - truth_arr_initials) < TEST_EPSILON).all()
 
@@ -202,7 +229,6 @@ def test_get_initials():
     num_X = 5
     X = np.random.randn(num_X, dim_X)
     Y = np.random.randn(num_X, 1)
-    fun_objective = lambda X: np.sum(X)
     model_bo = BO(arr_range)
 
     with pytest.raises(AssertionError) as error:

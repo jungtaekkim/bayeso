@@ -247,11 +247,7 @@ class BOwTrees(base_bo.BaseBO):
         time_end_surrogate = time.time()
 
         time_start_acq = time.time()
-        next_points = self.get_samples(
-            str_sampling_method,
-            fun_objective=None,
-            num_samples=num_samples
-        )
+        next_points = self.get_samples(str_sampling_method, num_samples=num_samples)
 
         next_points = utils_bo.check_points_in_bounds(next_points, np.array(self._get_bounds()))
 

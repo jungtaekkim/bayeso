@@ -120,8 +120,8 @@ class BOwGP(base_bo.BaseBO):
         `num_samples` examples are determined by `str_sampling_method`, to
         start acquisition function optimization.
 
-        :param fun_objective: negative acquisition function.
-        :type fun_objective: callable
+        :param fun_negative_acquisition: negative acquisition function.
+        :type fun_negative_acquisition: callable
         :param str_sampling_method: the name of sampling method.
         :type str_sampling_method: str.
         :param num_samples: the number of samples.
@@ -138,7 +138,6 @@ class BOwGP(base_bo.BaseBO):
         if self.str_optimizer_method_bo == 'L-BFGS-B':
             list_bounds = self._get_bounds()
             initials = self.get_samples(str_sampling_method,
-                fun_objective=fun_negative_acquisition,
                 num_samples=num_samples)
 
             for arr_initial in initials:
@@ -176,8 +175,7 @@ class BOwGP(base_bo.BaseBO):
                 def g(bx):
                     return f(bx)[0]
                 return g
-            initials = self.get_samples(str_sampling_method,
-                fun_objective=fun_negative_acquisition, num_samples=1)
+            initials = self.get_samples(str_sampling_method, num_samples=1)
             cur_sigma0 = np.mean(list_bounds[:, 1] - list_bounds[:, 0]) / 4.0
             next_point_x = cma.fmin(fun_wrapper(fun_negative_acquisition),
                 initials[0], cur_sigma0,
