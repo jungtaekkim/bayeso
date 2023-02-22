@@ -292,8 +292,6 @@ def validate_hyps_dict(hyps: dict, str_cov: str, dim: int,
     if np.abs(hyps['noise']) >= constants.BOUND_UPPER_GP_NOISE:
         hyps['noise'] = constants.BOUND_UPPER_GP_NOISE
 
-    hyps['noise'] = utils_common.round_significant_figures(hyps['noise'])
-
     if not use_gp:
         if 'dof' not in hyps:
             raise ValueError('validate_hyps_dict: invalid dof.')
@@ -303,8 +301,6 @@ def validate_hyps_dict(hyps: dict, str_cov: str, dim: int,
 
         if isinstance(hyps['dof'], float) and hyps['dof'] <= 2.0:
             hyps['dof'] = 2.00001
-
-        hyps['dof'] = utils_common.round_significant_figures(hyps['dof'])
 
     if 'lengthscales' not in hyps:
         raise ValueError('validate_hyps_dict: invalid lengthscales.')
@@ -316,15 +312,11 @@ def validate_hyps_dict(hyps: dict, str_cov: str, dim: int,
         and not isinstance(hyps['lengthscales'], float):
         raise ValueError('validate_hyps_dict: invalid lengthscales.')
 
-    hyps['lengthscales'] = utils_common.round_significant_figures(hyps['lengthscales'])
-
     if 'signal' not in hyps:
         raise ValueError('validate_hyps_dict: invalid signal.')
 
     if not isinstance(hyps['signal'], float):
         raise ValueError('validate_hyps_dict: invalid signal.')
-
-    hyps['signal'] = utils_common.round_significant_figures(hyps['signal'])
 
     return hyps
 

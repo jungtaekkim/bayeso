@@ -318,6 +318,10 @@ def test_optimize():
         model_bo.optimize(X, Y, str_mlm_method='abc')
     with pytest.raises(AssertionError) as error:
         model_bo.optimize(X, Y, num_samples='abc')
+    with pytest.raises(AssertionError) as error:
+        model_bo.optimize(X, Y, seed='abc')
+    with pytest.raises(AssertionError) as error:
+        model_bo.optimize(X, Y, seed=1.23)
 
     next_point, dict_info = model_bo.optimize(X, Y)
     next_points = dict_info['next_points']

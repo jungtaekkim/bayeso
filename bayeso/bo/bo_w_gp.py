@@ -23,7 +23,6 @@ from bayeso import constants
 from bayeso.gp import gp
 from bayeso.gp import gp_kernel
 from bayeso.utils import utils_bo
-from bayeso.utils import utils_common
 from bayeso.utils import utils_logger
 
 
@@ -113,7 +112,8 @@ class BOwGP(base_bo.BaseBO):
 
     def _optimize(self, fun_negative_acquisition: constants.TYPING_CALLABLE,
         str_sampling_method: str,
-        num_samples: int
+        num_samples: int,
+        seed: int=None,
     ) -> constants.TYPING_TUPLE_TWO_ARRAYS:
         """
         It optimizes `fun_negative_function` with `self.str_optimizer_method_bo`.
@@ -126,6 +126,8 @@ class BOwGP(base_bo.BaseBO):
         :type str_sampling_method: str.
         :param num_samples: the number of samples.
         :type num_samples: int.
+        :param seed: a random seed.
+        :type seed: int., optional
 
         :returns: tuple of next point to evaluate and all candidates
             determined by acquisition function optimization.
@@ -138,7 +140,7 @@ class BOwGP(base_bo.BaseBO):
         if self.str_optimizer_method_bo == 'L-BFGS-B':
             list_bounds = self._get_bounds()
             initials = self.get_samples(str_sampling_method,
-                num_samples=num_samples)
+                num_samples=num_samples, seed=seed)
 
             for arr_initial in initials:
                 next_point = minimize(
@@ -149,7 +151,6 @@ class BOwGP(base_bo.BaseBO):
                     options={'disp': False}
                 )
                 next_point_x = next_point.x
-                next_point_x = utils_common.round_significant_figures(next_point_x)
                 list_next_point.append(next_point_x)
                 if self.debug:
                     self.logger.debug('acquired sample: %s',
@@ -164,7 +165,6 @@ class BOwGP(base_bo.BaseBO):
                 maxf=88888,
             )
             next_point_x = next_point.x
-            next_point_x = utils_common.round_significant_figures(next_point_x)
             list_next_point.append(next_point_x)
         elif self.str_optimizer_method_bo == 'CMA-ES':
             self.logger.debug('num_samples is ignored.')
@@ -175,7 +175,7 @@ class BOwGP(base_bo.BaseBO):
                 def g(bx):
                     return f(bx)[0]
                 return g
-            initials = self.get_samples(str_sampling_method, num_samples=1)
+            initials = self.get_samples(str_sampling_method, num_samples=1, seed=seed)
             cur_sigma0 = np.mean(list_bounds[:, 1] - list_bounds[:, 0]) / 4.0
             next_point_x = cma.fmin(fun_wrapper(fun_negative_acquisition),
                 initials[0], cur_sigma0,
@@ -183,7 +183,6 @@ class BOwGP(base_bo.BaseBO):
                     'bounds': [list_bounds[:, 0], list_bounds[:, 1]],
                     'verbose': -1, 'maxfevals': 1e5
                 })[0]
-            next_point_x = utils_common.round_significant_figures(next_point_x)
             list_next_point.append(next_point_x)
 
         next_points = np.array(list_next_point)
@@ -323,6 +322,7 @@ class BOwGP(base_bo.BaseBO):
         str_sampling_method: str=constants.STR_SAMPLING_METHOD_AO,
         num_samples: int=constants.NUM_SAMPLES_AO,
         str_mlm_method: str=constants.STR_MLM_METHOD,
+        seed: int=None,
     ) -> constants.TYPING_TUPLE_ARRAY_DICT:
         """
         It computes acquired example, candidates of acquired examples,
@@ -342,6 +342,8 @@ class BOwGP(base_bo.BaseBO):
         :param str_mlm_method: the name of marginal likelihood maximization
             method for Gaussian process regression.
         :type str_mlm_method: str., optional
+        :param seed: a random seed.
+        :type seed: int., optional
 
         :returns: acquired example and dictionary of information. Shape: ((d, ), dict.).
         :rtype: (numpy.ndarray, dict.)
@@ -355,6 +357,7 @@ class BOwGP(base_bo.BaseBO):
         assert isinstance(str_sampling_method, str)
         assert isinstance(num_samples, int)
         assert isinstance(str_mlm_method, str)
+        assert isinstance(seed, (type(None), int))
         assert len(X_train.shape) == 2
         assert len(Y_train.shape) == 2
         assert Y_train.shape[1] == 1
@@ -454,7 +457,9 @@ class BOwGP(base_bo.BaseBO):
             X_test, X_train, Y_train, cov_X_X, inv_cov_X_X, hyps
         )
         next_point, next_points = self._optimize(fun_negative_acquisition,
-            str_sampling_method=str_sampling_method, num_samples=num_samples)
+            str_sampling_method=str_sampling_method,
+            num_samples=num_samples,
+            seed=seed)
 
         next_point = utils_bo.check_points_in_bounds(
             next_point[np.newaxis, ...], np.array(self._get_bounds()))[0]
