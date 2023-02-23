@@ -380,7 +380,9 @@ class BOwTP(base_bo.BaseBO):
             X_test, X_train, Y_train, cov_X_X, inv_cov_X_X, hyps
         )
         next_point, next_points = self._optimize(fun_negative_acquisition,
-            str_sampling_method=str_sampling_method, num_samples=num_samples)
+            str_sampling_method=str_sampling_method,
+            num_samples=num_samples,
+            seed=seed)
 
         next_point = utils_bo.check_points_in_bounds(
             next_point[np.newaxis, ...], np.array(self._get_bounds()))[0]
