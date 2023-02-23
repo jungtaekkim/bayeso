@@ -131,8 +131,7 @@ class BOwTP(base_bo.BaseBO):
         if self.str_optimizer_method_bo == 'L-BFGS-B':
             list_bounds = self._get_bounds()
             initials = self.get_samples(str_sampling_method,
-                num_samples=num_samples,
-                seed=seed)
+                num_samples=num_samples, seed=seed)
 
             for arr_initial in initials:
                 next_point = minimize(
