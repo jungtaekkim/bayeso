@@ -103,19 +103,22 @@ class BOwTP(base_bo.BaseBO):
 
     def _optimize(self, fun_negative_acquisition: constants.TYPING_CALLABLE,
         str_sampling_method: str,
-        num_samples: int
+        num_samples: int,
+        seed: int=None,
     ) -> constants.TYPING_TUPLE_TWO_ARRAYS:
         """
         It optimizes `fun_negative_function` with `self.str_optimizer_method_bo`.
         `num_samples` examples are determined by `str_sampling_method`, to
         start acquisition function optimization.
 
-        :param fun_objective: negative acquisition function.
-        :type fun_objective: callable
+        :param fun_negative_acquisition: negative acquisition function.
+        :type fun_negative_acquisition: callable
         :param str_sampling_method: the name of sampling method.
         :type str_sampling_method: str.
         :param num_samples: the number of samples.
         :type num_samples: int.
+        :param seed: a random seed.
+        :type seed: int., optional
 
         :returns: tuple of next point to evaluate and all candidates
             determined by acquisition function optimization.
@@ -128,8 +131,7 @@ class BOwTP(base_bo.BaseBO):
         if self.str_optimizer_method_bo == 'L-BFGS-B':
             list_bounds = self._get_bounds()
             initials = self.get_samples(str_sampling_method,
-                fun_objective=fun_negative_acquisition,
-                num_samples=num_samples)
+                num_samples=num_samples, seed=seed)
 
             for arr_initial in initials:
                 next_point = minimize(
@@ -164,8 +166,7 @@ class BOwTP(base_bo.BaseBO):
                 def g(bx):
                     return f(bx)[0]
                 return g
-            initials = self.get_samples(str_sampling_method,
-                fun_objective=fun_negative_acquisition, num_samples=1)
+            initials = self.get_samples(str_sampling_method, num_samples=1, seed=seed)
             cur_sigma0 = np.mean(list_bounds[:, 1] - list_bounds[:, 0]) / 4.0
             next_point_x = cma.fmin(fun_wrapper(fun_negative_acquisition),
                 initials[0], cur_sigma0,
@@ -310,6 +311,7 @@ class BOwTP(base_bo.BaseBO):
     def optimize(self, X_train: np.ndarray, Y_train: np.ndarray,
         str_sampling_method: str=constants.STR_SAMPLING_METHOD_AO,
         num_samples: int=constants.NUM_SAMPLES_AO,
+        seed: int=None,
     ) -> constants.TYPING_TUPLE_ARRAY_DICT:
         """
         It computes acquired example, candidates of acquired examples,
@@ -326,6 +328,8 @@ class BOwTP(base_bo.BaseBO):
         :type str_sampling_method: str., optional
         :param num_samples: the number of samples.
         :type num_samples: int., optional
+        :param seed: a random seed.
+        :type seed: int., optional
 
         :returns: acquired example and dictionary of information. Shape: ((d, ), dict.).
         :rtype: (numpy.ndarray, dict.)
@@ -338,6 +342,7 @@ class BOwTP(base_bo.BaseBO):
         assert isinstance(Y_train, np.ndarray)
         assert isinstance(str_sampling_method, str)
         assert isinstance(num_samples, int)
+        assert isinstance(seed, (type(None), int))
         assert len(X_train.shape) == 2
         assert len(Y_train.shape) == 2
         assert Y_train.shape[1] == 1
@@ -374,7 +379,9 @@ class BOwTP(base_bo.BaseBO):
             X_test, X_train, Y_train, cov_X_X, inv_cov_X_X, hyps
         )
         next_point, next_points = self._optimize(fun_negative_acquisition,
-            str_sampling_method=str_sampling_method, num_samples=num_samples)
+            str_sampling_method=str_sampling_method,
+            num_samples=num_samples,
+            seed=seed)
 
         next_point = utils_bo.check_points_in_bounds(
             next_point[np.newaxis, ...], np.array(self._get_bounds()))[0]
