@@ -6,7 +6,7 @@
 
 import abc
 import numpy as np
-import qmcpy
+import scipy.stats.qmc as scsqmc
 
 from bayeso import constants
 from bayeso.utils import utils_bo
@@ -229,8 +229,8 @@ class BaseBO(abc.ABC):
         assert isinstance(num_samples, int)
         assert isinstance(seed, (int, constants.TYPE_NONE))
 
-        sampler = qmcpy.Sobol(self.num_dim, seed=seed, graycode=True)
-        samples = sampler.gen_samples(num_samples)
+        sampler = scsqmc.Sobol(self.num_dim, scramble=True, seed=seed)
+        samples = sampler.random(num_samples)
 
         samples = samples * (self.range_X[:, 1].flatten() - self.range_X[:, 0].flatten()) \
             + self.range_X[:, 0].flatten()
@@ -257,8 +257,8 @@ class BaseBO(abc.ABC):
         assert isinstance(num_samples, int)
         assert isinstance(seed, (int, constants.TYPE_NONE))
 
-        sampler = qmcpy.Halton(self.num_dim, randomize='OWEN', generalize=False, seed=seed)
-        samples = sampler.gen_samples(num_samples)
+        sampler = scsqmc.Halton(self.num_dim, scramble=True, seed=seed)
+        samples = sampler.random(num_samples)
 
         samples = samples * (self.range_X[:, 1].flatten() - self.range_X[:, 0].flatten()) \
             + self.range_X[:, 0].flatten()
