@@ -3,8 +3,7 @@ import os
 import sys
 from pathlib import Path
 
-if (sys.version_info.major == 3 and sys.version_info.minor == 6) or\
-    (sys.version_info.major == 3 and sys.version_info.minor == 7) or\
+if (sys.version_info.major == 3 and sys.version_info.minor == 7) or\
     (sys.version_info.major == 3 and sys.version_info.minor == 8) or\
     (sys.version_info.major == 3 and sys.version_info.minor == 9) or\
     (sys.version_info.major == 3 and sys.version_info.minor == 10) or\
@@ -41,10 +40,9 @@ setup(
     long_description=long_description,
     long_description_content_type='text/markdown',
     packages=list_packages,
-    python_requires='>=3.6, <4',
+    python_requires='>=3.7, <4',
     install_requires=required,
     classifiers=[
-        'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
