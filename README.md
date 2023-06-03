@@ -68,7 +68,6 @@ The following `requirements` files include the package list, the purpose of whic
 ## Supported Python Version
 We test our package in the following versions.
 
-* Python 3.6
 * Python 3.7
 * Python 3.8
 * Python 3.9
