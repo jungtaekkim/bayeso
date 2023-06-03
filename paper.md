@@ -159,7 +159,7 @@ arguments.
 achieved 100\% coverage. In addition, unit tests for measuring execution
 time are also provided.
 - Dependency: Our package depends on NumPy [@HarrisCR2020nature],
-SciPy [@VirtanenP2020nm], qmcpy [@ChoiSCT2022mcqmc],
+SciPy [@VirtanenP2020nm], a quasi-Monte Carlo submodule in SciPy [@RoyPT2023joss],
 pycma [@HansenN2019software], and tqdm.
 - Installation: We upload our software in a popular repository for Python
 packages, PyPI, accordingly BayesO can be easily installed in any supported
