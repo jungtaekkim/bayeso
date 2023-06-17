@@ -7,7 +7,7 @@ permalink:        pretty
 
 # Setup
 title:            BayesO
-description:      'Simple, but essential Bayesian optimization package'
+description:      'BayesO: A Bayesian optimization framework in Python'
 url:              https://bayeso.org
 baseurl:          /
 documentation:    https://bayeso.readthedocs.io/en/main/
