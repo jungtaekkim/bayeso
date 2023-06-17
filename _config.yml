@@ -12,6 +12,9 @@ url:              https://bayeso.org
 baseurl:          /
 paginate:         5
 
+site:
+  baseurl:          /
+
 author:
   name:           'Jungtaek Kim'
   url:            https://jungtaek.github.io
