@@ -9,11 +9,8 @@ permalink:        pretty
 title:            BayesO
 description:      'Simple, but essential Bayesian optimization package'
 url:              https://bayeso.org
-baseurl:          /
+baseurl:          https://bayeso.org
 paginate:         5
-
-site:
-  baseurl:          /
 
 author:
   name:           'Jungtaek Kim'
