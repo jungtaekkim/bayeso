@@ -10,7 +10,6 @@ title:            BayesO
 description:      'Simple, but essential Bayesian optimization package'
 url:              https://bayeso.org
 baseurl:          /
-paginate:         5
 
 author:
   name:           'Jungtaek Kim'
@@ -18,7 +17,7 @@ author:
 
 
 # Custom vars
-version:          2.1.0
+version:          0.5.3
 
 github:
   repo:           https://github.com/jungtaekkim/bayeso
