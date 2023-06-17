@@ -5,9 +5,9 @@ title: Home
 
 Simple, but essential Bayesian optimization package.
 
-* [BayesO: GitHub repository](https://github.com/jungtaekkim/bayeso)
-* [BayesO Benchmarks: GitHub repository](https://github.com/jungtaekkim/bayeso-benchmarks)
-* [Online documentation](https://bayeso.readthedocs.io)
+* [BayesO: GitHub Repository](https://github.com/jungtaekkim/bayeso)
+* [BayesO Benchmarks: GitHub Repository](https://github.com/jungtaekkim/bayeso-benchmarks)
+* [Batch BayesO: GitHub Repository](https://github.com/jungtaekkim/batch-bayeso)
 
 ## Installation
 We recommend installing it with virtualenv.
@@ -47,9 +47,6 @@ If you would like to uninstall BayesO, command it.
 ```shell
 $ pip uninstall bayeso
 ```
-
-## Related Package
-* [BayesO Benchmarks](https://github.com/jungtaekkim/bayeso-benchmarks): We implement benchmark functions for Bayesian optimization. This package is included in requirements-optional.txt.
 
 ## Citation
 ```
