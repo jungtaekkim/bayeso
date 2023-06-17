@@ -3,6 +3,8 @@ layout: default
 title: Home
 ---
 
+![Bayesian Optimization]({{ site.baseurl }}public/ei.gif)
+
 Simple, but essential Bayesian optimization package.
 
 * [BayesO: GitHub Repository](https://github.com/jungtaekkim/bayeso)
