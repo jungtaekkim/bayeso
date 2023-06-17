@@ -7,7 +7,6 @@ permalink:        pretty
 
 # Setup
 title:            BayesO
-tagline:          'A Jekyll theme'
 description:      'Simple, but essential Bayesian optimization package'
 url:              https://bayeso.org
 baseurl:          /
