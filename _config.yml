@@ -10,6 +10,7 @@ title:            BayesO
 description:      'Simple, but essential Bayesian optimization package'
 url:              https://bayeso.org
 baseurl:          /
+documentation:    https://bayeso.readthedocs.io/en/main/
 
 author:
   name:           'Jungtaek Kim'
@@ -20,4 +21,6 @@ author:
 version:          0.5.3
 
 github:
-  repo:           https://github.com/jungtaekkim/bayeso
+  repo-bayeso:    https://github.com/jungtaekkim/bayeso
+  repo-bench:     https://github.com/jungtaekkim/bayeso-benchmarks
+  repo-batch:     https://github.com/jungtaekkim/batch-bayeso
