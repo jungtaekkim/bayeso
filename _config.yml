@@ -8,14 +8,14 @@ permalink:        pretty
 # Setup
 title:            BayesO
 tagline:          'A Jekyll theme'
-description:      'A brazen two-column <a href="http://jekyllrb.com" target="_blank">Jekyll</a> theme that pairs a prominent sidebar with uncomplicated content. Made by <a href="https://twitter.com/mdo" target="_blank">@mdo</a>.'
+description:      'Simple, but essential Bayesian optimization package'
 url:              https://bayeso.org
 baseurl:          /
 paginate:         5
 
 author:
   name:           'Jungtaek Kim'
-  url:            https://twitter.com/mdo
+  url:            https://jungtaek.github.io
 
 
 # Custom vars
