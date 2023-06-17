@@ -16,8 +16,9 @@ author:
   name:           'Jungtaek Kim'
   url:            https://jungtaek.github.io
 
-# Custom vars
-version:          0.5.3
+version-bayeso:   0.5.3
+version-bench:    0.1.7
+version-batch:    0.1.0
 
 github:
   repo-bayeso:    https://github.com/jungtaekkim/bayeso
