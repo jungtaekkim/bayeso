@@ -1,11 +1,12 @@
 #
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: October 8, 2021
+# last updated: August 16, 2023
 #
 """test_bo_bo_w_tp"""
 
 import pytest
 import numpy as np
+import scipy
 
 from bayeso.bo import bo_w_tp as package_target
 from bayeso import covariance
@@ -180,27 +181,7 @@ def test_get_samples():
         for elem_2 in elem_1:
             print(elem_2)
 
-    try: # python 3.8, 3.9, 3.10, 3.11
-        truth_arr_initials = np.array([
-            [
-                5.513058694915099,
-                0.9508863268359247,
-                4.394594269075903,
-            ],
-            [
-                0.5130586949150984,
-                -0.3824470064974086,
-                0.39459426907590256,
-            ],
-            [
-                8.013058694915099,
-                -1.7157803398307416,
-                2.3945942690759034,
-            ],
-        ])
-
-        assert (np.abs(arr_initials - truth_arr_initials) < TEST_EPSILON).all()
-    except: # python 3.7
+    if scipy.__version___ == '1.7.3':
         truth_arr_initials = np.array([
             [
                 9.486941305084901,
@@ -218,8 +199,44 @@ def test_get_samples():
                 2.8664388750590453,
             ],
         ])
+    elif scipy.__version___ == '1.10.1':
+        truth_arr_initials = np.array([
+            [
+                5.513058694915099,
+                0.9508863268359247,
+                4.394594269075903,
+            ],
+            [
+                0.5130586949150984,
+                -0.3824470064974086,
+                0.39459426907590256,
+            ],
+            [
+                8.013058694915099,
+                -1.7157803398307416,
+                2.3945942690759034,
+            ],
+        ])
+    else:
+        truth_arr_initials = np.array([
+            [
+                5.513058694915099
+                -1.3929280802587178
+                -3.572948073154651
+            ],
+            [
+                0.5130586949150984
+                1.2737385864079487
+                0.4270519268453521
+            ],
+            [
+                8.013058694915099
+                -0.059594746925384356
+                2.427051926845353
+            ],
+        ])
 
-        assert (np.abs(arr_initials - truth_arr_initials) < TEST_EPSILON).all()
+    assert (np.abs(arr_initials - truth_arr_initials) < TEST_EPSILON).all()
 
     arr_initials_ = model_bo.get_samples('uniform', num_samples=3)
     arr_initials = model_bo.get_samples('uniform', num_samples=3, seed=42)

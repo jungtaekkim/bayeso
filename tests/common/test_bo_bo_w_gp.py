@@ -1,12 +1,12 @@
 #
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: October 8, 2021
+# last updated: August 16, 2023
 #
 """test_bo_bo_w_gp"""
 
 import pytest
 import numpy as np
-import sys
+import scipy
 
 from bayeso.bo import bo_w_gp as package_target
 from bayeso import covariance
@@ -185,7 +185,7 @@ def test_get_samples():
         for elem_2 in elem_1:
             print(elem_2)
 
-    if sys.version_info.major == 3 and sys.version_info.minor == 7:
+    if scipy.__version___ == '1.7.3':
         truth_arr_initials = np.array([
             [
                 9.486941305084901,
@@ -203,9 +203,7 @@ def test_get_samples():
                 2.8664388750590453,
             ],
         ])
-
-        assert (np.abs(arr_initials - truth_arr_initials) < TEST_EPSILON).all()
-    elif sys.version_info.major == 3 and sys.version_info.minor == 8:
+    elif scipy.__version___ == '1.10.1':
         truth_arr_initials = np.array([
             [
                 5.513058694915099,
@@ -223,10 +221,26 @@ def test_get_samples():
                 2.3945942690759034,
             ],
         ])
-
-        assert (np.abs(arr_initials - truth_arr_initials) < TEST_EPSILON).all()
     else:
-        pass
+        truth_arr_initials = np.array([
+            [
+                5.513058694915099
+                -1.3929280802587178
+                -3.572948073154651
+            ],
+            [
+                0.5130586949150984
+                1.2737385864079487
+                0.4270519268453521
+            ],
+            [
+                8.013058694915099
+                -0.059594746925384356
+                2.427051926845353
+            ],
+        ])
+
+    assert (np.abs(arr_initials - truth_arr_initials) < TEST_EPSILON).all()
 
     arr_initials_ = model_bo.get_samples('uniform', num_samples=3)
     arr_initials = model_bo.get_samples('uniform', num_samples=3, seed=42)
