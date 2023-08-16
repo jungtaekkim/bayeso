@@ -6,6 +6,7 @@
 
 import pytest
 import numpy as np
+import sys
 
 from bayeso.bo import bo_w_gp as package_target
 from bayeso import covariance
@@ -184,27 +185,7 @@ def test_get_samples():
         for elem_2 in elem_1:
             print(elem_2)
 
-    try: # python 3.8, 3.9, 3.10, 3.11
-        truth_arr_initials = np.array([
-            [
-                5.513058694915099,
-                0.9508863268359247,
-                4.394594269075903,
-            ],
-            [
-                0.5130586949150984,
-                -0.3824470064974086,
-                0.39459426907590256,
-            ],
-            [
-                8.013058694915099,
-                -1.7157803398307416,
-                2.3945942690759034,
-            ],
-        ])
-
-        assert (np.abs(arr_initials - truth_arr_initials) < TEST_EPSILON).all()
-    except: # python 3.7
+    if sys.version_info.major == 3 and sys.version_info.minor == 7:
         truth_arr_initials = np.array([
             [
                 9.486941305084901,
@@ -224,6 +205,28 @@ def test_get_samples():
         ])
 
         assert (np.abs(arr_initials - truth_arr_initials) < TEST_EPSILON).all()
+    elif sys.version_info.major == 3 and sys.version_info.minor == 8:
+        truth_arr_initials = np.array([
+            [
+                5.513058694915099,
+                0.9508863268359247,
+                4.394594269075903,
+            ],
+            [
+                0.5130586949150984,
+                -0.3824470064974086,
+                0.39459426907590256,
+            ],
+            [
+                8.013058694915099,
+                -1.7157803398307416,
+                2.3945942690759034,
+            ],
+        ])
+
+        assert (np.abs(arr_initials - truth_arr_initials) < TEST_EPSILON).all()
+    else:
+        pass
 
     arr_initials_ = model_bo.get_samples('uniform', num_samples=3)
     arr_initials = model_bo.get_samples('uniform', num_samples=3, seed=42)
