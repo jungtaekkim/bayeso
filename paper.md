@@ -151,7 +151,7 @@ of Bayesian optimization for particular scenarios as follows:
 To manage BayesO productively, we actively utilize external development
 management packages.
 
-- Code analysis: The entire codes in our software are monitored and
+- Code analysis: Our software is monitored and
 inspected to satisfy the code conventions predefined in our software.
 - Type hints: As supported in Python 3, we provide type hints for any
 arguments.
