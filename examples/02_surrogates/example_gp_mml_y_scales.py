@@ -1,6 +1,7 @@
-# example_gp_mml_large_y
+#
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: August 07, 2020
+# last updated: August 16, 2023
+#
 
 import numpy as np
 import os
@@ -9,9 +10,7 @@ from bayeso.gp import gp
 from bayeso.utils import utils_plotting
 
 
-PATH_SAVE = '../figures/gp/'
-
-def main(scale, str_postfix):
+def main(scale, path_save, str_postfix):
     X_train = np.array([
         [-3.0],
         [-2.0],
@@ -27,11 +26,13 @@ def main(scale, str_postfix):
     Y_test = np.cos(X_test) * scale
 
     mu, sigma, Sigma = gp.predict_with_optimized_hyps(X_train, Y_train, X_test, fix_noise=False, debug=True)
-    utils_plotting.plot_gp_via_distribution(X_train, Y_train, X_test, mu, sigma, Y_test, PATH_SAVE, 'test_optimized_{}_y'.format(str_postfix))
+    utils_plotting.plot_gp_via_distribution(X_train, Y_train, X_test, mu, sigma, Y_test, path_save, 'test_optimized_{}_y'.format(str_postfix))
 
 
 if __name__ == '__main__':
-    if not os.path.isdir(PATH_SAVE):
-        os.makedirs(PATH_SAVE)
-    main(0.01, 'small')
-    main(100000.0, 'large')
+    path_save = None
+
+    if path_save is not None and not os.path.isdir(path_save):
+        os.makedirs(path_save)
+    main(0.01, path_save, 'small')
+    main(100000.0, path_save, 'large')

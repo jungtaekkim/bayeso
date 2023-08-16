@@ -1,6 +1,7 @@
-# example_random_forest
+#
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: August 6, 2021
+# last updated: August 16, 2023
+#
 
 import numpy as np
 import os
@@ -11,10 +12,8 @@ from bayeso.trees import trees_common
 from bayeso.utils import utils_common
 from bayeso.utils import utils_plotting
 
-PATH_SAVE = '../figures/rf/'
 
-
-def main():
+def main(path_save):
     time_start = time.time()
 
     np.random.seed(42)
@@ -46,11 +45,12 @@ def main():
     time_end = time.time()
     print('time consumed: {:.4f}'.format(time_end - time_start))
 
-    utils_plotting.plot_gp_via_distribution(X_train, Y_train, X_test, mu, sigma, Y_test, path_save=PATH_SAVE, str_postfix='cos')
+    utils_plotting.plot_gp_via_distribution(X_train, Y_train, X_test, mu, sigma, Y_test, path_save=path_save, str_postfix='cos')
 
 
 if __name__ == '__main__':
-    if not os.path.isdir(PATH_SAVE):
-        os.makedirs(PATH_SAVE)
+    path_save = None
 
-    main()
+    if path_save is not None and not os.path.isdir(path_save):
+        os.makedirs(path_save)
+    main(path_save)
