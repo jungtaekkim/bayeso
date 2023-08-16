@@ -1,6 +1,7 @@
-# example_tp_mml_kernel_matern32
+#
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: August 07, 2020
+# last updated: August 16, 2023
+#
 
 import numpy as np
 import os
@@ -9,7 +10,7 @@ from bayeso.tp import tp
 from bayeso.utils import utils_common
 from bayeso.utils import utils_plotting
 
-PATH_SAVE = '../figures/tp/'
+
 list_str_covs = [
     'se',
     'eq',
@@ -17,7 +18,7 @@ list_str_covs = [
     'matern52'
 ]
 
-def main(str_cov):
+def main(str_cov, path_save):
     np.random.seed(42)
     X_train = np.array([
         [-3.0],
@@ -33,12 +34,13 @@ def main(str_cov):
     Y_test = np.cos(X_test)
 
     nu, mu, sigma, Sigma = tp.predict_with_optimized_hyps(X_train, Y_train, X_test, str_cov=str_cov, fix_noise=False, debug=True)
-    utils_plotting.plot_gp_via_distribution(X_train, Y_train, X_test, mu, sigma, Y_test, path_save=PATH_SAVE, str_postfix='cos_' + str_cov)
+    utils_plotting.plot_gp_via_distribution(X_train, Y_train, X_test, mu, sigma, Y_test, path_save=path_save, str_postfix='cos_' + str_cov)
 
 
 if __name__ == '__main__':
-    if not os.path.isdir(PATH_SAVE):
-        os.makedirs(PATH_SAVE)
+    path_save = None
 
+    if path_save is not None and not os.path.isdir(path_save):
+        os.makedirs(path_save)
     for str_cov in list_str_covs:
-        main(str_cov)
+        main(str_cov, path_save)

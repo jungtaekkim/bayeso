@@ -1,6 +1,7 @@
-# example_gp_mml_comparisons
+#
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: June 24, 2021
+# last updated: August 16, 2023
+#
 
 import numpy as np
 import os

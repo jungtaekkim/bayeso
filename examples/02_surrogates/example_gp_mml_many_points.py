@@ -1,6 +1,7 @@
-# example_gp_mml_many_points
+#
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: August 07, 2020
+# last updated: August 16, 2023
+#
 
 import numpy as np
 import os
@@ -9,9 +10,7 @@ from bayeso.gp import gp
 from bayeso.utils import utils_plotting
 
 
-PATH_SAVE = '../figures/gp/'
-
-def main():
+def main(path_save):
     num_train = 200
     num_test = 1000
     X_train = np.random.randn(num_train, 1) * 5.0
@@ -21,10 +20,13 @@ def main():
     Y_test = np.cos(X_test) + 10.0
 
     mu, sigma, Sigma = gp.predict_with_optimized_hyps(X_train, Y_train, X_test, debug=True)
-    utils_plotting.plot_gp_via_distribution(X_train, Y_train, X_test, mu, sigma, Y_test,'test_optimized_many_points')
+    utils_plotting.plot_gp_via_distribution(X_train, Y_train, X_test, mu, sigma,
+        Y_test=Y_test, path_save=path_save, str_postfix='test_optimized_many_points')
 
 
 if __name__ == '__main__':
-    if not os.path.isdir(PATH_SAVE):
-        os.makedirs(PATH_SAVE)
-    main()
+    path_save = None
+
+    if path_save is not None and not os.path.isdir(path_save):
+        os.makedirs(path_save)
+    main(path_save)
