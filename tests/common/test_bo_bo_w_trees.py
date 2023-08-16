@@ -166,7 +166,7 @@ def test_get_samples():
         for elem_2 in elem_1:
             print(elem_2)
 
-    if scipy.__version___ == '1.7.3':
+    if scipy.__version__ == '1.7.3':
         truth_arr_initials = np.array([
             [
                 9.486941305084901,
@@ -184,7 +184,7 @@ def test_get_samples():
                 2.8664388750590453,
             ],
         ])
-    elif scipy.__version___ == '1.10.1':
+    elif scipy.__version__ == '1.10.1':
         truth_arr_initials = np.array([
             [
                 5.513058694915099,
