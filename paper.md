@@ -161,9 +161,7 @@ time are also provided.
 - Dependency: Our package depends on NumPy [@HarrisCR2020nature],
 SciPy [@VirtanenP2020nm], a quasi-Monte Carlo submodule in SciPy [@RoyPT2023joss],
 pycma [@HansenN2019software], and tqdm.
-- Installation: We upload our software in a popular repository for Python
-packages, PyPI, accordingly BayesO can be easily installed in any supported
-environments.
+- Installation: Our software is released via the Python Package Index (PyPI) meaning users can easily install BayesO into their environment.
 - Documentation: We create official documentation with docstring.
 
 # Conclusion
