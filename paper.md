@@ -107,7 +107,7 @@ respectively. To focus on the BayesO system, we omit the details of
 surrogate models and acquisition functions here.
 
 Several related projects on Bayesian optimization have been proposed.
-GPyOpt [@GPyOpt2016software], built on GPy [@gpy2012software], has been
+GPyOpt [@gpyopt2016software], built on GPy [@gpy2012software], has been
 implemented. SMAC3 [@LindauerM2022jmlr] has been developed using
 random forests [@BreimanL2001ml]. Moreover, by making use of modern automatic
 differentiation tools, i.e., TensorFlow [@AbadiM2016osdi] and
