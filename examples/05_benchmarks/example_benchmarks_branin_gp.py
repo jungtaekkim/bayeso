@@ -1,6 +1,7 @@
-# example_benchmarks_branin_gp
+#
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: April 28, 2020
+# last updated: August 17, 2023
+#
 
 import numpy as np
 
@@ -13,7 +14,6 @@ from bayeso_benchmarks.two_dim_branin import Branin
 
 
 STR_FUN_TARGET = 'branin'
-PATH_SAVE = '../figures/benchmarks/'
 
 obj_fun = Branin()
 

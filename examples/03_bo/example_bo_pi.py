@@ -1,6 +1,7 @@
-# example_bo_pi
+#
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: November 21, 2021
+# last updated: August 17, 2023
+#
 
 import numpy as np
 import os
@@ -9,12 +10,10 @@ from bayeso import bo
 from bayeso.utils import utils_plotting
 
 
-PATH_SAVE = '../figures/bo/'
-
 def fun_target(X):
     return 4.0 * np.cos(X) + 0.1 * X + 2.0 * np.sin(X) + 0.4 * (X - 0.5)**2
 
-def main():
+def main(path_save):
     str_acq = 'pi'
     num_iter = 10
     X_train = np.array([
@@ -44,11 +43,13 @@ def main():
         X_train = np.vstack((X_train, next_x))
         Y_train = fun_target(X_train)
 
-        utils_plotting.plot_bo_step(X_train, Y_train, X_test, fun_target(X_test), mu_test, sigma_test, path_save=PATH_SAVE, str_postfix='bo_{}_'.format(str_acq) + str(ind_), num_init=num_init)
-        utils_plotting.plot_bo_step_with_acq(X_train, Y_train, X_test, fun_target(X_test), mu_test, sigma_test, acq_test, path_save=PATH_SAVE, str_postfix='bo_{}_'.format(str_acq) + str(ind_), num_init=num_init)
+        utils_plotting.plot_bo_step(X_train, Y_train, X_test, fun_target(X_test), mu_test, sigma_test, path_save=path_save, str_postfix='bo_{}_'.format(str_acq) + str(ind_), num_init=num_init)
+        utils_plotting.plot_bo_step_with_acq(X_train, Y_train, X_test, fun_target(X_test), mu_test, sigma_test, acq_test, path_save=path_save, str_postfix='bo_{}_'.format(str_acq) + str(ind_), num_init=num_init)
 
 
 if __name__ == '__main__':
-    if not os.path.isdir(PATH_SAVE):
-        os.makedirs(PATH_SAVE)
-    main()
+    path_save = None
+
+    if path_save is not None and not os.path.isdir(path_save):
+        os.makedirs(path_save)
+    main(path_save)
