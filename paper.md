@@ -111,7 +111,7 @@ implemented. SMAC3 [@LindauerM2022jmlr] has been developed using
 random forests [@BreimanL2001ml]. Moreover, by making use of modern automatic
 differentiation tools, i.e., TensorFlow [@AbadiM2016osdi] and
 PyTorch [@PaszkeA2019neurips], GPflowOpt [@KnuddeN2017arxiv] and
-BoTorch [@BalandatM2020neurips] has been introduced.
+BoTorch [@BalandatM2020neurips] have been introduced.
 
 # Overview of BayesO
 
