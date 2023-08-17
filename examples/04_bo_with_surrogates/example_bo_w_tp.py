@@ -1,6 +1,7 @@
-# example_bo_w_tp
+#
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: October 10, 2021
+# last updated: August 17, 2023
+#
 
 import numpy as np
 import os
@@ -10,13 +11,12 @@ from bayeso.tp import tp
 from bayeso.utils import utils_plotting
 
 
-PATH_SAVE = '../figures/bo_with_surrogates/'
 STR_FUN_TARGET = 'bo_w_tp'
 
 def fun_target(X):
     return 4.0 * np.cos(X) + 0.1 * X + 2.0 * np.sin(X) + 0.4 * (X - 0.5)**2
 
-def main():
+def main(path_save):
     str_acq = 'ei'
     num_iter = 10
     debug = True
@@ -49,17 +49,19 @@ def main():
         X_train = np.vstack((X_train, next_x))
         Y_train = fun_target(X_train)
 
-        utils_plotting.plot_bo_step(X_train, Y_train, X_test, fun_target(X_test), mu_test, sigma_test, path_save=PATH_SAVE, str_postfix='bo_{}_'.format(str_acq) + str(ind_), num_init=num_init)
-        utils_plotting.plot_bo_step_with_acq(X_train, Y_train, X_test, fun_target(X_test), mu_test, sigma_test, acq_test, path_save=PATH_SAVE, str_postfix='bo_{}_'.format(str_acq) + str(ind_), num_init=num_init)
+        utils_plotting.plot_bo_step(X_train, Y_train, X_test, fun_target(X_test), mu_test, sigma_test, path_save=path_save, str_postfix='bo_{}_'.format(str_acq) + str(ind_), num_init=num_init)
+        utils_plotting.plot_bo_step_with_acq(X_train, Y_train, X_test, fun_target(X_test), mu_test, sigma_test, acq_test, path_save=path_save, str_postfix='bo_{}_'.format(str_acq) + str(ind_), num_init=num_init)
 
     Y_train = np.squeeze(Y_train)
     Y_train = np.array([[Y_train]])
 
     print(X_train.shape, Y_train.shape)
-    utils_plotting.plot_minimum_vs_iter(Y_train, [STR_FUN_TARGET], num_init, True, path_save=PATH_SAVE, str_postfix=STR_FUN_TARGET)
+    utils_plotting.plot_minimum_vs_iter(Y_train, [STR_FUN_TARGET], num_init, True, path_save=path_save, str_postfix=STR_FUN_TARGET)
 
 
 if __name__ == '__main__':
-    if not os.path.isdir(PATH_SAVE):
-        os.makedirs(PATH_SAVE)
-    main()
+    path_save = None
+
+    if path_save is not None and not os.path.isdir(path_save):
+        os.makedirs(path_save)
+    main(path_save)

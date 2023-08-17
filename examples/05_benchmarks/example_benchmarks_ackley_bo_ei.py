@@ -1,6 +1,7 @@
-# example_benchmarks_ackley_bo_ei
+#
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: April 28, 2020
+# last updated: August 17, 2023
+#
 
 import numpy as np
 import os
@@ -13,7 +14,6 @@ from bayeso.utils import utils_plotting
 
 
 STR_FUN_TARGET = 'ackley'
-PATH_SAVE = '../figures/benchmarks/'
 NUM_DIM = 3
 
 obj_fun = Ackley(NUM_DIM)
@@ -21,7 +21,7 @@ obj_fun = Ackley(NUM_DIM)
 def fun_target(X):
     return obj_fun.output(X)
 
-def main():
+def main(path_save):
     num_bo = 5
     num_iter = 10
     num_init = 5
@@ -46,11 +46,13 @@ def main():
     arr_Y = np.expand_dims(np.squeeze(arr_Y), axis=0)
     arr_time = np.array(list_time)
     arr_time = np.expand_dims(arr_time, axis=0)
-    utils_plotting.plot_minimum_vs_iter(arr_Y, [STR_FUN_TARGET], num_init, True, path_save=PATH_SAVE, str_postfix=STR_FUN_TARGET)
-    utils_plotting.plot_minimum_vs_time(arr_time, arr_Y, [STR_FUN_TARGET], num_init, True, path_save=PATH_SAVE, str_postfix=STR_FUN_TARGET)
+    utils_plotting.plot_minimum_vs_iter(arr_Y, [STR_FUN_TARGET], num_init, True, path_save=path_save, str_postfix=STR_FUN_TARGET)
+    utils_plotting.plot_minimum_vs_time(arr_time, arr_Y, [STR_FUN_TARGET], num_init, True, path_save=path_save, str_postfix=STR_FUN_TARGET)
 
 
 if __name__ == '__main__':
-    if not os.path.isdir(PATH_SAVE):
-        os.makedirs(PATH_SAVE)
-    main()
+    path_save = None
+
+    if path_save is not None and not os.path.isdir(path_save):
+        os.makedirs(path_save)
+    main(path_save)
