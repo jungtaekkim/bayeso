@@ -106,6 +106,14 @@ improvement are used as a surrogate model and an acquisition function,
 respectively. To focus on the BayesO system, we omit the details of
 surrogate models and acquisition functions here.
 
+Several related projects on Bayesian optimization have been proposed.
+GPyOpt [@GPyOpt2016software], built on GPy [@gpy2012software], has been
+implemented. SMAC3 [@LindauerM2022jmlr] has been developed using
+random forests [@BreimanL2001ml]. Moreover, by making use of modern automatic
+differentiation tools, i.e., TensorFlow [@AbadiM2016osdi] and
+PyTorch [@PaszkeA2019neurips], GPflowOpt [@KnuddeN2017arxiv] and
+BoTorch [@BalandatM2020neurips] has been introduced.
+
 # Overview of BayesO
 
 In this section we cover the overview of BayesO including probabilistic
