@@ -20,36 +20,32 @@ obj_fun = Branin()
 def fun_target(X):
     return obj_fun.output(X)
 
-def main(path_save):
-    num_bo = 5
-    num_init = 1
-    num_iter = 50
+path_save = None
 
-    debug = True
+if path_save is not None and not os.path.isdir(path_save):
+    os.makedirs(path_save)
 
-    bounds = obj_fun.get_bounds()
+num_bo = 5
+num_init = 1
+num_iter = 50
 
-    list_Y = []
-    for ind_bo in range(0, num_bo):
-        print('BO Round', ind_bo + 1)
-        X, Y = ts.thompson_sampling_gp(bounds, fun_target, num_init, num_iter, debug=debug)
+debug = True
 
-        print(X)
-        print(Y)
+bounds = obj_fun.get_bounds()
 
-        list_Y.append(Y)
+list_Y = []
+for ind_bo in range(0, num_bo):
+    print('BO Round', ind_bo + 1)
+    X, Y = ts.thompson_sampling_gp(bounds, fun_target, num_init, num_iter, debug=debug)
 
-        bx_best, y_best = utils_bo.get_best_acquisition_by_history(X, Y)
-        print(bx_best, y_best)
+    print(X)
+    print(Y)
 
-    arr_Y = np.array(list_Y)
-    arr_Y = np.expand_dims(np.squeeze(arr_Y), axis=0)
-    utils_plotting.plot_minimum_vs_iter(arr_Y, [STR_FUN_TARGET], num_init, True, path_save=path_save, str_postfix=STR_FUN_TARGET)
+    list_Y.append(Y)
 
+    bx_best, y_best = utils_bo.get_best_acquisition_by_history(X, Y)
+    print(bx_best, y_best)
 
-if __name__ == '__main__':
-    path_save = None
-
-    if path_save is not None and not os.path.isdir(path_save):
-        os.makedirs(path_save)
-    main(path_save)
+arr_Y = np.array(list_Y)
+arr_Y = np.expand_dims(np.squeeze(arr_Y), axis=0)
+utils_plotting.plot_minimum_vs_iter(arr_Y, [STR_FUN_TARGET], num_init, True, path_save=path_save, str_postfix=STR_FUN_TARGET)
