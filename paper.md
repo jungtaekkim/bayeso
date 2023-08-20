@@ -46,14 +46,14 @@ function $f$:
 \end{equation}
 where $\mathcal{X} \subset \mathbb{R}^d$ is a $d$-dimensional space. In
 general, finding a solution $\mathbf{x}^\star$ of \autoref{eqn:global_opt},
-i.e., a global optimizer on $\mathcal{X}$, is time-consuming since we
-cannot employ any knowledge in solving this problem. Compared to other
-possible approaches, e.g., random search and evolutionary algorithm,
-Bayesian optimization successfully shows its effectiveness by utilizing a
-probabilistic regression model and an acquisition function. In particular,
-the sample-efficient approach of our interest enables us to apply it in
-various real-world applications such as hyperparameter
-optimization [@SnoekJ2012neurips], automated machine
+i.e., a global optimum on $\mathcal{X}$, is time-consuming since we
+cannot employ any knowledge, e.g., gradients and Hessians, in solving this
+problem. Compared to other possible approaches, e.g., random search and
+evolutionary algorithm, Bayesian optimization successfully shows its
+effectiveness by utilizing a probabilistic regression model and an
+acquisition function. In particular, the sample-efficient approach of our
+interest enables us to apply it in various real-world applications such as
+hyperparameter optimization [@SnoekJ2012neurips], automated machine
 learning [@FeurerM2015neurips; @FeurerM2022jmlr], neural architecture
 search [@KandasamyK2018neurips], material design [@FrazierP2016ismdd],
 free-electron laser configuration search [@DurisJ2020phrl], organic
@@ -89,14 +89,14 @@ sample-efficient manner. It repeats three primary steps:
 the degrees of exploration and exploitation;
 2. Optimizing an acquisition function, which is defined with the
 probabilistic regression model;
-3. Evaluating a query point, which is determined by optimizing the
-acquisition function,
+3. Evaluating the target objective at a query point, which is determined by
+optimizing the acquisition function,
 
 until a predefined stopping criterion, e.g., an iteration budget or a budget
 of wall-clock time, is satisfied. Eventually, the best solution among the
 queries evaluated is selected by considering the function evaluations. As
 shown in \autoref{fig:bo_steps}, Bayesian optimization iteratively finds a
-candidate of global optimizer, repeating the aforementioned steps. Note
+candidate of global optimum, repeating the aforementioned steps. Note
 that, for this example, an objective function is
 \begin{equation}\label{eqn:simple}
     f(x) = 2 \sin(x) + 2 \cos(2x) + 0.05 x,
@@ -173,7 +173,7 @@ pycma [@HansenN2019software], and tqdm [@tqdm2016software].
 
 # Conclusion
 
-In this work we have presented our own Bayesian optimization framework,
+In this work we have presented a Bayesian optimization framework,
 named BayesO. We hope that our project enables many researchers to suggest
 a new algorithm by modifying BayesO and many practitioners to utilize
 Bayesian optimization in their applications.
