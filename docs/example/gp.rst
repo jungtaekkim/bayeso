@@ -19,7 +19,7 @@ First of all, import the package we need and **bayeso**.
     from bayeso.utils import utils_plotting
 
 Declare some parameters to control this example.
-`use_tex` is a plotting style for LaTeX,
+`use_tex` is a flag for using a LaTeX style,
 `num_test` is the number of test data points,
 and `str_cov` is a kernel choice.
 
@@ -30,7 +30,7 @@ and `str_cov` is a kernel choice.
     str_cov = 'matern52'
 
 Make a simple synthetic dataset, which is produced with a cosine function.
-The underlying true function is $\cos(x) + 10$.
+The underlying true function is \cos(x) + 10.
 
 .. code-block:: python
 
@@ -68,6 +68,7 @@ As shown in the figure below, `num_samples` smooth functions are sampled.
 Build a Gaussian process regression model with fixed hyperparameters.
 Fixed hyperparameters are brought through `get_hyps`.
 `mu`, `sigma`, and `Sigma` are mean estimates, standard deviation estimates, and covariance estimates, respectively.
+In addition, `num_samples` functions are sampled using `mu` and `Sigma`.
 Then, plot the result.
 
 .. code-block:: python
@@ -95,6 +96,7 @@ Then, plot the result.
     :alt: gp_sampled_fixed
 
 Build a Gaussian process regression model with the hyperparameters optimized by marginal likelihood maximization, and plot the result.
+Similar to the aforementioned case, `num_samples` functions are sampled from the distributions with `mu` and `Sigma`.
 
 .. code-block:: python
 
@@ -142,6 +144,7 @@ Declare some functions that would be employed as prior functions.
         return np.array(list_up)
 
 Make an another synthetic dataset using a cosine function.
+The true function is \cos(x) + 2.
 
 .. code-block:: python
 
@@ -156,6 +159,7 @@ Make an another synthetic dataset using a cosine function.
     Y_test = np.cos(X_test) + 2.0
 
 Build Gaussian process regression models with the prior functions we declare above and the hyperparameters optimized by marginal likelihood maximization, and plot the result.
+Also, `num_samples` functions are sampled from the distributions defined with `mu` and `Sigma`.
 
 .. code-block:: python
 
