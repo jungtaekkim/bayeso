@@ -30,29 +30,29 @@ def fun_target(X):
     preds = xgb_model.predict(DATA_TEST)
     return 1.0 - sklearn.metrics.accuracy_score(LABELS_TEST, preds)
 
-def main(path_save):
-    # (max_depth, n_estimators)
-    num_init = 1
+path_save = None
 
-    model_bo = bo.BO(np.array([[1, 10], [100, 500]]), debug=True)
-    list_Y = []
-    list_time = []
-    for _ in range(0, 5):
-        X_final, Y_final, time_final, _, _ = wrappers_bo_function.run_single_round(model_bo, fun_target, num_init, 10, str_initial_method_bo='sobol', str_sampling_method_ao='sobol', num_samples_ao=100)
-        list_Y.append(Y_final)
-        list_time.append(time_final)
-    arr_Y = np.array(list_Y)
-    arr_Y = np.expand_dims(np.squeeze(arr_Y), axis=0)
-    arr_time = np.array(list_time)
-    arr_time = np.expand_dims(arr_time, axis=0)
+if path_save is not None and not os.path.isdir(path_save):
+    os.makedirs(path_save)
 
-    utils_plotting.plot_minimum_vs_iter(arr_Y, ['xgboost'], num_init, True, path_save=path_save, str_postfix='xgboost')
-    utils_plotting.plot_minimum_vs_time(arr_time, arr_Y, ['xgboost'], num_init, True, path_save=path_save, str_postfix='xgboost')
+# (max_depth, n_estimators)
+num_init = 1
 
+model_bo = bo.BO(np.array([[1, 10], [100, 500]]), debug=True)
 
-if __name__ == '__main__':
-    path_save = None
+list_Y = []
+list_time = []
 
-    if path_save is not None and not os.path.isdir(path_save):
-        os.makedirs(path_save)
-    main(path_save)
+for _ in range(0, 5):
+    X_final, Y_final, time_final, _, _ = wrappers_bo_function.run_single_round(model_bo, fun_target, num_init, 10, str_initial_method_bo='sobol', str_sampling_method_ao='sobol', num_samples_ao=100)
+
+    list_Y.append(Y_final)
+    list_time.append(time_final)
+
+arr_Y = np.array(list_Y)
+arr_Y = np.expand_dims(np.squeeze(arr_Y), axis=0)
+arr_time = np.array(list_time)
+arr_time = np.expand_dims(arr_time, axis=0)
+
+utils_plotting.plot_minimum_vs_iter(arr_Y, ['xgboost'], num_init, True, path_save=path_save, str_postfix='xgboost')
+utils_plotting.plot_minimum_vs_time(arr_time, arr_Y, ['xgboost'], num_init, True, path_save=path_save, str_postfix='xgboost')
