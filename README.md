@@ -74,6 +74,9 @@ We test our package in the following versions.
 * Python 3.10
 * Python 3.11
 
+## Examples and Tests
+We provide a [list of examples](EXAMPLES.md) and a [list of tests](TESTS.md).
+
 ## Citation
 ```
 @misc{KimJ2017bayeso,
