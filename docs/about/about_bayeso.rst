@@ -22,7 +22,7 @@ Examples
 
 We provide a list of examples.
 
-.. code-block::
+.. code-block:: bash
 
     examples/
     ├── 01_basics
@@ -72,7 +72,7 @@ Tests
 
 We provide a list of tests.
 
-.. code-block::
+.. code-block:: bash
 
     tests/
     ├── common
