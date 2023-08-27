@@ -18,8 +18,8 @@ Generic Bayesian optimization follows these steps:
 
 .. math::
 
-    \mathbf{x}^{*} = \operatornamewithlimits{\arg \max} a(\mathbf{x} \mid \mu(\mathbf{x} \mid \mathbf{X}, \mathbf{y}), \sigma^2(\mathbf{x} \mid \mathbf{X}, \mathbf{y}))
-3. Observe the *maximizer* of acquisition function from a true objective function :math:`f` where :math:`\epsilon` is a random observation noise.
+    \mathbf{x}^{*} = {\arg \max} a(\mathbf{x} \mid \mu(\mathbf{x} \mid \mathbf{X}, \mathbf{y}), \sigma^2(\mathbf{x} \mid \mathbf{X}, \mathbf{y}))
+3. Observe the *maximizer* of acquisition function from a true objective function :math:`f` where a random observation noise :math:`\epsilon` exists.
 
 .. math::
 
