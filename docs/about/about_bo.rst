@@ -14,8 +14,16 @@ Generic Bayesian optimization follows these steps:
 .. math::
 
     \hat{f}(\mathbf{x} \mid \mathbf{X}, \mathbf{y}) = \mathcal{N}(\mu(\mathbf{x} \mid \mathbf{X}, \mathbf{y}), \sigma^2(\mathbf{x} \mid \mathbf{X}, \mathbf{y}))
-2. Compute and maximize an *acquisition function*, defined by the outputs of surrogate function.
-3. Observe the *maximizer* of acquisition function from a true objective function.
+2. Compute and maximize an *acquisition function* :math:`a`, defined by the outputs of surrogate function, i.e., :math:`\mu(\mathbf{x} \mid \mathbf{X}, \mathbf{y})` and :math:`\sigma^2(\mathbf{x} \mid \mathbf{X}, \mathbf{y})`.
+
+.. math::
+
+    \mathbf{x}^{*} = \operatornamewithlimits{\arg \max} a(\mathbf{x} \mid \mu(\mathbf{x} \mid \mathbf{X}, \mathbf{y}), \sigma^2(\mathbf{x} \mid \mathbf{X}, \mathbf{y}))
+3. Observe the *maximizer* of acquisition function from a true objective function :math:`f` where :math:`\epsilon` is a random observation noise.
+
+.. math::
+
+    y = f(\mathbf{x}) + \epsilon
 4. Accumulate the maximizer and its observation.
 
 This project helps us to execute this Bayesian optimization procedure.
