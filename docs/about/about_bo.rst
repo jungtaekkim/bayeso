@@ -11,6 +11,7 @@ Generic Bayesian optimization follows these steps:
 
 #. Build a *surrogate function* :math:`\hat{f}` with historical inputs :math:`\mathbf{X}` and their observations :math:`\mathbf{y}`, which is defined with mean and variance functions.
 .. math::
+
     \hat{f}(\mathbf{x} \mid \mathbf{X}, \mathbf{y}) = \mathcal{N}(\mu(\mathbf{x} \mid \mathbf{X}, \mathbf{y}), \sigma^2(\mathbf{x} \mid \mathbf{X}, \mathbf{y}))
 #. Compute and maximize an *acquisition function*, defined by the outputs of surrogate function.
 #. Observe the *maximizer* of acquisition function from a true objective function.
