@@ -23,7 +23,7 @@ Generic Bayesian optimization follows these steps:
 
 .. math::
 
-    y = f(\mathbf{x}) + \epsilon
+    y = f(\mathbf{x}^{*}) + \epsilon
 4. Accumulate the maximizer and its observation.
 
 This project helps us to execute this Bayesian optimization procedure.
