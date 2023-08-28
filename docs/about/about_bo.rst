@@ -27,4 +27,4 @@ Generic Bayesian optimization follows these steps:
 4. Update historical inputs :math:`\mathbf{X}` and their observations :math:`\mathbf{y}` accumulating the maximizer :math:`\mathbf{x}^{*}` and its observation :math:`y`.
 
 This project helps us to execute this Bayesian optimization procedure.
-In particular, several surrogate functions such as *Gaussian process regression* and *Student-:math:`t` process regression* and various acquisition functions such as *probability improvement*, *expected improvement*, and *Gaussian process upper confidence bound* are included in this project.
+In particular, several surrogate functions such as Gaussian process regression and Student-:math:`t` process regression and various acquisition functions such as probability of improvement, expected improvement, and Gaussian process upper confidence bound are included in this project.
