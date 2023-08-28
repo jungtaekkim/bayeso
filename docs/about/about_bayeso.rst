@@ -36,7 +36,7 @@ We provide a list of examples.
     │   ├── example_gp_mml_y_scales.py: an example of Gaussian processes with different scales of function evaluations
     │   ├── example_gp_priors.py: an example of Gaussian processes with differnt prior functions
     │   ├── example_random_forest.py: an example of modeling random forests
-    │   └── example_tp_mml_kernels.py: an example of student-$t$ processes with different kernels
+    │   └── example_tp_mml_kernels.py: an example of Student-t processes with different kernels
     ├── 03_bo
     │   ├── example_bo_aei.py: an example of Bayesian optimization with augmented expected improvement
     │   ├── example_bo_ei.py: an example of Bayesian optimization with expected improvement
@@ -46,7 +46,7 @@ We provide a list of examples.
     │   └── example_bo_ucb.py: an example of Bayesian optimization with Gaussain process upper confidence bound
     ├── 04_bo_with_surrogates
     │   ├── example_bo_w_gp.py: an example of Bayesian optimization with Gaussian process surrogates
-    │   └── example_bo_w_tp.py: an example of Bayesian optimization with student-$t$ process surrogates
+    │   └── example_bo_w_tp.py: an example of Bayesian optimization with Student-t process surrogates
     ├── 05_benchmarks
     │   ├── example_benchmarks_ackley_bo_ei.py: an example of Bayesian optimization for the Ackley function
     │   ├── example_benchmarks_bohachevsky_bo_ei.py: an example of Bayesian optimization for the Bohachevsky function
@@ -64,7 +64,7 @@ We provide a list of examples.
         ├── example_bo_branin.ipynb: a notebook of Bayesian optimization for the Branin function
         ├── example_gp.ipynb: a notebook of Gaussian processes
         ├── example_hpo_xgboost.ipynb: a notebook of hyperparameter optimization for XGBoost
-        ├── example_tp.ipynb: a notebook of student-$t$ processes
+        ├── example_tp.ipynb: a notebook of Student-t processes
         └── example_ts_gp_prior.ipynb: a notebook of Thompson sampling
 
 Tests
