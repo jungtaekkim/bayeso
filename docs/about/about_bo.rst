@@ -24,7 +24,7 @@ Generic Bayesian optimization follows these steps:
 .. math::
 
     y = f(\mathbf{x}^{*}) + \epsilon
-4. Accumulate the maximizer and its observation.
+4. Update historical inputs :math:`\mathbf{X}` and their observations :math:`\mathbf{y}` accumulating the maximizer :math:`\mathbf{x}^{*}` and its observation :math:`y`.
 
 This project helps us to execute this Bayesian optimization procedure.
 In particular, *Gaussian process regression* is used as a surrogate function,
