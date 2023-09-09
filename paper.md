@@ -77,7 +77,7 @@ technique in diverse academic and industrial fields.
 
 ![Visualization of Bayesian optimization procedure. Given an objective function, \autoref{eqn:simple} (colored by turquoise) and four initial points (denoted as light blue $\texttt{+}$ at iteration 1), a query point (denoted as pink $\texttt{x}$) is determined by constructing a surrogate model (colored by orange) and maximizing an acquisition function (colored by light green) every iteration.\label{fig:bo_steps}](figures/bo_step_global_local_ei.png)
 
-# Bayesian Optimization
+# Bayesian optimization
 
 As discussed in the
 work [@BrochuE2010arxiv; @ShahriariB2016procieee; @GarnettR2023book],
@@ -153,7 +153,7 @@ of Bayesian optimization for particular scenarios:
 - a run with initial inputs provided;
 - a run with initial inputs provided and their evaluations.
 
-# Software Development for BayesO
+# Software development for BayesO
 
 To manage BayesO productively, we actively utilize external development
 management packages.
