@@ -2,11 +2,8 @@
 relative_files = True
 source =
     bayeso
-    tests
-omit = tests/integration_test.py
 
 [report]
 exclude_lines =
     pragma: no cover
-    print
     raise NotImplementedError
