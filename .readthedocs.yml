@@ -9,7 +9,8 @@ formats:
   - pdf
 
 python:
-  version: 3.7
+  version: 3.11
   install:
     - requirements: requirements.txt
     - requirements: requirements-optional.txt
+    - requirements: requirements-dev.txt
