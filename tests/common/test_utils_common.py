@@ -1,6 +1,6 @@
 #
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: September 24, 2020
+# last updated: December 15, 2022
 #
 """test_utils_common"""
 
@@ -12,6 +12,35 @@ from bayeso.utils import utils_common as package_target
 
 
 TEST_EPSILON = 1e-5
+
+def test_validate_types_typing():
+    annos = package_target.validate_types.__annotations__
+
+    assert annos['func'] == typing.Callable
+    assert annos['return'] == typing.Callable
+
+def test_validate_types():
+    def fun_test_1(x) -> int:
+        return int(x)
+
+    with pytest.raises(AssertionError) as error:
+        package_target.validate_types(fun_test_1)
+
+    def fun_test_2(x: float):
+        return int(x)
+
+    with pytest.raises(AssertionError) as error:
+        package_target.validate_types(fun_test_2)
+
+    def fun_test_3(x: float) -> int:
+        return int(x)
+
+    fun_returned = package_target.validate_types(fun_test_3)
+
+    fun_test_1(1.23)
+    fun_test_2(1.23)
+    fun_test_3(1.23)
+    fun_returned(1.23)
 
 def test_get_grids_typing():
     annos = package_target.get_grids.__annotations__
@@ -128,13 +157,15 @@ def test_get_minimum():
     all_data = np.zeros((num_exp, num_init + num_data))
     with pytest.raises(AssertionError) as error:
         package_target.get_minimum(all_data, 2.1)
-    cur_minimum, cur_mean, cur_std = package_target.get_minimum(all_data, num_init)
+    cur_minimum, cur_mean, cur_std, cur_sem = package_target.get_minimum(all_data, num_init)
     assert len(cur_minimum.shape) == 2
     assert cur_minimum.shape == (num_exp, 1 + num_data)
     assert len(cur_mean.shape) == 1
     assert cur_mean.shape == (1 + num_data, )
     assert len(cur_std.shape) == 1
     assert cur_std.shape == (1 + num_data, )
+    assert len(cur_sem.shape) == 1
+    assert cur_sem.shape == (1 + num_data, )
 
     num_init = 5
     num_exp = 10
@@ -154,10 +185,24 @@ def test_get_minimum():
         [2.3, 2.3, 2.3, 2.3, 2.3],
         [0.8, 0.8, 0.3, 0.3, 0.3],
     ])
-    cur_minimum, cur_mean, cur_std = package_target.get_minimum(all_data, num_init)
+    cur_minimum, cur_mean, cur_std, cur_sem = package_target.get_minimum(all_data, num_init)
     assert (cur_minimum == truth_all_data).all()
     assert (cur_mean == np.mean(truth_all_data, axis=0)).all()
-    assert (cur_std == np.std(truth_all_data, axis=0)).all()
+    assert (cur_std == np.std(truth_all_data, axis=0, ddof=1)).all()
+    assert (cur_sem == np.std(truth_all_data, axis=0, ddof=1) / np.sqrt(truth_all_data.shape[0])).all()
+
+    num_init = 3
+    all_data = np.array([
+        [0.8, 2.4, 5.4, 4.5, 0.3, 1.5, 2.3],
+    ])
+    truth_all_data = np.array([
+        [0.8, 0.8, 0.3, 0.3, 0.3],
+    ])
+    cur_minimum, cur_mean, cur_std, cur_sem = package_target.get_minimum(all_data, num_init)
+    assert (cur_minimum == truth_all_data).all()
+    assert (cur_mean == np.mean(truth_all_data, axis=0)).all()
+    assert (cur_std == np.zeros(truth_all_data.shape[0])).all()
+    assert (cur_sem == np.zeros(truth_all_data.shape[0]) / np.sqrt(truth_all_data.shape[0])).all()
 
 def test_get_time_typing():
     annos = package_target.get_time.__annotations__

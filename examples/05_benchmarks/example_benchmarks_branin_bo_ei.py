@@ -1,6 +1,7 @@
-# example_benchmarks_branin_bo_ei
+#
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: April 28, 2020
+# last updated: August 17, 2023
+#
 
 import numpy as np
 import os
@@ -13,7 +14,6 @@ from bayeso.utils import utils_plotting
 
 
 STR_FUN_TARGET = 'branin'
-PATH_SAVE = '../figures/benchmarks/'
 
 obj_fun = Branin()
 
@@ -21,36 +21,34 @@ obj_fun = Branin()
 def fun_target(X):
     return obj_fun.output(X)
 
-def main():
-    num_bo = 5
-    num_iter = 10
-    num_init = 5
+path_save = None
 
-    bounds = obj_fun.get_bounds()
-    model_bo = bo.BO(bounds, debug=True)
-    list_Y = []
-    list_time = []
-    for ind_bo in range(0, num_bo):
-        print('BO Round', ind_bo + 1)
-        X_final, Y_final, time_final, _, _ = wrappers_bo_function.run_single_round(model_bo, fun_target, num_init, num_iter, str_initial_method_bo='sobol', str_sampling_method_ao='sobol', num_samples_ao=100)
-        print(X_final)
-        print(Y_final)
-        print(time_final)
-        list_Y.append(Y_final)
-        list_time.append(time_final)
+if path_save is not None and not os.path.isdir(path_save):
+    os.makedirs(path_save)
 
-        bx_best, y_best = utils_bo.get_best_acquisition_by_history(X_final, Y_final)
-        print(bx_best, y_best)
+num_bo = 5
+num_iter = 10
+num_init = 5
 
-    arr_Y = np.array(list_Y)
-    arr_Y = np.expand_dims(np.squeeze(arr_Y), axis=0)
-    arr_time = np.array(list_time)
-    arr_time = np.expand_dims(arr_time, axis=0)
-    utils_plotting.plot_minimum_vs_iter(arr_Y, [STR_FUN_TARGET], num_init, True, path_save=PATH_SAVE, str_postfix=STR_FUN_TARGET)
-    utils_plotting.plot_minimum_vs_time(arr_time, arr_Y, [STR_FUN_TARGET], num_init, True, path_save=PATH_SAVE, str_postfix=STR_FUN_TARGET)
+bounds = obj_fun.get_bounds()
+model_bo = bo.BO(bounds, debug=True)
+list_Y = []
+list_time = []
+for ind_bo in range(0, num_bo):
+    print('BO Round', ind_bo + 1)
+    X_final, Y_final, time_final, _, _ = wrappers_bo_function.run_single_round(model_bo, fun_target, num_init, num_iter, str_initial_method_bo='sobol', str_sampling_method_ao='sobol', num_samples_ao=100)
+    print(X_final)
+    print(Y_final)
+    print(time_final)
+    list_Y.append(Y_final)
+    list_time.append(time_final)
 
+    bx_best, y_best = utils_bo.get_best_acquisition_by_history(X_final, Y_final)
+    print(bx_best, y_best)
 
-if __name__ == '__main__':
-    if not os.path.isdir(PATH_SAVE):
-        os.makedirs(PATH_SAVE)
-    main()
+arr_Y = np.array(list_Y)
+arr_Y = np.expand_dims(np.squeeze(arr_Y), axis=0)
+arr_time = np.array(list_time)
+arr_time = np.expand_dims(arr_time, axis=0)
+utils_plotting.plot_minimum_vs_iter(arr_Y, [STR_FUN_TARGET], num_init, True, path_save=path_save, str_postfix=STR_FUN_TARGET)
+utils_plotting.plot_minimum_vs_time(arr_time, arr_Y, [STR_FUN_TARGET], num_init, True, path_save=path_save, str_postfix=STR_FUN_TARGET)

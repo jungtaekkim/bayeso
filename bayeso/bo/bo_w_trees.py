@@ -197,6 +197,7 @@ class BOwTrees(base_bo.BaseBO):
     def optimize(self, X_train: np.ndarray, Y_train: np.ndarray,
         str_sampling_method: str=constants.STR_SAMPLING_METHOD_AO_TREES,
         num_samples: int=constants.NUM_SAMPLES_AO_TREES,
+        seed: int=None,
     ) -> constants.TYPING_TUPLE_ARRAY_DICT:
         """
         It computes acquired example, candidates of acquired examples,
@@ -213,6 +214,8 @@ class BOwTrees(base_bo.BaseBO):
         :type str_sampling_method: str., optional
         :param num_samples: the number of samples.
         :type num_samples: int., optional
+        :param seed: a random seed.
+        :type seed: int., optional
 
         :returns: acquired example and dictionary of information. Shape: ((d, ), dict.).
         :rtype: (numpy.ndarray, dict.)
@@ -225,6 +228,7 @@ class BOwTrees(base_bo.BaseBO):
         assert isinstance(Y_train, np.ndarray)
         assert isinstance(str_sampling_method, str)
         assert isinstance(num_samples, int)
+        assert isinstance(seed, (type(None), int))
         assert len(X_train.shape) == 2
         assert len(Y_train.shape) == 2
         assert Y_train.shape[1] == 1
@@ -247,11 +251,7 @@ class BOwTrees(base_bo.BaseBO):
         time_end_surrogate = time.time()
 
         time_start_acq = time.time()
-        next_points = self.get_samples(
-            str_sampling_method,
-            fun_objective=None,
-            num_samples=num_samples
-        )
+        next_points = self.get_samples(str_sampling_method, num_samples=num_samples, seed=seed)
 
         next_points = utils_bo.check_points_in_bounds(next_points, np.array(self._get_bounds()))
 

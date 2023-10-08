@@ -1,6 +1,6 @@
 #
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: September 24, 2020
+# last updated: November 29, 2022
 #
 """It defines acquisition functions, each of which
 is employed to determine where next to evaluate."""
@@ -131,7 +131,7 @@ def ucb(pred_mean: np.ndarray, pred_std: np.ndarray,
     assert pred_mean.shape[0] == pred_std.shape[0]
 
     if increase_kappa and Y_train is not None:
-        kappa_ = kappa * np.log(Y_train.shape[0])
+        kappa_ = kappa * np.log(Y_train.shape[0] + 1.0)
     else:
         kappa_ = kappa
     return -pred_mean + kappa_ * pred_std

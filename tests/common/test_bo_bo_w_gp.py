@@ -1,11 +1,12 @@
 #
 # author: Jungtaek Kim (jtkim@postech.ac.kr)
-# last updated: October 8, 2021
+# last updated: August 16, 2023
 #
 """test_bo_bo_w_gp"""
 
 import pytest
 import numpy as np
+import scipy
 
 from bayeso.bo import bo_w_gp as package_target
 from bayeso import covariance
@@ -93,15 +94,10 @@ def test_get_samples():
     num_X = 5
     X = np.random.randn(num_X, dim_X)
     Y = np.random.randn(num_X, 1)
-    fun_objective = lambda X: np.sum(X)
     model_bo = BO(arr_range, debug=True)
 
     with pytest.raises(AssertionError) as error:
         model_bo.get_samples(1)
-    with pytest.raises(AssertionError) as error:
-        model_bo.get_samples('grid', fun_objective=None)
-    with pytest.raises(AssertionError) as error:
-        model_bo.get_samples('uniform', fun_objective=1)
     with pytest.raises(AssertionError) as error:
         model_bo.get_samples('uniform', num_samples='abc')
     with pytest.raises(AssertionError) as error:
@@ -115,9 +111,41 @@ def test_get_samples():
     with pytest.raises(AssertionError) as error:
         model_bo.get_samples('abc')
 
-    arr_initials = model_bo.get_samples('grid', num_samples=50, fun_objective=fun_objective)
+    arr_initials = model_bo.get_samples('grid', num_samples=1)
     truth_arr_initials = np.array([
-        [0.0, -2.0, -5.0],
+        [0.000, -2.000, -5.000],
+    ])
+    assert (np.abs(arr_initials - truth_arr_initials) < TEST_EPSILON).all()
+
+    arr_initials = model_bo.get_samples('grid', num_samples=3)
+    truth_arr_initials = np.array([
+        [0.000, -2.000, -5.000],
+        [0.000, -2.000, 0.000],
+        [0.000, -2.000, 5.000],
+        [5.000, -2.000, -5.000],
+        [5.000, -2.000, 0.000],
+        [5.000, -2.000, 5.000],
+        [10.000, -2.000, -5.000],
+        [10.000, -2.000, 0.000],
+        [10.000, -2.000, 5.000],
+        [0.000, 0.000, -5.000],
+        [0.000, 0.000, 0.000],
+        [0.000, 0.000, 5.000],
+        [5.000, 0.000, -5.000],
+        [5.000, 0.000, 0.000],
+        [5.000, 0.000, 5.000],
+        [10.000, 0.000, -5.000],
+        [10.000, 0.000, 0.000],
+        [10.000, 0.000, 5.000],
+        [0.000, 2.000, -5.000],
+        [0.000, 2.000, 0.000],
+        [0.000, 2.000, 5.000],
+        [5.000, 2.000, -5.000],
+        [5.000, 2.000, 0.000],
+        [5.000, 2.000, 5.000],
+        [10.000, 2.000, -5.000],
+        [10.000, 2.000, 0.000],
+        [10.000, 2.000, 5.000],
     ])
     assert (np.abs(arr_initials - truth_arr_initials) < TEST_EPSILON).all()
 
@@ -131,19 +159,19 @@ def test_get_samples():
 
     truth_arr_initials = np.array([
         [
-            8.78516613971442,
-            -0.6113853892311454,
-            -4.274874331895262,
+            4.31029474362731,
+            1.257471889257431,
+            3.06412766687572,
         ],
         [
-            2.7565963030792773,
-            1.627942705526948,
-            1.6141902864910662,
+            8.698135614395142,
+            -0.250022292137146,
+            -0.012653172016143799,
         ],
         [
-            1.0978685109876096,
-            -1.511254413984716,
-            -1.5049133892171085,
+            5.779154300689697,
+            0.04064440727233887,
+            2.2647011280059814,
         ],
     ])
 
@@ -157,23 +185,60 @@ def test_get_samples():
         for elem_2 in elem_1:
             print(elem_2)
 
-    truth_arr_initials = np.array([
-        [
-            3.3124358790165855,
-            -1.4099903230606423,
-            -0.4462920191434243,
-        ],
-        [
-            8.312435879016585,
-            1.2566763436060246,
-            -2.446292019143424,
-        ],
-        [
-            0.8124358790165853,
-            -0.07665698972730861,
-            -4.446292019143424,
-        ],
-    ])
+    if scipy.__version__ == '1.7.3':
+        truth_arr_initials = np.array([
+            [
+                9.486941305084901,
+                1.1840371390061812,
+                4.866438875059044,
+            ],
+            [
+                0.4244413050849005,
+                -0.4455924906234483,
+                0.8664388750590444,
+            ],
+            [
+                5.4244413050849,
+                -1.7789258239567811,
+                2.8664388750590453,
+            ],
+        ])
+    elif scipy.__version__ == '1.10.1':
+        truth_arr_initials = np.array([
+            [
+                5.513058694915099,
+                0.9508863268359247,
+                4.394594269075903,
+            ],
+            [
+                0.5130586949150984,
+                -0.3824470064974086,
+                0.39459426907590256,
+            ],
+            [
+                8.013058694915099,
+                -1.7157803398307416,
+                2.3945942690759034,
+            ],
+        ])
+    else:
+        truth_arr_initials = np.array([
+            [
+                5.513058694915099,
+                -1.3929280802587178,
+                -3.572948073154651,
+            ],
+            [
+                0.5130586949150984,
+                1.2737385864079487,
+                0.4270519268453521,
+            ],
+            [
+                8.013058694915099,
+                -0.059594746925384356,
+                2.427051926845353,
+            ],
+        ])
 
     assert (np.abs(arr_initials - truth_arr_initials) < TEST_EPSILON).all()
 
@@ -206,7 +271,6 @@ def test_get_initials():
     num_X = 5
     X = np.random.randn(num_X, dim_X)
     Y = np.random.randn(num_X, 1)
-    fun_objective = lambda X: np.sum(X)
     model_bo = BO(arr_range)
 
     with pytest.raises(AssertionError) as error:
@@ -223,25 +287,26 @@ def test_get_initials():
     arr_initials = model_bo.get_initials('sobol', 3)
     arr_initials = model_bo.get_initials('sobol', 3, seed=42)
 
+    print('sobol')
     for elem_1 in arr_initials:
         for elem_2 in elem_1:
             print(elem_2)
 
     truth_arr_initials = np.array([
         [
-            8.78516613971442,
-            -0.6113853892311454,
-            -4.274874331895262,
+            4.31029474362731,
+            1.257471889257431,
+            3.06412766687572,
         ],
         [
-            2.7565963030792773,
-            1.627942705526948,
-            1.6141902864910662,
+            8.698135614395142,
+            -0.250022292137146,
+            -0.012653172016143799,
         ],
         [
-            1.0978685109876096,
-            -1.511254413984716,
-            -1.5049133892171085,
+            5.779154300689697,
+            0.04064440727233887,
+            2.2647011280059814,
         ],
     ])
 
@@ -292,6 +357,10 @@ def test_optimize():
         model_bo.optimize(X, Y, str_mlm_method='abc')
     with pytest.raises(AssertionError) as error:
         model_bo.optimize(X, Y, num_samples='abc')
+    with pytest.raises(AssertionError) as error:
+        model_bo.optimize(X, Y, seed='abc')
+    with pytest.raises(AssertionError) as error:
+        model_bo.optimize(X, Y, seed=1.23)
 
     next_point, dict_info = model_bo.optimize(X, Y)
     next_points = dict_info['next_points']
@@ -869,54 +938,54 @@ def test_compute_acquisitions():
 
     truth_X_test = np.array([
         [
-            3.328958908095956,
-            -1.8729291455820203,
-            0.2839687094092369,
+            3.359774835407734,
+            -0.7351906783878803,
+            -3.654018910601735,
         ],
         [
-            8.11741182114929,
-            0.3799784183502197,
-            -0.05574141861870885,
+            5.692976117134094,
+            0.06583881378173828,
+            4.514206647872925,
         ],
         [
-            6.735238193068653,
-            -0.9264274807646871,
-            3.631770429201424,
+            9.900951385498047,
+            -1.9652910344302654,
+            -2.2755324840545654,
         ],
         [
-            2.13300823001191,
-            1.3245289996266365,
-            -3.547573888208717,
+            2.2963321208953857,
+            1.359175443649292,
+            0.7950365543365479,
         ],
         [
-            0.6936023756861687,
-            -0.018464308232069016,
-            -2.1043178741820157,
+            0.2561802417039871,
+            -1.420634150505066,
+            3.1929773092269897,
         ],
         [
-            5.438151848502457,
-            1.7285785367712379,
-            2.0298107899725437,
+            7.546542286872864,
+            1.778337001800537,
+            -4.986539306119084,
         ],
         [
-            9.085266247857362,
-            -1.2144776917994022,
-            -4.31197423255071,
+            6.796058416366577,
+            -0.127052903175354,
+            2.127595543861389,
         ],
         [
-            4.468362366314977,
-            0.5345162367448211,
-            4.0739051485434175,
+            4.151194095611572,
+            0.5484802722930908,
+            -0.9542649984359741,
         ],
         [
-            3.9395463559776545,
-            -0.5726078534498811,
-            -4.846788686700165,
+            4.554623663425446,
+            -1.7126559913158417,
+            1.575535535812378,
         ],
         [
-            9.92871844675392,
-            1.1744442842900753,
-            4.774723623413593,
+            6.998107433319092,
+            1.1039907932281494,
+            -0.24655908346176147,
         ],
     ])
 
@@ -948,16 +1017,16 @@ def test_compute_acquisitions():
         print(elem_1)
 
     truth_acqs = np.array([
-        0.9140836833364618,
-        0.7893422923284443,
-        0.7893819649518585,
-        0.780516205172671,
-        1.170379060386938,
-        0.7889956503605072,
-        0.7893345684226016,
-        0.789773864915061,
-        0.7908883762985802,
-        0.7893339801719917,
+        0.8049686141202866,
+        0.7893967936170049,
+        0.7893344548526326,
+        0.6000389921254741,
+        0.8103002530541231,
+        0.7893313332377416,
+        0.789470520859335,
+        0.7800155879443277,
+        0.7997704016015617,
+        0.7892647934229852,
     ])
 
     assert isinstance(acqs, np.ndarray)
