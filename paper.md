@@ -136,7 +136,7 @@ We implement several acquisition functions:
 
 - pure exploration;
 - pure exploitation;
-- probability of improvement [@MockusJ1978tgo];
+- probability of improvement [@KushnerHJ1964jbe];
 - expected improvement [@JonesDR1998jgo];
 - augmented expected improvement [@HuangD2006jgo];
 - Gaussian process upper confidence bound [@SrinivasN2010icml].
