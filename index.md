@@ -15,7 +15,7 @@ Simple, but essential Bayesian optimization package.
 
 Detailed installation guides can be found in the respective repositories.
 
-* BayesO
+* [BayesO](https://github.com/jungtaekkim/bayeso)
 
 To install a released version in the PyPI repository, command it.
 
@@ -23,7 +23,7 @@ To install a released version in the PyPI repository, command it.
 $ pip install bayeso
 ```
 
-* BayesO Benchmarks
+* [BayesO Benchmarks](https://github.com/jungtaekkim/bayeso-benchmarks)
 
 Similar to BayesO, command it to install a released version.
 
@@ -31,7 +31,7 @@ Similar to BayesO, command it to install a released version.
 $ pip install bayeso-benchmarks
 ```
 
-* Batch BayesO
+* [Batch BayesO](https://github.com/jungtaekkim/batch-bayeso)
 
 Now, it is not released through the PyPI repository.
 Command it in the root directory of Batch BayesO.
@@ -44,13 +44,13 @@ $ pip install .
 
 ```
 @article{KimJ2023joss,
-	title="{BayesO}: A {Bayesian} Optimization Framework in {Python}",
-    author="Kim, Jungtaek and Choi, Seungjin",
-	journal="Journal of Open Source Software",
-	volume="8",
-	number="90",
-	pages="5320",
-	year="2023"
+  title="{BayesO}: A {Bayesian} Optimization Framework in {Python}",
+  author="Kim, Jungtaek and Choi, Seungjin",
+  journal="Journal of Open Source Software",
+  volume="8",
+  number="90",
+  pages="5320",
+  year="2023"
 }
 ```
 
