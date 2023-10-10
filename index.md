@@ -12,53 +12,53 @@ Simple, but essential Bayesian optimization package.
 * [Batch BayesO: GitHub Repository](https://github.com/jungtaekkim/batch-bayeso)
 
 ## Installation
-We recommend installing it with virtualenv.
-You can choose one of three installation options.
 
-* Using PyPI repository (for user installation)
+Detailed installation guides can be found in the respective repositories.
 
-To install the released version in PyPI repository, command it.
+* BayesO
+
+To install a released version in the PyPI repository, command it.
 
 ```shell
 $ pip install bayeso
 ```
 
-* Using source code (for developer installation)
+* BayesO Benchmarks
 
-To install BayesO from source code, command
+Similar to BayesO, command it to install a released version.
+
+```shell
+$ pip install bayeso-benchmarks
+```
+
+* Batch BayesO
+
+Now, it is not released through the PyPI repository.
+Command it in the root directory of Batch BayesO.
 
 ```shell
 $ pip install .
 ```
-in the BayesO root.
-
-* Using source code (for editable development mode)
-
-To use editable development mode, command
-
-```shell
-$ pip install -r requirements.txt
-$ python setup.py develop
-```
-in the BayesO root.
-
-* Uninstallation
-
-If you would like to uninstall BayesO, command it.
-
-```shell
-$ pip uninstall bayeso
-```
 
 ## Citation
+
 ```
-@misc{KimJ2017bayeso,
-    author="Kim, Jungtaek and Choi, Seungjin",
-    title="{BayesO}: A {Bayesian} optimization framework in {Python}",
-    howpublished="\url{https://bayeso.org}",
-    year="2017"
+@article{KimJ2023joss,
+	title={{BayesO}: A {Bayesian} Optimization Framework in {Python}},
+    author={Kim, Jungtaek and Choi, Seungjin},
+	journal={Journal of Open Source Software},
+	volume={8},
+	number={90},
+	pages={5320},
+	year={2023}
 }
 ```
 
 ## License
-[MIT License](https://github.com/jungtaekkim/bayeso/blob/main/LICENSE)
+
+All software is licensed under the [MIT license](https://en.wikipedia.org/wiki/MIT_License).
+You can look at the LICENSE files in the respective repositories.
+
+* [BayesO](https://github.com/jungtaekkim/bayeso/blob/main/LICENSE)
+* [BayesO Benchmarks](https://github.com/jungtaekkim/bayeso-benchmarks/blob/main/LICENSE)
+* [Batch BayesO](https://github.com/jungtaekkim/batch-bayeso/blob/main/LICENSE)
