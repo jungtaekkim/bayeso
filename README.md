@@ -1,5 +1,5 @@
 <p align="center">
-<img src="docs/_static/assets/logo_bayeso_capitalized.svg" width="400" />
+<img src="https://raw.githubusercontent.com/jungtaekkim/bayeso/main/docs/_static/assets/logo_bayeso_capitalized.svg" width="400" />
 </p>
 
 # BayesO: A Bayesian Optimization Framework in Python
@@ -11,7 +11,7 @@
 [![Documentation Status](https://readthedocs.org/projects/bayeso/badge/?version=main)](https://bayeso.readthedocs.io/en/main/?badge=main)
 
 <p align="center">
-<img src="docs/_static/steps/ei.gif" width="600" />
+<img src="https://raw.githubusercontent.com/jungtaekkim/bayeso/main/docs/_static/steps/ei.gif" width="600" />
 </p>
 
 Simple, but essential Bayesian optimization package.
