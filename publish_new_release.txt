@@ -24,3 +24,4 @@ anaconda upload dist/*.tar.gz
 ## Upload the wheel and sourfe files together.
 
 # 8. Check out Zenodo or upload the release on Zenodo.
+## To upload the release, download a ZIP file from the main branch.
