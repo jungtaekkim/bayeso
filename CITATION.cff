@@ -1,0 +1,32 @@
+cff-version: "1.2.0"
+authors:
+- family-names: Kim
+  given-names: Jungtaek
+  orcid: "https://orcid.org/0000-0002-1905-1399"
+- family-names: Choi
+  given-names: Seungjin
+  orcid: "https://orcid.org/0000-0002-7873-4616"
+doi: 10.5281/zenodo.8419023
+message: If you use this software, please cite our article in the
+  Journal of Open Source Software.
+preferred-citation:
+  authors:
+  - family-names: Kim
+    given-names: Jungtaek
+    orcid: "https://orcid.org/0000-0002-1905-1399"
+  - family-names: Choi
+    given-names: Seungjin
+    orcid: "https://orcid.org/0000-0002-7873-4616"
+  date-published: 2023-10-09
+  doi: 10.21105/joss.05320
+  issn: 2475-9066
+  issue: 90
+  journal: Journal of Open Source Software
+  publisher:
+    name: Open Journals
+  start: 5320
+  title: "BayesO: A Bayesian optimization framework in Python"
+  type: article
+  url: "https://joss.theoj.org/papers/10.21105/joss.05320"
+  volume: 8
+title: "BayesO: A Bayesian optimization framework in Python"

@@ -123,11 +123,14 @@ Citation
 
 .. code-block:: latex
 
-    @misc{KimJ2017bayeso,
+    @article{KimJ2023joss,
         author={Kim, Jungtaek and Choi, Seungjin},
         title={{BayesO}: A {Bayesian} optimization framework in {Python}},
-        howpublished={\url{https://bayeso.org}},
-        year={2017}
+        journal={Journal of Open Source Software},
+        volume={8},
+        number={90},
+        pages={5320},
+        year={2023}
     }
 
 License

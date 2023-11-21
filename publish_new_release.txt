@@ -1,0 +1,29 @@
+# 1. Merge a working branch to the main branch first.
+
+# 2. Clone the main branch in a new clean directory.
+
+# 3. (If needed) Install setuptools and wheel.
+
+# 4. Create wheel and source files.
+python2 setup.py sdist bdist_wheel (deprecated) 
+python3 setup.py sdist bdist_wheel
+
+# 5. (If needed) Install twine.
+
+# 6. Upload wheel and source files to the PyPI repository.
+twine upload dist/*
+
+# 7. (Optional) Upload to Anaconda repository.
+~/anaconda3/bin/anaconda upload dist/*.tar.gz
+# or
+anaconda upload dist/*.tar.gz
+
+# 8. Publish a new release at GitHub.
+## Create a tag at GitHub.
+## Make sure that it is created in the main branch.
+## Assign the tag to a new release.
+## The name convention of tags is "v0.5.5".
+## Upload the wheel and source files, which can be downloaded from the PyPI repository, together.
+
+# 9. Check out Zenodo or upload the release on Zenodo.
+## To upload the release, download a ZIP file from a particular tag.

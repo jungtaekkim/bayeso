@@ -5,7 +5,7 @@
 """test_import"""
 
 
-STR_VERSION = '0.5.4'
+STR_VERSION = '0.5.5'
 
 def test_version_bayeso():
     import bayeso
