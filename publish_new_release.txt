@@ -26,4 +26,4 @@ anaconda upload dist/*.tar.gz
 ## Upload the wheel and source files, which can be downloaded from the PyPI repository, together.
 
 # 9. Check out Zenodo or upload the release on Zenodo.
-## To upload the release, download a ZIP file from the main branch.
+## To upload the release, download a ZIP file from a particular tag.
