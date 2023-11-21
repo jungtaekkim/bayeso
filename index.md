@@ -44,13 +44,13 @@ $ pip install .
 
 ```
 @article{KimJ2023joss,
-  title="{BayesO}: A {Bayesian} Optimization Framework in {Python}",
-  author="Kim, Jungtaek and Choi, Seungjin",
-  journal="Journal of Open Source Software",
-  volume="8",
-  number="90",
-  pages="5320",
-  year="2023"
+    author={Kim, Jungtaek and Choi, Seungjin},
+    title={{BayesO}: A {Bayesian} optimization framework in {Python}},
+    journal={Journal of Open Source Software},
+    volume={8},
+    number={90},
+    pages={5320},
+    year={2023}
 }
 ```
 
