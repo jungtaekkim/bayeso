@@ -7,15 +7,15 @@ title: Home
 
 Simple, but essential Bayesian optimization package.
 
-* [BayesO: GitHub Repository](https://github.com/jungtaekkim/bayeso)
-* [BayesO Benchmarks: GitHub Repository](https://github.com/jungtaekkim/bayeso-benchmarks)
-* [Batch BayesO: GitHub Repository](https://github.com/jungtaekkim/batch-bayeso)
+* [BayesO: GitHub Repository]({{ site.github.repo-bayeso }})
+* [BayesO Benchmarks: GitHub Repository]({{ site.github.repo-bench }})
+* [Batch BayesO: GitHub Repository]({{ site.github.repo-batch }})
 
 ## Installation
 
 Detailed installation guides can be found in the respective repositories.
 
-* [BayesO](https://github.com/jungtaekkim/bayeso)
+* [BayesO]({{ site.github.repo-bayeso }})
 
 To install a released version in the PyPI repository, command it.
 
@@ -23,7 +23,7 @@ To install a released version in the PyPI repository, command it.
 $ pip install bayeso
 ```
 
-* [BayesO Benchmarks](https://github.com/jungtaekkim/bayeso-benchmarks)
+* [BayesO Benchmarks]({{ site.github.repo-bench }})
 
 Similar to BayesO, command it to install a released version.
 
@@ -31,7 +31,7 @@ Similar to BayesO, command it to install a released version.
 $ pip install bayeso-benchmarks
 ```
 
-* [Batch BayesO](https://github.com/jungtaekkim/batch-bayeso)
+* [Batch BayesO]({{ site.github.repo-batch }})
 
 Now, it is not released through the PyPI repository.
 Command it in the root directory of Batch BayesO.
@@ -59,6 +59,6 @@ $ pip install .
 All software is licensed under the [MIT license](https://en.wikipedia.org/wiki/MIT_License).
 You can look at the LICENSE files in the respective repositories.
 
-* [BayesO](https://github.com/jungtaekkim/bayeso/blob/main/LICENSE)
-* [BayesO Benchmarks](https://github.com/jungtaekkim/bayeso-benchmarks/blob/main/LICENSE)
-* [Batch BayesO](https://github.com/jungtaekkim/batch-bayeso/blob/main/LICENSE)
+* [BayesO]({{ site.github.repo-bayeso }}/blob/main/LICENSE)
+* [BayesO Benchmarks]({{ site.github.repo-bench }}/blob/main/LICENSE)
+* [Batch BayesO]({{ site.github.repo-batch }}/blob/main/LICENSE)
