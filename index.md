@@ -43,15 +43,17 @@ $ pip install .
 ## Citation
 
 ```
+{% raw %}
 @article{KimJ2023joss,
-    author="Kim, Jungtaek and Choi, Seungjin",
-    title="{BayesO}: A {Bayesian} optimization framework in {Python}",
-    journal="Journal of Open Source Software",
-    volume="8",
-    number="90",
-    pages="5320",
-    year="2023"
+    author={Kim, Jungtaek and Choi, Seungjin},
+    title={{BayesO}: A {Bayesian} optimization framework in {Python}},
+    journal={Journal of Open Source Software},
+    volume={8},
+    number={90},
+    pages={5320},
+    year={2023}
 }
+{% endraw %}
 ```
 
 ## License
