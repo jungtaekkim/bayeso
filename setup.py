@@ -3,6 +3,7 @@ import os
 import sys
 from pathlib import Path
 
+
 if (sys.version_info.major == 3 and sys.version_info.minor == 7) or\
     (sys.version_info.major == 3 and sys.version_info.minor == 8) or\
     (sys.version_info.major == 3 and sys.version_info.minor == 9) or\
@@ -31,9 +32,9 @@ with open(path_requirements) as f:
 
 setup(
     name='bayeso',
-    version='0.5.5',
+    version='0.6.0',
     author='Jungtaek Kim',
-    author_email='jtkim@postech.ac.kr',
+    author_email='jungtaek.kim.mail@gmail.com',
     url='https://bayeso.org',
     license='MIT',
     description='Simple, but essential Bayesian optimization package',
