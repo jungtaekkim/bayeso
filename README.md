@@ -1,5 +1,6 @@
 # GitHub Pages for BayesO
 
+
 This page is built with [Hyde](https://github.com/poole/hyde), which is licensed under the [MIT License](LICENSE.md).
 
 Hyde is a brazen two-column [Jekyll](http://jekyllrb.com) theme that pairs a prominent sidebar with uncomplicated content.
