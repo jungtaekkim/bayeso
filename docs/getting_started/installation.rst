@@ -18,26 +18,33 @@ Compiling from Source
 =====================
 
 It is for developer installation.
-To install **bayeso** from source code, command
+To install **bayeso** from source code, command it in the **bayeso** root.
 
 .. code-block:: console
 
     $ pip install .
 
-in the **bayeso** root.
-
 Compiling from Source (Editable)
 ================================
 
 It is for editable development mode.
-To use editable development mode, command
+To use editable development mode, command it in the **bayeso** root.
 
 .. code-block:: console
 
-    $ pip install -r requirements.txt
-    $ python setup.py develop
+    $ pip install -e .
 
-in the **bayeso** root.
+If you want to install the packages required for optional features, development, and examples,
+you can simply add **[optional]**, **[dev]**, and **[examples]**.
+For example, you can command it for installing the packages required for development.
+
+.. code-block:: console
+    $ pip install .[dev]
+
+or
+
+.. code-block:: console
+    $ pip install -e .[dev]
 
 Uninstalling
 ============
@@ -47,14 +54,3 @@ If you would like to uninstall **bayeso**, command it.
 .. code-block:: console
 
     $ pip uninstall bayeso
-
-Required Packages
-=================
-
-Mandatory pacakges are inlcuded in **requirements.txt**.
-The following **requirements** files include the package list, the purpose of which is described as follows.
-
-- **requirements-optional.txt**: It is an optional package list, but it needs to be installed to execute some features of **bayeso**.
-- **requirements-dev.txt**: It is for developing the **bayeso** package.
-- **requirements-examples.txt**: It needs to be installed to execute the examples included in the **bayeso** repository.
-
