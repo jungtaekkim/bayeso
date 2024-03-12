@@ -1,3 +1,0 @@
-scipydirect
-matplotlib
-bayeso-benchmarks

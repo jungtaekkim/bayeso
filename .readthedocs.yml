@@ -15,6 +15,5 @@ formats:
 
 python:
   install:
-    - requirements: requirements.txt
-    - requirements: requirements-optional.txt
-    - requirements: requirements-dev.txt
+    - method: pip
+      path: .[dev]

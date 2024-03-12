@@ -33,22 +33,22 @@ $ pip install bayeso
 
 * Using source code (for developer installation)
 
-To install `bayeso` from source code, command
+To install `bayeso` from source code, command the following in the `bayeso` root.
 
 ```shell
-$ pip install .
+pip install .
 ```
-in the `bayeso` root.
 
 * Using source code (for editable development mode)
 
-To use editable development mode, command
+To use editable development mode, command the following in the `bayeso` root.
 
 ```shell
-$ pip install -r requirements.txt
-$ python setup.py develop
+pip install -e .
 ```
-in the `bayeso` root.
+
+If you want to install the packages required for optional features, development, and examples, you can simply add `[optional]`, `[dev]`, and `[examples]`.
+For example, `pip install .[dev]` or `pip install -e .[dev]`.
 
 * Uninstallation
 
@@ -57,14 +57,6 @@ If you would like to uninstall `bayeso`, command it.
 ```shell
 $ pip uninstall bayeso
 ```
-
-## Required Packages
-Mandatory pacakges are inlcuded in `requirements.txt`.
-The following `requirements` files include the package list, the purpose of which is described as follows.
-
-* `requirements-optional.txt`: It is an optional package list, but it needs to be installed to execute some features of `bayeso`.
-* `requirements-dev.txt`: It is for developing the `bayeso` package.
-* `requirements-examples.txt`: It needs to be installed to execute the examples included in the `bayeso` repository.
 
 ## Supported Python Version
 We test our package in the following versions.
