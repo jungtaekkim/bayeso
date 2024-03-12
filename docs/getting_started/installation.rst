@@ -39,11 +39,13 @@ you can simply add **[optional]**, **[dev]**, and **[examples]**.
 For example, you can command it for installing the packages required for development.
 
 .. code-block:: console
+
     $ pip install .[dev]
 
 or
 
 .. code-block:: console
+
     $ pip install -e .[dev]
 
 Uninstalling
