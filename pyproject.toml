@@ -1,0 +1,74 @@
+[build-system]
+build-backend = "setuptools.build_meta"
+requires = [
+    "setuptools",
+]
+
+[tool.setuptools]
+packages = [
+    "bayeso",
+    "bayeso.bo",
+    "bayeso.gp",
+    "bayeso.tp",
+    "bayeso.trees",
+    "bayeso.wrappers",
+    "bayeso.utils",
+]
+
+[project]
+name = "bayeso"
+version = "0.6.0"
+authors = [
+    {name = "Jungtaek Kim", email = "jungtaek.kim.mail@gmail.com"},
+]
+description = "Simple, but essential Bayesian optimization package"
+readme = "README.md"
+requires-python = ">=3.7"
+dependencies = [
+    "numpy",
+    "scipy",
+    "cma",
+    "tqdm",
+]
+license = {text = "MIT"}
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+[project.urls]
+Homepage = "https://bayeso.org"
+Source = "https://github.com/jungtaekkim/bayeso"
+Issues = "https://github.com/jungtaekkim/bayeso/issues"
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "pytest-benchmark",
+    "pytest-timeout",
+    "pytest-cov",
+    "coveralls",
+    "sphinx",
+    "sphinx_rtd_theme",
+    "jupyter",
+    "jupytext",
+    "pylint",
+    "wheel",
+    "build",
+    "twine",
+]
+
+optional = [
+    "scipydirect",
+    "matplotlib",
+    "bayeso-benchmarks",
+]
+
+examples = [
+    "xgboost",
+    "scikit-learn",
+]
