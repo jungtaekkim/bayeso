@@ -15,7 +15,7 @@ author:
   name:           'Jungtaek Kim'
   url:            https://jungtaekkim.github.io
 
-version-bayeso:   0.6.0
+version-bayeso:   0.6.1
 version-bench:    0.2.0
 version-metrics:  0.1.0
 version-batch:    0.1.0
